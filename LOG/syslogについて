@@ -1,0 +1,109 @@
+syslogについて
+
+* syslog概要
+
+ソフトウェアによってsyslog経由か、直接エラー出力を行なうかなど性格は異なります。
+syslogに関する設定は
+ /etc/syslog.conf
+で行ないます。
+
+一般的には、/var/log以下のファイルが出力先として設定されているはずです。
+以下に簡単にsyslog.confに関する書式を示します。
+
+ <ファシリティ>.<priority>    <出力先>
+
+- ファシリティでは、以下を設定することができる。
+-- auth,auth-priv,cron,daemon,kern,lpr,mail,news,syslog,user,uucp,local0〜local7
+
+   ==============================================================
+   authpriv       認証システム(loginやsu)による出力
+   cron           cronによる出力
+   daemon         各種デーモンによる出力
+   kern           カーネルによる出力
+   lpr            印刷サブシステムによる出力
+   mail           メールサブシステムによる出力
+   news           ニュースサブシステムによる出力
+   syslog         シスログ機能による出力
+   user           ユーザープロセスによる出力
+   uucp           UUCPサブシステムによる出力
+   local0〜local7 独自の設定
+   mark           一定時間ごとにメッセージを出力(タイムスタンプ)
+   ==============================================================
+
+
+- priorityはメッセージの重要性をあらわし以下の9つが指定できる。
+-- emerg, alert, crit, err, warning, notice, info, debug, none
+
+   ========================================
+   emerg          システムが使用不可
+   alert          早急に対処が必要
+   crit           危険な状態
+   err            一般的なエラー
+   warning        システムからの警告
+   notice         システムからの重要な通知
+   info           システムからの情報
+   debug          デバッグ情報
+   none           ファシリティは無効
+   ========================================
+
+・出力先は場所の指定である。
+
+*** syslog.confについて 
+標準ではsyslogは/etc/syslog.confにあります。以下にsyslog.confの例を示します。
+ =========================================================================
+ $ more /etc/syslog.conf
+ # Log all kernel messages to the console.
+ # Logging much else clutters up the screen.
+ #kern.*                                                 /dev/console 
+ 
+ # Log anything (except mail) of level info or higher.
+ # Don't log private authentication messages!
+ *.info;mail.none;news.none;authpriv.none;cron.none              /var/log/messages
+ 
+ # The authpriv file has restricted access.
+ authpriv.*                                              /var/log/secure 
+ 
+ # Log all the mail messages in one place.
+ mail.*                                                  /var/log/maillog
+ 
+ # Log cron stuff
+ cron.*                                                  /var/log/cron
+ 
+ # Everybody gets emergency messages
+ *.emerg                                                 *
+ 
+ # Save news errors of level crit and higher in a special file.
+ uucp,news.crit                                          /var/log/spooler
+ 
+ # Save boot messages also to boot.log
+ local7.*                                                /var/log/boot.log 
+ 
+ # INN
+ news.=crit                                        /var/log/news/news.crit
+ news.=err                                         /var/log/news/news.err
+ news.notice                                       /var/log/news/news.notice
+ =========================================================================
+
+ *** FIFOにデバッグ情報を出力させる。
+まず、ファイルシステム上のデバッグ用のFIFOを作成する。
+ $ mkfifo -m 0664 /var/log/debug
+次に、syslog.conf内にデバッグ行に"|"記号を追加する。
+ *.=debug                                  |/var/log/debug
+これで、デバッグ情報がFIFOに書き出されるようになりました。
+ less -f /var/log/debug
+などのように読み出すこともできる。
+
+*** Apacheでsyslogを利用したい。
+以下の1行を追記すればいい。
+ Errorlog syslog
+
+*** コマンドラインから裏でexecを用いてsyslog経由でログを出力させたい
+例えば、以下の様にして、裏で動作させることが可能となる。
+ここでは、local0.debugを指定している。
+ # exec tail -f /var/log/test.log | logger -p local0.debug &
+
+
+*** 参考URL
+システム管理の基礎 syslogdの設定をマスターしよう (2/3)
+http://www.atmarkit.co.jp/ait/articles/0209/07/news002_2.html
+

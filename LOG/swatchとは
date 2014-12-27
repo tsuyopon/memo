@@ -1,0 +1,89 @@
+*** swatchとは [#v240a00d]
+swatchとはログ監視を行い、指定したメールアドレスに対して通知をしてくれるログ監視の仕組みです。
+以下の特徴があります。
+- Perlで記述されたツールです。
+- 一般的にcronや自動起動、手動実行により動作する。(daemonもあるらしいが。。)
+- 無視する文字列を指定できる。
+- 正規表現により文字列を指定できる
+- 指定したメールアドレスにアラートを通知する
+
+
+*** 設定ファイルについて [#k68c0824]
+swatchでは設定ファイルは、何処に設置してもかまいません。
+但し、swatch起動時のオプションで設定ファイルを指定しない場合には
+ /root/.swatchrc
+がデフォルトの設定ファイルとなるので注意が必要です。
+
+*** 設定ファイル記述書式について [#x60d09ea]
+
+以下の2つの書式で記述します。
+尚、ignore特定の文字列を無視する記述で、watchforは特定の文字列に対するアクションを実行する記述です。
+ignoreはwatchforよりも先に記述する必要があります。
+
+ ignore /パターン/,/パターン/,・・・
+
+ watchfor /パターン/
+          アクション1
+          アクション2
+
+以下では、パターンとアクションでの記述書式について記します。
+
+*** パターンの記述書式 [#i8bc7ac4]
+監視したい対象の文字列を記述します。尚、perlで解釈可能な正規表現も利用できます。
+ /critical/i        大文字、小文字を区別せずにcriticalにマッチ
+ /(crit|warn)/      critかwarnのいずれかにマッチ
+
+*** アクションの記述書式 [#w2cee5d5]
+パターンにマッチした場合のアクションを記述できます。
+
+| 記述書式 | 説明 |
+| echo[=mode] | ターミナル上にメッセージを表示。modeにはnormal、bold、blink、underscore、inverseが指定可。 |
+| bell[=N] | N回警告音を鳴らす。指定しなければ1回。 |
+| exec=command  | 指定されたコマンドを実行。 |
+| ignore  | 何もしない。 |
+| mail[=address:address:･･･]  | 指定されたアドレス(複数可能)にメッセージメールを送信。省略時はswatchを実行したユーザ。 |
+| pipe=command  | コマンドにパイプとして処理結果を渡す。 |
+| write[=user:user:・・・] | writeコマンドを利用してメッセージをコンソール上に表示。|
+
+*** echoのmodeで指定可能なオプションについて [#t6f92807]
+| modes | 説明 |
+| normal | 通常の表示 |
+| bold | 太字で表示 |
+| underscore | 下線で表示 |
+| blink | 点滅で表示 |
+| inverse | 反転して表示 |
+| [color] | black、red、green、yellow、blue、magenta、cyan、whiteの色で表示 |
+| [color_h] | black_、red_h、green_h、yellow_h、blue_h、magenta_h、cyan_h、white_hの色で反転 |
+| random | 上記のものをランダムに使用 |
+
+*** 設定ファイルの例 [#hbfb7e72]
+crit又はwarnと言う文字列が存在すれば、tsuyoshi@test.co.jpにメールを送付する。但し、checksum, sendmail, testという文字列がログの行にあれば無視してメールも送付しない。
+ ignore   /checksum/,/sendmail/,/test/
+ 
+ watchfor   /(crit|warn)/
+         mail=tsuyoshi@test.co.jp
+
+
+*** 起動方法について [#q9f60fd8]
+設定ファイル(/root/.swatchrc)の記述が完了したら、以下のコマンドによりswatchを起動します。
+尚、ログファイルは通常、root権限でしか閲覧できないのでrootユーザでswatchを起動します。
+ # swatch &　
+
+swatchを自動起動にさせたい場合には/etc/rcN.dや/etc/rc.local等のファイルに記載します。
+
+
+*** swatchをデーモンとして起動する [#tc8681f4]
+「--daemon」オプションがあるらしい。
+
+*** 起動時のオプションについて [#a1ce6844]
+以下のオプションが指定できます。
+ -c<設定ファイル>           設定ファイルが指定できる。指定なしの場合には/root/.swatchrc。
+ -f<ファイル>               監視対象となるファイルを指定する。ファイルスキャンは1回行う。
+ -t<ファイル>               監視対象となるファイルを指定する。ファイルスキャンは繰り返し行う。
+
+例えば、/var/log/messagesを監視する場合
+ # swatch -c ~/.swatch.messages -t /var/log/messages &
+
+*** 参考URL
+公式ホームページ(English)
+    http://swatch.sourceforge.net/

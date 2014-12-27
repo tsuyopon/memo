@@ -1,0 +1,12 @@
+
+* 参考URL [#m92f5ada]
+- syslog-ng公式ホームページ(English)
+-- http://www.balabit.com/network-security/syslog-ng/
+- syslog-ngの導入
+-- http://www.aconus.com/~oyaji/security/syslog-ng.htm
+- syslogサーバからsyslog-ngへの乗り換え
+-- http://www.atmarkit.co.jp/fsecurity/rensai/unix_sec09/unix_sec01.html
+- にわか鯖管のメモ
+-- http://kikuz0u.x0.com/memo/hiki.cgi?syslog-ng+%A4%C7%B0%EC%CA%E2%BF%CA%A4%F3%A4%C0%A5%ED%A5%B0%B4%C9%CD%FD
+- syslogd の代替ツールについて
+-- http://www.infoscience.co.jp/technical/press/app06.html

@@ -1,0 +1,26 @@
+#########################################################
+Catalyst
+#########################################################
+
+* 概要 [#z6962795]
+Catalyst(カタリスト)はPerlのWebアプリケーションフレームワークの1つです。
+Rubyで利用されているRoRのPerlバージョンと言えて、以下の特徴があります。
+- アプリケーションを実装するためのスケルトンを生成してくれます。
+- 複数コントローラーを持つことができます。
+
+* 詳細 [#l7c386ca]
+** インストール [#j3e30b96]
+CPANを利用する場合には下記コマンドにてインストールできます。
+ perl -MCPAN -e 'install Task::Catalyst'
+
+
+** プラグイン [#j855825d]
+- 以下のコマンドでCatalystのプラグイン一覧を確認することができます。
+ perldoc Catalyst::Manual::Plugins
+
+
+* 参考URL [#p03d2a83]
+- 公式サイト(English)
+-- http://www.catalystframework.org/
+- Catalyst- Manual(CPAN: English)
+-- http://search.cpan.org/dist/Catalyst-Manual/

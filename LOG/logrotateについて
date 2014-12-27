@@ -1,0 +1,97 @@
+
+*** logrotateのテストを行う。 [#w1822e95]
+logrotateは/etc/logrotate.d以下のスクリプトがcron.dailyなどで実行されるまで分からない。
+そこで、logrotateには設定ファイルをテストするモードがある。それが-dオプションである。
+
+ $ /usr/sbin/logrotate -dv /etc/logrotate.d/syslog
+ reading config file /etc/logrotate.d/syslog
+ reading config info for /var/log/messages /var/log/secure /var/log/maillog /var/log/spooler /var/log/boot.log /var/log/cron 
+ 
+ Handling 1 logs
+ 
+ rotating pattern: /var/log/messages /var/log/secure /var/log/maillog /var/log/spooler /var/log/boot.log /var/log/cron   1048576 bytes (no old logs will be kept)
+ empty log files are rotated, old logs are removed
+ considering log /var/log/messages
+ log does not need rotating
+ considering log /var/log/secure
+ log does not need rotating
+ considering log /var/log/maillog
+ log does not need rotating
+ considering log /var/log/spooler
+ log does not need rotating
+ considering log /var/log/boot.log
+ log does not need rotating
+ considering log /var/log/cron
+ log does not need rotating
+ not running shared postrotate script, since no logs were rotated
+
+設定ファイルに間違いがあると以下のように表示される。
+ error: /etc/logrotate.d/chkrootkit:2 unknown option 'natifempty' -- ignoring line
+
+*** logrotateの設定ファイルlogrotate.confについて [#zbe90380]
+logrotateの設定ファイルは/etc/logrotate.conf です。
+ # 全ログに共通な設定をしています。
+ 
+ #毎週日曜日にローテーションします。
+ weekly
+ 
+ #4週分のログを保存します。
+ #上記のweeklyがdailyだと4日分、monthlyだと4か月分となります。
+ rotate 4
+ 
+ #ローテーション後に先ほどローテートしたファイルと同名の空ファイルを作成する。
+ # create <パーミッション> <ユーザー> <グループ> という引数をとった指定も可能です。
+ create
+ 
+ #ローテーション後にファイルをgzipで圧縮します。
+ compress
+ 
+ # ローテーション実施時にメールで通知するアドレスを指定する。
+ mail test@test.com
+ 
+ # ローテーション前のファイルを添付する(mailが必須)
+ mailfirst 
+ 
+ # ローテーション後のファイルを添付する(mailが必須)
+ maillast
+ 
+ #/etc/logrotate.dディレクトリ以下のファイルを
+ #logrotateの設定ファイルとします
+ include /etc/logrotate.d
+ 
+ #ログファイルが空の場合はrotateしません
+ notifempty 
+ 
+ #mailを発信しません
+ nomail
+ 
+ # log出力先のディレクトリを同じとします。
+ noolddir
+ 
+ #logrotateさせる対象ファイルの設定をしています。
+ #ここで記述された設定は,上記の全ログ共通の設定を上書きします。
+ /var/log/wtmp {
+ 
+    #毎月ローテーションします。全体設定よりも個々(/var/log/wtmp)が優先されます
+    monthly
+ 
+    #ローテーションされたファイルの所有権を設定します。
+    create 0664 root utmp
+ 
+    #1月分のログを保存します。
+    rotate 1
+ }
+
+
+*** ログローテーとで指定可能なオプションについて [#w76b1e62]
+monthly,weekly,dailyの指定が可能です。
+以下にここで指定可能なパラメータを示します。
+ monthly   毎月ログローテートを実施
+ weekly    毎週ログローテートを実施
+ daily     毎日ログローテートを実施
+ 備考:logrotateは /var/lib/logrotate.status に記述されている日時により,前回ローテーションを行った日を判断します。
+
+*** logrotate.confの設定ファイルの読み込みについて [#y043d221]
+/etc/logrotate.confでinclude /etc/logrotate.d　が設定されていると、/etc/logrotate.d 配下のファイルでも logrotateの設定を行うことができます。
+各ログの設定を、/etc/logrotate.dディレクトリ以下にファイルを作成し,そのファイルに設定を記述します。
+ここでの設定内容も全ログ共通の設定を上書きします。

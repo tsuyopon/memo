@@ -1,0 +1,12 @@
+MAC関連設定
+
+*** ️ローカルアクセス
+http://localhost:8080/
+ssh localhost -p 50022
+
+*** ️.inputrc, .bash_profile設定
+http://mactips-lib.net/m/terminal/001.html
+
+*** ️ターミナルの日本語がlsして文字化けする場合
+ターミナルの環境設定 -> 詳細 -> 文字エンコーディングをUnicode(UTF-8)に設定すれば良い
+
