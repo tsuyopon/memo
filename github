@@ -1,6 +1,6 @@
 
 ################################################################
-設定関連
+TIPS
 ################################################################
 
 *** コミットメッセージをtypoしたのでやり直したい場合
@@ -60,4 +60,9 @@ less ~/.gitconfig
 
 （参考）http://qiita.com/shibushun@github/items/1745c3c2092d8d15c34b
 
+*** GITでバージョン管理したくないファイルを指定する場合
+http://inkdesign.jp/posts/notes/gitignore/
 
+$ cat .gitignore
+TODO*
+*.swp
