@@ -24,6 +24,8 @@ apxsコマンドを利用して以下の処理を行うことができます。
 - 設定ファイル(httpd.conf)へのLoadModuleディレクティブの追加は以下の様にする
 	 #apxs -a mod_foo.c
 
+
+
 *** apxsを利用してモジュールの作成を行う [#r6caaf6b]
 以下の様にしてapxsコマンドを利用すれば簡単に雛形を作成することができます。
 	 $ /usr/sbin/apxs -n test -g
@@ -284,3 +286,8 @@ apache1.3系とapache2.0系のAPI比較です。
 
 *** log出力方法
 	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, r->server, "url=%s", url);
+
+
+*** 英語ドキュメント
+結構参考になりそう
+	http://httpd.apache.org/docs/trunk/developer/modguide.html
