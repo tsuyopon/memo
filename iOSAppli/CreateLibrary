@@ -1,0 +1,7 @@
+iOSでライブラリを作成する
+
+
+1. Xcodeを起動する
+2. Create a new XCode Project
+3. iOS -> Framework & Library -> Cocoa Touch Static Libraryアイコンを選択
+4. ProductNameに入力
