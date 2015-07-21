@@ -13,6 +13,20 @@ C言語、C++言語、Fortran等の各言語にて対応しています。
 - Debugging with GDB
 -- http://www.asahi-net.or.jp/~wg5k-ickw/html/online/gdb-5.0/gdb-ja_toc.html
 
+#########################################################################
+はじめに
+#########################################################################
+
+GDBは以下のように複数のデバッグ方法を提供してくれています。
+* coreファイルからattach
+* 起動プロセスに対してattach
+* これから実行するプロセスに対してattach
+
+バイナリがGDBに対応しているかどうかはfileコマンドでわかります。
+ -> 「stripped」だとGDBできない、「not stripped」だとGDBできます。
+ -> GDBができるためにコンパイルされるにはgオプションを付加してビルドされています。
+
+RPM系パッケージなどの場合にはxxxx-debuginfoという名称のパッケージをダウンロードするとgdbにあてることができそうです。
 
 #########################################################################
 サンプルプログラムで使ってみる
@@ -36,6 +50,7 @@ C言語、C++言語、Fortran等の各言語にて対応しています。
 	 }
 
 続いて、gccに-gオプションを付加してa.outを作成しましょう。
+このオプションを付加しないとgdbからブレークポイントを設定しても認識されません(デバッグ情報が不足しているため)
 
 以下に上記に対してgdbを使用したときのログを示します。
 	 [test@kaeru c]$ gdb a.out
@@ -126,68 +141,4 @@ C言語、C++言語、Fortran等の各言語にて対応しています。
 	 Command name abbreviations are allowed if unambiguous.
 
 
-
-#########################################################################
-GDB TIPS
-#########################################################################
-
-*** gdb基本オプション [#m2377ddd]
-	 コマンド	省略形	効果
-	 run		デバッグ対象プログラムを実行する
-	 backtrace	bt	バックトレースを表示する
-	 frame N	f	フレームNに移動する
-	 list	l	現在の関数のソースコードを表示する
-	 print EXPR	p	式EXPRの値を表示する
-	 continue	c	続きを実行する
-	 quit	q	gdbを終了する
-
-- 参考
--- http://typea.info/tips/wiki.cgi?page=Linux+C+gdb%A4%CB%A4%E8%A4%EB%A5%C7%A5%D0%A5%C3%A5%B0
--- http://b-rabbit-alice.blogspot.com/2011/05/gdb-pre.html
-
-*** coreファイルが何処に作成されるか(FreeBSD) [#a6f711d5]
-	 $　sysctl -a | grep core
- でわかるらしい
-
-*** gcoreコマンドにより、現在動作中のcoreファイルを取得することができる。 [#f4d811f1]
-gcore(get core images of running process)により取得を行う
-psコマンドで現在動作中のPIDを確認して、取得したいPIDをgcoreの引数に指定する。
-	 $ sudo gcore 
-これにより、カレントディレクトリ内にcore.という名前のファイルが存在
-しているので、あとは
-	 $ gdb <プログラム名前> core.<pid>
-により、debugすればよい。
-
-- 参考
--- http://d.hatena.ne.jp/sarface2012/20101027
-
-*** coreファイルを解析する [#gbacf0b6]
-この場合の利用方法は以下の様にする。
-	 $ gdb <該当プログラム>   
-
-例えば、apacheプログラムでapache.core.65534というコアファイルだったとすると。
-以下の様に指定しなければならない(パスは適当にしました)
-	 $ gdb /usr/local/bin/httpd  /usr/local/crash/apache.core.65534
-
-*** gdbでapacheのrequest_rec構造体の内容を表示したい [#wa5f0742]
-以下のURLが参考になります。
-http://d.hatena.ne.jp/yone098/20090518/1242703019
-
-	 (gdb) p *r
-と入力すると、内容が出力されます(但し、整形された出力でない)
-
-整形された出力にしたい場合には、set print pretty onを実行してから、同様にp *rを
-入力します。
-	 (gdb) set print pretty on
-	 (gdb) p *r
-
-*** ブレークポイントから残り部分を実行する [#v9108c2b]
-	 (gdb) c
-
-*** バックトレースを表示する [#c3072c7f]
-	 (gdb) bt                  // バックトレース概要を表示
-	 (gdb) bt full             // バックトレース詳細を表示
-
-*** 読み込んでいる共有ライブラリを表示する [#j7f94b1b]
-	 (gdb) sharedlibrary       // run等実行後に実行します。
 

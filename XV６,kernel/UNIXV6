@@ -39,11 +39,13 @@ git clone git://pdos.csail.mit.edu/xv6/xv6.git
 
 $ cd xv6
 $ vim Makefile 
-QEMU = /usr/bin/qemu-system-x86_64
+QEMU = /usr/bin/qemu-system-x86_64   # コメントアウトしているのでそれを外すこと
 
 以下のようにして起動することができます
-ターミナルモードで起動する: $ make qemu-nox 
-Windowモードで起動する:    $ make qemu
+ターミナルモードで起動する:      $ make qemu-nox 
+ターミナルモードで起動する(GDB): $ make qemu-nox-gdb
+Windowモードで起動する:          $ make qemu
+Windowモードで起動する(GDB):     $ make qemu-gdb
 
 XV6を抜ける場合には
 	$ Ctrl + A を押して、その後 Xを押す
