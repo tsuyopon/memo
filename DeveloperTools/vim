@@ -1,6 +1,6 @@
 vimについて
 
-▪️UTF-8を開こうとするとバイナリファイルとなって開けない場合
+*** UTF-8を開こうとするとバイナリファイルとなって開けない場合
 
 $ vim ~/.virmc
 set fileencoding=japan
