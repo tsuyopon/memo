@@ -1,3 +1,6 @@
+# 概要
+このページはApacheでGDBを使いたい場合の方法などについてまとめるページです。
+
 ## Apacheにgdbを当てて実行する(FC17)
 ```
 $ cat /proc/version 

@@ -18,5 +18,5 @@ GDBを通したデバッギングについてまとめていきます
 * [PHPGDB](PHPGDB)
  * GDBでPHPをデバッグする方法についてまとめます(TDB)
 
-* [CGDB](CGDB)
+* [CGDB](CGDB.md)
  * VIMとの相性抜群のCGDBについての説明

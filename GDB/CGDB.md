@@ -1,4 +1,7 @@
-***うまくアタッチできない場合
+# 概要
+CGDBを使うとvimライクなUIでGDBでアタッチすることができるようになします。
+
+## うまくアタッチできない場合
 以下を確認しましょう
 - バイナリはstrippedされていないか?
 - gdbコマンドでdirectory登録したか?もしくはdebuginfoパッケージを入れたか?
@@ -6,12 +9,15 @@
 - breakポイントを本当に通過しているのか?
 - continueしているか?
 
-*** インストール From YUM
+## CGDBインストール From YUM
+```
 $ uname -a
 Linux localhost.localdomain 3.3.4-5.fc17.x86_64 #1 SMP Mon May 7 17:29:34 UTC 2012 x86_64 x86_64 x86_64 GNU/Linux
 $ sudo yum install cgdb cgdb-debuginfo
+```
 
-*** インストール From ソースコード
+## インストール From ソースコード
+```
 $ sudo yum instlal textinfo help2man -n
 $ git clone https://github.com/cgdb/cgdb.git
 $ cd cgdb
@@ -21,21 +27,25 @@ $ make
 $ sudo make install
 $ which cgdb
 /usr/local/bin/cgdb
+```
 
 
-*** apacheのソースコードに当てはめてみる(debuginfoが入っている場合)
+##  apacheのソースコードに当てはめてみる(debuginfoが入っている場合)
 debuginfoが入っている場合にはdirectoryを指定する必要はなさそうです
-
+```
 $ sudo vim /etc/httpd/conf/httpd.conf
 // IfModule prefork.cの中のMaxClientsを1に設定してください。
 $ sudo apachectl stop
 $ sudo apachectl start
 $ ps auxww | grep -i yapache
+```
 
 続いてcgdbをあててみます。
+```
 $ sudo cgdb /usr/sbin/httpd `pgrep -fu apache`
 (gdb) b	ap_update_child_status
 (gdb) continue
+```
 
 あとはリクエストを出すと画面上部にはソースコードが表示されるようになります。
 
