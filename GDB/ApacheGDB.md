@@ -1,15 +1,16 @@
-##########################################################
-Apacheにgdbを当てて実行する(FC17)
-##########################################################
-
+## Apacheにgdbを当てて実行する(FC17)
+```
 $ cat /proc/version 
 Linux version 3.3.4-5.fc17.x86_64 (mockbuild@x86-14.phx2.fedoraproject.org) (gcc version 4.7.0 20120504 (Red Hat 4.7.0-4) (GCC) ) #1 SMP Mon May 7 17:29:34 UTC 2012
+```
 
 とりあえずgdbを当ててみる
+```
 $ gdb
 (gdb) file /usr/sbin/httpd
 Reading symbols from /usr/sbin/httpd...(no debugging symbols found)...done.
 Missing separate debuginfos, use: debuginfo-install httpd-2.2.23-1.fc17.x86_64
+```
 
 エラーメッセージを見るとイカを実行すればデバッグ情報が入りそうな感じなので、実行する。
 $ sudo debuginfo-install httpd-2.2.23-1.fc17.x86_64
