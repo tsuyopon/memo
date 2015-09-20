@@ -49,17 +49,21 @@ $ sudo cgdb /usr/sbin/httpd `pgrep -fu apache`
 
 あとはリクエストを出すと画面上部にはソースコードが表示されるようになります。
 
-*** apacheのソースコードに当てはめてみる(ソースコードからのインストール)
+## apacheのソースコードに当てはめてみる(ソースコードからのインストール)
+```
 $ sudo vim /etc/httpd/conf/httpd.conf
 // IfModule prefork.cの中のMaxClientsを1に設定してください。
 $ sudo apachectl stop
 $ sudo apachectl start
 $ ps auxww | grep -i yapache
+```
 
 続いてcgdbをあててみます。あらかじめソースコードを展開したトップディレクトリに移動してからcgdbコマンドを実行します。
 directoryは再帰的に面倒見てくれないので全て指定します。ここではpreforkと仮定してcoreソースの一部だけ指定します
+```
 $ cd <path_to_source>
 $ sudo cgdb /usr/sbin/httpd `pgrep -fu apache`
 (gdb) directory server/:server/mpm/prefork/:include/:modules/http/:modules/loggers/     # 必要に応じて:区切りでつなげてください
 (gdb) b	ap_update_child_status
 (gdb) continue
+```
