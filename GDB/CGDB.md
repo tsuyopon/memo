@@ -37,7 +37,7 @@ $ sudo vim /etc/httpd/conf/httpd.conf
 // IfModule prefork.cの中のMaxClientsを1に設定してください。
 $ sudo apachectl stop
 $ sudo apachectl start
-$ ps auxww | grep -i yapache
+$ ps auxww | grep -i apache
 ```
 
 続いてcgdbをあててみます。
@@ -55,7 +55,7 @@ $ sudo vim /etc/httpd/conf/httpd.conf
 // IfModule prefork.cの中のMaxClientsを1に設定してください。
 $ sudo apachectl stop
 $ sudo apachectl start
-$ ps auxww | grep -i yapache
+$ ps auxww | grep -i apache
 ```
 
 続いてcgdbをあててみます。あらかじめソースコードを展開したトップディレクトリに移動してからcgdbコマンドを実行します。
