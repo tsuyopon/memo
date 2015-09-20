@@ -58,7 +58,8 @@ $ sudo apachectl start
 $ ps auxww | grep -i apache
 ```
 
-続いてcgdbをあててみます。あらかじめソースコードを展開したトップディレクトリに移動してからcgdbコマンドを実行します。
+続いてcgdbをあててみます。  
+あらかじめソースコードを展開したトップディレクトリに移動してからcgdbコマンドを実行します。  
 directoryは再帰的に面倒見てくれないので全て指定します。ここではpreforkと仮定してcoreソースの一部だけ指定します
 ```
 $ cd <path_to_source>
