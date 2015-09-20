@@ -3,19 +3,19 @@ GDB
 GDBを通したデバッギングについてまとめていきます
 
 # 概要・設定
-* [HelloworldGDB](HelloworldGDB)
+* [HelloworldGDB](HelloworldGDB.md)
  * GDBをとりあえず触ったことなく最初に試してみる方法
 
-* [CommandGDB](CommandGDB)
+* [CommandGDB](BasicUsage.md)
  * GDBの基本操作などに関してまとめています
 
-* [CorefileGDB](CorefileGDB)
+* [CorefileGDB](CorefileGDB.md)
  * GDBでアタッチするために必要なcoreファイル生成方法やオプション、TIPSなどについて
 
 * [ApacheGDB](ApacheGDB.md)
  * GDBでApacheをデバッグする方法についてまとめています
 
-* [PHPGDB](PHPGDB)
+* [PHPGDB](PHPGDB.md)
  * GDBでPHPをデバッグする方法についてまとめます(TDB)
 
 * [CGDB](CGDB.md)
