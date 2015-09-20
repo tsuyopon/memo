@@ -12,7 +12,7 @@ GDBを通したデバッギングについてまとめていきます
 * [CorefileGDB](CorefileGDB)
  * GDBでアタッチするために必要なcoreファイル生成方法やオプション、TIPSなどについて
 
-* [ApacheGDB](ApacheGDB)
+* [ApacheGDB.md](ApacheGDB)
  * GDBでApacheをデバッグする方法についてまとめています
 
 * [PHPGDB](PHPGDB)
