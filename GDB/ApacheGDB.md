@@ -12,11 +12,13 @@ Reading symbols from /usr/sbin/httpd...(no debugging symbols found)...done.
 Missing separate debuginfos, use: debuginfo-install httpd-2.2.23-1.fc17.x86_64
 ```
 
-エラーメッセージを見るとイカを実行すればデバッグ情報が入りそうな感じなので、実行する。
+エラーメッセージを見ると下記を実行すればデバッグ情報が入りそうな感じなので、実行する。
+```
 $ sudo debuginfo-install httpd-2.2.23-1.fc17.x86_64
+```
 
 複数プロセスあるとgdbでのデバッグが大変なので、停止してから起動させるようにする。
-
+```
 $ sudo apachectl stop
 $ sudo gdb /usr/sbin/httpd
 (gdb) b ap_process_request
@@ -25,13 +27,12 @@ $ sudo gdb /usr/sbin/httpd
 (gdb) list
 (gdb) where
 通常のgdbとしては問題なくソースコードが表示されていることが確認できます
+```
 
-####################################################
-Apache ソースコードからコンパイルしてgdbにあてる
-####################################################
-適当なバージョンのものを持ってきます。2.4だといろいろ大変そうだったので今回は2.2にしておきます。
+## Apache ソースコードからコンパイルしてgdbにあてる
+適当なバージョンのものを持ってきます。2.4だといろいろ大変そうだったので今回は2.2にしておきます。 
 CFLAGSに-gオプションを付与しているのがポイントです。
-
+```
 $ wget http://ftp.yz.yamagata-u.ac.jp/pub/network/apache//httpd/httpd-2.2.27.tar.gz
 $ tar zxvf httpd-2.2.27.tar.gz
 $ cd httpd-2.2.27
@@ -55,9 +56,11 @@ Breakpoint 1 at 0x43989d: file request.c, line 104.
 Starting program: /usr/local/apache2.2/bin/httpd -X
 [Thread debugging using libthread_db enabled]
 Using host libthread_db library "/lib64/libthread_db.so.1".
+```
 
-(プロンプトから応答がかえってこないですが、ブラウザからapacheをたたくと以下の行が出力されます)
-
+(プロンプトから応答がかえってこないですが、ブラウザからapacheをたたくと以下の行が出力されます) 
+ 
+```
 Breakpoint 1, ap_process_request_internal (r=0x7afbf0) at request.c:104
 104	    int file_req = (r->main && r->filename);
 Missing separate debuginfos, use: debuginfo-install apr-1.4.6-1.fc17.x86_64 apr-util-1.4.1-2.fc17.x86_64 db4-4.8.30-10.fc17.x86_64 expat-2.1.0-3.1.fc17.x86_64 glibc-2.15-58.fc17.x86_64 libuuid-2.21.1-1.fc17.x86_64 nss-softokn-freebl-3.14.3-1.fc17.x86_64
@@ -145,59 +148,66 @@ $5 = {
 #6  0x000000000047d235 in make_child (s=0x6be148, slot=0) at prefork.c:712
 #7  0x000000000047d7ed in ap_mpm_run (_pconf=0x6b9138, plog=0x6fb348, s=0x6be148) at prefork.c:988
 #8  0x00000000004260bf in main (argc=2, argv=0x7fffffffe4e8) at main.c:753
+```
 
-####################################################
-起動中のプロセスからPIDを指定してgdbにあてる場合
-####################################################
+## 起動中のプロセスからPIDを指定してgdbにあてる場合
 
 あらかじめ調査したいpidを押さえておきます
+```
 $ ps aux | grep -i httpd
 $ gdb
 (gdb) file /usr/sbin/httpd
 (gdb) attach <pid>
 (gdb) break ap_process_request
 (gdb) continue
+```
 
-
-####################################################
-コアファイルからApacheのgdbにあてる場合
-####################################################
-まずcoreファイルはどのように生成するかというと(apacheに限ったものではない)
-
-(1) gcoreからpidを指定して生成する
+## コアファイルからApacheのgdbにあてる場合
+まずcoreファイルはどのように生成するかというと(apacheに限ったものではない) 
+ 
+### (1) gcoreからpidを指定して生成する
+```
 $ gcore <pid>
+```
 
-(2) gdbから生成する
+### (2) gdbから生成する
+```
 $ gdb
 (gdb) attach <pid>
 (gdb) gcore core
 (gdb) detach
 $ ls -alt ./core
+```
 
-(3) CoreDumpDirectoryディレクティブで吐かせる
+### (3) CoreDumpDirectoryディレクティブで吐かせる
+```
 CoreDumpDirectory /tmp
-などをconfに加えて再起動する
-参考: http://sarface2012.hatenablog.com/entries/2010/10/27
+```
+などをconfに加えて再起動する 
+参考: [http://sarface2012.hatenablog.com/entries/2010/10/27]
 
 これのcoreを利用すると以下のようにして原因箇所の特定ができるようです。
+```
 $ sudo gdb /usr/sbin/httpd core
 (gdb) where
 (gdb) bt
 (gdb) bt full
+```
 
 またはこんな感じでもいけると思う(試していない)
+```
 $ sudo gdb
 (gdb) file /usr/sbin/httpd
 (gdb) core-file core
 (gdb) bt
+```
 
-
-####################################################
-TIPS
-####################################################
-*** gdbでapacheのrequest_rec構造体の内容を表示したい
+## TIPS
+##### gdbでapacheのrequest_rec構造体の内容を表示したい
+```
 request_rec構造体は以下のように出力します。
 (gdb) set print pretty on   // 整形します
 (gdb) p *r
+```
 
 参考：http://d.hatena.ne.jp/yone098/20090518/1242703019
