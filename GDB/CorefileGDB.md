@@ -1,17 +1,17 @@
-# $B35MW(B
-$B%3%"%U%!%$%k$K$D$$$F(B
+# 概要
+コアファイルについて
 
-## $B%3%"4XO"@_Dj(B
+## コア関連設定
 
-#####  $B%3%"$,@8@.$5$l$J$$>l9g(B
-ulimit$B%3%^%s%I@_Dj$r8+D>$9I,MW$,$"$j$^$9!#(B
+#####  コアが生成されない場合
+ulimitコマンド設定を見直す必要があります。
 ```
-$ ulimit -c              // $B3NG'%3%^%s%I(B
-$ ulimit -c unlimited    // $BL5@)8B$KJQ99(B
+$ ulimit -c              // 確認コマンド
+$ ulimit -c unlimited    // 無制限に変更
 ```
 
-##### $B5/F0Cf%W%m%;%9$N%3%"$r<hF@$9$k!#(B
-gcore$B%3%^%s%I$K%W%m%;%9(BID$B$r;XDj$9$l$P@8@.$9$k$3$H$,$G$-$k(B
+##### 起動中プロセスのコアを取得する。
+gcoreコマンドにプロセスIDを指定すれば生成することができる
 ```
 $ sudo gcore 2567
 [sudo] password for tsuyoshi: 
@@ -23,7 +23,7 @@ $ ls core.2567
 $ sudo gdb /usr/local/bin/httpd core.2567
 ```
 
-#####  core$B%U%!%$%k$,2?=h$K:n@.$5$l$k$+3NG'$9$k(B
+#####  coreファイルが何処に作成されるか確認する
 ```
 $ sysctl -a | grep core 
 kern.corefile: /cores/core.%P
@@ -34,15 +34,15 @@ machdep.cpu.thermal.core_power_limits: 1
 machdep.cpu.core_count: 2
 ```
 
-## $B%3%"%U%!%$%k$r@8@.$9$k(B
-$B$^$:(Bcore$B%U%!%$%k$O$I$N$h$&$K@8@.$9$k$+$H$$$&$H(B(apache$B$K8B$C$?$b$N$G$O$J$$(B)
+## コアファイルを生成する
+まずcoreファイルはどのように生成するかというと(apacheに限ったものではない)
 
-(1) gcore$B$+$i(Bpid$B$r;XDj$7$F@8@.$9$k(B
+(1) gcoreからpidを指定して生成する
 ```
 $ gcore <pid>
 ```
 
-(2) gdb$B$+$i@8@.$9$k(B
+(2) gdbから生成する
 ```
 $ gdb
 (gdb) attach <pid>
@@ -51,7 +51,7 @@ $ gdb
 $ ls -alt ./core
 ```
 
-$B$3$l$N(Bcore$B$rMxMQ$9$k$H0J2<$N$h$&$K$7$F860x2U=j$NFCDj$,$G$-$k$h$&$G$9!#(B
+これのcoreを利用すると以下のようにして原因箇所の特定ができるようです。
 ```
 $ sudo gdb /usr/sbin/httpd core
 (gdb) where
@@ -59,7 +59,7 @@ $ sudo gdb /usr/sbin/httpd core
 (gdb) bt full
 ```
 
-$B$^$?$O$3$s$J46$8$G$b$$$1$k$H;W$&(B($B;n$7$F$$$J$$(B)
+またはこんな感じでもいけると思う(試していない)
 ```
 $ sudo gdb
 (gdb) file /usr/sbin/httpd

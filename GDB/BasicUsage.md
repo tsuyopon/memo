@@ -570,14 +570,14 @@ set print demangle on
 (gdb) down   // 関数呼び出しの中に入る
 ```
 
-*** テキストユーザインターフェースモード
+### テキストユーザインターフェースモード
 あまりよくわかっていないが
 ```
 $ gdb -tui
 ```
 とするとテキストユーザーインターフェースを表示してくれるようです。
 
-*** 参考URL
+### 参考URL
 - http://typea.info/tips/wiki.cgi?page=Linux+C+gdb%A4%CB%A4%E8%A4%EB%A5%C7%A5%D0%A5%C3%A5%B0
 - http://b-rabbit-alice.blogspot.com/2011/05/gdb-pre.html
 
