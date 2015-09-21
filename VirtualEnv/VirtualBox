@@ -1,4 +1,5 @@
-virtualBox on MACについて
+# virtualBox on MACについて
+MacでのVirtual Boxの扱いについてまとめておく
 
 ■ネットワーク構成
 VirtualBoxで実現可能なネットワーク構成について

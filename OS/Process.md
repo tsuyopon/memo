@@ -1,19 +1,21 @@
-プロセス管理
+# プロセス管理
 
-############################################################
-プロセス管理について
-############################################################
-*** プロセス関連コマンド
+### プロセス管理について
+##### プロセス関連コマンド
 ps, kill, pstree, strace, lsof
 
-*** ps -lコマンド
+##### ps -lコマンド
+```
 $ ps -l
 F S   UID   PID  PPID  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD
 0 S  1000 12814 12813  0  80   0 - 29049 wait   pts/0    00:00:00 bash
 0 R  1000 13610 12814  0  80   0 -  2757 -      pts/0    00:00:00 ps
+```
+左から２番目の状態には以下の種類がある
 
-
-S       State。状態。
+```
+    S（State）
+	    状態。
     R (runnable)
         実行可能。CPU が空いていれば実行される。 
     U (uninterruptible), D (Disk),
@@ -24,32 +26,41 @@ S       State。状態。
         既に終了していて、終了処理の完了を待ってる。 
     T (Traced)
         一時的に停止しているか、デバッグの対象になっている。 
+```
+
+その他の項目は以下の通り
+```
 PID	    Process ID。プロセス1つ1つに重複ないように(unique)割り当てた番号。
 PPID    Parent PID。親プロセスのPID。
 UID     User ID。プロセスを生成した利用者の識別子。
 TTY     端末名。そのプロセスが結びつけられている端末の省略形。 たとえば、端末 /dev/ttys001は s001になる。 
 TIME    CPU時間。 CPUがそのプロセスを実行するために費やした時間。 
 COMMAND そのプロセスを起動した時のコマンド。 プログラムが含まれているファイルの名前の一部。 
+```
 
 
-*** ps uコマンド(プロセスに割り当てられた資源を確認する)
+##### ps uコマンド(プロセスに割り当てられた資源を確認する)
 psコマンドにuオプションを付けると、 プロセスに割り当てられたメモリ資源やCPU資源が表示する。 
+```
 $ ps u 
 USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
 tsuyoshi 10628  0.0  0.6 116196  3452 pts/5    Ss   07:32   0:00 -bash
 tsuyoshi 10801  0.0  0.4  50692  2516 pts/5    S+   07:34   0:00 vim syscall.c
 tsuyoshi 10802  0.0  0.1  11488   628 pts/5    S+   07:34   0:00 /usr/bin/cscope -dl -f /home/tsuyoshi/UNIX_V6/xv6/cscope.out
+```
 
-
-%CPU    過去１分間に利用した CPU 時間の割合。 
-%MEM    実際に消費してるメイン・メモリの大きさの割合。 
+各項目の意味については以下の通り
+```
+%CPU                    過去１分間に利用した CPU 時間の割合。 
+%MEM                    実際に消費してるメイン・メモリの大きさの割合。 
 VSZ (Virtual Size)      仮想記憶上のプロセスの大きさ。KB 単位。 
 RSS (resident set size) 実際に消費してるメイン・メモリの大きさ。 
-START   プロセスが生成された時刻。 
+START                   プロセスが生成された時刻。 
+```
 
 
-*** 現状のプロセスの/proc/<PID>statusを覗いてみる。
-
+##### 現状のプロセスの/proc/<PID>statusを覗いてみる。
+```
 $ head -11 /proc/$$/status
 Name:	bash
 State:	S (sleeping)
@@ -62,13 +73,14 @@ Gid:	1000	1000	1000	1000
 Utrace:	0
 FDSize:	256
 Groups:	10 18 1000 
+```
 
 
-*** プロセス強制終了
+##### プロセス強制終了
 
-通常は^Cだが、coreファイルを生成する場合^¥で良い。
-
+通常は^Cだが、coreファイルを生成する場合^¥で良い。  
 これはstty -a で確認できる。
+```
 $ stty -a
 speed 9600 baud; rows 45; columns 158; line = 0;
 intr = ^C; quit = ^\; erase = ^?; kill = ^U; eof = ^D; eol = M-^?; eol2 = M-^?; swtch = <undef>; start = ^Q; stop = ^S; susp = ^Z; rprnt = ^R; werase = ^W;
@@ -77,4 +89,5 @@ lnext = ^V; flush = ^O; min = 1; time = 0;
 -ignbrk -brkint -ignpar -parmrk -inpck -istrip -inlcr -igncr icrnl ixon -ixoff -iuclc ixany imaxbel -iutf8
 opost -olcuc -ocrnl onlcr -onocr -onlret -ofill -ofdel nl0 cr0 tab0 bs0 vt0 ff0
 isig icanon iexten echo echoe -echok -echonl -noflsh -xcase -tostop -echoprt echoctl echoke
+```
 

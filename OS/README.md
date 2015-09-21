@@ -2,7 +2,9 @@ OS
 ====
 
 # コマンド
-* [Process](Process)
+* [Process](Process.md)
  * 主にps関連のコマンドの利用方法です
-* [TraceCmd](TraceCmd)
+* [TraceCommand](TraceCommand.md)
  * トレース関連のコマンドについてまとめています
+* [Netcat(nc)](nc.md)
+ * ncコマンドについてまとめる
