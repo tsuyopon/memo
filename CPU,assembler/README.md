@@ -3,8 +3,8 @@
 
 # 概要・設定
 
-* [Assembler](Assembler)
+* [Assembler](Assembler.md)
  * CPUの歴史・8086アセンブラの基本コード・bss周りの説明など
-* [NASMAssembler](NASMAssembler)
+* [NASMAssembler](NASMAssembler.md)
  * NASMアセンブラのインストール・コンパイル・helloworld
 
