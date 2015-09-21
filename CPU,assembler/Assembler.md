@@ -1,13 +1,5 @@
 # 概要
-
-### 参考URL
-* GNU アセンブラ入門(GAS) 
-	* http://www.oklab.org/program/assembler/gas.html
-* x86系(8086系)アセンブラ入門
-	* http://www5c.biglobe.ne.jp/~ecb/index.html
-	* http://www5c.biglobe.ne.jp/~ecb/assembler/assembler00.html
-* 記法
-	* http://sci10.org/on_gcc_asm.html
+アセンブラなどの知識についてまとめる
 
 # 基本事項
 ### CPU基礎
@@ -22,8 +14,8 @@
 1993     Pentium(i586) 	  32     Pentaは数字の5を意味する。この時から486などの数番からPentiumという言葉をつかう
 1994     PentiumPro(i686) 32     80686という位置付けだが、Pentiumから名前で呼ぶようになったためPentium Proといわれた。
 1997     MMX Pentium 	  32     MMX命令の追加
-1997     PentiumⅡ 	      32     オペコードの拡張とCPUの集積化（CPUの大きさを小さくすればそれだけ電力が少なくなるため、
-1999     PentiumⅢ 	      32     オペコードの拡張とCPUの集積化
+1997     PentiumⅡ         32     オペコードの拡張とCPUの集積化（CPUの大きさを小さくすればそれだけ電力が少なくなるため、
+1999     PentiumⅢ         32     オペコードの拡張とCPUの集積化
 2000     Pentium 4 	      32     3Dグラフィックなどマルチメディア系命令がどんどん追加される。
 2001     Itenium 	      64     IntelとPentiumを文字って作られた用語。Intel初の64bitプロセッサ。サーバ用
 2002     Itenium2 	      64     サーバ用、オペコードの拡張とCPUの集積化
@@ -37,7 +29,7 @@
 	.data					#ここに変数の定義を書く
 	#データを書く
 	.text   				#ここから実行文が始まる
-	.globl main			#はじめに呼び出される関数を.globlで指定（globalではなくglobl)
+	.globl main			    #はじめに呼び出される関数を.globlで指定（globalではなくglobl)
 	main:
 	        # 命令を書く　
 ```
@@ -94,7 +86,7 @@ eaxには、1-jan-1970からの秒数が入る。
 上記の例では、移動する命令のmovbがOPコード 、１６進数の数値の$0x01とレジスタを意味する%alをオペランドという。
 
 
-*** オペコード
+### オペコード
 4004などの8bitCPUは、8bit(1byte)での処理を行っていたので、オペコードで8bitを処理をするにはbyteを意味するbをつける。
 ```
 	movb $0xff %ah
@@ -133,8 +125,8 @@ eaxには、1-jan-1970からの秒数が入る。
 ```
 	eip 	インストラクションポインタ 	次に行う命令が入る。次に実行すべきアドレスのオフセットを指している。
 	eflags 	フラグ 				    比較、分岐などの際にこのフラグを確認する。CPUの状態や前の命令の実行結果のエラー状態が入ります。
-```
                                     この中にCF, PF, AF, ZF, SF, IF, DF, OFなどの各種フラグが含まれています。
+```
 
 [セグメントレジスタ]
 ```
@@ -146,32 +138,33 @@ eaxには、1-jan-1970からの秒数が入る。
 	gs 	　 	　
 ```
 
-EAX,EBX,EDX(AX,BX,DX)は、一般的に何に用いても良い。 ECXは主にカウンタとして利用することが多いが何に用いてもよい。
+EAX,EBX,EDX(AX,BX,DX)は、一般的に何に用いても良い。   
+ECXは主にカウンタとして利用することが多いが何に用いてもよい。
 
 汎用レジスタは特にビット数などでもレジスタの呼称が変わるので押さえておくこと
 ```
-	eaxは32bit(4byte)で構成される。
-		1bit〜8bit目をAL,
-		9bit〜16bit目をAH,
-		1bit〜16bit目をAX
-	ebxは32bit(4byte)で構成される。
-		1bit〜8bit目をBL
-		9bit〜16bit目をBH,
-		1bit〜16bit目をBX
-	ecxは32bit(4byte)で構成される。
-		1bit〜8bit目をCL
-		9bit〜16bit目をCH,
-		1bit〜16bit目をCX
-	edxは32bit(4byte)で構成される。
-		1bit〜8bit目をDL
-		9bit〜16bit目をDH,
-		1bit〜16bit目をDX
-	esi, edi, esp, ebpは1〜16bit(2byte)をそれぞれsi, di, sp, bpと呼びます。
+eaxは32bit(4byte)で構成される。
+	1bit〜8bit目をAL,
+	9bit〜16bit目をAH,
+	1bit〜16bit目をAX
+ebxは32bit(4byte)で構成される。
+	1bit〜8bit目をBL
+	9bit〜16bit目をBH,
+	1bit〜16bit目をBX
+ecxは32bit(4byte)で構成される。
+	1bit〜8bit目をCL
+	9bit〜16bit目をCH,
+	1bit〜16bit目をCX
+edxは32bit(4byte)で構成される。
+	1bit〜8bit目をDL
+	9bit〜16bit目をDH,
+	1bit〜16bit目をDX
+esi, edi, esp, ebpは1〜16bit(2byte)をそれぞれsi, di, sp, bpと呼びます。
 ```
 
-(参考) 
-	http://www5c.biglobe.ne.jp/~ecb/assembler/1_1.html
-	http://www5c.biglobe.ne.jp/~ecb/assembler/assembler00.html
+* 参考
+	* http://www5c.biglobe.ne.jp/~ecb/assembler/1_1.html
+	* http://www5c.biglobe.ne.jp/~ecb/assembler/assembler00.html
 
 ### フラグレジスタ詳細
 演算の結果によって変化するレジスタです。他のレジスタと大きく異なるのは各ビットごとに意味があることです。
@@ -193,16 +186,16 @@ EAX,EBX,EDX(AX,BX,DX)は、一般的に何に用いても良い。 ECXは主に�
     Bit 13～12. 割り込み特権レベルフラグ：動作中タスクの割り込み特権レベルを示す。
     Bit 11. オーバーフローフラグ(OF)
     Bit 10. ディレクションフラグ(DF)
-    Bit 9. インタラプトフラグ(IF)
-    Bit 8．トラップフラグ
-    Bit 7. サインフラグ (SF)
-    Bit 6. ゼロフラグ (ZF)
-    Bit 5. 未使用
-    Bit 4. 補助キャリーフラグ(AF)
-    Bit 3. 未使用
-    Bit 2. パリティフラグ (PF)
-    Bit 1. 未使用
-    Bit 0. キャリーフラグ (CF)
+    Bit 9.  インタラプトフラグ(IF)
+    Bit 8． トラップフラグ
+    Bit 7.  サインフラグ (SF)
+    Bit 6.  ゼロフラグ (ZF)
+    Bit 5.  未使用
+    Bit 4.  補助キャリーフラグ(AF)
+    Bit 3.  未使用
+    Bit 2.  パリティフラグ (PF)
+    Bit 1.  未使用
+    Bit 0.  キャリーフラグ (CF)
 ```
 
 
@@ -215,7 +208,7 @@ x86拡張インラインアセンブリは以下の構文で表すことがで�
 
 この構文を用いると任意のレジスタをCの変数として書き出したり、Cの任意の変数の内容を任意のレジスタに設定した上でアセンブリ処理を行うことができるようになります。
 
-(サンプル1) 
+##### サンプル1
 例えば、
 ```
 	asm(
@@ -240,7 +233,7 @@ x86拡張インラインアセンブリは以下の構文で表すことがで�
 これにより"=a" (result)は「アセンブリ処理の最後にeaxに設定された値をresultという変数に書き出せ」という指令になります。  
 
 
-(サンプル2) 
+##### サンプル2)
 サンプル１とは異なり入力オペランドも含めた事例としてサンプル2を確認します。
 
 ```
@@ -280,8 +273,8 @@ x86拡張インラインアセンブリは以下の構文で表すことがで�
 	これによって、%0がx、%2がyで結果はxに出力するという準備が整いました。
 ```
 
-(参考資料)
-	http://d.hatena.ne.jp/naoya/20070924/1190653790
+* 参考資料
+	* http://d.hatena.ne.jp/naoya/20070924/1190653790
 
 
 ### .bssとは
@@ -345,5 +338,14 @@ ELFでは以下のように定義
 	DIV EBX      （←EAXをEBXの値で輪って、商をEAXに、余りをEDXに入れなさい）
 ```
 
+# 参考URL
+* GNU アセンブラ入門(GAS) 
+	* http://www.oklab.org/program/assembler/gas.html
+* x86系(8086系)アセンブラ入門
+	* http://www5c.biglobe.ne.jp/~ecb/index.html
+	* http://www5c.biglobe.ne.jp/~ecb/assembler/assembler00.html
+* 記法
+	* http://sci10.org/on_gcc_asm.html
 * x86レジスタ一覧
 	* http://www.wiki.os-project.jp/?x86%2FRegister
+
