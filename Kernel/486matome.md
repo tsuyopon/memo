@@ -103,4 +103,7 @@ MMUのメリット
 * 一般状態
 	* アプリケーションソフトウェアを実行できる
 
+<font color="green"> Some green text </font>
+
+
 
