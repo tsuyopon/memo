@@ -1,7 +1,10 @@
 
 # 概要
 glibcは標準ライブラリです。  
-chown, write, ldconfig等のシステムで標準で使われているようなコマンドやmemcmp, mmap等のシステムコールなども含んでいます。
+chown, write, ldconfig等のシステムで標準で使われているようなコマンドやmemcmp, mmap等のシステムコールなども含んでいます。  
+
+glibcには何が含まれているのかといった記述に関してはwikipediaが参考になります。
+- https://ja.wikipedia.org/wiki/%E6%A8%99%E6%BA%96C%E3%83%A9%E3%82%A4%E3%83%96%E3%83%A9%E3%83%AA
 
 # 内容
 
