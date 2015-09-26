@@ -1,12 +1,49 @@
 
 # 概要
 glibcは標準ライブラリです。  
-chown, write, ldconfig等のシステムで標準で使われているようなコマンドやmemcmp, mmap等のシステムコールなども含んでいます。  
+chown, write, ldconfig等のシステムで標準で使われているようなコマンドや各種システムコールなども含んでいます。  
 
 glibcには何が含まれているのかといった記述に関してはwikipediaが参考になります。
 - https://ja.wikipedia.org/wiki/%E6%A8%99%E6%BA%96C%E3%83%A9%E3%82%A4%E3%83%96%E3%83%A9%E3%83%AA
 
+wikipediaよりglibcに含まれる標準ライブラリ一覧を抜粋
+```
+assert.h 	診断機能
+complex.h 	複素数計算 (C99より追加)
+ctype.h 	文字操作
+errno.h 	エラー
+fenv.h 	浮動小数点環境 (C99より追加)
+float.h 	浮動小数点型の特性
+inttypes.h 	整数型の書式の変換 (C99より追加)
+iso646.h 	代替つづり(Alternate spellings) (ISO/IEC 9899/AMD1:1995 より追加)
+limits.h 	整数型の大きさ
+locale.h 	文化圏固有操作
+math.h 	数学
+setjmp.h 	非局所分岐
+signal.h 	シグナル操作
+stdalign.h 	アライメント (C11より追加)
+stdarg.h 	可変個数の実引数
+stdatomic.h 	アトミック操作 (C11より追加)
+stdbool.h 	論理型および論理値 (C99より追加)
+stddef.h 	共通の定義
+stdint.h 	整数型 (C99より追加)
+stdio.h 	入出力
+stdlib.h 	一般ユーティリティ
+stdnoreturn.h 	_Noreturn (C11より追加)
+string.h 	文字列操作
+tgmath.h 	型総称数学関数(Type-generic math) (C99より追加)
+threads.h 	マルチスレッド (C11より追加)
+time.h 	日付及び時間
+uchar.h 	Unicodeユーティリティ (C11より追加)
+wchar.h 	多バイトおよびワイド文字拡張ユーティリティ (ISO/IEC 9899/AMD1:1995 より追加)
+wctype.h 	ワイド文字種分類およびワイド文字大文字小文字変換ユーティリティ (ISO/IEC 9899/AMD1:1995 より追加)
+```
+
 # 内容
+
+### stdio.hやstring.hなどがどこにあるか?
+
+stdio.hはstdio-common/配下にソースがあります。stdlib.hはstdlib/配下にソースがあります。
 
 ### ソースコードにロジック内容が記載されていない。。。
 例えば、glibc/io/chown.c などのソースコードを見るとロジックの記載が存在しない。
