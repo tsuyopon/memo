@@ -48,7 +48,7 @@ set fileencodings=iso-2022-jp,utf-8,euc-jp,ucs-2le,ucs-2,cp932
 - 参考URL
  - http://www.itmedia.co.jp/help/tips/linux/l0671.html
 
-*** githubでエディタを設定する場合
+### githubでエディタを設定する場合
 以下のエラーが表示される
 ```
 "error: There was a problem with the editor 'vi'."
@@ -71,7 +71,7 @@ $ less ~/.gitconfig
 - 参考
  - http://qiita.com/shibushun@github/items/1745c3c2092d8d15c34b
 
-*** GITでバージョン管理したくないファイルを指定する場合
+### GITでバージョン管理したくないファイルを指定する場合
 .gitignoreというファイルに管理したくないファイルを記述します。
 
 ```
