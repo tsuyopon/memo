@@ -12,11 +12,15 @@ GDBを通したデバッギングについてまとめていきます
 * [CorefileGDB](CorefileGDB.md)
  * GDBでアタッチするために必要なcoreファイル生成方法やオプション、TIPSなどについて
 
+* [CGDB](CGDB.md)
+ * VIMとの相性抜群のCGDBについての説明
+
+以下はアプリケーションごとのTIPS
 * [ApacheGDB](ApacheGDB.md)
  * GDBでApacheをデバッグする方法についてまとめています
 
 * [PHPGDB](PHPGDB.md)
  * GDBでPHPをデバッグする方法についてまとめます(TDB)
 
-* [CGDB](CGDB.md)
- * VIMとの相性抜群のCGDBについての説明
+* [XV6](XV6.md)
+ * XV6のデバッグ方法についてまとめる

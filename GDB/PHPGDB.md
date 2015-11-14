@@ -5,7 +5,7 @@ PHPのGDBデバッグ方法についてまとめておくページ
 ```
 $ gdb
 (gdb) file /usr/bin/php
-(gdb) run hogehoge.php     // PHP Extensionの関数などが利用されていること
+(gdb) run hogehoge.php     // PHP Extensionの関数などが利用されていてコアを吐くものであること
 ```
 
 ##  PHPでのデバッグ方法(YahooJapanBlog)

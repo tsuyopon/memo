@@ -197,11 +197,11 @@ $ sudo gdb /usr/sbin/httpd core
 (gdb) bt full
 ```
 
-またはこんな感じでもいけると思う(試していない)
+またはこんな感じでもいけると思う
 ```
 $ sudo gdb
 (gdb) file /usr/sbin/httpd
-(gdb) core-file core
+(gdb) core-file core          // 適切なコアファイル名を入力する
 (gdb) bt
 ```
 
