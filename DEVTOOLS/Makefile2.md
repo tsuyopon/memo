@@ -1,28 +1,32 @@
 
 
-公式マニュアル
-	http://www.gnu.org/software/make/manual/make.html
-
-*** デバッグ方法
+### デバッグ方法
 1. 実行コマンドを確認する方法
+```
 	make -n
+```
 
 2. ログレベルで分ける方法
 
 例えば、以下のようなMakefileを実行すると
+```
 all:
 	$(info aaaaa)
 	$(warning bbbbb)
 	$(error ccccc)
+```
 
 下記の出力となります。
+```
 aaaaa
 Makefile2:2: bbbbb
 Makefile2:2: *** ccccc.  Stop.
+```
 
 errorの場合には必ずその行で停止します。
 
-*** 要確認
+### 要確認
+```
 ::
 := または ::=
 	2つは基本的には同じ意味です。このような代入は、変数値を一度だけ処理し、記憶します。簡潔かつ強力であるこのようなタイプの代入は、デフォルトとして選びましょう。
@@ -45,14 +49,18 @@ SUBDIRS
 @D
 @F
 @f
+```
 
-*** マクロ変数
+### マクロ変数
+```
 MYVAR = mogemoge
 	hello: $(MYVAR) 
 	または
 	hello: ${MYVAR}
+```
 
-*** GNU MAKEの定義済みマクロ変数
+### GNU MAKEの定義済みマクロ変数
+```
 マクロ名 	文字列 	説明
 AR 	ar 	アーカイブユーティリティ
 AS 	as 	アセンブラ
@@ -74,9 +82,11 @@ CWEAVE 	cweave 	知らね
 TANGLE 	tangle 	知らね
 CTANGLE 	ctangle 	知らね
 RM 	rm -f 	ファイルの削除
+```
 
 
 引数用マクロ変数
+```
 マクロ名 	文字列 	説明
 ARFLAGS 	rv 	ARの引数
 ASFLAGS 		ASの引数
@@ -91,8 +101,10 @@ LFLAGS 		LEXの引数
 PFLAGS 		PCの引数
 RFLAGS 		知らね
 YFLAGS 		YACCの引数
+```
 
-*** 内部マクロ
+### 内部マクロ
+```
 $@ 	ターゲット名
 $% 	ターゲットメンバ名(ターゲット名が“edajima.a(momo.o)”の場合、$@は“edajima.a”で、$%は“momo.o”
 $ 	依存ファイルの先頭のファイル名
@@ -100,31 +112,40 @@ $? 	依存ファイルの内、ターゲットより新しいファイルのリ�
 $^ 	依存ファイルのリスト
 $+ 	わかんね
 $* 	わかんね
+```
 
-*** 特別なビルドインターゲット名
+### 特別なビルドインターゲット名
 
 
-(参考)
-http://www.ecoop.net/coop/translated/GNUMake3.77/make_4.jp.html
+- 参考
+ - http://www.ecoop.net/coop/translated/GNUMake3.77/make_4.jp.html
 
-*** .SUFFIXES
-# サフィックスルール適用対象の拡張子の定義
+### .SUFFIXES
+サフィックスルール適用対象の拡張子の定義
+```
 .SUFFIXES: .c .o
+```
 
-# 拡張子が.oのファイルは拡張子を.cに変えたファイルに依存していることがわかっています
+拡張子が.oのファイルは拡張子を.cに変えたファイルに依存していることがわかっています
+```
 .c.o:
 	$(CC) $(CFLAGS) -c $<
+```
 
 
-*** cleanというファイルがローカルにあっても無視させる。
+### cleanというファイルがローカルにあっても無視させる。
+```
 .PHONYに指定すればOK
 	.PHONY: clean
 	clean:
+```
 
-*** 
+### 
+```
 OBJS    = $(SRCS:.cpp=.o)
-
-
-
-
 		rm -f hello hello.o edajima.o raiden raiden.o
+```
+
+# 参考URL
+- 公式マニュアル
+ - http://www.gnu.org/software/make/manual/make.html
