@@ -7,7 +7,7 @@ C++,C
 # 基礎知識
 * [ELFFormat](ELFFormat)
  * データ領域、セクション領域を始め、ELFで必要なその他セクションについての説明
-* [CreateLibrary](CreateLibrary)
+* [CreateLibrary](CreateLibrary.md)
  * 共有ライブラリとスタティックライブラリの作成方法について
 
 # ツール
