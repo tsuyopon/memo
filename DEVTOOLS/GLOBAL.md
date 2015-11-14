@@ -1,8 +1,7 @@
+cscopeだとPHPのソースコードを追いかける場合に不便を感じるのでGNU GLOBALを導入するとよさそうです。
 
-cscope$B$@$H(BPHP$B$N%=!<%9%3!<%I$rDI$$$+$1$k>l9g$KITJX$r46$8$k$N$G(BGNU GLOBAL$B$rF3F~$9$k$H$h$5$=$&$G$9!#(B
-
-### $B%=!<%9%3!<%I$+$i$N%$%s%9%H!<%k(B
-$BB(:B$KF3F~$9$k$3$H$,$G$-$^$9!#(B
+### ソースコードからのインストール
+即座に導入することができます。
 $ wget http://tamacom.com/global/global-6.5.tar.gz
 $ tar zxvf global-6.5.tar.gz
 $ cd global-6.5
@@ -12,24 +11,23 @@ $ sudo make install
 $ which global
 /usr/local/bin/global
 
-### $B;H$C$F$_$k(B
-$B%=!<%9%3!<%I$,$"$k%H%C%W%G%#%l%/%H%j$K0\F0$7$F%$%s%G%C%/%9%U%!%$%k$r@8@.$7$^$9!#(B
+### 使ってみる
+ソースコードがあるトップディレクトリに移動してインデックスファイルを生成します。
 $ cd <path>
 $ sudo gtags -v
 $ file G*
 GPATH:  Berkeley DB 1.85/1.86 (Btree, version 3, native byte-order)
 GRTAGS: Berkeley DB 1.85/1.86 (Btree, version 3, native byte-order)
-GTAGS:  Berkeley DB 1.85/1.86 (Btree, version 3, native byte-order)
+TAGS:  Berkeley DB 1.85/1.86 (Btree, version 3, native byte-order)
+このgtagsを実行したディレクトリ内部でglobalコマンドを使います。
+以下はcakephpのソースコードを取得して展開した結果
 
-$B$3$N(Bgtags$B$r<B9T$7$?%G%#%l%/%H%jFbIt$G(Bglobal$B%3%^%s%I$r;H$$$^$9!#(B
-$B0J2<$O(Bcakephp$B$N%=!<%9%3!<%I$r<hF@$7$FE83+$7$?7k2L(B
-
-$B%M%C%H>e$+$i(BDownload$B$7$^$9!#(B
+ネット上からDownloadします。
 $ unzip cakephp-2.6.7.zip
 $ cd cakephp-2.6.7
 $ sudo gtags -v
 
-execute$B4X?t$,Dj5A$5$l$F$$$k%U%!%$%k$r=PNO$7$F$_$^$9!#(B
+execute関数が定義されているファイルを出力してみます。
 $ global execute
 lib/Cake/Console/Command/Task/BakeTask.php
 lib/Cake/Console/Command/Task/ControllerTask.php
@@ -43,7 +41,7 @@ lib/Cake/Console/Command/Task/TestTask.php
 lib/Cake/Console/Command/Task/ViewTask.php
 lib/Cake/Model/Datasource/DboSource.php
 
-execute$B4X?t$,;2>H$5$l$F$$$k%U%!%$%k$r=PNO$7$^$9!#(B
+execute関数が参照されているファイルを出力します。
 $ global -r execute
 lib/Cake/Console/Command/AclShell.php
 lib/Cake/Console/Command/BakeShell.php
@@ -57,9 +55,9 @@ lib/Cake/Console/Command/Task/ProjectTask.php
 lib/Cake/Console/Command/Task/TestTask.php
 lib/Cake/Console/Command/Task/ViewTask.php
 lib/Cake/Model/Datasource/Database/Mysql.php
-($B0J2<N,(B)
+(以下略)
 
-$BDj5A$5$l$F$$$k4X?tL>$r=PNO$7$^$9!#(B
+定義されている関数名を出力します。
 $ global -f lib/Cake/Controller/Component/Auth/BaseAuthorize.php
 BaseAuthorize      24 lib/Cake/Controller/Component/Auth/BaseAuthorize.php abstract class BaseAuthorize {
 __construct        69 lib/Cake/Controller/Component/Auth/BaseAuthorize.php 	public function __construct(ComponentCollection $collection, $settings = array()) {
@@ -68,45 +66,45 @@ controller         92 lib/Cake/Controller/Component/Auth/BaseAuthorize.php 	publ
 action            111 lib/Cake/Controller/Component/Auth/BaseAuthorize.php 	public function action(CakeRequest $request, $path = '/:plugin/:controller/:action') {
 mapActions        153 lib/Cake/Controller/Component/Auth/BaseAuthorize.php 	public function mapActions($map = array()) {
 
-$B!V(Baaa$B!W$H$$$&J8;zNs$,4^$^$l$?%U%!%$%k$r8!:w$9$k!#(B
+「aaa」という文字列が含まれたファイルを検索する。
 $ global -g aaa
 lib/Cake/Test/Case/Model/ModelIntegrationTest.php
 lib/Cake/Test/Case/Utility/StringTest.php
 lib/Cake/TestSuite/templates/header.php
 
-$B!V(Bexec$B!W$H$$$&J8;zNs$,4^$^$l$?4X?tL>$r8!:w$7$FI=<($7$^$9!#(B
+「exec」という文字列が含まれた関数名を検索して表示します。
 $ global -c exec
 executable
 execute
 
-$B>e5-$G=PNO$5$l$?(Bexecutable$B$O0J2<$NMM$K$7$FDj5A85%U%!%$%k$r3NG'$G$-$^$9!#(B
+上記で出力されたexecutableは以下の様にして定義元ファイルを確認できます。
 $ global -r executable
 lib/Cake/Test/Case/Utility/FileTest.php
 
--r$B%*%W%7%g%s$K8B$j$^$;$s$,(Bglobal$B%3%^%s%I$G>\:Y$r8+$k>l9g$K$O(B-x$B$rIUM?$9$k$3$H$G3NG'$G$-$^$9!#(B
+-rオプションに限りませんがglobalコマンドで詳細を見る場合には-xを付与することで確認できます。
 $ global -r -x executable
 executable        353 lib/Cake/Test/Case/Utility/FileTest.php 		$this->assertFalse($someFile->executable());
 
 
-### GLOBAL$B%*%W%7%g%s0lMw(B
-global $B4X?tL>(B          $B4X?tL>$+$i%=!<%9%3!<%I(B($BDj5A(B)$B$r8!:w$9$k(B
-global -r $B4X?tL>(B       $B4X?tL>$+$i%=!<%9%3!<%I(B($B;2>H85(B)$B$r8!:w$9$k(B
-global -f $B%U%!%$%kL>(B   $B%U%!%$%k$NCf$N4X?t0lMw$r<hF@$9$k(B
-global -c $BJ8;zNs(B       $BJ8;zNs$,4^$^$l$k4X?t0lMw$r8!:w$9$k(B
-global -g $B8!:wJ8;zNs(B   $B%=!<%9%3!<%I$N(Bgrep$B$r9T$&(B
-$B>e5-%3%^%s%I$KBP$7$F(B-x$B%*%W%7%g%s$rIUM?$9$k$3$H$K$h$C$F!">\:Y>pJs(B($B9THV9f$HFbMF(B)$B$r=PNO$9$k$3$H$,$G$-$^$9!#(B
+### GLOBALオプション一覧
+global 関数名          関数名からソースコード(定義)を検索する
+global -r 関数名       関数名からソースコード(参照元)を検索する
+global -f ファイル名   ファイルの中の関数一覧を取得する
+global -c 文字列       文字列が含まれる関数一覧を検索する
+global -g 検索文字列   ソースコードのgrepを行う
+上記コマンドに対して-xオプションを付与することによって、詳細情報(行番号と内容)を出力することができます。
 
-### VIM$B$H$NO"7H(B
-$B%=!<%9%3!<%I$+$i%$%s%9%H!<%k$7$?>l9g!"0J2<$N$h$&$K(Bfind$B$G8!:w$9$k$H(Bgtags.vim$B$,$"$j$^$9!#(B
+### VIMとの連携
+ソースコードからインストールした場合、以下のようにfindで検索するとgtags.vimがあります。
 $ find /usr/local/share/gtags -name gtags.vim
 /usr/local/share/gtags/gtags.vim
 
-$B8D?M4D6-@_Dj$H$7$F$3$N%W%i%0%$%s$r%3%T!<$7$^$9!#(B
+個人環境設定としてこのプラグインをコピーします。
 $ mkdir -p $HOME/.vim/plugin
 $ cp /usr/local/share/gtags/gtags.vim $HOME/.vim/plugin/
 
-$B%G%U%)%k%H$N(Bgtags.vim$B$N@_Dj$@$H;H$$$K$/$$ItJ,$,$"$k$N$G!"(Bgtags.vim$B$N@_Dj$r>e=q$-$9$k$?$a$K2<5-@_Dj$r(B
-$HOME/.vimrc$B$KDI2C$7$^$9!#(B
+デフォルトのgtags.vimの設定だと使いにくい部分があるので、gtags.vimの設定を上書きするために下記設定を
+$HOME/.vimrcに追加します。
 
 map <C-g> :Gtags 
 map <C-h> :Gtags -f %<CR>
@@ -114,19 +112,18 @@ map <C-j> :GtagsCursor<CR>
 map <C-n> :cn<CR>
 map <C-p> :cp<CR>
 
-$BDj5A85$KA+0\$7$?$$>l9g$K$O!"%+!<%=%k$r9g$o$;$F!V(BCtrl-J$B!W$r2!2<$9$k!#(B
-$B%8%c%s%W$7$?8e$KDj5A85$KLa$k>l9g$K$O!V(BCtrl-O$B!W$H$9$k!#(B
-$B<!$N8uJd$dA0$N8uJd$N>l9g$K$O!V(BCtrl-N$B!W!V(BCtrl-P$B!W$G0\F0$7$^$9!#(B
-grep$B$r$+$1$?$$>l9g$K$O!V(BCtrl-G$B!W$7$F(Bgrep$B$7$?$$J88@$rF~NO$7$^$9!#(B
-$B8!:w$r$+$1$F2hLL2<$K8uJd%&%#%s%I%&$,I=<($5$l$^$9$,!"$3$l$r>C$7$?$$>l9g$K$O!V(BCtrl-W,O$B!W$G$9!#(B
+定義元に遷移したい場合には、カーソルを合わせて「Ctrl-J」を押下する。
+ジャンプした後に定義元に戻る場合には「Ctrl-O」とする。
+次の候補や前の候補の場合には「Ctrl-N」「Ctrl-P」で移動します。
+grepをかけたい場合には「Ctrl-G」してgrepしたい文言を入力します。
+検索をかけて画面下に候補ウィンドウが表示されますが、これを消したい場合には「Ctrl-W,O」です。
 
 
-### $B;29M(BURL
-GNU GLOBAL$B$H(Bvim$B$G5pBg$J%3!<%I$G$b2wE,$K%3!<%I%j!<%G%#%s%0(B
+### 参考URL
+GNU GLOBALとvimで巨大なコードでも快適にコードリーディング
 	http://blog.matsumoto-r.jp/?p=2369
 
-$B%=!<%9%3!<%I$r2wE,$KFI$`$?$a$N(B GNU GLOBAL $BF~Lg(B($BA0JT!&CfJT!&8eJT(B)
+ソースコードを快適に読むための GNU GLOBAL 入門(前編・中編・後編)
 	http://www.machu.jp/diary/20090307.html
 	http://www.machu.jp/diary/20090308.html
 	http://www.machu.jp/diary/20090309.html
-
