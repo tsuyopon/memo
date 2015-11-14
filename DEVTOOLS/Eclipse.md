@@ -1,4 +1,4 @@
-*** 参考URL
+# 参考URL
 - エクリプス
 -- http://www.eclipsewiki.net/eclipse/
 - Javaの道
@@ -7,75 +7,70 @@
 -- http://www.h7.dion.ne.jp/~s_wat/eclipse/eclipsetips.html
 
 
-#####################################################################
-Eclipseショートカット
-#####################################################################
+## Eclipseショートカット
 
-*** ソースコード読解操作 [#z4474fa2]
+### ソースコード読解操作
 - F3
--- カーソル位置のクラス、インタフェース、変数等の宣言場所へ移動
--- 尚、元の位置に戻るには「Alt + ←」を押下します。進むには「Alt + →」が利用できます。
+ - カーソル位置のクラス、インタフェース、変数等の宣言場所へ移動
+ - 尚、元の位置に戻るには「Alt + ←」を押下します。進むには「Alt + →」が利用できます。
 - F4
--- カーソル位置のクラスの継承関係を表示
+ - カーソル位置のクラスの継承関係を表示
 - Ctrl + Space
--- 変数やメソッドを補完する(コンテンツアシスト)
+ - 変数やメソッドを補完する(コンテンツアシスト)
 - Ctrl + O
--- カーソル位置のクラスのメソッド一覧を表示
+ - カーソル位置のクラスのメソッド一覧を表示
 - Ctrl + T
--- カーソル位置がメソッドにあり、そのメソッドのinterfaceでなくimplementsの方を閲覧したい場合に押下する。尚、interfaceが見たい場合にはF3で閲覧できる。
+ - カーソル位置がメソッドにあり、そのメソッドのinterfaceでなくimplementsの方を閲覧したい場合に押下する。尚、interfaceが見たい場合にはF3で閲覧できる。
 - Ctrl+Alt+H
--- メソッド等の使用箇所を表示する
+ - メソッド等の使用箇所を表示する
 
-*** カーソル操作 [#x3187987]
+### カーソル操作
 - Ctrl + D
--- 現在の行や選択された行を削除
+ - 現在の行や選択された行を削除
 
-*** パースペクティブ移動 [#hf16bc5f]
+###  パースペクティブ移動
 - Ctrl + F8
--- 前のパースペクティブ(DDMS, Java, Debug等の移動)
+ - 前のパースペクティブ(DDMS, Java, Debug等の移動)
 - Ctrl + Shift + F8
--- 次のパースペクティブ(DDMS, Java, Debug等の移動)
+ - 次のパースペクティブ(DDMS, Java, Debug等の移動)
 
-*** メソッド移動 [#n244bb61]
+### メソッド移動
 - Ctrl + ↓
--- 次のメソッド
+ - 次のメソッド
 - Ctrl +  Shift + ↑
--- 前のメソッド
+ - 前のメソッド
 
-*** デバッグ [#w2817269]
+### デバッグ
 - Shift + Alt + X
--- 実行形式を選択(Run As)
+ - 実行形式を選択(Run As)
 - Shift + Alt + D
--- デバッグ形式を選択(Debug As)
+ - デバッグ形式を選択(Debug As)
 
-*** 便利技 [#l80d953e]
+### 便利技
 - Ctrl + Shift + O
--- 必要なライブラリをimportしてくれます
+ - 必要なライブラリをimportしてくれます
 - Ctrl + Shift + L
--- ショートカット一覧を表示する
+ - ショートカット一覧を表示する
 - Ctrl + E
--- 開いているウィンドウ一覧(タブになっているところ)を切り替えできます
+ - 開いているウィンドウ一覧(タブになっているところ)を切り替えできます
 - Ctrl + /
--- Javaの場合などに行頭にコメント(//)を付与したり、削除したりを切り替えできます
+ - Javaの場合などに行頭にコメント(//)を付与したり、削除したりを切り替えできます
 
-*** 参考URL [#nfc48232]
+- 参考URL
 - ニートになりたいプログラマ
--- http://fukata.org/2010/05/30/useful-eclipse-keyboard-shortcut-java/
+ - http://fukata.org/2010/05/30/useful-eclipse-keyboard-shortcut-java/
 - Eclipseコマンドリファレンス
--- http://www.geocities.jp/turtle_wide/tools/eclipse/cmd_index.htm
+ - http://www.geocities.jp/turtle_wide/tools/eclipse/cmd_index.htm
 
-#####################################################################
-.projectファイルについて
-#####################################################################
-* 概要 [#ne4ed227]
-SVNでプロジェクトをチェックアウトを行い、それをEclipseにプロジェクトを取り込もうとした場合に「JAVAプロジェクト」と認識させることはできません。
+## .projectファイルについて
+### 概要
+SVNでプロジェクトをチェックアウトを行い、それをEclipseにプロジェクトを取り込もうとした場合に「JAVAプロジェクト」と認識させることはできません。   
 
-.projectファイルを配置することにより、この問題点を解決することができます。
-.projectファイルは、プロジェクト直下のルートディレクトリ直下に設置されるファイルです。
+.projectファイルを配置することにより、この問題点を解決することができます。   
+.projectファイルは、プロジェクト直下のルートディレクトリ直下に設置されるファイルです。   
 
-* 詳細 [#of37df50]
-
-** サンプル [#g9195580]
+### サンプル
+```
  <?xml version="1.0" encoding="UTF-8"?>
  <projectDescription>
      <name>testtest</name><!-- プロジェクト名称 -->
@@ -95,18 +90,10 @@ SVNでプロジェクトをチェックアウトを行い、それをEclipseに�
          <nature>com.google.gdt.eclipse.core.webAppNature</nature>
      </natures>
  </projectDescription>
+```
+上記で示した以外にも様々な要素があります。
 
-COLOR(blue):上記で示した以外にも様々な要素があります。
-
-* 参考URL [#b11eb411]
+参考URL
 - Eclipse公式ドキュメント(英語)
--- http://dsdp.eclipse.org/help/latest/index.jsp?topic=%2Forg.eclipse.platform.doc.isv%2Freference%2Fmisc%2Fproject_description_file.html
+ - http://dsdp.eclipse.org/help/latest/index.jsp?topic=%2Forg.eclipse.platform.doc.isv%2Freference%2Fmisc%2Fproject_description_file.html
 
-
-
-
-
-
-#####################################################################
-
-#####################################################################
