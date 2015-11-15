@@ -24,3 +24,6 @@ GDBを通したデバッギングについてまとめていきます
 
 * [XV6](XV6.md)
  * XV6のデバッグ方法についてまとめる
+
+gdb周りのサンプルなどもいくつかあるので参考のこと
+- https://github.com/tsuyopon/cpp/tree/master/gdb
