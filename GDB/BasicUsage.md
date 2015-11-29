@@ -330,7 +330,39 @@ connection_context = 0x7f9b5d1a0c88
 (gdb) set environment LD_LIBRARY_PATH=/usr/lib/debug
 ```
 
-## 応用操作
+## TIPS関連
+
+### IntelやATT形式にシンタックスに変更する。
+
+Intelの場合には以下のようにします。
+```
+(gdb) set disassembly-flavor intel          // set dis intelでもOK
+(gdb) disas
+Dump of assembler code for function main:
+   0x00000000004004dc <+0>:	push   rbp
+   0x00000000004004dd <+1>:	mov    rbp,rsp
+=> 0x00000000004004e0 <+4>:	mov    edi,0x4005b0
+   0x00000000004004e5 <+9>:	mov    eax,0x0
+   0x00000000004004ea <+14>:	call   0x4003b0 <printf@plt>
+   0x00000000004004ef <+19>:	pop    rbp
+   0x00000000004004f0 <+20>:	ret    
+End of assembler dump.
+```
+
+ATT形式の場合には以下で変更することができます。
+```
+(gdb) set disassembly-flavor att
+(gdb) disas
+Dump of assembler code for function main:
+   0x00000000004004dc <+0>:	push   %rbp
+   0x00000000004004dd <+1>:	mov    %rsp,%rbp
+=> 0x00000000004004e0 <+4>:	mov    $0x4005b0,%edi
+   0x00000000004004e5 <+9>:	mov    $0x0,%eax
+   0x00000000004004ea <+14>:	callq  0x4003b0 <printf@plt>
+   0x00000000004004ef <+19>:	pop    %rbp
+   0x00000000004004f0 <+20>:	retq   
+End of assembler dump.
+```
 
 ### 特定のシステムコール呼び出し時にbreakする
 ```

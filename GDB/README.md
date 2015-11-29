@@ -6,7 +6,7 @@ GDBを通したデバッギングについてまとめていきます
 * [HelloworldGDB](HelloworldGDB.md)
  * GDBをとりあえず触ったことなく最初に試してみる方法
 
-* [CommandGDB](BasicUsage.md)
+* [BasicUsage](BasicUsage.md)
  * GDBの基本操作などに関してまとめています
 
 * [CorefileGDB](CorefileGDB.md)

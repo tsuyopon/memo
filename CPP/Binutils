@@ -333,6 +333,55 @@ objdumpについてまとめます。オプションは下記のとおりです�
 	   b8:   0d 00 00 00 04          or     $0x4000000,%eax
 	   bd:   00 00                   add    %al,(%eax)
 
+mainからのアセンブラ情報を表示する場合には以下のようにgrepをかけます。
+	$ objdump -D ./a.out | grep -A 20 main.:
+	00000000004004dc <main>:
+	  4004dc:	55                   	push   %rbp
+	  4004dd:	48 89 e5             	mov    %rsp,%rbp
+	  4004e0:	48 83 ec 10          	sub    $0x10,%rsp
+	  4004e4:	c7 45 fc 00 00 00 00 	movl   $0x0,-0x4(%rbp)
+	  4004eb:	eb 0e                	jmp    4004fb <main+0x1f>
+	  4004ed:	bf c0 05 40 00       	mov    $0x4005c0,%edi
+	  4004f2:	e8 b9 fe ff ff       	callq  4003b0 <puts@plt>
+	  4004f7:	83 45 fc 01          	addl   $0x1,-0x4(%rbp)
+	  4004fb:	83 7d fc 09          	cmpl   $0x9,-0x4(%rbp)
+	  4004ff:	7e ec                	jle    4004ed <main+0x11>
+	  400501:	b8 00 00 00 00       	mov    $0x0,%eax
+	  400506:	c9                   	leaveq 
+	  400507:	c3                   	retq   
+	  400508:	0f 1f 84 00 00 00 00 	nopl   0x0(%rax,%rax,1)
+	  40050f:	00 
+
+	0000000000400510 <__libc_csu_init>:
+	  400510:	48 89 6c 24 d8       	mov    %rbp,-0x28(%rsp)
+	  400515:	4c 89 64 24 e0       	mov    %r12,-0x20(%rsp)
+	  40051a:	48 8d 2d 8f 01 20 00 	lea    0x20018f(%rip),%rbp        # 6006b0 <__init_array_end>
+
+上記はATT形式ですが、intelの表記形式で出力するには-M intelオプションを付与します。
+	$ objdump -M intel -D ./a.out | grep -A 20 main.:
+	00000000004004dc <main>:
+	  4004dc:	55                   	push   rbp
+	  4004dd:	48 89 e5             	mov    rbp,rsp
+	  4004e0:	48 83 ec 10          	sub    rsp,0x10
+	  4004e4:	c7 45 fc 00 00 00 00 	mov    DWORD PTR [rbp-0x4],0x0
+	  4004eb:	eb 0e                	jmp    4004fb <main+0x1f>
+	  4004ed:	bf c0 05 40 00       	mov    edi,0x4005c0
+	  4004f2:	e8 b9 fe ff ff       	call   4003b0 <puts@plt>
+	  4004f7:	83 45 fc 01          	add    DWORD PTR [rbp-0x4],0x1
+	  4004fb:	83 7d fc 09          	cmp    DWORD PTR [rbp-0x4],0x9
+	  4004ff:	7e ec                	jle    4004ed <main+0x11>
+	  400501:	b8 00 00 00 00       	mov    eax,0x0
+	  400506:	c9                   	leave  
+	  400507:	c3                   	ret    
+	  400508:	0f 1f 84 00 00 00 00 	nop    DWORD PTR [rax+rax*1+0x0]
+	  40050f:	00 
+	
+	0000000000400510 <__libc_csu_init>:
+	  400510:	48 89 6c 24 d8       	mov    QWORD PTR [rsp-0x28],rbp
+	  400515:	4c 89 64 24 e0       	mov    QWORD PTR [rsp-0x20],r12
+	  40051a:	48 8d 2d 8f 01 20 00 	lea    rbp,[rip+0x20018f]        # 6006b0 <__init_array_end>
+
+
 *** Intermix source code with disassembl [#o69a48f4]
 COLOR(red): Sオプションについての出力結果だが、dオプションと何が違うんだろう??
 	 $ objdump -S hellopecl.so   | head -10
