@@ -149,6 +149,8 @@ cfi関連は[https://sourceware.org/binutils/docs/as/CFI-directives.html]で定�
   $ gcc -S -fno-asynchronous-unwind-tables  xxxxx.c
 ```
 
+スタックの概念については以下のURLが非常にわかりやすく説明しています。
+- [http://d.hatena.ne.jp/yz2cm/20130526/1369591965]
 
 
 
