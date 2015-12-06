@@ -72,7 +72,7 @@ _start:
 ```
 
 
-上記ファイルの関数名はエイリアスであり、以下は関数名とシステムコール番号をひも付けています。
+上記ファイルの関数名はエイリアスであり、以下は関数名とシステムコール番号を紐付けています。
 ```
 arch/x86/include/asm/unistd_32.h
   4 /*
@@ -92,25 +92,26 @@ arch/x86/include/asm/unistd_32.h
 sys_call_table関数をコールするのはsyscall_callです。
 その関数が定義されているすぐ上にはsystem_callという名前の関数が定義されている点にも着目します。
 
-(?????) どこでsystem_callがよびだされているのか?
 ```
 ./arch/x86/kernel/entry_32.S 
  518 ENTRY(system_call)
  519     RING0_INT_FRAME         # can't unwind into user space anyway
  520     pushl %eax          # save orig_eax
  521     CFI_ADJUST_CFA_OFFSET 4
- 522     SAVE_ALL
+ 522     SAVE_ALL                # レジスタ群をカーネルスタックにPUSH
  523     GET_THREAD_INFO(%ebp)
- 524                     # system call tracing in operation / emulation
+ 524                     # system call tracing in operation / emulation  bpにthred_infoのポインタを取得する。
  525     testl $_TIF_WORK_SYSCALL_ENTRY,TI_flags(%ebp)
- 526     jnz syscall_trace_entry
+ 526     jnz syscall_trace_entry # straceされていればその処理を行う
  527     cmpl $(nr_syscalls), %eax
  528     jae syscall_badsys
  529 syscall_call:
- 530     call *sys_call_table(,%eax,4)
+ 530     call *sys_call_table(,%eax,4)   # AXコードに応じたシステム関数のコールを行う
 ```
 
-syscall_callは同一ファイルのsyscall_trace_entryという関数で呼び出されているがこれは名称からトレース用と判断されるのでここではするーします。
+syscall_callは同一ファイルのsyscall_trace_entryという関数で呼び出されているがこれは名称からトレース用と判断されるのでここではスルーします(上記アセンブラでも呼ばれていることが確認できます)  
+
+sys_call_tableは、処理関数のアドレスが番号順に設定されているテーブルです。サイズは４バイトです。従ってAXを４倍したsys_call_tableからのオフセットに目的とする処理があり、そこをコールすることで、AXコード（システムコール）が呼び出されるようになっています。
 
 start_kernel関数が呼び出すtrap_init関数の中でsystem_callを登録している箇所がありました。
 なお、SYSCALL_VECTORは0x80と定義されています。
@@ -140,7 +141,7 @@ __KERNEL_CSは以下のように定義されています。
 149 #define GDT_ENTRY_KERNEL_CS 2
 ```
 
-BUG_ONは以下の２つの設定がある。CONFIG_BUGが定義されているかどうかでわかれるようだ(詳細不明)
+BUG_ONはgrepすると以下の２行設定がある。CONFIG_BUGが定義されているかどうかでわかれるようだ(詳細不明)
 これはLinuxカーネルにおいて引数に与えられた式が真にならバグとして扱われる。つまりassertのようなものらしい。
 ```
 include/asm-generic/bug.h
@@ -166,8 +167,8 @@ arch/x86/include/asm/desc.h
 ```
 
 pack_gateは以下のように定義されている。CONFIG_X86_64かどうかで定義が異なるようだが今回は32bit用なのでelse側を見れば良いと思われる。
-pack_gateについては以下を参考のこと
-	https://0xax.gitbooks.io/linux-insides/content/interrupts/interrupts-2.html
+pack_gateについては下記URLを参考のこと
+- https://0xax.gitbooks.io/linux-insides/content/interrupts/interrupts-2.html
 ```
 arch/x86/include/asm/desc.h
  46 #ifdef CONFIG_X86_64
@@ -407,3 +408,18 @@ fs/open.c
 1063     return ret;
 1064 }
 ```
+
+# 参考URL
+- asmlinkageの実体について
+ - http://d.hatena.ne.jp/Yusuke_Yamamoto/20070701
+- システムコール呼び出しの単純なアセンブラ
+ - http://qiita.com/kure/items/5a1a114f9a37aeab255c
+- BUG_ONマクロについての説明
+ - http://d.hatena.ne.jp/fixme/20101030/1288433811
+- pack_gateメソッドに関する説明
+ - https://0xax.gitbooks.io/linux-insides/content/interrupts/interrupts-2.html
+- システムコールとLinuxカーネルのソース(筑波大学)
+ - http://www.coins.tsukuba.ac.jp/~yas/coins/os2-2010/2010-12-07/
+- システムコールとカーネルの関数
+ - 表形式になっているので眺めてみるだけでもいいかも
+ - http://www.mztn.org/lxasm/syscalltb.html
