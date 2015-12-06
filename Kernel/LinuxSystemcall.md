@@ -410,6 +410,10 @@ fs/open.c
 ```
 
 # 参考URL
+- システムコールの仕組み
+ - http://www.mztn.org/lxasm/int80.html#s2
+- ０から作るLinuxプログラム　システムコールその１　システムコールの呼び出し 
+ - http://softwaretechnique.jp/Linux/SystemCall/sc_01.html
 - asmlinkageの実体について
  - http://d.hatena.ne.jp/Yusuke_Yamamoto/20070701
 - システムコール呼び出しの単純なアセンブラ
@@ -418,7 +422,9 @@ fs/open.c
  - http://d.hatena.ne.jp/fixme/20101030/1288433811
 - pack_gateメソッドに関する説明
  - https://0xax.gitbooks.io/linux-insides/content/interrupts/interrupts-2.html
-- システムコールとLinuxカーネルのソース(筑波大学)
+- システムコール、プロセスとtask_struct構造体(筑波大学講義資料)
+ - http://www.coins.tsukuba.ac.jp/~yas/coins/os2-2013/2013-12-26/index.html
+- システムコールとLinuxカーネルのソース(筑波大学講義資料)
  - http://www.coins.tsukuba.ac.jp/~yas/coins/os2-2010/2010-12-07/
 - システムコールとカーネルの関数
  - 表形式になっているので眺めてみるだけでもいいかも
