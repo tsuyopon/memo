@@ -318,6 +318,15 @@ printの表示文字数をセットする
 (gdb) set $eax=42
 ```
 
+なお、"set {書き込むデータの型}アドレス = 書き込むデータ"とコマンドを実行すると、任意アドレスのデータを変更することができます。
+```
+(gdb) set {int}0x280d36e8 = 0x000000b8
+(gdb) set {char}0x280d36ec = 0x00
+(gdb) set {short}0x280d36ed = 0x9090
+(gdb) set {short}0x280d36ef = 0x9090 
+```
+
+
 構造体を表示する
 ```
 (gdb) ptype
@@ -388,6 +397,20 @@ a4 = 10
 a5 = 10
 a6 = 0
 ```
+別の関数にcontinueしてinfo localsすると、次の関数のローカル変数を表示する。
+```
+(gdb) c
+Continuing.
+
+Breakpoint 2, sub () at stack.c:4
+4		int b1 = 11;
+(gdb) info locals
+b1 = 0
+b2 = 0
+b3 = 32767
+b4 = 1606417344
+```
+上記のように変数値がぐちゃぐちゃな値をとる場合には値が設定されていない状態であることがわかる
 
 ### 関数の引数を取得する
 ```
@@ -485,6 +508,14 @@ Dump of assembler code for function main:
    0x000000000042562e <+80>:	mov    %rax,-0x30(%rbp)
 ```
 
+他にも以下のに示すような指定が可能です
+```
+(gdb) disas プログラムカウンタ
+(gdb) disas 開始アドレス 終了アドレス
+(gdb) disas $pc
+(gdb) disas $pc $pc+10
+```
+
 以下のように特定の場所でブレークポイントを設定などもできます。
 ```
    break *0x0000000000425629
@@ -496,17 +527,70 @@ Dump of assembler code for function main:
 引数無しでinfoを実行すればOKです。
 ```
 (gdb) info
+"info" must be followed by the name of an info command.
 List of info subcommands:
 
 info address -- Describe where symbol SYM is stored
 info all-registers -- List of all registers and their contents
 info args -- Argument variables of current stack frame
-info auto-load -- Print current status of auto-loaded files
-info auto-load-scripts -- Print the list of automatically loaded Python scripts
 info auxv -- Display the inferior's auxiliary vector
--- snip --
+info breakpoints -- Status of user-settable breakpoints
+info catch -- Exceptions that can be caught in the current stack frame
+info checkpoints -- Help
+info classes -- All Objective-C classes
+info common -- Print out the values contained in a Fortran COMMON block
+info copying -- Conditions for redistributing copies of GDB
+info dcache -- Print information on the dcache performance
+info display -- Expressions to display when program stops
+info extensions -- All filename extensions associated with a source language
+info files -- Names of targets and files being debugged
+info float -- Print the status of the floating point unit
+info fork -- Help
+info frame -- All about selected stack frame
+info functions -- All function names
+info gc-references -- List the garbage collectors references for a given address
+info gc-roots -- List the garbage collector's shortest unique roots to a given address
+info handle -- What debugger does when program gets various signals
+info interpreters -- List the interpreters currently available in gdb
+info line -- Core addresses of the code for a source line
+info locals -- Local variables of current stack frame
+info mach-port -- Get info on a specific port
+info mach-ports -- Get list of ports in a task
+info mach-region -- Get information on mach region at given address
+info mach-regions -- Get information on all mach region for the current inferior
+info mach-task -- Get info on a specific task
+info mach-tasks -- Get list of tasks in system
+info mach-thread -- Get info on a specific thread
+info mach-threads -- Get list of threads in a task
+info macro -- Show the definition of MACRO
+info malloc-history -- List the stack(s) where malloc or free occurred for the address
+info mem -- Memory region attributes
+info pid -- Process ID of the program
+info plugins -- Show current plug-ins state
+info program -- Execution status of the program
+info registers -- List of integer registers and their contents
+info scope -- List the variables local to a scope
+info selectors -- All Objective-C selectors
+info set -- Show all GDB settings
+info sharedlibrary -- Generic command for shlib information
+info signals -- What debugger does when program gets various signals
+info source -- Information about the current source file
+info sources -- Source files in the program
+info stack -- Backtrace of the stack
+info symbol -- Describe what symbol is at location ADDR
+info target -- Names of targets and files being debugged
+info task -- Get information on task
+info terminal -- Print inferior's saved terminal status
+info thread -- Get information on thread
+info threads -- IDs of currently known threads
+info tracepoints -- Status of tracepoints
+info trampoline -- Resolve function for DYLD trampoline stub and/or Objective-C call
+info types -- All type names
+info variables -- All global and static variable names
+info vector -- Print the status of the vector unit
+info warranty -- Various kinds of warranty you do not have
+info watchpoints -- Synonym for ``info breakpoints''
 ```
-
 
 ### プロセス情報を取得する
 ```
@@ -594,6 +678,12 @@ btとbt fullがあります。btの方が簡易版です。
 #6  0x000000000047d235 in make_child (s=0x6be148, slot=0) at prefork.c:712
 #7  0x000000000047d7ed in ap_mpm_run (_pconf=0x6b9138, plog=0x6fb348, s=0x6be148) at prefork.c:988
 #8  0x00000000004260bf in main (argc=2, argv=0x7fffffffe4e8) at main.c:753
+```
+
+最初の10個、最後の10個を表示
+```
+(gdb) bt full 10     // 最初の10個
+(gdb) bt full -10    // 最後の10個
 ```
 
 もっと詳細を取得したい場合にはfullを付加します。
@@ -735,8 +825,6 @@ $ gdb -tui
 ```
 (gdb) set logging off
 ```
-
-
 
 ### 参考URL
 - http://typea.info/tips/wiki.cgi?page=Linux+C+gdb%A4%CB%A4%E8%A4%EB%A5%C7%A5%D0%A5%C3%A5%B0
