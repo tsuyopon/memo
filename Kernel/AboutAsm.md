@@ -26,10 +26,7 @@ BOOT_IMAGE=/vmlinuz-3.3.4-5.fc17.x86_64 root=/dev/mapper/vg-lv_root ro rd.md=0 r
 	http://caspar.hazymoon.jp/OpenBSD/annex/intel_arc.html
 
 
-
-
-
-###ハードウェア周りについてよくまとまっているページ
+### ハードウェア周りについてよくまとまっているページ
 	http://caspar.hazymoon.jp/OpenBSD/annex/
 
 
@@ -37,9 +34,6 @@ BOOT_IMAGE=/vmlinuz-3.3.4-5.fc17.x86_64 root=/dev/mapper/vg-lv_root ro rd.md=0 r
 - プロテクトモード
 	割り込みディスクリプタ・テーブル(IDT)を使用し設定する
 リアルモード
-
-
-
 
 ### IDTディスクリプタ
 IDTには以下の３種類のゲートディスクリプタのいずれかがエントリーされる。
@@ -51,4 +45,5 @@ IDTには以下の３種類のゲートディスクリプタのいずれかが�
 		http://caspar.hazymoon.jp/OpenBSD/annex/interrupt_protect.html
 
 ローカルディスクリプタテーブル(LDT)
-	http://wiki.bit-hive.com/north/pg/%A5%ED%A1%BC%A5%AB%A5%EB%A5%C7%A5%A3%A5%B9%A5%AF%A5%EA%A5%D7%A5%BF%A5%C6%A1%BC%A5%D6%A5%EB%28LDT%29
+	http://wiki.bit-hive.com/north/pg/%A5%ED%A1%BC%A5%AB%A5%EB%A5%C7%A5%A3%A5%B9%A5%AF%A5%EA%A5%D7%A5%BF%A5%C6%A1%BC%A5%D6%A5%EB%28LDT%29]
+
