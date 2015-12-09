@@ -73,6 +73,7 @@ _start:
 
 
 上記ファイルの関数名はエイリアスであり、以下は関数名とシステムコール番号を紐付けています。
+番号はアーキテクチャ(CPU)に依存しているようだ。
 ```
 arch/x86/include/asm/unistd_32.h
   4 /*
@@ -88,6 +89,18 @@ arch/x86/include/asm/unistd_32.h
  14 #define __NR_close        6
  15 #define __NR_waitpid          7
 ```
+
+なお、システムコールは以下のように引数に応じた関数ポインタが呼ばれるイメージとなります。
+```
+long sys_call_table[NR_syscalls];
+...
+{
+    long n = システム・コールの番号
+    long f = sys_call_table[n];
+    (*f)( 引数0, 引数1, 引数2 ); // 関数と思って呼ぶ
+}
+```
+
 
 sys_call_table関数をコールするのはsyscall_callです。
 その関数が定義されているすぐ上にはsystem_callという名前の関数が定義されている点にも着目します。
@@ -233,7 +246,7 @@ $ grep -rinH sys_exit * | grep -i asmlinkage
 ./include/linux/syscalls.h:421:asmlinkage long sys_exit_group(int error_code);
 ```
 
-exitの場合はわかりにくいが、いかが実体である。
+exitの場合はわかりにくいが、以下が実体である。
 ```
 kernel/exit.c
 1053 SYSCALL_DEFINE1(exit, int, error_code)
@@ -294,6 +307,8 @@ include/linux/syscalls.h
 317 
 318 #endif /* CONFIG_HAVE_SYSCALL_WRAPPERS */
 ```
+
+なお、SYSCALL_DEFINE1〜SYSCALL_DEFINE5まで存在していてこの数字はシステムコールの引数の数を表しているようだ。　
 
 CONFIG_HAVE_SYSCALL_WRAPPERSがある場合には、ない場合と比較していくつか定義が増えているようだ(検索してみたけど不明。読むしかなさそう。)  
 とりあえずは、両方とも以下の実体は定義しているので以下と考えて進めていくいことにする。
