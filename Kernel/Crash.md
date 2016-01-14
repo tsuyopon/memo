@@ -330,6 +330,39 @@ BLKDEV    NAME                GENDISK      OPERATIONS
 (snip)
 ```
 
+たとえば、キャラクタデバイス21番のsg_fopsの定義内容を見たい場合には以下のようにすればよい。  
+どの関数が設定されているのかを見ることができる。
+```
+crash> sg_fops
+sg_fops = $9 = {
+  owner = 0x0, 
+  llseek = 0xffffffff8117d8d0 <no_llseek>, 
+  read = 0xffffffff813d2fb0 <sg_read>, 
+  write = 0xffffffff813d4f00 <sg_write>, 
+  aio_read = 0, 
+  aio_write = 0, 
+  readdir = 0, 
+  poll = 0xffffffff813d2080 <sg_poll>, 
+  unlocked_ioctl = 0xffffffff813d58a0 <sg_unlocked_ioctl>, 
+  compat_ioctl = 0xffffffff813d1af0 <sg_compat_ioctl>, 
+  mmap = 0xffffffff813d1ba0 <sg_mmap>, 
+  open = 0xffffffff813d5350 <sg_open>, 
+  flush = 0, 
+  release = 0xffffffff813d3880 <sg_release>, 
+  fsync = 0, 
+  aio_fsync = 0, 
+  fasync = 0xffffffff813d1db0 <sg_fasync>, 
+  lock = 0, 
+  sendpage = 0, 
+  get_unmapped_area = 0, 
+  check_flags = 0, 
+  flock = 0, 
+  splice_write = 0, 
+  splice_read = 0, 
+  setlease = 0, 
+  fallocate = 0
+}
+```
 
 ### mount情報を表示する
 ```
@@ -533,7 +566,69 @@ crash>foreach -R files /opt
 crash> foreach files > /tmp/testtest
 ```
 
-### 特定プロセスのdentry構造体の値を見てみる
+### 特定プロセスのtask_struct構造体の値を見てみる
+```
+crash> ps
+   PID    PPID  CPU       TASK        ST  %MEM     VSZ    RSS  COMM
+      0      0   0  ffffffff81a0d020  RU   0.0       0      0  [swapper/0]
+      1      0   0  ffff88001fb78000  IN   0.3   41548   1820  systemd
+      2      0   0  ffff88001fb79720  IN   0.0       0      0  [kthreadd]
+      3      2   0  ffff88001fb7ae40  IN   0.0       0      0  [ksoftirqd/0]
+      6      2   0  ffff88001fb98000  IN   0.0       0      0  [migration/0]
+      7      2   0  ffff88001fb99720  IN   0.0       0      0  [watchdog/0]
+      8      2   0  ffff88001fb9ae40  IN   0.0       0      0  [cpuset]
+      9      2   0  ffff88001fb9c560  IN   0.0       0      0  [khelper]
+     10      2   0  ffff88001fb9dc80  IN   0.0       0      0  [kdevtmpfs]
+     11      2   0  ffff88001fbb0000  IN   0.0       0      0  [netns]
+     12      2   0  ffff88001fbb1720  IN   0.0       0      0  [sync_supers]
+     13      2   0  ffff88001fbb2e40  IN   0.0       0      0  [bdi-default]
+     14      2   0  ffff88001fbb4560  IN   0.0       0      0  [kintegrityd]
+     15      2   0  ffff88001fbb5c80  IN   0.0       0      0  [kblockd]
+     16      2   0  ffff88001d448000  IN   0.0       0      0  [ata_sff]
+     17      2   0  ffff88001d449720  IN   0.0       0      0  [khubd]
+   (snip)
+```
+
+systemdのTASKポインタを指定して、systemdプロセスのtask_struct構造体を見てみる。
+```
+crash> task ffff88001fb78000
+PID: 1      TASK: ffff88001fb78000  CPU: 0   COMMAND: "systemd"
+struct task_struct {
+  state = 1, 
+  stack = 0xffff88001fb74000, 
+  usage = {
+    counter = 2
+  }, 
+  flags = 4202752, 
+  ptrace = 0, 
+  wake_entry = {
+    next = 0x0
+  }, 
+  on_cpu = 0, 
+  on_rq = 0, 
+  prio = 120, 
+  static_prio = 120, 
+  normal_prio = 120, 
+  rt_priority = 0, 
+  sched_class = 0xffffffff81607f00, 
+  se = {
+    load = {
+      weight = 1024, 
+      inv_weight = 4194304
+    }, 
+    run_node = {
+      rb_parent_color = 1, 
+      rb_right = 0x0, 
+      rb_left = 0x0
+    }, 
+    group_node = {
+      next = 0xffff88001fb78070, 
+      prev = 0xffff88001fb78070
+    }, 
+ (snip)
+```
+
+### 特定プロセスのfile, dentry, inode構造体の値を見てみる
 
 ```
 crash> set 2469
@@ -665,4 +760,209 @@ struct inode {
     tv_nsec = 0
   }, 
 (snip)
+```
+
+### 特定ネットワークデバイスのnet_device構造体を見てみる
+まずは該当のデバイスを選定するためにnetコマンドを実行する。
+```
+crash> net
+   NET_DEVICE     NAME   IP ADDRESS(ES)
+ffff88001d413000  lo     127.0.0.1
+ffff88001d6b6000  p2p1   10.0.2.15
+ffff88001b7ce000  p7p1   192.168.56.1
+```
+
+p2p1デバイスのnet_device構造体を見てみる。  
+nameには「p2p1で始まる値が指定されているので大丈夫そうだ。
+```
+crash> net_device ffff88001d6b6000
+struct net_device {
+  name = "p2p1\000\000\060:03.0\000\000\000", 
+  pm_qos_req = {
+    node = {
+      prio = 0, 
+      prio_list = {
+        next = 0x0, 
+        prev = 0x0
+      }, 
+      node_list = {
+        next = 0x0, 
+        prev = 0x0
+      }
+    }, 
+    pm_qos_class = 0
+  }, 
+  name_hlist = {
+    next = 0x0, 
+    pprev = 0xffff88001d4125f8
+  }, 
+(snip)
+```
+
+### 特定デバイスのblock_device構造体を見てみる
+devで一覧を表示する。
+```
+crash> dev
+CHRDEV    NAME                 CDEV        OPERATIONS      
+   1      mem            ffff88001d4c0380  memory_fops
+   4      /dev/vc/0      ffffffff81d2afe0  console_fops
+   4      tty            ffff88001d4f7208  tty_fops
+   4      ttyS           ffff88001a273c08  tty_fops
+   5      /dev/tty       ffffffff81d299c0  tty_fops
+   5      /dev/console   ffffffff81d29a40  console_fops
+   5      /dev/ptmx      ffffffff81d29ce0  ptmx_fops
+   7      vcs            ffff88001d4c0480  vcs_fops
+  10      misc           ffff88001fb63a00  misc_fops
+  13      input          ffff88001fb63c80  input_fops
+  14      sound          ffff88001f0a4a80  soundcore_fops
+  21      sg             ffff88001a337c00  sg_fops
+  29      fb             ffff88001fb63600  fb_fops
+  99      ppdev          ffff88001b01eb00  pp_fops
+ 116      alsa           ffff88001b01e400  snd_fops
+ 128      ptm            ffff88001a273808  tty_fops
+ 136      pts            ffff88001a273a08  tty_fops
+ 162      raw            ffffffff81d2e840  raw_fops
+ 180      usb            ffff88001fb63b80  usb_fops
+ 188      ttyUSB         ffff88001a2ddc08  tty_fops
+ 189      usb_device     ffffffff81d82da0  usbdev_file_operations
+ 202      cpu/msr        ffff88001d541780  msr_fops
+ 203      cpu/cpuid      ffff88001d541880  cpuid_fops
+ 251      hidraw         ffffffff81d852e0  hidraw_ops
+ 252      usbmon         ffffffff81d82ec0  mon_fops_binary
+ 253      bsg            ffffffff81d24900  bsg_fops
+ 254      rtc            ffff88001a34f2d0  rtc_dev_fops
+
+BLKDEV    NAME                GENDISK      OPERATIONS      
+ 259      blkext              (none)     
+   7      loop           ffff88001a2f1800  lo_fops
+   8      sd             ffff88001a3b5000  sd_fops
+   9      md                  (none)     
+  11      sr             ffff88001a3d1000  sr_bdops
+```
+
+キャラクタデバイスを指定してみる。   
+アドレスは180番のUSBを指定してみる。以下の出力結果でnameにusbと表示されているので問題なさそうだ。
+```
+crash> struct cdev ffff88001fb63b80    // structが必要だった
+struct cdev {
+  kobj = {
+    name = 0xffff88001f80ed58 "usb", 
+    entry = {
+      next = 0xffff88001fb63b88, 
+      prev = 0xffff88001fb63b88
+    }, 
+    parent = 0x0, 
+    kset = 0x0, 
+    ktype = 0xffffffff81a41b00, 
+    sd = 0x0, 
+    kref = {
+      refcount = {
+        counter = 1
+      }
+    }, 
+    state_initialized = 1, 
+    state_in_sysfs = 0, 
+    state_add_uevent_sent = 0, 
+    state_remove_uevent_sent = 0, 
+    uevent_suppress = 0
+  }, 
+  owner = 0x0, 
+  ops = 0xffffffff816697e0, 
+  list = {
+    next = 0xffff88001fb63bd0, 
+    prev = 0xffff88001fb63bd0
+  }, 
+  dev = 188743680, 
+  count = 256
+}
+```
+
+続いて、ブロックデバイス(番号:7)を指定指定する。
+bd_devが確かに7になっている
+```
+struct gendisk {
+  major = 7, 
+  first_minor = 7, 
+  minors = 1, 
+  disk_name = "loop7\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000", 
+  devnode = 0, 
+  events = 0, 
+  async_events = 0, 
+  part_tbl = 0xffff88001d54dc40, 
+  part0 = {
+    start_sect = 0, 
+    nr_sects = 0, 
+    alignment_offset = 0, 
+    discard_alignment = 0, 
+    __dev = {
+      parent = 0x0, 
+      p = 0xffff88001a2d6540, 
+      kobj = {
+        name = 0xffff88001d527e80 "loop7", 
+        entry = {
+          next = 0xffff88001a2f6f18, 
+          prev = 0xffff88001a2f1c18
+        }, 
+        parent = 0xffff88001d4ebc60, 
+        kset = 0xffff88001f80f3c0, 
+        ktype = 0xffffffff81a7fea0, 
+        sd = 0xffff88001a2dcb40, 
+        kref = {
+          refcount = {
+            counter = 6
+          }
+        }, 
+
+```
+
+### mountポイントのsuper_block構造体を表示する
+
+まずは
+```
+crash> mount
+    VFSMOUNT         SUPERBLK     TYPE   DEVNAME                DIRNAME
+ffff88001fadc100 ffff88001f80ac00 rootfs rootfs                 /         
+ffff88001b23c300 ffff88001f80b400 proc   proc                   /proc     
+ffff88001b003000 ffff88001a3ec400 sysfs  sysfs                  /sys      
+(snip)
+```
+
+
+### 構造体を出力させる。
+zone
+```
+crash> zone
+struct zone {
+    long unsigned int watermark[3];
+    long unsigned int percpu_drift_mark;
+    long unsigned int lowmem_reserve[4];
+    long unsigned int dirty_balance_reserve;
+    int node;
+    long unsigned int min_unmapped_pages;
+    long unsigned int min_slab_pages;
+    struct per_cpu_pageset *pageset;
+    spinlock_t lock;
+    int all_unreclaimable;
+    struct free_area free_area[11];
+    unsigned int compact_considered;
+    unsigned int compact_defer_shift;
+    struct zone_padding _pad1_;
+    spinlock_t lru_lock;
+    struct lruvec lruvec;
+    struct zone_reclaim_stat reclaim_stat;
+    long unsigned int pages_scanned;
+    long unsigned int flags;
+    atomic_long_t vm_stat[33];
+    unsigned int inactive_ratio;
+    struct zone_padding _pad2_;
+    wait_queue_head_t *wait_table;
+    long unsigned int wait_table_hash_nr_entries;
+    long unsigned int wait_table_bits;
+    struct pglist_data *zone_pgdat;
+    long unsigned int zone_start_pfn;
+    long unsigned int spanned_pages;
+    long unsigned int present_pages;
+    const char *name;
+}
+SIZE: 1792
 ```
