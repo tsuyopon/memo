@@ -533,3 +533,136 @@ crash>foreach -R files /opt
 crash> foreach files > /tmp/testtest
 ```
 
+### 特定プロセスのdentry構造体の値を見てみる
+
+```
+crash> set 2469
+ (snip)
+crash> files
+PID: 2469   TASK: ffff88001f0d4560  CPU: 0   COMMAND: "sshd"
+ROOT: /    CWD: /
+ FD       FILE            DENTRY           INODE       TYPE PATH
+  0 ffff88001ba9c300 ffff88001db0be40 ffff88001fba6a50 CHR  /dev/null
+  1 ffff88001d75c600 ffff88001db0be40 ffff88001fba6a50 CHR  /dev/null
+  2 ffff88001b598100 ffff88001739a300 ffff8800173a2530 SOCK 
+  3 ffff88001ccc7c00 ffff88001bf936c0 ffff880018ace7b0 SOCK 
+  4 ffff8800047ba700 ffff8800172290c0 ffff880018ace530 SOCK 
+  5 ffff88001a01db00 ffff88001bca0240 ffff88001a1fcf50 CHR  /dev/ptmx
+  6 ffff880014451a00 ffff880004fb3480 ffff880001e11950 FIFO /run/systemd/sessions/47.ref
+  7 ffff88001a093a00 ffff880017229540 ffff880018acecb0 SOCK 
+```
+
+FD=3のFILE構造体を表示する。
+```
+crash> struct file ffff88001ccc7c00
+struct file {
+  f_u = {
+    fu_list = {
+      next = 0xffff88001ccc7c00, 
+      prev = 0xffff88001ccc7c00
+    }, 
+    fu_rcuhead = {
+      next = 0xffff88001ccc7c00, 
+      func = 0xffff88001ccc7c00
+    }
+  }, 
+  f_path = {
+    mnt = 0xffff88001fb67120, 
+    dentry = 0xffff88001bf936c0
+  }, 
+  f_op = 0xffffffff8167aec0, 
+  f_lock = {
+    {
+      rlock = {
+        raw_lock = {
+          {
+            head_tail = 257, 
+            tickets = {
+              head = 1 '\001', 
+              tail = 1 '\001'
+            }
+          }
+        }
+      }
+    }
+  }, 
+(snip)
+```
+
+FD=3のDENTRYのアドレスを表示してみる。
+```
+crash> struct dentry ffff88001bf936c0
+struct dentry {
+  d_flags = 32, 
+  d_seq = {
+    sequence = 2
+  }, 
+  d_hash = {
+    next = 0x0, 
+    pprev = 0x0
+  }, 
+  d_parent = 0xffff88001bf936c0, 
+  d_name = {
+    hash = 0, 
+    len = 0, 
+    name = 0xffff88001bf936f8 ""
+  }, 
+  d_inode = 0xffff880018ace7b0, 
+  d_iname = "\000oadavg\000\000_dOeSnotExist_.db\000root", 
+  d_count = 1, 
+  d_lock = {
+    {
+      rlock = {
+        raw_lock = {
+          {
+            head_tail = 514, 
+            tickets = {
+              head = 2 '\002', 
+              tail = 2 '\002'
+            }
+          }
+        }
+      }
+    }
+  }, 
+  d_op = 0xffffffff8167b080, 
+  d_sb = 0xffff88001fbaa800, 
+  d_time = 8030481585640796672, 
+  d_fsdata = 0x0, 
+  d_lru = {
+    next = 0xffff88001bf93740, 
+    prev = 0xffff88001bf93740
+  }, 
+  d_u = {
+    d_child = {
+      next = 0xffff88001bf93750, 
+(snip)
+```
+
+FD=3のINODEを表示させます。
+```
+crash> struct inode ffff880018ace7b0
+struct inode {
+  i_mode = 49663, 
+  i_opflags = 0, 
+  i_uid = 0, 
+  i_gid = 0, 
+  i_flags = 0, 
+  i_acl = 0xffffffffffffffff, 
+  i_default_acl = 0xffffffffffffffff, 
+  i_op = 0xffffffff81d1cc40, 
+  i_sb = 0xffff88001fbaa800, 
+  i_mapping = 0xffff880018ace8f0, 
+  i_security = 0x0, 
+  i_ino = 105456, 
+  {
+    i_nlink = 1, 
+    __i_nlink = 1
+  }, 
+  i_rdev = 0, 
+  i_atime = {
+    tv_sec = 0, 
+    tv_nsec = 0
+  }, 
+(snip)
+```
