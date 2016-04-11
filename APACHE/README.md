@@ -32,3 +32,6 @@ APACHE
 * [BucketBrigadeについて](BucketBrigadeについて)
  * TBD: 全然整備されていないのでこれから
 
+# メモ
+* libapr tutorial
+ * http://dev.ariel-networks.com/apr/apr-tutorial/html/apr-tutorial.html
