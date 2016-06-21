@@ -32,3 +32,12 @@ APACHE
 * [BucketBrigadeについて](BucketBrigadeについて)
  * TBD: 全然整備されていないのでこれから
 
+# メモ
+* libapr tutorial
+ * http://dev.ariel-networks.com/apr/apr-tutorial/html/apr-tutorial.html
+* GET PARAMETERモジュール
+ * http://blog.livedoor.jp/matssaku/archives/50424141.html
+* POST PARAMETERモジュール
+ * http://blog.livedoor.jp/matssaku/archives/50427866.html
+* POST PARAMETERモジュール(SSL)
+ * http://blog.livedoor.jp/matssaku/archives/50452682.html
