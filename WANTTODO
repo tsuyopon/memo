@@ -1,6 +1,17 @@
 # やりたいこと
-- The Linux Kernel(JF)
- - https://linuxjf.osdn.jp/JFdocs/The-Linux-Kernel.html
+
+# やりたい(高)
 - Linuxシステムコール徹底ガイド
  - ちゃんと全てを理解したい
  - http://postd.cc/the-definitive-guide-to-linux-system-calls/
+- The Linux Kernel(JF)
+ - https://linuxjf.osdn.jp/JFdocs/The-Linux-Kernel.html
+
+# やりたい(中)
+- gccのattributeについて調べる
+
+# 暇なら
+- GCCのドキュメント充実しているんで眺めたい
+ - https://gcc.gnu.org/onlinedocs/
+- boost
+ - http://theboostcpplibraries.com/
