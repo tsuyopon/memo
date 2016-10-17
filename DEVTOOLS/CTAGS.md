@@ -23,6 +23,9 @@ $ ctags -R
 $ ctags -R --exclude=.git --exclude=log *
 ```
 
+## MACの場合のセットアップ方法
+MACの場合のセットアップは次を参照すること。ctagsは入っているが「ctags -R」のRオプションが解釈されない場合などは以下を参照すべし。
+- https://gist.github.com/nazgob/1570678
 
 ## .ctagsファイルについて
 $HOME/.ctagsに配置するとindexを生成する際に参照するファイルが指定できる。
