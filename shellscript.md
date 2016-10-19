@@ -63,6 +63,18 @@ $ ./var.sh
 =expand : red
 ```
 
+この辺も参考にすると良い
+- http://shellscript.sunone.me/variable.html#%E5%A4%89%E6%95%B0%E3%81%AE%E7%89%B9%E6%AE%8A%E3%81%AA%E5%8F%82%E7%85%A7%E6%96%B9%E6%B3%95
+
+上記サイトでは以下の違いについて詳細に説明している。
+```
+${VAR=aaa}
+${VAR:=aaa}
+${VAR-aaa}
+${VAR:-aaa}
+${VAR+aaa}
+${VAR:+aaa}
+```
 
 ### 特殊記号
 
@@ -145,6 +157,36 @@ $ ./var.sh
 - 参考
  - http://shellscript.sunone.me/if_and_test.html
 
+### 計算
+
+```
+x=10
+echo $x # 10
+echo $x+2 # 10+2
+echo `expr $x + 2` # 12
+echo `expr \($x + 5\) \* 2` # 30 
+
+readonly y=20
+y=25 # y: readonly variableというエラーが出る
+```
+
+ポイントは次の通り
+- 計算したい時は`(バッククォート)を使う
+- 数値として展開したい変数の前にexprを使う。（この時計算する四則演算記号の前後にスペースを入れる）
+- 掛け算やカッコを使う場合は \* のように、記号の前にバックスラッシュが必要（エスケープ）
+- readonly とすると変数の上書きができなくなる
+
+
+$(())も利用することができるようです。
+```
+// $(())も利用することができる。
+$ echo $(( (x + 5) * 2 ))
+30
+```
+
+
+- 参考: http://qiita.com/katsukii/items/383b241209fe96eae6e7
+
 ### オプション解析
 オプションの使い方としては次の通りでdは値を取り、aとhは値を取りません。
 ```
@@ -171,8 +213,70 @@ done
 getoptは外部コマンドのため、バージョンや環境によって差異があります。それが、BSD 系と GNU 系の違いです。
 - http://qiita.com/b4b4r07/items/dcd6be0bb9c9185475bb
 
+### ユーザーからの入力
+readで読み込みを行う。
+```
+while : 
+do
+    read key
+    echo "you pressed $key"
+    if [ $key = "end" ]; then
+        break
+    fi
+done
+```
+
+### 選択しで選ばせたい場合
+```
+select option in CODE DIE
+do
+    echo "you pressed $option"
+    break;
+done
+```
+
+こうすると次のように表示され、数字で選択することができる。
+```
+1) CODE
+2) DIE
+#? 1
+you pressed CODE
+```
+
+### ファイルから読み込ませる
+引数にファイル名を指定して読み込ませるには次のようにすれば良い。
+```
+i=1
+while read line
+do
+    echo "$i: $line"
+    i=`expr $i + 1`
+done <$1
+```
+
 ### 配列
+ループして実行する場合
+```
+a=(1 2 3 4 5)
+for i in ${a[@]}
+do
+    echo $i
+done
+```
+
 - http://shellscript.sunone.me/array.html
+
+
 
 ### 変数の解釈関連
 - http://shellscript.sunone.me/variable.html
+
+${VAR}とか
+
+
+# 参考URL
+- シェルスクリプトの基礎知識まとめ
+ - http://qiita.com/katsukii/items/383b241209fe96eae6e7
+- UNIX&LINUXコマンド・シェルスクリプトリファレンス
+ - http://shellscript.sunone.me/variable.html
+
