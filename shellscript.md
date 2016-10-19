@@ -1,6 +1,9 @@
 # シェルスクリプト関連のメモ
 よく忘れてしまって検索で引っかかりにくい特殊変数などに関するメモ
 
+以下のリファレンスが超絶役に立つので何かあればこちらを参考するとよさそう
+ - http://shellscript.sunone.me/
+
 # メモ 
 
 
@@ -167,6 +170,14 @@ ${VAR:+aaa}
  - http://shellscript.sunone.me/if_and_test.html
 
 
+### ファイルが新しいか古いかでの評価
+```
+オプション  使用例                         オプションの意味
+-nt         test ファイル1 -nt ファイル2   ファイル1 is newer than ファイル2
+-ot         test ファイル1 -ot ファイル2   ファイル1 is older than ファイル2
+```
+
+
 ### testコマンドによるファイルや文字列の評価
 ```
 オプション  使用例             オプションの意味
@@ -180,6 +191,9 @@ ${VAR:+aaa}
 -w 	        test -w file       file が書き込み可能ならば真となる。
 -x 	        test -x file       file が実行可能ならば真となる。
 ```
+
+
+
 
 - 参考
  - http://shellscript.sunone.me/if_and_test.html
@@ -303,6 +317,16 @@ ${VAR}とか
 
 ## テクニック
 
+### ステータス情報の退避
+次のようにしておけば、$?のコマンドステータスが他のコマンドを実行する前に退避しておくことが可能である。
+```
+echo "$var" | grep -sq "hoge"; CMDRESULT=$?
+if [ $CMDRESULT -eq 0 ]; then
+	echo "hoge が見つかりました。"
+fi
+```
+
+
 ### スクリプト自身のパスを知る
 ```
 BASEDIR=$(cd $(/usr/bin/dirname $0); pwd)
@@ -325,12 +349,74 @@ if [ x"$answer" = xyes ]; then
 ```
 
 
+### "[]"と"[[]]"の違いについて
+
+動作上の違いとして次の違いがある。
+```
+$ unset hoge
+$ [ $hoge = "HOGE" ]
+-bash: [: =: unary operator expected
+$ [[ $hoge = "HOGE" ]]
+$
+```
+
+加えて終了ステータスにも次の違いがある。
+```
+$ [ $hoge = "HOGE" ]
+-bash: [: =: unary operator expected
+$ echo $?
+2
+$ [[ $hoge = "HOGE" ]]
+$ echo $?
+1
+```
+
+変数展開後の条件式が「= “HOGE”」となるため [] の場合にはエラーメッセージが出力されている。
+一方で [[ ]] ではエラーメッセージは表示されないのでこの辺は使い分けると良いかも
 
 
 
+## デバッグ
+
+
+### -v
+
+### -xオプションで実行したら、その時の変数の値なども同時に出力する
+bashの場合には-xオプションによってコマンド実行時の変数の値なども出力することができる。
+```
+#!/bin/bash -x
+# ↑ここで「-x」オプションを指定する。(bashであることに注意!!)
+
+var1=`date +%M`
+var2=`ls -1 | wc -l`
+
+if [ $var1 -ge 30 ]; then
+  var3="BIG"
+else
+  var3="SMALL"
+fi
+
+exit 0
+```
+
+実行すると結果は次のようになる。
+```
+$ ./script.sh
+++ date +%M
++ var1=47
+++ ls -1
+++ wc -l
++ var2=26
++ '[' 47 -ge 30 ']'
++ var3=BIG
++ exit 0
+```
 	
 
 # 参考URL
+- UNIX&LINUXコマンド・シェルスクリプトリファレンス
+ - 今後もリファレンスとして非常によさそう
+ - http://shellscript.sunone.me/debug.html
 - シェルスクリプトの基礎知識まとめ
  - http://qiita.com/katsukii/items/383b241209fe96eae6e7
 - UNIX&LINUXコマンド・シェルスクリプトリファレンス
