@@ -170,6 +170,11 @@ p  properties
 v  global variables
 ```
 
+タグを生成する言語を指定する
+```
+$ ctags --languages=PHP,JavaScript
+```
+
 # 参考
 - 公式ドキュメント
  - http://ctags.sourceforge.net/ctags.html
