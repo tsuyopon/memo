@@ -24,6 +24,7 @@ javascript関連のメモなど
 
 - What this “get” in JavaScript object means?
  - http://stackoverflow.com/questions/7401048/what-this-get-in-javascript-object-means
+ - 以下はgetの使われ方で不明点なサンプル
 ```
 var human = 
 {
@@ -36,6 +37,13 @@ var human =
 ```
 
 # Angular関連
+
+### $$や$などの変数の意味について
+- What is the $$ (double dollar sign) used for in angular?
+ - Angularのソースコードでは$や$$がつかわれている。これは一体なんだろうか？
+  - https://github.com/angular/angular.js/blob/v1.5.8/src/AngularPublic.js#L219-L260
+ - http://stackoverflow.com/questions/19338493/what-is-the-double-dollar-sign-used-for-in-angular
+ - $はpublic identifier, $$はprivate identiferとのこと
 
 ### this.$getとかの意味が不明
 以下のサイトを参考にする。
