@@ -7,7 +7,6 @@ javascript関連のメモなど
  - use strictの効果について
  - https://msdn.microsoft.com/ja-jp/library/br230269%28v=vs.94%29.aspx
 
-
 - javascriptのthisは使われる場所などによって意味が異なる
  - javascriptの「this」は「4種類」？？
  - http://qiita.com/takeharu/items/9935ce476a17d6258e27
