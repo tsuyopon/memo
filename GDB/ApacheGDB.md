@@ -35,6 +35,7 @@ $ sudo gdb /usr/sbin/httpd
 ## Apache ソースコードからコンパイルしてgdbにあてる
 適当なバージョンのものを持ってきます。2.4だといろいろ大変そうだったので今回は2.2にしておきます。 
 CFLAGSに-gオプションを付与しているのがポイントです。
+prefork以外でコンパイルしたい場合にはconfigureのオプションとして「--with-mpm=worker」などとします。
 ```
 $ wget http://ftp.yz.yamagata-u.ac.jp/pub/network/apache//httpd/httpd-2.2.27.tar.gz
 $ tar zxvf httpd-2.2.27.tar.gz
@@ -206,11 +207,21 @@ $ sudo gdb
 ```
 
 ## TIPS
-##### gdbでapacheのrequest_rec構造体の内容を表示したい
+### gdbでapacheのrequest_rec構造体の内容を表示したい
 ```
 request_rec構造体は以下のように出力します。
 (gdb) set print pretty on   // 整形します
 (gdb) p *r
 ```
 
-参考：http://d.hatena.ne.jp/yone098/20090518/1242703019
+### フックまでわかっているばあい
+gdbでフックの箇所までわかっている場合には、そのフック関数でブレークポイントを貼って、
+ブレークポイントに到達したらstep実行するとどのモジュールでエラーになっているのかまで追うことができます。
+
+
+# 参考
+- Apacheモジュールの作成とgdbとloggerでのデバッグ方法
+ - http://d.hatena.ne.jp/yone098/20090518/1242703019
+- Apache Debugging Guide
+ - https://httpd.apache.org/dev/debugging.html
+
