@@ -1,7 +1,7 @@
 # 概要
 go言語について
 
-# macでの設定 
+### macでの設定 
 もともとの目的としては以下のパッケージを実行したかったのでgoを入れてみた。
 https://github.com/demouth/mario-go
 
@@ -46,3 +46,28 @@ amd64
 ```
 $ GOARCH=amd64 go run cmd/main.go 
 ```
+
+### vimでのsyntaxを有効にする
+```
+filetype off
+filetype plugin indent off
+set runtimepath+=$GOROOT/misc/vim
+filetype plugin indent on
+syntax on
+autocmd FileType go autocmd BufWritePre  Fmt
+set rtp+=$GOPATH/src/github.com/nsf/gocode/vim
+set rtp+=$GOPATH/src/github.com/golang/lint/misc/vim
+set completeopt=menu,preview
+```
+syntaxだけで言えば、1行目と4行目だけでいけるようだ
+
+- 参考
+ - https://www.seeds-std.co.jp/seedsblog/2494.html
+
+
+# 参考URL
+- http://aibou.hateblo.jp/entry/2014/07/11/115920
+- SlideShare(Go言語によるWebアプリの作り方)
+ - http://www.slideshare.net/yasi_life/goweb-16448500
+- VimでGo言語を書く環境を設定する 
+ - https://www.seeds-std.co.jp/seedsblog/2494.html
