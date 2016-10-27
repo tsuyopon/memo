@@ -6,6 +6,43 @@
 
 # メモ 
 
+### パターンマッチ
+```
+${変数名#パターン}                     前方一致でのマッチ部分削除(最短マッチ)
+${変数名##パターン}                    前方一致でのマッチ部分削除(最長マッチ)
+${変数名%パターン}                     後方一致でのマッチ部分削除(最短マッチ)
+${変数名%%パターン}                    後方一致でのマッチ部分削除(最長マッチ)
+${変数名/置換前文字列/置換後文字列}    文字列置換(最初にマッチしたもののみ)
+${変数名//置換前文字列/置換後文字列}   文字列置換(マッチしたものすべて)
+```
+
+以下サンプル
+```
+#!/bin/sh
+
+var="/my/path/dir/test.20161026.dat"
+echo '${var#*/}  => ' ${var#*/}
+echo '${var##*/} => ' ${var##*/}
+echo '${var%.*}  => ' ${var%.*}
+echo '${var%%.*} => ' ${var%%.*}
+
+var2="abcdef abcdef abcdef xyz"
+echo '${var2/test/XXX} => ' ${var2/test/XXX}
+echo '${var2//abc/XXX} => ' ${var2//abc/XXX}
+```
+
+実行結果は次の通り
+```
+${var#*/}  =>  my/path/dir/test.20161026.dat
+${var##*/} =>  test.20161026.dat
+${var%.*}  =>  /my/path/dir/test.20161026
+${var%%.*} =>  /my/path/dir/test
+${var2/test/XXX} =>  abcdef abcdef abcdef xyz
+${var2//abc/XXX} =>  XXXdef XXXdef XXXdef xyz
+```
+
+- 参考
+ - http://d.hatena.ne.jp/ozuma/20130928/1380380390
 
 ### 準変数
 書式と意味が次の通り
