@@ -1,10 +1,10 @@
-# シェルスクリプト関連のメモ
+# シェルスクリプトについて
 よく忘れてしまって検索で引っかかりにくい特殊変数などに関するメモ
 
 以下のリファレンスが超絶役に立つので何かあればこちらを参考するとよさそう
  - http://shellscript.sunone.me/
 
-# メモ 
+# /bin/shメモ
 
 ### パターンマッチ
 ```
@@ -43,6 +43,29 @@ ${var2//abc/XXX} =>  XXXdef XXXdef XXXdef xyz
 
 - 参考
  - http://d.hatena.ne.jp/ozuma/20130928/1380380390
+
+### 文字列長の取得
+文字列長の取得をするには${#変数}とすればよい。
+```
+${#変数}
+```
+
+サンプルは次の通り。expr lengthでも可能なので一緒にのせている
+```
+STRING=helloworld
+echo LENGTH ${#STRING}       # 「LENGTH 10」
+
+STRLEN=$(expr length "$STRING")   # 上と同じ出力
+echo LENGTH $STRLEN
+```
+
+### 文字列から一部を抽出する
+文字列の抽出もできる次の例を見た方がわかりやすい
+```
+STRING=helloworld
+REPLACESTR="${STRING:5:3}"   # 5+1文字目から3文字取得する
+echo $REPLACESTR             # "wor"を表示する
+```
 
 ### 準変数
 書式と意味が次の通り
@@ -206,14 +229,12 @@ ${VAR:+aaa}
 - 参考
  - http://shellscript.sunone.me/if_and_test.html
 
-
 ### ファイルが新しいか古いかでの評価
 ```
 オプション  使用例                         オプションの意味
 -nt         test ファイル1 -nt ファイル2   ファイル1 is newer than ファイル2
 -ot         test ファイル1 -ot ファイル2   ファイル1 is older than ファイル2
 ```
-
 
 ### testコマンドによるファイルや文字列の評価
 ```
@@ -228,9 +249,6 @@ ${VAR:+aaa}
 -w 	        test -w file       file が書き込み可能ならば真となる。
 -x 	        test -x file       file が実行可能ならば真となる。
 ```
-
-
-
 
 - 参考
  - http://shellscript.sunone.me/if_and_test.html
@@ -261,7 +279,6 @@ $(())も利用することができるようです。
 $ echo $(( (x + 5) * 2 ))
 30
 ```
-
 
 - 参考: http://qiita.com/katsukii/items/383b241209fe96eae6e7
 
@@ -335,6 +352,8 @@ done <$1
 ### 配列
 ループして実行する場合
 ```
+#!/bin/sh
+
 a=(1 2 3 4 5)
 for i in ${a[@]}
 do
@@ -343,7 +362,6 @@ done
 ```
 
 - http://shellscript.sunone.me/array.html
-
 
 
 ### 変数の解釈関連
@@ -385,7 +403,6 @@ if [ "$answer" = yes ]; then
 if [ x"$answer" = xyes ]; then
 ```
 
-
 ### "[]"と"[[]]"の違いについて
 
 動作上の違いとして次の違いがある。
@@ -411,7 +428,135 @@ $ echo $?
 変数展開後の条件式が「= “HOGE”」となるため [] の場合にはエラーメッセージが出力されている。
 一方で [[ ]] ではエラーメッセージは表示されないのでこの辺は使い分けると良いかも
 
+- 参考
+ - https://fumiyas.github.io/2013/12/15/test.sh-advent-calendar.html
 
+### setコマンドについて
+シェルスクリプトでよく使われるのがsetコマンド
+一般的に「set -eu」などとつけておくと便利らしいので、このオプションの意味を確認してみる
+
+- 未定義の変数を使おうとしたときに打ち止めにしてくれる。Perlでいうuse strict 'vars';的なもの
+```
+set -u
+```
+
+- エラーがあったらそこで打ち止めにしてくれる
+```
+set -e
+```
+
+その後、上記をある段階になったら無効にする場合には次のコマンドを実行すればいい
+```
+set +e
+```
+
+- 参考
+ - http://qiita.com/youcune/items/fcfb4ad3d7c1edf9dc96
+
+###
+```
+$ cat ./hoge.sh 
+#!/bin/sh
+
+set -o
+[tsuyoshi@localhost ~]$ ./hoge.sh 
+allexport      	off
+braceexpand    	on
+emacs          	off
+errexit        	off
+errtrace       	off
+functrace      	off
+hashall        	on
+histexpand     	off
+history        	off
+ignoreeof      	off
+interactive-comments	on
+keyword        	off
+monitor        	off
+noclobber      	off
+noexec         	off
+noglob         	off
+nolog          	off
+notify         	off
+nounset        	off
+onecmd         	off
+physical       	off
+pipefail       	off
+posix          	on
+privileged     	off
+verbose        	off
+vi             	off
+xtrace         	off
+```
+
+### shとbashの違い
+set -oすると以下の出力が取得できる
+```
+allexport      	off
+braceexpand    	on
+emacs          	off
+errexit        	off
+errtrace       	off
+functrace      	off
+hashall        	on
+histexpand     	off
+history        	off
+ignoreeof      	off
+interactive-comments	on
+keyword        	off
+monitor        	off
+noclobber      	off
+noexec         	off
+noglob         	off
+nolog          	off
+notify         	off
+nounset        	off
+onecmd         	off
+physical       	off
+pipefail       	off
+posix          	on
+privileged     	off
+verbose        	off
+vi             	off
+xtrace         	off
+```
+
+shとbashではこれらに差異がある。
+```
+$ cat binsh.sh 
+#!/bin/sh
+set -o
+$ cat binbash.sh 
+#!/bin/bash
+set -o
+$ ./binsh.sh > sh.sh   
+$ ./binbash.sh > bash.sh
+$ diff sh.sh bash.sh 
+23c23
+< posix          	on
+---
+> posix          	off
+```
+
+bashはshを真似ようとしているだけであり、上記の違いがある。
+違いを示すソースコードを載せます。
+
+```
+$ cat test.sh 
+diff <(ls /home) <(ls /homuhomu)
+$ sh test.sh
+test.sh: line 1: syntax error near unexpected token `('
+test.sh: line 1: `diff <(ls /home) <(ls /homuhomu)'
+$ bash test.sh
+ls: cannot access /homuhomu: No such file or directory
+1d0
+< tsuyoshi
+```
+
+また、bashじゃないと配列が使えない場合もあるので注意が必要です。
+
+- 参考
+ - http://sechiro.hatenablog.com/entry/20120806/1344267619
 
 ## デバッグ
 
@@ -448,7 +593,12 @@ $ ./script.sh
 + var3=BIG
 + exit 0
 ```
-	
+
+### コマンドが実行可能かどうか
+```
+CMD=foo
+type -p "$CMD" 1>/dev/null 2>&1 || echo "command not found: $CMD" >&2
+```
 
 # 参考URL
 - UNIX&LINUXコマンド・シェルスクリプトリファレンス
