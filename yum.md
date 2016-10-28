@@ -3,12 +3,16 @@ yumコマンドについて
 
 # 詳細
 
-### 基本コマンド
+## 表示系コマンド
 
+
+## アップデート関連コマンド
+
+
+### アップデート可能なパッケージを確認したい場合
 ```
 $ yum check-update       // アップデート可能なパッケージを確認する
 ```
-
 
 ### 例えば、php関連を除いてアップデートしたい場合
 コマンドで実行する場合には次のようにします。
@@ -26,6 +30,13 @@ exclude=kernel*
 
 - 参考
  - http://www.8wave.net/yum.html
+
+### 不要なパッケージを丸ごと削除する
+例えば、rubyとその他に依存しない関連パッケージを除去するにはremoveを実行します
+```
+$ sudo yum remove ruby
+```
+
 
 ### キャッシュ削除など
 通常キャッシュは/var/cache/yumに溜まるようだ。yum clean allを実行すると(全てが消えるわけではないようだが)多くのキャッシュが消えるようだ。
@@ -52,6 +63,9 @@ $yum --enablerepo='hogerepo' install mypackage
  less /var/log/yum.log
 ```
 
-- 参考
- - http://www.atmarkit.co.jp/flinux/rensai/linuxtips/795tmprepo.html
+# 参考
+- http://www.atmarkit.co.jp/flinux/rensai/linuxtips/795tmprepo.html
+- YUMコマンドチートシート - RedHat Enterprise Linux
+ - https://access.redhat.com/sites/default/files/attachments/rh_yum_cheatsheet_1214_jcs_print-ja.pdf
+ 
 
