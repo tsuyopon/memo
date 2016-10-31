@@ -110,12 +110,26 @@ sub.o: sub.c
 ```
 
 
+# FAQ
 
+### Makefile: is it possible to have stem with slash? 
+http://stackoverflow.com/questions/21182990/makefile-is-it-possible-to-have-stem-with-slash
+以下のターゲットは「hoge-hoge/fuga」といったスラッシュがはいったのだと効かない。この場合には「hoge-%/%:」とする必要がある。
+```
+hoge-%:
+	:
+```
 
+以下のドキュメントも合わせて参考のこと
+- https://www.gnu.org/software/make/manual/html_node/Pattern-Match.html#Pattern-Match
 
 # 参考
+- 公式ドキュメント
+ - 非常に豊富なドキュメント群
+ - https://www.gnu.org/software/make/manual/html_node/index.html#Top
 - もっとも豊富な日本語リファレンス
  - http://www.ecoop.net/coop/translated/GNUMake3.77/make_toc.jp.html
 - MakeとMakefileの説明
  - http://www.unixuser.org/~euske/doc/makefile/
+
 
