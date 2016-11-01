@@ -111,6 +111,19 @@ javascriptの場合だとこの辺の説明が.ctags生成の理解に役立つ
 ```
 
 
+## golang用ctagsの生成
+以下を参考のこと
+```
+--langdef=Go
+--langmap=Go:.go
+--regex-Go=/func([ \t]+\([^)]+\))?[ \t]+([a-zA-Z0-9_]+)/\2/d,func/
+--regex-Go=/var[ \t]+([a-zA-Z_][a-zA-Z0-9_]+)/\1/d,var/
+--regex-Go=/type[ \t]+([a-zA-Z_][a-zA-Z0-9_]+)/\1/d,type/
+```
+
+goだとデフォルトでsyntax onじゃないっぽいので、vimrc設定も載せておく
+- https://www.seeds-std.co.jp/seedsblog/2494.html
+
 
 ## 対応言語について
 対応言語の表示
