@@ -391,6 +391,32 @@ sub.o: sub.c
         gcc -O -c $< -o $@
 ```
 
+### 条件分岐したい
+ifdefやifeqがあります。逆のifndef, ifneqなどもあります。
+
+```
+ifdef debug
+ DEBUG_FLAG = -DDEBUG
+else
+ DEBUG_FLAG =
+endif
+```
+
+ifeqの場合で変数と比較する場合は次のような例になる
+```
+ifeq "$(use_a)" "yes"
+ a1 := a
+else
+ a1 := 1
+endif
+```
+
+### includeの前のハイフンについて
+例えば、次のようにincludeの前にハイフン(-)が付与されている場合には、そのファイルが存在しなくてもエラーになりません。
+```
+-include optional.mk
+```
+
 
 # FAQ
 
