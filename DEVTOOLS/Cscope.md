@@ -1,6 +1,7 @@
 
 # cscopeについて
 cscopeはC, C++, JAVAなどのソースコードを読んでいく際のタグジャンプなどに非常に役立つツールです。
+試した感じだとgolangに対してもctagsよりも呼び出し元も呼び出せるので良さそうです。
 上記以外の言語の場合にはctags, globalなどの別のツールの方が適しているかもしれません。自分はPHPはGLOBALで、perl, Javascript, python, rubyなどはctagsを使っています。
 
 # 内容

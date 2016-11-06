@@ -124,7 +124,6 @@ javascriptの場合だとこの辺の説明が.ctags生成の理解に役立つ
 goだとデフォルトでsyntax onじゃないっぽいので、vimrc設定も載せておく
 - https://www.seeds-std.co.jp/seedsblog/2494.html
 
-
 ## 対応言語について
 対応言語の表示
 ```
