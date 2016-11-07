@@ -6,6 +6,8 @@
  - http://postd.cc/the-definitive-guide-to-linux-system-calls/
 - The Linux Kernel(JF)
  - https://linuxjf.osdn.jp/JFdocs/The-Linux-Kernel.html
+- tcptracerouteを使う
+ - http://succzero.hatenablog.com/entry/2013/09/01/181615
 
 # やりたい(中)
 - gccのattributeについて調べる
