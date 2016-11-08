@@ -325,7 +325,7 @@ do
 done
 ```
 
-### 選択しで選ばせたい場合
+### 選択肢で選ばせたい場合
 ```
 select option in CODE DIE
 do
@@ -342,7 +342,7 @@ done
 you pressed CODE
 ```
 
-### ファイルから読み込ませる
+### データを読み込ませる
 以下はwhile read lineで読み込ませる場合の４パターンです
 
 - パターン1
