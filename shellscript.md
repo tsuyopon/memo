@@ -25,6 +25,8 @@ echo '${var#*/}  => ' ${var#*/}
 echo '${var##*/} => ' ${var##*/}
 echo '${var%.*}  => ' ${var%.*}
 echo '${var%%.*} => ' ${var%%.*}
+echo '${var%/*}  => ' ${var%/*}           # ディレクトリを切り出す
+echo '${var%.*}.ext  => ' ${var%.*}.ext   # 拡張子を変更する
 
 var2="abcdef abcdef abcdef xyz"
 echo '${var2/test/XXX} => ' ${var2/test/XXX}
@@ -37,6 +39,8 @@ ${var#*/}  =>  my/path/dir/test.20161026.dat
 ${var##*/} =>  test.20161026.dat
 ${var%.*}  =>  /my/path/dir/test.20161026
 ${var%%.*} =>  /my/path/dir/test
+${var%/*}  =>  /my/path/dir
+${var%.*}.ext  =>  /my/path/dir/test.20161026.ext
 ${var2/test/XXX} =>  abcdef abcdef abcdef xyz
 ${var2//abc/XXX} =>  XXXdef XXXdef XXXdef xyz
 ```
@@ -339,14 +343,87 @@ you pressed CODE
 ```
 
 ### ファイルから読み込ませる
-引数にファイル名を指定して読み込ませるには次のようにすれば良い。
+以下はwhile read lineで読み込ませる場合の４パターンです
+
+- パターン1
 ```
-i=1
+cnt=0
 while read line
 do
-    echo "$i: $line"
-    i=`expr $i + 1`
-done <$1
+    cnt=`expr $cnt + 1`
+    echo "LINE $cnt : $line"
+done <<END
+hoge
+fuga
+piyo
+END
+```
+- パターン2: コマンド実行と同時に利用する(パイプ以降プロセスが変わることに注意)
+```
+cnt=0
+cat /tmp/test.txt | while read line
+do
+    cnt=`expr $cnt + 1`
+    echo "LINE $cnt : $line"
+done
+```
+- パターン3: 変数から読み込ませる
+```
+DATA=`cat /tmp/test.txt`
+ 
+cnt=0
+while read line
+do
+    cnt=`expr $cnt + 1`
+    echo "LINE $cnt : $line"
+done <<END
+$DATA
+END
+```
+- パターン4: 標準入力からファイルを読み込ませる
+```
+cnt=0
+while read line
+do
+    cnt=`expr $cnt + 1`
+    echo "LINE $cnt : $line"
+done < /tmp/test.txt
+```
+- 参考
+ - http://server.etutsplus.com/sh-while-read-line-4pattern/
+
+パターン2のcatで読み込みパイプでwhile read lineなどを実行するときにはパイプ以降は別プロセスとして動作します。
+このため、以下のようにwhileで定義された変数をwhile文で参照することができません。
+- http://www.atmarkit.co.jp/bbs/phpBB/viewtopic.php?topic=15886&forum=10
+
+この場合はパイプを使わない方法で行いましょう
+
+### while read lineとevalを組み合わせてみる
+
+コマンドを実行してその結果を変数に格納して、while read lineで処理したい場合は次のようにします。先ほどのパターン３の例で記述します。
+```
+CMD="cat /etc/hosts | egrep -ie \"^127.0.0.1\" -ie \"localhost6$\""
+RET=`eval ${CMD}`
+
+echo "============================"
+echo ${RET}
+
+echo "============================"
+while read line
+do
+    echo $line
+done << END
+$RET
+END
+```
+
+結果は次の通りです。${RET}だと改行コードなく表示され、while read lineだと正しく表示されるようです。(なぜかはまだ不明)
+```
+============================
+127.0.0.1 localhost.localdomain localhost ::1 localhost6.localdomain6 localhost6
+============================
+127.0.0.1 localhost.localdomain localhost
+::1 localhost6.localdomain6 localhost6
 ```
 
 ### 配列
@@ -371,6 +448,20 @@ ${VAR}とか
 
 
 ## テクニック
+
+### 引数を取得する
+以下は引数を解析する際のサンプルです。
+引数が想定よりも少なければusageを表示します。OKなら取得します
+```
+if [ $# -lt 2]; then
+  echo "Usage:"
+  echo "  $(basename ${0}) <arg1> <arg2>"
+  exit1
+fi
+
+ARG1=${1}
+ARG2=${2}
+```
 
 ### ステータス情報の退避
 次のようにしておけば、$?のコマンドステータスが他のコマンドを実行する前に退避しておくことが可能である。

@@ -174,6 +174,9 @@ piyo
 ```
 
 # 便利技
+- 改行を削除する
+$ cat xxx.txt | sed -e "s/[\r\n]\+//g"
+
 - 10文字ずつで改行させる
 ```
 $ sed 's/.\{10\}/&\n/g' test.txt 
@@ -182,6 +185,25 @@ $ sed 's/.\{10\}/&\n/g' test.txt
 - 空行を除去
 ```
 $ sed '/^#/d' <input>
+```
+
+- sedで一番最初に現れたbbbbをddddに置換したい場合
+ - 参考: http://d.hatena.ne.jp/n9d/20081110/1226284188
+"1,/bbbb"を付与する可能です。bbbbが２箇所にあるのが冗長でコマンドの理解に苦しむ
+```
+$ echo -e "aaaa\n bbbb\n  cccc\naaaa\n bbbb\naaaa\n bbbb" | sed 1,/bbbb/s/bbbb/dddd/
+```
+
+2箇所目のddddが変更するわけではなく、見つかってから２箇所が変更されるようなので注意が必要！
+```
+$ echo -e "aaaa\n bbbb\n  cccc\naaaa\n bbbb\naaaa\n bbbb" | sed 2,/bbbb/s/bbbb/dddd/
+aaaa
+ dddd
+  cccc
+aaaa
+ dddd
+aaaa
+ bbbb
 ```
 
 ### ファイルを上書き置換する場合
