@@ -212,3 +212,41 @@ Idx Name          Size      VMA               LMA               File off  Algn
 ######################################################
 メモリ割り当てなどは以下が参考になります。
 	http://www.coins.tsukuba.ac.jp/~yas/coins/os2-2010/2011-01-25/
+
+
+######################################################
+*** 未整理リンク
+######################################################
+
+https://www.eecs.umich.edu/courses/eecs373/readings/Linker.pdf
+Symbol versioning extensions to ELF
+	ftp://ftp.kernel.org/pub/software/libs/glibc/hjl/compat/GNUvers.txt
+
+Version Script
+	https://ftp.gnu.org/old-gnu/Manuals/ld-2.9.1/html_node/ld_25.html
+
+13.13 LD Version Scripts
+	https://www.gnu.org/software/gnulib/manual/html_node/LD-Version-Scripts.html
+	https://sourceware.org/binutils/docs/ld/VERSION.html
+
+ELFの各種セクションについて
+	http://refspecs.linuxbase.org/LSB_3.0.0/LSB-PDA/LSB-PDA/specialsections.html
+
+
+no version information avairable
+	ある特定のライブラリAを使ったプログラムを作成していて、ライブラリAを更新した際に上記エラーが出た。これはライブラリAでビルドし直すとうまくいく
+	http://stackoverflow.com/questions/18390833/no-version-information-available?noredirect=1&lq=1
+
+ELF executables: required version information for imported symbols
+	http://stackoverflow.com/questions/30053469/elf-executables-required-version-information-for-imported-symbols
+
+ライブラリのI/Fが変わってもメジャーバージョンをあげないで済ます方法
+	http://www.nslabs.jp/elf-versioning.rhtml
+
+
+ELF Symbol Versioning
+	https://www.akkadia.org/drepper/symbol-versioning
+
+Running new applications on old glibc
+	http://lightofdawn.org/wiki/wiki.cgi/-wiki/NewAppsOnOldGlibc
+
