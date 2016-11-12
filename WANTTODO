@@ -12,6 +12,12 @@
 # やりたい(中)
 - gccのattributeについて調べる
 
+# コマンド関連
+- netstat
+- route
+- awk
+- sed
+
 # 暇なら
 - GCCのドキュメント充実しているんで眺めたい
  - https://gcc.gnu.org/onlinedocs/
