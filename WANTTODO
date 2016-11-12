@@ -17,6 +17,9 @@
 - route
 - awk
 - sed
+- strace
+ - http://blog.livedoor.jp/sonots/archives/18193659.html
+- ltrace
 
 # 暇なら
 - GCCのドキュメント充実しているんで眺めたい
