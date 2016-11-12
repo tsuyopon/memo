@@ -223,6 +223,10 @@ $ sudo lsof -a -u hoge -c java
 $ sudo lsof -i -n -P
 ```
 
+# TODO
+- この辺にまだlsofで知らないことが書いてありそうなので時間があれば見ておく
+ - https://opensource.apple.com/source/lsof/lsof-41/lsof/00QUICKSTART
+
 # 参考
 - A Quick Start for Lsof
  - https://opensource.apple.com/source/lsof/lsof-41/lsof/00QUICKSTART
