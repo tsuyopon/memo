@@ -21,6 +21,10 @@ puts("localhost.localdomain"localhost.localdomain
 +++ exited (status 0) +++
 ```
 
+### 現在実行中のプロセスにアタッチしてライブラリトレースをする
+```
+$ ltrace -p <pid>
+```
 
 ### システムコールも一緒にトレースする
 -Sオプションを付加すればstrace情報も表示します。
@@ -57,6 +61,151 @@ __libc_start_main(0x401150, 1, 0x7fff71717378, 0x401d70 <unfinished ...>
 +++ exited (status 0) +++
 ```
 
+### fork()やclone()などで生成された子プロセスも表示する
+
+たとえば、trafficserverの例で示すと
+```
+$ sudo ltrace -p <pid> -f
+....
+[pid 28042] ink_atomiclist_popall(0x1506eb00, 0, 0x1506eb20, 0xffffffff)                         = 0
+[pid 28042] clock_gettime(0, 0x14e6bcc0, 1, 0)                                                   = 0
+[pid 28042] pthread_mutex_lock(0x1506eb20, 0x17ee9784, 0x1b821e84, 1)                            = 0
+[pid 28042] pthread_cond_timedwait(0x1506eb48, 0x1506eb20, 0x14e6bca0, 0x1506eb20 <unfinished ...>
+[pid 28040] <... pthread_cond_timedwait resumed> )                                               = 110
+[pid 28040] pthread_cond_timedwait(0x2c88348, 0x2c88320, 0x153f2c10, 0x2c88320)                  = 110
+[pid 28040] pthread_cond_timedwait(0x2c88348, 0x2c88320, 0x153f2c10, 0x2c88320)                  = 110
+[pid 28040] pthread_cond_timedwait(0x2c88348, 0x2c88320, 0x153f2c10, 0x2c88320)                  = 110
+[pid 28043] <... pthread_cond_timedwait resumed> )                                               = 110
+...
+```
+
+上記では、28042, 28040, 28043などのpidで稼働しているのがわかる。
+プロセスを表示すると
+```
+$ ps auxww | grep -i traffic_server
+root     28028  0.0  0.2 101072  2728 pts/1    S    22:21   0:00 sudo /usr/local/trafficserver/bin/traffic_server
+nobody   28029  4.0  3.7 283532 38308 pts/1    Sl   22:21   0:58 /usr/local/trafficserver/bin/traffic_server
+```
+
+さらにスレッドもみると次のようになる。つまり、28040, 28042, 28043などはスレッドとして生成されたプロセスであるかわかる
+```
+$ ps -eL 28029 | grep -i traffic
+28028 28028 pts/1    S      0:00 sudo /usr/local/trafficserver/bin/traffic_server
+28029 28029 pts/1    Sl     0:06 /usr/local/trafficserver/bin/traffic_server
+28029 28030 pts/1    Sl     0:00 /usr/local/trafficserver/bin/traffic_server
+28029 28031 pts/1    Sl     0:00 /usr/local/trafficserver/bin/traffic_server
+28029 28032 pts/1    Sl     0:00 /usr/local/trafficserver/bin/traffic_server
+28029 28033 pts/1    Sl     0:06 /usr/local/trafficserver/bin/traffic_server
+28029 28034 pts/1    Sl     0:06 /usr/local/trafficserver/bin/traffic_server
+28029 28035 pts/1    Sl     0:06 /usr/local/trafficserver/bin/traffic_server
+28029 28036 pts/1    Sl     0:06 /usr/local/trafficserver/bin/traffic_server
+28029 28037 pts/1    Sl     0:06 /usr/local/trafficserver/bin/traffic_server
+28029 28038 pts/1    Sl     0:06 /usr/local/trafficserver/bin/traffic_server
+28029 28039 pts/1    Sl     0:06 /usr/local/trafficserver/bin/traffic_server
+28029 28040 pts/1    Sl     0:06 /usr/local/trafficserver/bin/traffic_server
+28029 28041 pts/1    Sl     0:00 /usr/local/trafficserver/bin/traffic_server
+28029 28042 pts/1    Sl     0:00 /usr/local/trafficserver/bin/traffic_server
+28029 28043 pts/1    Sl     0:00 /usr/local/trafficserver/bin/traffic_server
+28029 28044 pts/1    Sl     0:00 /usr/local/trafficserver/bin/traffic_server
+```
+
+### フィルタリングオプションについて
+x, e, lといった３種類のフィルタリングオプションがある。
+```
+-x is ´show me what calls these symbols (including local calls)´
+-e is ´show me what calls these symbols (inter-library calls only)´
+-l is ´show me what calls into this library´
+```
+
+xはローカルコール  
+eは内部コールのみ  
+lはライブラリ
+
+### ライブラリで指定した情報だけ表示する
+
+たとえば、hostnameでlddしてみて、/lib64/libnsl.so.1のライブラリ情報だけトレースしたいことがある。
+```
+$ ldd /usr/bin/hostname 
+	linux-vdso.so.1 =>  (0x00007fff03dff000)
+	libnsl.so.1 => /lib64/libnsl.so.1 (0x00000038aba00000)
+	libc.so.6 => /lib64/libc.so.6 (0x0000003897a00000)
+	/lib64/ld-linux-x86-64.so.2 (0x0000003897600000)
+```
+
+この場合には-lオプションの後にライブラリ名を指定する(ディレクトリのパスは指定すると正しく取得できないので指定しないこと)
+```
+$ sudo ltrace -l libnsl.so.1 hostname
+localhost.localdomain
++++ exited (status 0) +++
+[tsuyoshi@localhost memo]$ sudo ltrace -l libc.so.6 hostname
+hostname->__libc_start_main(0x401150, 1, 0x7fff167fed98, 0x401d70 <unfinished ...>
+hostname->getopt_long(1, 0x7fff167fed98, "aAdfbF:h?iIsVvy", 0x4027e0, nil)                       = -1
+hostname->__errno_location()                                                                     = 0x7f5f3017d6c0
+hostname->malloc(128)                                                                            = 0x1ca0010
+hostname->gethostname("localhost.localdomain", 128)                                              = 0
+hostname->memchr("localhost.localdomain", '\0', 128)                                             = 0x1ca0025
+hostname->puts("localhost.localdomain"localhost.localdomain
+)                                                          = 22
+libnsl.so.1->__cxa_finalize(0x38abc15d50, 5, 0, 0)                                               = 0x3897db2b80
++++ exited (status 0) +++
+```
+
+### 特定の関数情報だけを取得する
+```
+$ ltrace -e "strcmp*" hostname
+hostname->strcmp("hostname", "domainname")                                                       = 4
+hostname->strcmp("hostname", "ypdomainname")                                                     = -17
+hostname->strcmp("hostname", "nisdomainname")                                                    = -6
+localhost.localdomain
++++ exited (status 0) +++
+```
+
+### ユーザー権限を指定する
+-uオプションでその指定したユーザー権限でコマンドを実行した結果を出力します。
+```
+$ sudo ltrace -u tsuyoshi ls
+```
+
+### 引数に表示する長さを指定する
+デフォルトで32となっているようだが、-sオプションで指定できる。
+たとえば、3を指定した場合は引数が３文字表示され、その後３点リーダーになっていることが確認できる。
+使う場面としてはもっと見たい場合に使うことが多そうだ
+```
+$ ltrace -s 3 hostname
+__libc_start_main(0x401150, 1, 0x7fff0a8c32e8, 0x401d70 <unfinished ...>
+rindex("hos"..., '/')                                                                            = nil
+strcmp("hos"..., "dom"...)                                                                       = 4
+strcmp("hos"..., "ypd"...)                                                                       = -17
+strcmp("hos"..., "nis"...)                                                                       = -6
+getopt_long(1, 0x7fff0a8c32e8, "aAd"..., 0x4027e0, nil)                                          = -1
+__errno_location()                                                                               = 0x7f904de916c0
+malloc(128)                                                                                      = 0x1b74010
+gethostname("loc"..., 128)                                                                       = 0
+memchr("loc"..., '\0', 128)                                                                      = 0x1b74025
+puts("loc"...localhost.localdomain
+)                                                                                   = 22
++++ exited (status 0) +++
+```
+
+### InstructionPointerのアドレスも表示する
+左側にInstructionPointerへのアドレスも表示します。
+```
+$ sudo ltrace -i hostname
+[0x4013d5] __libc_start_main(0x401150, 1, 0x7fffb7574088, 0x401d70 <unfinished ...>
+[0x401173] rindex("hostname", '/')                                                               = nil
+[0x4011ae] strcmp("hostname", "domainname")                                                      = 4
+[0x401207] strcmp("hostname", "ypdomainname")                                                    = -17
+[0x401218] strcmp("hostname", "nisdomainname")                                                   = -6
+[0x4011cf] getopt_long(1, 0x7fffb7574088, "aAdfbF:h?iIsVvy", 0x4027e0, nil)                      = -1
+[0x4015e3] __errno_location()                                                                    = 0x7fa0174726c0
+[0x401648] malloc(128)                                                                           = 0x714010
+[0x401611] gethostname("localhost.localdomain", 128)                                             = 0
+[0x401625] memchr("localhost.localdomain", '\0', 128)                                            = 0x714025
+[0x401987] puts("localhost.localdomain"localhost.localdomain
+)                                                         = 22
+[0xffffffffffffffff] +++ exited (status 0) +++
+```
+
 ### プログラム経過時間を出力する
 -tや-tt, -tttのオプションがあります。画面左側に時刻の経過時間を付与します。
 
@@ -87,6 +236,44 @@ $ ltrace -ttt ls
 1478956653.618234 fclose(0x3897db1180)                                                           = 0
 1478956653.620122 +++ exited (status 0) +++
 ```
+
+### 各トレースコールでの経過時間を表示する
+
+```
+$ ltrace -T hostname
+__libc_start_main(0x401150, 1, 0x7fffebcd7f78, 0x401d70 <unfinished ...>
+rindex("hostname", '/')                                                                          = nil <0.004076>
+strcmp("hostname", "domainname")                                                                 = 4 <0.004934>
+strcmp("hostname", "ypdomainname")                                                               = -17 <0.000455>
+strcmp("hostname", "nisdomainname")                                                              = -6 <0.000652>
+getopt_long(1, 0x7fffebcd7f78, "aAdfbF:h?iIsVvy", 0x4027e0, nil)                                 = -1 <0.000501>
+__errno_location()                                                                               = 0x7fb4405316c0 <0.000117>
+malloc(128)                                                                                      = 0x1f46010 <0.000236>
+gethostname("localhost.localdomain", 128)                                                        = 0 <0.000147>
+memchr("localhost.localdomain", '\0', 128)                                                       = 0x1f46025 <0.000965>
+puts("localhost.localdomain"localhost.localdomain
+)                                                                    = 22 <0.001108>
++++ exited (status 0) +++
+```
+
+### プログラム実行開始からの時間を表示する。
+```
+$ sudo ltrace -r hostname
+  0.000000 __libc_start_main(0x401150, 1, 0x7ffff098c1f8, 0x401d70 <unfinished ...>
+  0.003457 rindex("hostname", '/')                                                               = nil
+  0.005304 strcmp("hostname", "domainname")                                                      = 4
+  0.003444 strcmp("hostname", "ypdomainname")                                                    = -17
+  0.001507 strcmp("hostname", "nisdomainname")                                                   = -6
+  0.001140 getopt_long(1, 0x7ffff098c1f8, "aAdfbF:h?iIsVvy", 0x4027e0, nil)                      = -1
+  0.001239 __errno_location()                                                                    = 0x7f85020ba6c0
+  0.001845 malloc(128)                                                                           = 0xafc010
+  0.000279 gethostname("localhost.localdomain", 128)                                             = 0
+  0.000304 memchr("localhost.localdomain", '\0', 128)                                            = 0xafc025
+  0.000134 puts("localhost.localdomain"localhost.localdomain
+)                                                         = 22
+  0.000254 +++ exited (status 0) +++
+```
+
 
 ### 統計情報を表示する
 ```
@@ -136,6 +323,29 @@ CPU	EDITOR	  Kernel	 MISC	OS	     README.md	VirtualBox	     autotools	golang.md 
 $  ltrace -o stracelog.txt ls
 ```
 
+### ltraceプログラム自体のデバッグログを出力する
+-Dの後にレベルを指定する。
+```
+$ ltrace -D 040 hostname
+...
++++ exited (status 0) +++
+DEBUG: proc.c:693: remove_proc(pid=28722)
+DEBUG: proc.c:685: detach_task 28722 from leader 28722
+DEBUG: handle_event.c:742: callstack_pop(pid=28722)
+DEBUG: handle_event.c:742: callstack_pop(pid=28722)
+DEBUG: dict.c:182: dict_apply_to_all()
+DEBUG: dict.c:80: dict_clear()
+DEBUG: events.c:144: next_event()
+```
+
+レベルに指定できる値は次の４つで040が最も出力量が多い
+```
+01     DEBUG_GENERAL.  Shows helpful progress information
+010    DEBUG_EVENT.  Shows every event received by a traced program
+020    DEBUG_PROCESS.  Shows every action ltrace carries upon a traced process
+040    DEBUG_FUNCTION.  Shows every entry to internal functions
+```
+
 ここから下は実際に試せていない。。。
 ### シグナルで呼ばれたトレースコールの表示をdisabledにする
 ```
@@ -147,9 +357,13 @@ $  ltrace -b cmd
 $  ltrace -C cmd
 ```
 
+### ltrace.confをデフォルト以外のものに変更する
+```
+$  ltrace -F ltrace.conf hostname
+```
+
 # TODO
-この辺を全体的に使ってみるといいかも
-- http://latrace.sourceforge.net/latrace.html
+- manpageを元に調査したが、-L, -w, -x, -A <num>, -aなどのオプションについてはまだ未調査なので今後やりたい
 
 
 # 参考URL
