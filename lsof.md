@@ -104,10 +104,13 @@ sshd    24068 tsuyoshi    3u  IPv4 104701      0t0  TCP localhost.localdomain:ss
 
 このほかにも次のような指定が可能です。
 ```
-$ sudo lsof -i :22,80          # ssh or http
-$ sudo lsof -i :http           # 名前でもいける
-$ sudo lsof -i @192.168.0.1    # interface指定
-$ sudo lsof -i @192.168.0.1:80 # interfaceとポート指定
+$ sudo lsof -i:22,80                    # ssh or http
+$ sudo lsof -i:http                     # 名前でもいける
+$ sudo lsof -i@192.168.0.1              # interface指定
+$ sudo lsof -i@192.168.0.1:80           # interfaceとポート指定
+$ sudo lsof -i4                         # IPv4
+$ sudo lsof -i6                         # IPv6
+$ sudo lsof -itcp@192.168.0.1:ftp-data  # プロトコル、interface, ポート番号指定
 ```
 
 tcpやudpで指定することも可能です
@@ -182,14 +185,15 @@ sshd    24068 tsuyoshi   11u   CHR                5,2      0t0   6208 /dev/ptmx
 sshd    24068 tsuyoshi   12u   CHR                5,2      0t0   6208 /dev/ptmx
 ```
 
-次のように複数指定や特定のプロセス以外といった指定もできます
+次のように複数指定や特定のプロセス以外といった指定もできます。
+これはプロセスに限らずユーザー指定(-u)などにも適応できます
 ```
 $ sudo lsof -c python -c mysqld   // 複数指定
 $ sudo lsof -c ^sshd              // それ以外指定
 ```
 
 ### ユーザーを指定して表示する
-特定のユーザーのプロセスが使っているものを表示する。
+特定のユーザーのプロセスが使っているものを表示する。ユーザー名でなくユーザーIDでも大丈夫なようだ
 ```
 $ sudo lsof -u tsuyoshi | tail -5
 tail    24419 tsuyoshi  mem    REG              253,1    158440 135298 /usr/lib64/ld-2.15.so
@@ -197,6 +201,11 @@ tail    24419 tsuyoshi  mem    REG              253,1   2065552 135311 /usr/lib6
 tail    24419 tsuyoshi    0r  FIFO                0,8       0t0 107850 pipe
 tail    24419 tsuyoshi    1u   CHR              136,2       0t0      5 /dev/pts/2
 tail    24419 tsuyoshi    2u   CHR              136,2       0t0      5 /dev/pts/2
+```
+
+### グループを指定して表示する
+```
+$ sudo lsof -g12717
 ```
 
 
@@ -221,6 +230,12 @@ $ sudo lsof -a -u hoge -c java
 -nや-Pで名前解決せずに、そして、ポート番号からサービス変換せずに表示してくれます。
 ```
 $ sudo lsof -i -n -P
+```
+
+### NFSのファイルも表示する
+実際に使ったことはないが、
+```
+$ sudo lsof -N
 ```
 
 # TODO
