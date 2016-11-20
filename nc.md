@@ -1,10 +1,10 @@
 
-# $B35MW(B
-nc$B%3%^%s%I$K$D$$$F(B
+# 概要
+ncコマンドについて
 
-# $B>\:Y(B
+# 詳細
 
-### HTTP$B%j%/%(%9%H$r=P$9(B
+### HTTPリクエストを出す
 
 ```
 $ echo -en "GET / HTTP/1.1\n\n" | nc www.google.com 80
@@ -23,7 +23,7 @@ The document has moved
 </BODY></HTML>
 ```
 
-### $B%a!<%k$rAw$k(B
+### メールを送る
 ```
 nc [-C] localhost 25 << EOF
 HELO host.example.com
@@ -36,26 +36,26 @@ QUIT
 EOF
 ```
 
-### $B%]!<%H%9%-%c%s%K%s%0$r9T$&(B
-$B%;%-%e%j%F%#%A%'%C%/$J$I$N$?$a$K%m!<%+%k%[%9%H$G<B;\$9$k$3$H!#(B
+### ポートスキャンニングを行う
+セキュリティチェックなどのためにローカルホストで実施すること。
 ```
 $ nc -zv localhost 1-65535
 ```
 
-### Redis$B$X%"%/%;%9(B
+### Redisへアクセス
 ```
 $ (echo 'set KEY1 hoge'; sleep 1s; echo 'key *') | nc localhost 6379
 ```
 
-### .ssh/config$B$K(BProxyCommand$B$r5-=R$9$k(B
-passproxy.com$B$K%m%0%$%s$;$:$K0l5$$K(Bremoteserver.com$B$K(Bssh$B%m%0%$%s$d(Bscp$B$9$k$?$a$N@_Dj(B
+### .ssh/configにProxyCommandを記述する
+passproxy.comにログインせずに一気にremoteserver.comにsshログインやscpするための設定
 ```
 Host remoteserver.com
   ProxyCommand ssh passproxy.com nc %h %p
 ```
 
-# $B;29M(BURL
-- nc $B%3%^%s%I(B $B;H$$J}%a%b(B: Qiita
+# 参考URL
+- nc コマンド 使い方メモ: Qiita
  - http://qiita.com/yasuhiroki/items/d470829ab2e30ee6203f
-- nc$B$N(BManpage
+- ncのManpage
  - http://www.computerhope.com/unix/nc.htm
