@@ -1,12 +1,20 @@
-MAC関連設定
 
-*** ️ローカルアクセス
+# MAC関連設定
+
+# 設定
+### ️ローカルアクセス
 http://localhost:8080/
 ssh localhost -p 50022
 
-*** ️.inputrc, .bash_profile設定
+### ️.inputrc, .bash_profile設定
 http://mactips-lib.net/m/terminal/001.html
 
-*** ️ターミナルの日本語がlsして文字化けする場合
+### ️ターミナルの日本語がlsして文字化けする場合
 ターミナルの環境設定 -> 詳細 -> 文字エンコーディングをUnicode(UTF-8)に設定すれば良い
+
+### locateを使う
+```
+$ sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.locate.plist
+$ sudo /usr/libexec/locate.updatedb
+```
 
