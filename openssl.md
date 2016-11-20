@@ -341,3 +341,4 @@ verify return:1
 
 # 参考URL
 - http://www.usupi.org/sysad/252.html
+- http://d.hatena.ne.jp/blooper/20120910/1347285980
