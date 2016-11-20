@@ -5,6 +5,8 @@
 
 # 詳細
 
+
+### 鍵生成を行いopensslサーバを起動する
 公開鍵の改竄を防ぐため、認証局(Certification Authority, CA) というところで署名してもらいます。これが、サーバ証明書(Certificate, CRT)です。  
 
 鍵を作成します。RSA(genrsa)とDSA(gendsa)の２つを指定できますがここではgenrsaを指定しています。(gendsaの場合には参考URLを参照のこと)
@@ -284,6 +286,132 @@ Certificate:
 
 ```
 
+### 証明書の内容を表示する
+showcertsを付与する
+```
+$ openssl s_client -connect shopping.yahoo.co.jp:443 -showcerts 
+CONNECTED(00000003)
+depth=1 /C=BE/O=GlobalSign nv-sa/CN=GlobalSign Organization Validation CA - SHA256 - G2
+verify error:num=20:unable to get local issuer certificate
+verify return:0
+---
+Certificate chain
+ 0 s:/C=JP/ST=Tokyo/L=Minato-Ku/O=Yahoo Japan Corporation/CN=shopping.yahoo.co.jp
+   i:/C=BE/O=GlobalSign nv-sa/CN=GlobalSign Organization Validation CA - SHA256 - G2
+-----BEGIN CERTIFICATE-----
+MIIFRTCCBC2gAwIBAgIMRKQPh/5N3WOv6VV9MA0GCSqGSIb3DQEBCwUAMGYxCzAJ
+BgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTwwOgYDVQQDEzNH
+bG9iYWxTaWduIE9yZ2FuaXphdGlvbiBWYWxpZGF0aW9uIENBIC0gU0hBMjU2IC0g
+RzIwHhcNMTYxMDE5MDAwMDAwWhcNMTcxMDE5MTQ1OTU5WjByMQswCQYDVQQGEwJK
+UDEOMAwGA1UECBMFVG9reW8xEjAQBgNVBAcTCU1pbmF0by1LdTEgMB4GA1UEChMX
+WWFob28gSmFwYW4gQ29ycG9yYXRpb24xHTAbBgNVBAMTFHNob3BwaW5nLnlhaG9v
+LmNvLmpwMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzoZtY1E+ey6T
+P4Cu4o3MI1555lAIJrpAlXy9YKp3fD0yHaw0YfCaZEuXObEib72iGpgw3P0TRW0S
+zTeb/F9LYwTZD40DNclpttkZK0aHRJjgqve84xIsHoF7Mn3Ryyy2e/MemKJGNK99
+mfm2PD9FgaGtcS5yXm1isLn6r2SRJoPXRO2fgGL/+aXjs+7uDNr7K8NE7+CtQxUI
+48U+LvPdDtKdePBh54G/++OOpg6DOwM7prDIu7jCw4s5ntJBmJDqOIlyDvZnhk9A
+iei7nQuQwgtXq+W1UUqNfUOKpAxdwwwMwwgno88Ls927YMiHm3TMDCu1Xvy+cwNO
+4MHMbT7GjwIDAQABo4IB5TCCAeEwDgYDVR0PAQH/BAQDAgWgMIGgBggrBgEFBQcB
+AQSBkzCBkDBNBggrBgEFBQcwAoZBaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNv
+bS9jYWNlcnQvZ3Nvcmdhbml6YXRpb252YWxzaGEyZzJyMS5jcnQwPwYIKwYBBQUH
+MAGGM2h0dHA6Ly9vY3NwMi5nbG9iYWxzaWduLmNvbS9nc29yZ2FuaXphdGlvbnZh
+bHNoYTJnMjBWBgNVHSAETzBNMEEGCSsGAQQBoDIBFDA0MDIGCCsGAQUFBwIBFiZo
+dHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAIBgZngQwBAgIw
+CQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRwOi8vY3JsLmdsb2JhbHNp
+Z24uY29tL2dzL2dzb3JnYW5pemF0aW9udmFsc2hhMmcyLmNybDAfBgNVHREEGDAW
+ghRzaG9wcGluZy55YWhvby5jby5qcDAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYB
+BQUHAwIwHQYDVR0OBBYEFGinxjbNBfcDmhTn7WYPBSRVFfvfMB8GA1UdIwQYMBaA
+FJbeYfG9HBYpUxzAzH07gwBA5hp8MA0GCSqGSIb3DQEBCwUAA4IBAQAuqcnltNzH
+u5HBKU+5dGcUB6+DKMIzKyQNeAweM1o9o9zIJOKi+gpL6DUtYfGPEPJnNjxrumf5
+Xx0VBLRXybNGF40ZSCnezz216ma1YrY51zo78DRnjqs9ov77gtBNIlgMkV3/a0wM
+Gwa67ESx2Jvso2nT1vYEOeGWIczR8UuPbJOSTSF5jJZzA18DecVcTL+3pG1/dZO6
+SLDZF46wWTeJSk2MtfUh06A64JWs+i+tXDAuO/jpFz2iesrfEK4HMtXP6HkT8WSR
+lx8DsGAoV64oEIZrTsz/I0Z/4yfNSEU0tdENuw6UOZ9gy/gtl1Pz7LcgRFEyaNO/
+/5AU/w73tbpj
+-----END CERTIFICATE-----
+ 1 s:/C=BE/O=GlobalSign nv-sa/CN=GlobalSign Organization Validation CA - SHA256 - G2
+   i:/C=BE/O=GlobalSign nv-sa/OU=Root CA/CN=GlobalSign Root CA
+-----BEGIN CERTIFICATE-----
+MIIEaTCCA1GgAwIBAgILBAAAAAABRE7wQkcwDQYJKoZIhvcNAQELBQAwVzELMAkG
+A1UEBhMCQkUxGTAXBgNVBAoTEEdsb2JhbFNpZ24gbnYtc2ExEDAOBgNVBAsTB1Jv
+b3QgQ0ExGzAZBgNVBAMTEkdsb2JhbFNpZ24gUm9vdCBDQTAeFw0xNDAyMjAxMDAw
+MDBaFw0yNDAyMjAxMDAwMDBaMGYxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9i
+YWxTaWduIG52LXNhMTwwOgYDVQQDEzNHbG9iYWxTaWduIE9yZ2FuaXphdGlvbiBW
+YWxpZGF0aW9uIENBIC0gU0hBMjU2IC0gRzIwggEiMA0GCSqGSIb3DQEBAQUAA4IB
+DwAwggEKAoIBAQDHDmw/I5N/zHClnSDDDlM/fsBOwphJykfVI+8DNIV0yKMCLkZc
+C33JiJ1Pi/D4nGyMVTXbv/Kz6vvjVudKRtkTIso21ZvBqOOWQ5PyDLzm+ebomchj
+SHh/VzZpGhkdWtHUfcKc1H/hgBKueuqI6lfYygoKOhJJomIZeg0k9zfrtHOSewUj
+mxK1zusp36QUArkBpdSmnENkiN74fv7j9R7l/tyjqORmMdlMJekYuYlZCa7pnRxt
+Nw9KHjUgKOKv1CGLAcRFrW4rY6uSa2EKTSDtc7p8zv4WtdufgPDWi2zZCHlKT3hl
+2pK8vjX5s8T5J4BO/5ZS5gIg4Qdz6V0rvbLxAgMBAAGjggElMIIBITAOBgNVHQ8B
+Af8EBAMCAQYwEgYDVR0TAQH/BAgwBgEB/wIBADAdBgNVHQ4EFgQUlt5h8b0cFilT
+HMDMfTuDAEDmGnwwRwYDVR0gBEAwPjA8BgRVHSAAMDQwMgYIKwYBBQUHAgEWJmh0
+dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMDMGA1UdHwQsMCow
+KKAmoCSGImh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5uZXQvcm9vdC5jcmwwPQYIKwYB
+BQUHAQEEMTAvMC0GCCsGAQUFBzABhiFodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNv
+bS9yb290cjEwHwYDVR0jBBgwFoAUYHtmGkUNl8qJUC99BM00qP/8/UswDQYJKoZI
+hvcNAQELBQADggEBAEYq7l69rgFgNzERhnF0tkZJyBAW/i9iIxerH4f4gu3K3w4s
+32R1juUYcqeMOovJrKV3UPfvnqTgoI8UV6MqX+x+bRDmuo2wCId2Dkyy2VG7EQLy
+XN0cvfNVlg/UBsD84iOKJHDTu/B5GqdhcIOKrwbFINihY9Bsrk8y1658GEV1BSl3
+30JAZGSGvip2CTFvHST0mdCF/vIhCPnG9vHQWe3WVjwIKANnuvD58ZAWR65n5ryA
+SOlCdjSXVWkkDoPWoC209fN5ikkodBpBocLTJIg1MGCUF7ThBCIxPTsvFwayuJ2G
+K1pp74P1S8SqtCr4fKGxhZSM9AyHDPSsQPhZSZg=
+-----END CERTIFICATE-----
+---
+Server certificate
+subject=/C=JP/ST=Tokyo/L=Minato-Ku/O=Yahoo Japan Corporation/CN=shopping.yahoo.co.jp
+issuer=/C=BE/O=GlobalSign nv-sa/CN=GlobalSign Organization Validation CA - SHA256 - G2
+---
+No client certificate CA names sent
+---
+SSL handshake has read 2646 bytes and written 444 bytes
+---
+New, TLSv1/SSLv3, Cipher is RC4-SHA
+Server public key is 2048 bit
+Secure Renegotiation IS supported
+Compression: NONE
+Expansion: NONE
+SSL-Session:
+    Protocol  : TLSv1
+    Cipher    : RC4-SHA
+    Session-ID: 26F3E5A1998B43623F39607045A84DE0D1085FEC392E62A796389124612E546A
+    Session-ID-ctx: 
+    Master-Key: A8084DD18F9FEE512B62F3858FB96A5BA8FC7161786586F6BA8FBCBFD07A6081F952695512D29F11AEC35D76ECA1390D
+    Key-Arg   : None
+    Start Time: 1478820987
+    Timeout   : 300 (sec)
+    Verify return code: 0 (ok)
+---
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>Yahoo!ショッピング - Ｔポイントが貯まる！使える！ネット通販</title>
+<meta name=”robots” content=”noindex”>
+<link rel="stylesheet" href="https://s.yimg.jp/images/shp_front/pc/_library/css/_library1.15.css">
+<link rel="stylesheet" href="https://s.yimg.jp/images/shp_front/pc/error/css/error1.2.css">
+<link rel="canonical" href="http://shopping.yahoo.co.jp/">
+</head>
+<body>
+</body>
+
+(省略)
+
+</html>
+read:errno=0
+```
+
+
+### パケット内容詳細も取得する
+debugオプションを付与するとパケット内容の詳細も表示する。
+```
+$ openssl s_client -connect shopping.yahoo.co.jp:443  -debug
+...
+0000 - 0b 00 09 bf 00 09 bc 00-05 49 30 82 05 45 30 82   .........I0..E0.
+0010 - 04 2d a0 03 02 01 02 02-0c 44 a4 0f 87 fe 4d dd   .-.......D....M.
+...
+```
 
 ### cypherリストを表示する。
 ```
@@ -295,6 +423,34 @@ aes-192-ecb
 aes-256-cbc
 aes-256-ecb
 (...)
+```
+
+### 秘密鍵の内容を確認する
+```
+$  openssl rsa -text -noout -in server.key 
+Private-Key: (2048 bit)
+modulus:
+    00:dc:d4:78:45:af:ec:78:66:d7:6a:04:6f:58:7e:
+    cc:3a:d2:a6:3b:37:78:62:02:bd:3c:80:cc:2d:8a:
+    55:83:1c:10:43:3b:50:6e:6d:f2:69:c6:06:b7:fd:
+    02:21:55:d4:e9:e4:ad:30:6e:f7:e6:7c:0d:71:89:
+    92:a3:cc:73:e2:2f:c8:12:48:37:4c:f5:dc:3f:2e:
+    28:3a:d5:41:45:19:80:6c:61:f7:2c:6b:d9:27:5b:
+    a8:1d:a6:ee:5d:5d:fd:99:34:cf:1d:f8:ab:c5:12:
+    52:0f:6b:72:70:37:a8:4c:d6:39:a0:b0:24:ca:07:
+    c6:48:00:f2:b2:87:6d:fd:30:d8:59:c4:0a:7d:ae:
+    29:00:30:e0:f5:d6:1a:59:6c:13:43:2a:96:e2:5c:
+    cd:57:1c:42:3f:83:29:9d:5d:6d:b6:65:f9:fe:87:
+    d1:51:49:83:57:3a:eb:31:7f:bd:8b:72:0f:84:3c:
+    73:e3:f9:25:e3:af:45:2d:ef:40:03:77:d7:a2:af:
+    2c:da:72:36:2d:ea:0c:d9:e7:40:55:8d:24:57:f9:
+    54:6f:b2:16:63:75:61:b7:73:5a:b1:6d:5f:2e:2e:
+    27:bd:74:7f:e8:30:2b:92:d3:9c:17:2f:d3:31:e9:
+    b2:63:37:6c:8e:72:49:7d:e5:6b:a8:35:f1:72:88:
+    99:4d
+publicExponent: 65537 (0x10001)
+privateExponent:
+
 ```
 
 ### opensslコマンドでハッシュ値を算出する
