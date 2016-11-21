@@ -52,6 +52,13 @@ puts "foo"    #=> 改行あり
 p 123         #=> デバッグ用
 ```
 
+<<を使うこともできる
+```
+s = "Hello"
+s << ", world"
+puts s
+```
+
 ### インタラクティブに実行する
 irbコマンドを使って試せば良い
 ```
@@ -77,11 +84,40 @@ s = "hoge.com"
 puts s.include?("hoge")    # true
 ```
 
-### メモ
+### アクセサ
+次の３種類のアクセサがある。fooは変数名です。
+- attr_reader :foo
+ - 参照が可能
+- attr_writer :foo
+ - 更新が可能
+- attr_accessor :foo
+ - 参照, 更新が可能
 
+- 参考: http://qiita.com/jordi/items/7baeb83788c7a8f2070d
+
+### MEMO
+- 全ての要素が条件に合うかを調べる
+```
+ [1,2,3,4,5].all?{|x| x.even?}    #=> false
+```
+- 条件に合うものがあるか調べる
+```
+ [1,2,3,4,5].any?{|x| x.even?}    #=> true
+```
+- 等しい値があるか調べる
+```
+ [1,2,3,4,5].member?(3)           #=> true
+```
+
+### TODO
+- rubyのよく使いそうな関数をざっと見てもいいかも
+ - http://ref.xaio.jp/ruby/classes/string
 
 # 参考URL
+以下はざっと目をとおしておくと良い
 - Ruby基本文法まとめ
  - http://qiita.com/oshou/items/b7873c67cf22b5e8b42f
 - Ruby基礎文法最速マスター
  - http://route477.net/d/?date=20100125
+- Ruby 2.1 / Rails4.1 の意外に忘れられている便利なメソッド 
+ - http://ruby-rails.hatenadiary.com/entry/20150101/1420049679
