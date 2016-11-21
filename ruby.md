@@ -275,6 +275,27 @@ irb(main):021:0> 'Ruby is practical programming language!'.gsub(/p.*?\s/){|str| 
 => "Ruby is PRACTICAL PROGRAMMING language!"
 irb(main):022:0> 'Ruby is practical programming language!'.gsub(/p.*?\s/){ $&.to_s.upcase}   // 上と同じ(マッチした文字列情報を$&で取得)
 => "Ruby is PRACTICAL PROGRAMMING language!"
+irb(main):023:0> "abcde".delete("cd")                    // 指定した文字を削除する
+=> "abe"
+irb(main):024:0> "hi\r\n".chomp                          // chompする
+=> "hi"
+```
+
+配列
+```
+irb(main):028:0> [1, 2, 3].reverse_each { |a| p a }      // 逆順ソート
+3
+2
+1
+=> [1, 2, 3]
+irb(main):029:0> [1, 2, 3] + [4, 5, 6]
+=> [1, 2, 3, 4, 5, 6]
+irb(main):030:0> [1, 2, 3] + [] 
+=> [1, 2, 3]
+rb(main):032:0> [1, 2, 3] << 4
+=> [1, 2, 3, 4]
+irb(main):033:0> [1, 2, 3] << [4, 5]
+=> [1, 2, 3, [4, 5]]
 ```
 
 ### TODO
