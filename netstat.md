@@ -66,6 +66,35 @@ unix  2      [ ACC ]     STREAM     LISTENING     7645     /run/systemd/journal/
 unix  2      [ ACC ]     STREAM     LISTENING     12798    /var/run/sdp
 ```
 
+### netstatの状態について
+manpageからの参照だが以下に載せておく。詳しくはManpageを参照のこと
+```
+ESTABLISHED
+    ソケットは確立した接続状態にある。 
+SYN_SENT
+    ソケットは接続を確立しようと試みている。 
+SYN_RECV
+    接続要求をネットワークから受信している。 
+FIN_WAIT1
+    ソケットはクローズされており、接続は切断中である。 
+FIN_WAIT2
+    接続はクローズされ、ソケットはリモート側からの切断を待っている。 
+TIME_WAIT
+    ソケットは、クローズ後にリモートからの切断が再送されるのを待っている。 
+CLOSED
+    ソケットは使用されていない。 
+CLOSE_WAIT
+    リモート側は既に切断され、ソケットがクローズされるのを待っている。 
+LAST_ACK
+    リモート側は既に切断され、ソケットもクローズされている。 確認 (acknowledgement) を待っている。 
+LISTEN
+    ソケットは接続待ち (listen) である。 このようなソケットは、 --listening (-l) または --all (-a) オプションを指定しない限り、出力には含まれない。 
+CLOSING
+    両方のソケットが切断されているが、まだ全てのデータが送られていない。 
+UNKNOWN
+    ソケットの状態は不明である。 
+```
+
 ### 各プロトコルの統計情報を表示する
 ```
 $ netstat -s

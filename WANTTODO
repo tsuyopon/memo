@@ -13,13 +13,12 @@
 - gccのattributeについて調べる
 
 # コマンド関連
-- netstat
 - route
 - awk
 - sed
 - strace
  - http://blog.livedoor.jp/sonots/archives/18193659.html
-- ltrace
+- sar
 
 # 暇なら
 - GCCのドキュメント充実しているんで眺めたい
