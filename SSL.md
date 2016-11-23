@@ -1,24 +1,65 @@
 # SSLについて
 とりあえずSSLに関する説明や役に立ちそうなリンク集など
 
-# 参考リンク
-- SSL超概要
- - http://www.cpi.ad.jp/column/column08/
-- SSL全体像の図が記載されている
- - http://www.ibm.com/developerworks/jp/websphere/library/web/web_security/2.html
-- HSTS
- - https://ja.wikipedia.org/wiki/HTTP_Strict_Transport_Security
-- NPNとALPNの違い
- - http://d.hatena.ne.jp/ASnoKaze/20130207/1360249692
-- OCSP Stapling
- - http://blog.mylibs.jp/archives/173
- - http://d.hatena.ne.jp/tkng/20130108/1357610340
-- クロスルート
- - https://jp.globalsign.com/support/faq/431.html
-- 中間CA証明書
- - https://jp.globalsign.com/support/faq/58.html
+
+# 概念
+
+### CRL(Certificate Revocation List)とは
+CRLとは有効期限よりも前に失効させたデジタル証明書の一覧です。  
+万が一、証明書の秘密鍵が漏れてしまった場合などにはCRLに登録する必要があります。  
+CRLを処理するのはクライアント側のソフトウェアの仕事です。
+
+万が一証明書が漏れてしまった場合には以下の処理が必要となります。
+- 1. 秘密鍵を持っていたアリスが盗まれたことを検知して、認証機関にrevocateするように申請する。
+- 2. 認証機関はCRLリストに追加する
+- 3. ボブはCRLを素早く更新する必要がある。
+
+どれか１つでも遅延すると時間差攻撃で悪意のあるマロリーに攻撃される可能性があります。
+
+このため、リアルタイムで検出するための手法としてOCSP(Online Certificate Status Protocol)というプロトコルが存在します。
+
+### OCSP(Online Certificate Status Protocol)
+先で説明したCRLの場合、証明書失効リストとしてCRLが利用されていたがだんだんとリストが肥大化し、ダウンロードに時間がかかるようになってきた。  
+このため、単一レコード取得で済むOSCPが現在のX.509公開鍵証明書の失効を確認する通信プロトコルとして一般的になってきた。
+OSCPサーバのことをOCSPレスポンダと呼ぶらしい。
+
+以下に特徴を記す。
+- 内部的にはクライアントがOSCPの応答をキャッシュすることによって、要求回数の増大によるレスポンス遅延を回避している。
+
+- RFC6960: X.509 Internet Public Key Infrastructure Online Certificate Status Protocol - OCSP
+ - https://tools.ietf.org/html/rfc6960
+
+- http://blog.mylibs.jp/archives/173
+ - OCSPに関する図が載っていて非常にわかりやすいです。
+
+OCSPに関するブラウザでのサポート状況について(参考: https://ja.wikipedia.org/wiki/Online_Certificate_Status_Protocol)
+- Firefoxは全バージョンでOSCPチェックをサポートしている。Firefox3では既定でチェックが有効となる。
+- Mac OS XはSafariのOSCPチェックをサポートしている
+- Google CHromeでは待ち時間やプライバシーの理由で2012年にOSCPチェックをデフォルトで無効にしている。
+- IEではWindows Vista上のversion7でOSCPチェックのサポートを開始している
+
+利用フローとプロトコル詳細については以下を確認すること
+- 参考資料
+ - https://ja.wikipedia.org/wiki/Online_Certificate_Status_Protocol
 
 
+### 中間CA証明書の仕組みについて
+
+サーバIDは4階層または3階層で証明書を検出する仕組みとなっているようです。
+- https://knowledge.symantec.com/jp/support/ssl-certificates-support/index?vproductcat=V_C_S&vdomain=VERISIGN.JP&page=content&id=SO22877&actp=RSS&viewlocale=ja_JP&locale=ja_JP&redirected=true
+
+ここでは３階層として話を進めます。  
+SSL/TLS接続の際には下層から順に(3, 2, 1の順で)、最上位のルート証明書までを確認してサーバIDを検証しています。  
+ブラウザが正しく証明書を検出できるように、取得したサーバIDと合わせて中間層の証明書もwebサーバにインストールしておく必要があります。
+- 1. ルート証明書(ブラウザに標準で搭載されています)
+- 2. 中間CA証明書(各製品専用の中間CA証明書をダウンロードして、webサーバにインストールする)
+- 3. サーバID
+
+- 参考
+ - https://knowledge.symantec.com/jp/support/ssl-certificates-support/index?vproductcat=V_C_S&vdomain=VERISIGN.JP&page=content&id=SO22871&locale=ja_JP&redirected=true
+
+
+# コマンド編
 ### ncで443が空いているかを確認する 
 ```
 $ nc -zv login.yahoo.co.jp 443
@@ -238,3 +279,27 @@ PORT    STATE SERVICE
 |   TLSv1.2:
 ...
 ```
+
+# スライド参考資料
+- SSL/TLSの基礎と最新動向
+ - わかりやすく説明している。実演などを兼ねた後半はまだよくわかっていない
+ - http://www.slideshare.net/shigeki_ohtsu/security-camp2015-tls
+
+# 参考リンク
+- SSL超概要
+ - http://www.cpi.ad.jp/column/column08/
+- SSL全体像の図が記載されている
+ - http://www.ibm.com/developerworks/jp/websphere/library/web/web_security/2.html
+- HSTS
+ - https://ja.wikipedia.org/wiki/HTTP_Strict_Transport_Security
+- NPNとALPNの違い
+ - http://d.hatena.ne.jp/ASnoKaze/20130207/1360249692
+- OCSP Stapling
+ - http://blog.mylibs.jp/archives/173
+ - http://d.hatena.ne.jp/tkng/20130108/1357610340
+- クロスルート
+ - https://jp.globalsign.com/support/faq/431.html
+- 中間CA証明書
+ - https://jp.globalsign.com/support/faq/58.html
+
+
