@@ -26,6 +26,19 @@
 
 - https://www.google.co.jp/imgres?imgurl=https%3A%2F%2Fqiita-image-store.s3.amazonaws.com%2F0%2F8726%2F7badc3d2-d1da-8ee3-30da-48470a353d70.png&imgrefurl=http%3A%2F%2Fqiita.com%2Fkuni-nakaji%2Fitems%2F5118b23bf2ea44fed96e&docid=WfOgdWEIsh4rkM&tbnid=RHy36NUg7OLLVM%3A&vet=1&w=860&h=567&safe=off&bih=654&biw=1320&ved=0ahUKEwjg6_zLh8DQAhXIvLwKHbhEDMo4ZBAzCCsoKTAp&iact=mrc&uact=8
 
+### SSL技術要素の要点について
+
+|方式|解決可能な問題|解決できない問題|
+|:-:|:-|:-|
+|対象暗号|平文の機密性|鍵配送問題|
+|公開鍵暗号|鍵配送問題|アルゴリズム実行速度、正当な受信者の公開鍵であることの保証|
+|一方向ハッシュ関数|改竄|なりすまし|
+|メッセージ認証コード(MAC)|改竄、なりすまし|第三者に対する証明、否認|
+|デジタル署名| 改竄、なりすまし、第三者に対する証明、否認|公開鍵が本物の送信者のものであるかどうかの確認|
+|証明書|公開鍵を証明すること|認証局自体の信頼|
+
+- 参考
+ - http://blog.shibayu36.org/entry/2015/10/26/120000
 
 ### CRL(Certificate Revocation List)とは
 CRLとは有効期限よりも前に失効させたデジタル証明書の一覧です。  
