@@ -4,6 +4,29 @@
 
 # 概念
 
+### SSL接続確立フロー(超概要)
+
+次が準備段階の処理となる
+- 1. 秘密鍵と署名要求(CSR)を生成する(サーバ)
+- 2. 作成したCSRを送付する(サーバ->認証局)
+- 3. 電子署名を付与してCRT(サーバ証明書)を発行する(認証局)
+- 4. CRTを返送する(認証局->サーバ)
+- 5. CRTを設置する(サーバ)
+
+以下がSSLのフローとなる。
+- 1. クライアントがSSLでアクセスする(クライアント->サーバ)
+- 2. CRTと公開鍵を返送する(サーバ->クライアント)
+- 3. 認証局の公開鍵(プリインストールされている)を使用してサーバ証明書から電子署名を取得する(クライアント->認証局)
+- 4. 電子署名により取得した公開鍵が正しくサーバから送られてきたものであることを確認する(クライアント)
+- 5. 公開鍵で共通鍵を暗号化する。(クライアント)
+- 6. 暗号化された共通鍵を送る(クライアント->サーバ)
+- 7. 秘密鍵で暗号化された共通鍵を複合化する。(サーバ)
+- 8. 共通鍵を利用して暗号化通信を開始する(クライアント <==>  サーバ)
+
+
+- https://www.google.co.jp/imgres?imgurl=https%3A%2F%2Fqiita-image-store.s3.amazonaws.com%2F0%2F8726%2F7badc3d2-d1da-8ee3-30da-48470a353d70.png&imgrefurl=http%3A%2F%2Fqiita.com%2Fkuni-nakaji%2Fitems%2F5118b23bf2ea44fed96e&docid=WfOgdWEIsh4rkM&tbnid=RHy36NUg7OLLVM%3A&vet=1&w=860&h=567&safe=off&bih=654&biw=1320&ved=0ahUKEwjg6_zLh8DQAhXIvLwKHbhEDMo4ZBAzCCsoKTAp&iact=mrc&uact=8
+
+
 ### CRL(Certificate Revocation List)とは
 CRLとは有効期限よりも前に失効させたデジタル証明書の一覧です。  
 万が一、証明書の秘密鍵が漏れてしまった場合などにはCRLに登録する必要があります。  
@@ -43,7 +66,7 @@ OCSPに関するブラウザでのサポート状況について(参考: https:/
  - https://ja.wikipedia.org/wiki/Online_Certificate_Status_Protocol
 
 
-### 中間CA証明書の仕組みについて
+### 中間CA証明書(Intermedate Certificate)の仕組みについて
 
 サーバIDは4階層または3階層で証明書を検出する仕組みとなっているようです。
 - https://knowledge.symantec.com/jp/support/ssl-certificates-support/index?vproductcat=V_C_S&vdomain=VERISIGN.JP&page=content&id=SO22877&actp=RSS&viewlocale=ja_JP&locale=ja_JP&redirected=true
@@ -58,6 +81,16 @@ SSL/TLS接続の際には下層から順に(3, 2, 1の順で)、最上位のル�
 - 参考
  - https://knowledge.symantec.com/jp/support/ssl-certificates-support/index?vproductcat=V_C_S&vdomain=VERISIGN.JP&page=content&id=SO22871&locale=ja_JP&redirected=true
 
+
+### SAN(異なるFQDNでアクセスしても1枚のSSL証明書で実現する仕組み)
+GlobalSingが「マルチドメインオプション」として販売しているものがその代表例です。  
+
+SSLサーバ証明書を発行するためには申請時に作成するCSRの電子証明書のフィールド内にFQDNをCN(Common Name)として指定します。
+通常、CNには1つしか設定できません。CNとは別にSAN(Subject Alternative Name)と呼ばれるSSLサーバ証明書の拡張領域があり、このSANにCNと異なるFQDNを追加登録することによって1枚のSSLサーバ証明書で複数のFQDNに対応しています。(SANは複数設定するのでSANsと呼ばれることもある)
+
+- https://www.gmo.jp/news/article/?id=3931
+
+問題点としてはガラケー(フィーチャーフォン)や古いAndroid端末（確かver 2.x）とかだとサポートしていないことがあるらしい。
 
 # コマンド編
 ### ncで443が空いているかを確認する 
