@@ -493,6 +493,29 @@ depth=0 /C=US/ST=California/L=Mountain View/O=Google Inc/CN=www.google.com
 verify return:1
 ```
 
+### サーバがOCSP Stapling有効かどうかを確認する
+「OCSP Response Data」といった項目がいろいろと表示されたらOCSP Stapling有効のサーバです。
+「OCSP response: no response sent」と表示される場合には有効でないサーバです。
+```
+$ openssl s_client -connect www.example.jp:443 -status -servername www.example.jp < /dev/null | head
+depth=1 C = US, O = Let's Encrypt, CN = Let's Encrypt Authority X1
+verify error:num=20:unable to get local issuer certificate
+verify return:0
+CONNECTED(00000003)
+OCSP response: 
+======================================
+OCSP Response Data:
+    OCSP Response Status: successful (0x0)
+    Response Type: Basic OCSP Response
+    Version: 1 (0x0)
+    Responder Id: C = US, O = Let's Encrypt, CN = Let's Encrypt Authority X1
+    Produced At: Dec 23 14:51:00 2015 GMT
+    Responses:
+DONE
+```
+
+- 参考
+ - https://tech.nosuz.jp/2015/12/enable-ocsp-stapling/
 
 
 # 参考URL

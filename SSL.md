@@ -41,7 +41,7 @@
  - http://blog.shibayu36.org/entry/2015/10/26/120000
 
 ### CRL(Certificate Revocation List)とは
-CRLとは有効期限よりも前に失効させたデジタル証明書の一覧です。  
+CRL(証明書執行リスト)とは有効期限よりも前に失効させたデジタル証明書の一覧です。  
 万が一、証明書の秘密鍵が漏れてしまった場合などにはCRLに登録する必要があります。  
 CRLを処理するのはクライアント側のソフトウェアの仕事です。
 
@@ -54,19 +54,38 @@ CRLを処理するのはクライアント側のソフトウェアの仕事で�
 
 このため、リアルタイムで検出するための手法としてOCSP(Online Certificate Status Protocol)というプロトコルが存在します。
 
+DNS偽装やDoS攻撃を防ぐため、CRLには発行者のデジタル署名が付与されている。
+CRLでの証明書の失効理由は以下の２つに大別することができる。
+- Revoked(失効)
+ - CAが不正に証明書を発行したことが判明した場合や秘密鍵を失効したと考えられる場合、証明書は不可逆で失効とされる。
+- Hold(停止)
+ - 有効な状態に戻すことができる。例えば、ユーザーが秘密鍵を紛失したような場合には一時的に証明書を停止させることができる。無事見つかれば後日復旧させることも可能。この場合、証明書のシリアル番号はCRLから削除されることがあります。
+
+CRLはRFC5280で定義されています
+- https://tools.ietf.org/html/rfc5280
+
+- 参考
+ - https://ja.wikipedia.org/wiki/%E8%A8%BC%E6%98%8E%E6%9B%B8%E5%A4%B1%E5%8A%B9%E3%83%AA%E3%82%B9%E3%83%88
+
 ### OCSP(Online Certificate Status Protocol)
 先で説明したCRLの場合、証明書失効リストとしてCRLが利用されていたがだんだんとリストが肥大化し、ダウンロードに時間がかかるようになってきた。  
-このため、単一レコード取得で済むOSCPが現在のX.509公開鍵証明書の失効を確認する通信プロトコルとして一般的になってきた。
-OSCPサーバのことをOCSPレスポンダと呼ぶらしい。
+このため、単一レコード取得で済むOSCPが現在のX.509公開鍵証明書の失効を確認する通信プロトコルとして一般的になってきた。  
+OSCPサーバのことをOCSPレスポンダと呼ぶ。OCSPレスポンダは要求の中で指定された証明書について「有効」、「失効」、「不明」のいずれかの応答を署名付きで返すか、要求を処理できない場合はエラーで返す。
+
 
 以下に特徴を記す。
 - 内部的にはクライアントがOSCPの応答をキャッシュすることによって、要求回数の増大によるレスポンス遅延を回避している。
 
 - RFC6960: X.509 Internet Public Key Infrastructure Online Certificate Status Protocol - OCSP
  - https://tools.ietf.org/html/rfc6960
+- RFC2560: X.509 Internet Public Key Infrastructure Online Certificate Status Protocol - OCSP
+ - https://tools.ietf.org/html/rfc2560
+
 
 - http://blog.mylibs.jp/archives/173
  - OCSPに関する図が載っていて非常にわかりやすいです。
+- http://d.hatena.ne.jp/tkng/20130108/1357610340
+ - 説明がわかりやすい
 
 OCSPに関するブラウザでのサポート状況について(参考: https://ja.wikipedia.org/wiki/Online_Certificate_Status_Protocol)
 - Firefoxは全バージョンでOSCPチェックをサポートしている。Firefox3では既定でチェックが有効となる。
@@ -77,6 +96,34 @@ OCSPに関するブラウザでのサポート状況について(参考: https:/
 利用フローとプロトコル詳細については以下を確認すること
 - 参考資料
  - https://ja.wikipedia.org/wiki/Online_Certificate_Status_Protocol
+
+
+### OCSP Stapling
+OCSPの場合にはリアルタイムでDNSで名前解決したり、サーバ(OCSPレスポンダ)にリクエストを飛ばすといった手順を踏むので遅い。特にサーバが海外だとすごい遅いらしい。  
+このような問題があるため、OCSPレスポンダの返答をあらかじめサーバ側がキャッシュし、通信時に証明書と一緒にクライアントに送りつけることで、クライアントではOCSPのチェックを省略できるしくみが存在する。  
+OCSP Stapingを有効にするためにはWebサーバ側の対応も必要となります。Apacheだと2.4以降が対応しています。
+
+opensslコマンドで「OCSP Response Data」が存在していればOSCP Staplingが有効となっています。
+```
+$ openssl s_client -connect www.example.jp:443 -status -servername www.example.jp < /dev/null | head
+depth=1 C = US, O = Let's Encrypt, CN = Let's Encrypt Authority X1
+verify error:num=20:unable to get local issuer certificate
+verify return:0
+CONNECTED(00000003)
+OCSP response: 
+======================================
+OCSP Response Data:
+    OCSP Response Status: successful (0x0)
+    Response Type: Basic OCSP Response
+    Version: 1 (0x0)
+    Responder Id: C = US, O = Let's Encrypt, CN = Let's Encrypt Authority X1
+    Produced At: Dec 23 14:51:00 2015 GMT
+    Responses:
+DONE
+```
+
+
+
 
 
 ### 中間CA証明書(Intermedate Certificate)の仕組みについて
@@ -93,6 +140,22 @@ SSL/TLS接続の際には下層から順に(3, 2, 1の順で)、最上位のル�
 
 - 参考
  - https://knowledge.symantec.com/jp/support/ssl-certificates-support/index?vproductcat=V_C_S&vdomain=VERISIGN.JP&page=content&id=SO22871&locale=ja_JP&redirected=true
+ - https://jp.globalsign.com/support/faq/58.html
+
+
+### SNI(Server Name Indication)
+従来のSSLの仕組みでは1つのサーバに複数のドメイン名をVirtualHostなどで設定できても、SSLサーバ証明書は1枚しか設置できませんでした。  
+ここで登場するのがSNIというRFC6066内で登場するSSL/TSLの拡張仕様で、複数枚のSSLサーバ証明書を配置できるようになりました。
+- https://tools.ietf.org/html/rfc6066#section-3
+
+注意点としてはクライアントとサーバ側双方で対応できている必要があり、フィーチャーフォンではほとんど利用できないとのことです。
+また、Androidでは4.0以降では対応しているらしいですが、3.0未満だと以下の不具合があるようです。
+- 参考
+ - 標準ブラウザ、ネイティブアプリHTTPクライアント、ネイティブアプリwebviewに分けて詳細な説明やどのように表示されるかなどが確認できます。
+ - http://knowledge.sakura.ad.jp/tech/1706/
+
+- ブラウザのSNI対応状況などはwikipediaを参考のこと
+ - https://ja.wikipedia.org/wiki/Server_Name_Indication
 
 
 ### SAN(異なるFQDNでアクセスしても1枚のSSL証明書で実現する仕組み)
@@ -104,6 +167,25 @@ SSLサーバ証明書を発行するためには申請時に作成するCSRの�
 - https://www.gmo.jp/news/article/?id=3931
 
 問題点としてはガラケー(フィーチャーフォン)や古いAndroid端末（確かver 2.x）とかだとサポートしていないことがあるらしい。
+
+
+### TSLネゴシエーションの仕組み(NPNとALPNの違い)
+現在ではサーバ側がプロトコルを決定できるALPNの方向に動いているようだ
+- TLS-NPN(Next Protocol Negotiation)
+ - 使用できるプロトコル(HTTP1, SPDY2, SPDY3など)はクライアントが決定できる
+- TLS-ALPN(Application Layer Protocol Negotiation)
+ - 使用できるプロトコル(HTTP1, SPDY2, SPDY3など)はサーバが決定できる
+ - 使用できるプロトコルがクライアントに存在しない場合にはハンドシェイクアラートで切断される。
+ - https://tools.ietf.org/html/rfc7301
+
+- 以下のサイトで図付きで説明してくれている
+ - http://d.hatena.ne.jp/ASnoKaze/20130207/1360249692
+
+
+### クロスルート
+- https://jp.globalsign.com/support/faq/431.html
+
+#########################################################################
 
 # コマンド編
 ### ncで443が空いているかを確認する 
@@ -338,14 +420,11 @@ PORT    STATE SERVICE
  - http://www.ibm.com/developerworks/jp/websphere/library/web/web_security/2.html
 - HSTS
  - https://ja.wikipedia.org/wiki/HTTP_Strict_Transport_Security
-- NPNとALPNの違い
- - http://d.hatena.ne.jp/ASnoKaze/20130207/1360249692
-- OCSP Stapling
- - http://blog.mylibs.jp/archives/173
- - http://d.hatena.ne.jp/tkng/20130108/1357610340
-- クロスルート
- - https://jp.globalsign.com/support/faq/431.html
-- 中間CA証明書
- - https://jp.globalsign.com/support/faq/58.html
+- 情報処理推進機構
+ - 一度目を通しておいたほうがよさそう
+ - http://www.ipa.go.jp/security/pki/
+- 英語だけど目を通しておいたほうがよさそう
+ - https://wiki.mozilla.org/Security/Server_Side_TLS
 
 
+- SSL False Start
