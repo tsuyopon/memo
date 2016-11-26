@@ -59,6 +59,8 @@
 SSLSessionCacheTimeout  300
 ```
 
+- https://tools.ietf.org/html/rfc5077
+
 ### SSL False Start
 Google社が開発してChromeブラウザに搭載したHTTPSのウェブページの閲覧スピードを高速化するテクニックの１つである。
 False Startは陸上競技における「フライング」にちなんで命名されたもので、
@@ -77,6 +79,33 @@ security.ssl.enable_false_start
 ```
 を有効にすればよい。
 
+しかし、一部のロードバランサやSSLアクセラレータの製品バージョンによってSSL/TLS接続で問題が発覚しました。  
+また、BEASTアタックなどが指摘されたとのことで、Googleは2012年4月にSSL False Startのサポートを終了するとのアナウンスを行いました。
+
+
+### HSTS(HTTP Strict Transport Security)ヘッダについて
+サーバがクライアント側に送付するヘッダで、HTTPSでアクセスしなければならない時間を伝えるための仕組み
+このヘッダは非常にシンプルでmax-ageのパラメータのみを受け付ける
+```
+Strict-Transport-Security: max-age=15768000;includeSubDomains         // 一般的に6ヶ月
+```
+
+- https://tools.ietf.org/html/rfc6797
+
+### Preloaded HSTS
+ブラウザのソースコードに組み込まれているリストで、このリストに含まれていればwww.abc.comでもHTTPSでアクセスするといったルールを記述しておきます。  
+chromeとfirefoxにはこの仕組みが搭載されています。
+
+例えば、chromeの場合には次のようなリストが記載されているようです。
+- https://src.chromium.org/viewvc/chrome/trunk/src/net/http/transport_security_state_static.json
+
+- 参考
+ - http://blog.cybozu.io/entry/6096
+
+### HPKP( Public Key Pinning Extension for HTTP)
+TBD
+
+- https://tools.ietf.org/html/rfc7469
 
 ### SSL技術要素の要点について
 
@@ -484,5 +513,5 @@ PORT    STATE SERVICE
 
 
 # TODO
-- SSL False Start
 - SSL セッション再利用
+- master secret
