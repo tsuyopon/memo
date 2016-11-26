@@ -4,6 +4,28 @@
 
 # 概念
 
+### SSLハンドシェイク
+
+- DNS Lookup
+- Initial Connection(TCP SYN/ACK)
+ - TCP SYNのリクエストとTCP SYN+ACKの応答レスポンス
+- SSL Negotiation
+ - Client Hello(クライアント=>サーバ)
+ - Server Hello, Certificate(クライアント<=サーバ)
+ - Certificate Verify(クライアント=>CRL配布orOCSPレスポンダサーバ)
+ - OCSPレスポンダへのリクエスト(クライアント=>CRL配布orOCSPレスポンダサーバ)
+ - ChangeCipherSpec(クライアント=>サーバ)
+ - ChangeCipherSpec(クライアント<=サーバ)
+- Time to First Byte
+ - GET /index.html HTTP1.1
+- Content Download
+ - ウェブページコンテンツの取得
+
+- 参考
+ - 上記のフェーズに応じた高速化の手法について記述されている
+ - https://www.jp.websecurity.symantec.com/welcome/pdf/wp_ssl_speedup.pdf
+
+
 ### SSL接続確立フロー(超概要)
 
 次が準備段階の処理となる
@@ -25,6 +47,36 @@
 
 
 - https://www.google.co.jp/imgres?imgurl=https%3A%2F%2Fqiita-image-store.s3.amazonaws.com%2F0%2F8726%2F7badc3d2-d1da-8ee3-30da-48470a353d70.png&imgrefurl=http%3A%2F%2Fqiita.com%2Fkuni-nakaji%2Fitems%2F5118b23bf2ea44fed96e&docid=WfOgdWEIsh4rkM&tbnid=RHy36NUg7OLLVM%3A&vet=1&w=860&h=567&safe=off&bih=654&biw=1320&ved=0ahUKEwjg6_zLh8DQAhXIvLwKHbhEDMo4ZBAzCCsoKTAp&iact=mrc&uact=8
+
+
+
+### SSL Session Resumption(セッション再利用)
+初回の通信でクライアントとwebサーバ間との間で確立した暗号化のためのセッション情報を、同じ相手であれば２度目以降の通信で使い回すテクニックである。  
+初回の通信で生成したセッションIDを２回目の通信のSSLハンドシェイクの最初のステップ(ClientHello)に含めてwebサーバに送信することで、証明書のダウンロードや失効確認を省略することで、即座に暗号化されたアプリケーションデータを交換することができる。
+
+例えば、Apache2.4だと以下のように設定するとセッションの有効時間を300秒と指定することができます。
+```
+SSLSessionCacheTimeout  300
+```
+
+### SSL False Start
+Google社が開発してChromeブラウザに搭載したHTTPSのウェブページの閲覧スピードを高速化するテクニックの１つである。
+False Startは陸上競技における「フライング」にちなんで命名されたもので、
+「相手からの応答を待ってから送信すべき暗号化された電文を先に送ってしまう」という仕組みです。
+
+- https://tools.ietf.org/html/draft-bmoeller-tls-falsestart-00
+
+chromeでこの機能を有効にするためには
+```
+about:config で詳細設定画面を開き
+```
+http://builder.japan.zdnet.com/off-topic/20393127/
+
+```
+security.ssl.enable_false_start
+```
+を有効にすればよい。
+
 
 ### SSL技術要素の要点について
 
@@ -425,6 +477,12 @@ PORT    STATE SERVICE
  - http://www.ipa.go.jp/security/pki/
 - 英語だけど目を通しておいたほうがよさそう
  - https://wiki.mozilla.org/Security/Server_Side_TLS
+- SSL/TLS暗号設定ガイドライン
+ - https://www.ipa.go.jp/files/000045645.pdf
+- https://www.jp.websecurity.symantec.com/welcome/pdf/wp_ssl_speedup.pdf
+- https://www.jp.websecurity.symantec.com/welcome/pdf/wp_sslandroot-certificate.pdf
 
 
+# TODO
 - SSL False Start
+- SSL セッション再利用
