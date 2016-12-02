@@ -102,9 +102,10 @@ chromeとfirefoxにはこの仕組みが搭載されています。
 - 参考
  - http://blog.cybozu.io/entry/6096
 
-### HPKP( Public Key Pinning Extension for HTTP)
+### HPKP(HTTP Public Key Pinning)
 TBD
 
+- https://developer.mozilla.org/en-US/docs/Web/HTTP/Public_Key_Pinning
 - https://tools.ietf.org/html/rfc7469
 
 ### SSL技術要素の要点について
@@ -515,3 +516,4 @@ PORT    STATE SERVICE
 # TODO
 - SSL セッション再利用
 - master secret
+- HPKP
