@@ -240,24 +240,44 @@ type = char [4097]
 ```
 (gdb) p counter        // 10進数
 $1 = 1024
-(gdb) p/o counter      // 8進数
+(gdb) p/o counter      // 8進数(octal)
 $2 = 02000
-(gdb) p/x counter      // 16進数
+(gdb) p/x counter      // 16進数(hex)
 $3 = 0x400
-(gdb) p/t counter      // 2進数
+(gdb) p/t counter      // 2進数(binary)
 $4 = 10000000000
-(gdb) p/a counter      // アドレス
+(gdb) p/a counter      // アドレス(address)
 $5 = 0x400
-(gdb) p/c counter      // 文字表示
+(gdb) p/c counter      // 文字表示(char)
 $6 = 0 '¥000'
-(gdb) p/d counter      // 符号付き10進数
+(gdb) p/d counter      // 符号付き10進数(decimal)
 $7 = 1024
-(gdb) p/u counter      // 符号無し10真数
+(gdb) p/u counter      // 符号無し10真数(unsigned decimal)
 $8 = 1024
 (gdb) p &counter
 $9 = (int *) 0x7fffffffe218
 (gdb) p *counter
 Cannot access memory at address 0x400
+```
+
+### 配列
+```
+(gdb) p myIntArray
+$46 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
+(gdb) pt myIntArray
+type = int [10]
+(gdb) pt myIntArray[3]
+type = int
+(gdb) p myIntArray[3]
+$48 = 3
+(gdb) p myIntArray[3]@5
+$49 = {3, 4, 5, 6, 7}
+(gdb) p myIntArray[3]@11
+$54 = {3, 4, 5, 6, 7, 8, 9, 10, 1107293224, 1079194419, -1947051841}
+(gdb) p myStruct
+$2 = {name = 0x40014978 "HogeFuga", EyeColour = 1}
+(gdb) print myStruct.name
+$6 = 0x40014978 "HogeFuga"
 ```
 
 ### 処理するたびに毎回特定の値を表示したい場合
@@ -329,7 +349,8 @@ printの表示文字数をセットする
 
 構造体を表示する
 ```
-(gdb) ptype
+(gdb) ptype   // ptとも略せる
+type = int
 ```
 
 変数の値を設定する
@@ -762,9 +783,27 @@ gs             0x0	0
 $1 = 140737488347680
 ```
 
-### マルチスレッドのデバッグ
-TBD
+## マルチスレッドのデバッグ
+全スレッドの表示
+```
+(gdb) info threads
+  3 Thread 0x7ffff75d2710 (LWP 4688)  thread3 (d=0x0) at three-threads.c:9
+* 2 Thread 0x7ffff7fd3710 (LWP 4687)  thread2 (d=0x0) at three-threads.c:23
+  1 Thread 0x7ffff7fd5720 (LWP 4620)  main () at three-threads.c:34
+```
 
+スレッド番号の切り替え
+```
+(gdb) thread <num>
+```
+
+スレッドの全てのバックトレースを表示する
+```
+(gdb) thread apply all bt
+```
+
+- 参考
+ - https://sourceware.org/gdb/current/onlinedocs/gdb/Threads.html
 
 ## .gdbinit
 以下はサンプル
@@ -787,7 +826,7 @@ set charset UTF-8
 set print demangle on
 ```
 
-## そのた
+## その他
 ### フレーム関連の処理
 ```
 (gdb) where
@@ -825,6 +864,22 @@ $ gdb -tui
 ```
 (gdb) set logging off
 ```
+
+### 正規表現でブレークポイントを設定する
+
+### リバースデバッギング
+gdb7.0から逆方向にnext, nexti, step, stepiなどを実行することができる。
+- reverse-continue ('rc') -- Continue program being debugged but run it in reverse
+- reverse-finish -- Execute backward until just before the selected stack frame is called
+- reverse-next ('rn') -- Step program backward, proceeding through subroutine calls.
+- reverse-nexti ('rni') -- Step backward one instruction, but proceed through called subroutines.
+- reverse-step ('rs') -- Step program backward until it reaches the beginning of a previous source line
+- reverse-stepi -- Step backward exactly one instruction
+- set exec-direction (forward/reverse) -- Set direction of execution.
+
+- 参考
+ - https://www.sourceware.org/gdb/news/reversible.html
+
 
 ### 参考URL
 - http://typea.info/tips/wiki.cgi?page=Linux+C+gdb%A4%CB%A4%E8%A4%EB%A5%C7%A5%D0%A5%C3%A5%B0

@@ -27,3 +27,10 @@ GDBを通したデバッギングについてまとめていきます
 
 gdb周りのサンプルなどもいくつかあるので参考のこと
 - https://github.com/tsuyopon/cpp/tree/master/gdb
+
+- GDB dashboard
+ - https://github.com/cyrus-and/gdb-dashboard
+
+# TODO
+- mysql
+ - https://archive.fosdem.org/2015/schedule/event/mysql_gdb/attachments/slides/595/export/events/attachments/mysql_gdb/slides/595/FOSDEM2015_gdb_tips_and_tricks_for_MySQL_DBAs.pdf
