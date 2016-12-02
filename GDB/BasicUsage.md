@@ -802,6 +802,13 @@ $1 = 140737488347680
 (gdb) thread apply all bt
 ```
 
+特定のスレッドに対してブレークポイントを設定する
+```
+(gdb) b xxxfunc thread <num>
+or
+(gdb) b xxxfunc thread <num>  if a > b
+```
+
 - 参考
  - https://sourceware.org/gdb/current/onlinedocs/gdb/Threads.html
 
