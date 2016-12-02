@@ -34,3 +34,10 @@ gdb周りのサンプルなどもいくつかあるので参考のこと
 # TODO
 - mysql
  - https://archive.fosdem.org/2015/schedule/event/mysql_gdb/attachments/slides/595/export/events/attachments/mysql_gdb/slides/595/FOSDEM2015_gdb_tips_and_tricks_for_MySQL_DBAs.pdf
+
+
+# 参考URL
+- Using GNU's GDB Debugger
+ - http://www.dirac.org/linux/gdb/
+- Debugging with GDB (日本語版だけど結構古そう)
+ - http://www.asahi-net.or.jp/~wg5k-ickw/html/online/gdb-4.18/gdb_toc.html
