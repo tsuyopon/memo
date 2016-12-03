@@ -94,6 +94,7 @@ $ /usr/local/apache2.4.23/bin/httpd -L | head -20
 ```
 
 ### 主要設定を確認する
+-Sオプションでたしか設定されているVirtualHostの一覧も出力することができたはず...(参考: http://mathtti.hatenablog.com/entry/20110911/p1)
 ```
 $ /usr/local/apache2.4.23/bin/httpd -S
 VirtualHost configuration:

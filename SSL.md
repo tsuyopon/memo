@@ -48,6 +48,10 @@
 
 - https://www.google.co.jp/imgres?imgurl=https%3A%2F%2Fqiita-image-store.s3.amazonaws.com%2F0%2F8726%2F7badc3d2-d1da-8ee3-30da-48470a353d70.png&imgrefurl=http%3A%2F%2Fqiita.com%2Fkuni-nakaji%2Fitems%2F5118b23bf2ea44fed96e&docid=WfOgdWEIsh4rkM&tbnid=RHy36NUg7OLLVM%3A&vet=1&w=860&h=567&safe=off&bih=654&biw=1320&ved=0ahUKEwjg6_zLh8DQAhXIvLwKHbhEDMo4ZBAzCCsoKTAp&iact=mrc&uact=8
 
+### SSL要点
+- 対象暗号
+
+- http://blog.shibayu36.org/entry/2015/10/26/120000
 
 
 ### SSL Session Resumption(セッション再利用)
