@@ -8,6 +8,8 @@
  - https://linuxjf.osdn.jp/JFdocs/The-Linux-Kernel.html
 - tcptracerouteを使う
  - http://succzero.hatenablog.com/entry/2013/09/01/181615
+- Writing C software without the standard library
+ - http://weeb.ddns.net/0/programming/c_without_standard_library_linux.txt
 
 # やりたい(中)
 - gccのattributeについて調べる
@@ -20,6 +22,10 @@
  - http://blog.livedoor.jp/sonots/archives/18193659.html
 - sar
 - nkf
+- tshark
+
+# プログラム
+- POSIXMQ
 
 # 暇なら
 - GCCのドキュメント充実しているんで眺めたい
