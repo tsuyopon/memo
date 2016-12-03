@@ -38,10 +38,10 @@ var human =
 
 # Angular関連
 
-### $$や$などの変数の意味について
+### 変数名の前に$や$$が付いている場合などについて
 - What is the $$ (double dollar sign) used for in angular?
  - Angularのソースコードでは$や$$がつかわれている。これは一体なんだろうか？
-  - https://github.com/angular/angular.js/blob/v1.5.8/src/AngularPublic.js#L219-L260
+ - https://github.com/angular/angular.js/blob/v1.5.8/src/AngularPublic.js#L219-L260
  - http://stackoverflow.com/questions/19338493/what-is-the-double-dollar-sign-used-for-in-angular
  - $はpublic identifier, $$はprivate identiferとのこと
 
