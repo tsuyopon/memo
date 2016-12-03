@@ -5,7 +5,6 @@
 
 # 詳細
 
-
 ### 鍵生成を行いopensslサーバを起動する
 公開鍵の改竄を防ぐため、認証局(Certification Authority, CA) というところで署名してもらいます。これが、サーバ証明書(Certificate, CRT)です。  
 
