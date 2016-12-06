@@ -1,5 +1,19 @@
 # SSLについて
 とりあえずSSLに関する説明や役に立ちそうなリンク集など
+SSL(Secure Socket Layer)の開発元はNetscape、TLS(Transport Layer Security)の開発元はIETFとなっている。SSLとTLSのバージョンは次の通り。
+```
+SSL1.0 	✕ 	最初のSSLとして設計したが、設計レビューの時点でプロトコルの脆弱性が発見されたため破棄されている。
+SSL2.0 	✕ 	SSL1.0の問題を修正して設計後、1994年にSSL2.0として発表。その後、いくつか脆弱性が発見されてSSL3.0が登場するが、未使用でもSSL2.0が有効な状態の場合に提示する最弱のアルゴリズムを使用させるダウングレード攻撃などを受ける可能性があるので、明示的に無効にする必要がある。
+SSL3.0 	✕ 	SSL2.0の問題を修正して機能追加も行い1995年にSSL3.0として発表。ただ、古くなってきている。CVE-2014-3566で脆弱性が発生したため明示的に無効にする必要がある。
+TLS1.0 	△ 	SSL3.0とTLS1.0の両者間には正確な互換性はないがほぼ同じ。CVE-2011-3389(BEAST)による一部脆弱性を含む。
+TLS1.1 	◯ 	TLS 1.0からの変更点は、新しく発見された攻撃手法に対する耐性の強化が中心である。
+TLS1.2 	◎ 	ハッシュのアルゴリズムにSHA-256が追加されたほか、ブロック暗号について、従来のCBCモードだけではなく、GCM、CCMといった認証付き暗号が利用可能となった。
+TLS1.3 	? 	[ドラフト]インターネット環境の変化とTLS1.2までの暗号化強度不足を改善するため2016年中に仕様化完了を目指している(らしい)
+```
+
+概念図などは以下を参考のこと
+- http://qiita.com/kuni-nakaji/items/5118b23bf2ea44fed96e#comment-456cb90d89c71c924782
+
 
 
 # 概念
@@ -96,12 +110,23 @@ Strict-Transport-Security: max-age=15768000;includeSubDomains         // 一般�
 
 - https://tools.ietf.org/html/rfc6797
 
+2015年6月にマイクロソフトもIEへサポートを追加したことで全てのブラウザでHSTSの対応が完了している。
+
 ### Preloaded HSTS
 ブラウザのソースコードに組み込まれているリストで、このリストに含まれていればwww.abc.comでもHTTPSでアクセスするといったルールを記述しておきます。  
 chromeとfirefoxにはこの仕組みが搭載されています。
 
-例えば、chromeの場合には次のようなリストが記載されているようです。
-- https://src.chromium.org/viewvc/chrome/trunk/src/net/http/transport_security_state_static.json
+例えば、Chrome, Firefoxの場合には次のようなリストが記載されているようです。
+- Chrome
+ - https://src.chromium.org/viewvc/chrome/trunk/src/net/http/transport_security_state_static.json
+- Firefox
+ - https://dxr.mozilla.org/mozilla-central/source/security/manager/tools/PreloadedHPKPins.json
+
+たとえば、ChromeのPreloaded HSTSに組み込むには次から申請をするらしい
+- https://hstspreload.appspot.com/
+
+chromeで特定のドメインが登録されているかどうかを確認するには次から確認すればいいようだ。
+- chrome://net-internals/#hsts
 
 - 参考
  - http://blog.cybozu.io/entry/6096
@@ -207,9 +232,6 @@ OCSP Response Data:
     Responses:
 DONE
 ```
-
-
-
 
 
 ### 中間CA証明書(Intermedate Certificate)の仕組みについて
@@ -499,6 +521,19 @@ PORT    STATE SERVICE
  - わかりやすく説明している。実演などを兼ねた後半はまだよくわかっていない
  - http://www.slideshare.net/shigeki_ohtsu/security-camp2015-tls
 
+# SSLの強度テストなどを実行したい場合
+- QUALYS SSL LABS
+ - https://www.ssllabs.com/ssltest/
+- 上記はGlobalSign提供のものもある
+ - https://globalsign.ssllabs.com/
+
+# PKCS（Public-Key Cryptography Standards）とは
+RSAセキュリティにより考案された公開鍵暗号標準のグループのこと
+こう鍵暗号に
+
+- 参考
+ - http://qiita.com/kunichiko/items/7796ecfb88a62ce26b36
+
 # 参考リンク
 - SSL超概要
  - http://www.cpi.ad.jp/column/column08/
@@ -512,6 +547,7 @@ PORT    STATE SERVICE
 - 英語だけど目を通しておいたほうがよさそう
  - https://wiki.mozilla.org/Security/Server_Side_TLS
 - SSL/TLS暗号設定ガイドライン
+ - http://www.ipa.go.jp/security/vuln/ssl_crypt_config.html
  - https://www.ipa.go.jp/files/000045645.pdf
 - https://www.jp.websecurity.symantec.com/welcome/pdf/wp_ssl_speedup.pdf
 - https://www.jp.websecurity.symantec.com/welcome/pdf/wp_sslandroot-certificate.pdf
