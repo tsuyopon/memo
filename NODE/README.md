@@ -1,4 +1,6 @@
 # WANTTO
+- create node module
+- node-gyp
 - node-inespector youtube
  - https://www.youtube.com/watch?v=03qGA-GJXjI
 - memory analyze tool
