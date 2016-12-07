@@ -45,9 +45,15 @@ http://<hostname>:8080/debug?port=5858
 - 変数の値などを動的に確認してみる
 - next実行やstep実行などを行ってみる
 
+### ブラウザ待ち受けやデバッグポートを変更する。
+あまり使う機会などはないかもしれませんが、次のようにすると変更できるようです。
+```
+$ node-inspector --web-port 8081 --debug-port 5859
+```
 
 # TODO
-- node --inspectというオプションが出来たらしいので調査してもいいかも
+- node6.3.0以降だと --inspectというオプションが出来たらしいので調査してもいいかも
+ - http://qiita.com/y_fujieda/items/c190cbcc2fab6dd49809
 - node-inspectorのオプションがgithubにいろいろ書かれているので試してみてもいいかも
 
 # 参考URL
