@@ -1,4 +1,26 @@
 
+
+## cloneする
+
+### 内部にあるsubmodulesなども再帰的に取得する
+```
+$ git clone https://github.com/hoge/fuga.git --recursive
+```
+
+## SUBMODULES
+
+### git submodulesで外部のレポジトリを参照する。
+以下を特定のレポジトリで実行するとfugaをカレントディレクトリにpiyoというディレクトリで配置します。
+```
+$ git submodule add https://github.com/hoge/fuga.git piyo
+```
+
+git submoduleは常に最新版を参照しているわけではなく、特定のコミット状態を参照していることに注意が必要です。
+
+
+###
+
+
 ## TIPS
 
 ### コミットメッセージをtypoしたのでやり直したい場合
