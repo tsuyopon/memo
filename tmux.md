@@ -49,6 +49,7 @@ tmux attach-session -t $session
 
 以上により以下のようにしてアクセスすると複数台同時にコマンド入力を操作できるようになります
 ```
+$ tmux
 $ ./multissh.sh hoge10[0-9].piyo.com
 ```
 
