@@ -1,31 +1,149 @@
+# ncコマンドについてまとめます。
 
-# 概要
-ncコマンドについて
+### ncコマンドでできること
+ncコマンドを使うことによってネットワークサーバにもクライアントとしても振舞うことができます。
+- TCPおよびUDPの、任意のポートを対象とした読み書き
+- ポートスキャン機能
+- TCPサーバとしての起動
+- telnetとして使う
+- ローカルソースポートの指定
+- ローカルソースアドレスの指定(詐称)
 
-# 詳細
-
-### HTTPリクエストを出す
-
+ncコマンドの基本的なオプションについて
 ```
-$ echo -en "GET / HTTP/1.1\n\n" | nc www.google.com 80
-HTTP/1.1 302 Found
-Cache-Control: private
-Content-Type: text/html; charset=UTF-8
-Location: http://www.google.co.jp/?gfe_rd=cr&ei=wsUgWOS0JaTK8gfCyZzgDA
-Content-Length: 261
-Date: Mon, 07 Nov 2016 18:19:46 GMT
-
-<HTML><HEAD><meta http-equiv="content-type" content="text/html;charset=utf-8">
-<TITLE>302 Moved</TITLE></HEAD><BODY>
-<H1>302 Moved</H1>
-The document has moved
-<A HREF="http://www.google.co.jp/?gfe_rd=cr&amp;ei=wsUgWOS0JaTK8gfCyZzgDA">here</A>.
-</BODY></HTML>
+-e コマンドを実行（コンパイル時の指定が必要)
+-l リッスンモード
+-u UDPモードにて通信を行う
+-n 名前解決を行わない
+-s ソースポートを指定
+-z スキャンのみを行い、データを送らない。
 ```
 
-### メールを送る
+* 参考URL:
+	* ncチートシート: http://www.sans.org/security-resources/sec560/netcat_cheat_sheet_v1.pdf
+
+### ファイル転送を行う
+転送される側では適当なポート(ここでは10025ポートと仮定)でLISTENし、出力は全てfile.tgzとする。
 ```
-nc [-C] localhost 25 << EOF
+$ nc -l 10025  > file.tgz
+```
+
+転送する側は以下のようにする。
+```
+$ nc host.example.com 10025 < func.php
+```
+
+正しくファイル内容が送付されたかどうかなどはmd5sumを使って調べておいたほうがよい。  
+ncコマンドを使うとファイル転送を非常に高速に実現してくれるらしい
+
+### 多段SSHをする場合
+uchiからremoteに接続するするキワにotonari, genkanを経由する必要があるとした場合、
+```
+uchi -((-> otonari ----> genkan -))-> remote
+```
+
+.ssh configを以下のように記述します
+```
+$ cat ~/.ssh/config
+Host  remote
+  ProxyCommand  ssh genkan  nc -w 10 remote 22
+Host  genkan
+  ProxyCommand  ssh otonari nc -w 10 genkan  22
+Host  otonari
+  User          azarashi
+  Port          22
+```
+
+以下のようにすれば一撃でアクセスすることができます。
+```
+$ ssh remote ls -al
+```
+
+もちろん接続やscpも可能です。
+```
+$ ssh remote
+```
+
+(参考) http://d.hatena.ne.jp/hirose31/20070419/1176968993
+
+### .ssh/configにProxyCommandを記述する
+(上と同じ??)
+passproxy.comにログインせずに一気にremoteserver.comにsshログインやscpするための設定
+```
+Host remoteserver.com
+  ProxyCommand ssh passproxy.com nc %h %p
+```
+
+
+### TCPサーバとしてLISTENする
+サーバとしてTCP:12345ポートでLISTENモードにします。
+```
+$ nc -l 12345
+```
+
+ncサーバに接続するには以下のようにすればOK
+```
+$ nc localhost 12345
+```
+
+### UDPサーバとしてLISTENする。
+サーバとしてUDP:12345ポートでLISTENモードにします。
+```
+$ nc -u -l 12345
+```
+
+ncサーバに接続するには以下のようにすればOK
+```
+$ nc -u localhost 10025
+```
+
+### TCPサーバに接続する
+host.example.comの42番ポートに31337ポートを使って接続する。タイムアウトを5秒とする
+```
+$ nc -p 31337 -w 5 host.example.com 42
+```
+
+### IPアドレスを10.1.2.3に偽装してhost.example.com:42に接続する
+```
+$ nc -s 10.1.2.3 host.example.com 42
+```
+
+### 簡易HTTPサーバとして機能
+```
+$ ( echo "HTTP/1.0 200 Ok"; echo;  ) |  nc -l 12345
+```
+
+### HTTP GETリクエスト
+```
+$ echo -en "GET / HTTP/1.1\n\n" | nc localhost 80
+```
+
+### UDPモードで接続する
+```
+$ nc -u host.example.com 53
+```
+
+### 全ポートスキャン
+セキュリティチェックなどのためにローカルホストで実施すること。
+```
+$ nc -zv localhost 1-65535
+```
+
+### プロキシ経由での利用
+HTTP Proxyとして10.2.3.4:8080を経由して、host.example.com:42にアクセスする
+```
+$ nc -x10.2.3.4:8080 -Xconnect host.example.com 42
+```
+
+### 各種サーバへのアクセス例
+- Redisサーバへアクセス
+```
+$ (echo 'set KEY1 hoge'; sleep 1s; echo 'key *') | nc localhost 6379
+```
+
+- メールを送信する
+```
+$ nc localhost 25 << EOF
 HELO host.example.com
 MAIL FROM:<user@host.example.com>
 RCPT TO:<user2@host.example.com>
@@ -36,22 +154,9 @@ QUIT
 EOF
 ```
 
-### ポートスキャンニングを行う
-セキュリティチェックなどのためにローカルホストで実施すること。
+memcachedにアクセス
 ```
-$ nc -zv localhost 1-65535
-```
-
-### Redisへアクセス
-```
-$ (echo 'set KEY1 hoge'; sleep 1s; echo 'key *') | nc localhost 6379
-```
-
-### .ssh/configにProxyCommandを記述する
-passproxy.comにログインせずに一気にremoteserver.comにsshログインやscpするための設定
-```
-Host remoteserver.com
-  ProxyCommand ssh passproxy.com nc %h %p
+$ echo flush_al | nc localhost 11211
 ```
 
 # 参考URL

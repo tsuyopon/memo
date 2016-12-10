@@ -66,6 +66,15 @@ $ ssh remote
 
 (参考) http://d.hatena.ne.jp/hirose31/20070419/1176968993
 
+### .ssh/configにProxyCommandを記述する
+(上と同じ??)
+passproxy.comにログインせずに一気にremoteserver.comにsshログインやscpするための設定
+```
+Host remoteserver.com
+  ProxyCommand ssh passproxy.com nc %h %p
+```
+
+
 ### TCPサーバとしてLISTENする
 サーバとしてTCP:12345ポートでLISTENモードにします。
 ```
@@ -115,6 +124,7 @@ $ nc -u host.example.com 53
 ```
 
 ### 全ポートスキャン
+セキュリティチェックなどのためにローカルホストで実施すること。
 ```
 $ nc -zv localhost 1-65535
 ```
@@ -126,12 +136,12 @@ $ nc -x10.2.3.4:8080 -Xconnect host.example.com 42
 ```
 
 ### 各種サーバへのアクセス例
-Redisサーバへアクセス
+- Redisサーバへアクセス
 ```
 $ (echo 'set KEY1 hoge'; sleep 1s; echo 'key *') | nc localhost 6379
 ```
 
-メールを送信する
+- メールを送信する
 ```
 $ nc localhost 25 << EOF
 HELO host.example.com
@@ -148,3 +158,9 @@ memcachedにアクセス
 ```
 $ echo flush_al | nc localhost 11211
 ```
+
+# 参考URL
+- nc コマンド 使い方メモ: Qiita
+ - http://qiita.com/yasuhiroki/items/d470829ab2e30ee6203f
+- ncのManpage
+ - http://www.computerhope.com/unix/nc.htm

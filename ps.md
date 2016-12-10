@@ -1,10 +1,8 @@
 # プロセス管理
+psコマンドや/proc/<pid>/statusなどプロセス関連のコマンド
 
-### プロセス管理について
-##### プロセス関連コマンド
-ps, kill, pstree, strace, lsof
-
-##### ps -lコマンド
+#
+### ps -lコマンド
 ```
 $ ps -l
 F S   UID   PID  PPID  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD
@@ -39,7 +37,7 @@ COMMAND そのプロセスを起動した時のコマンド。 プログラム�
 ```
 
 
-##### ps uコマンド(プロセスに割り当てられた資源を確認する)
+### ps uコマンド(プロセスに割り当てられた資源を確認する)
 psコマンドにuオプションを付けると、 プロセスに割り当てられたメモリ資源やCPU資源が表示する。 
 ```
 $ ps u 
@@ -59,7 +57,7 @@ START                   プロセスが生成された時刻。
 ```
 
 
-##### 現状のプロセスの/proc/<PID>statusを覗いてみる。
+### 現状のプロセスの/proc/<PID>statusを覗いてみる。
 ```
 $ head -11 /proc/$$/status
 Name:	bash
@@ -76,7 +74,7 @@ Groups:	10 18 1000
 ```
 
 
-##### プロセス強制終了
+### プロセス強制終了
 
 通常は^Cだが、coreファイルを生成する場合^¥で良い。  
 これはstty -a で確認できる。
@@ -91,4 +89,47 @@ opost -olcuc -ocrnl onlcr -onocr -onlret -ofill -ofdel nl0 cr0 tab0 bs0 vt0 ff0
 isig icanon iexten echo echoe -echok -echonl -noflsh -xcase -tostop -echoprt echoctl echoke
 ```
 
-
+### プロセス情報を木構造で表示する
+```
+$ pstree
+systemd-+-NetworkManager-+-dhclient
+        |                `-2*[{NetworkManager}]
+        |-abrt-watch-log
+        |-abrtd
+        |-accounts-daemon---{accounts-daemon}
+        |-at-spi-bus-laun---2*[{at-spi-bus-laun}]
+        |-atd
+        |-auditd-+-audispd-+-sedispatch
+        |        |         `-{audispd}
+        |        `-{auditd}
+        |-avahi-daemon---avahi-daemon
+        |-bluetoothd
+        |-colord---{colord}
+        |-colord-sane---{colord-sane}
+        |-crond
+        |-cupsd
+        |-2*[dbus-daemon]
+        |-dbus-launch
+        |-dconf-service---2*[{dconf-service}]
+        |-gconfd-2
+        |-gdm-binary-+-gdm-simple-slav-+-Xorg
+        |            |                 |-gdm-session-wor-+-gnome-session-+-abrt-applet
+        |            |                 |                 |               |-deja-dup-monito---2*[{deja-dup-monito}]
+        |            |                 |                 |               |-evolution-alarm---2*[{evolution-alarm}]
+        |            |                 |                 |               |-gnome-screensav---2*[{gnome-screensav}]
+        |            |                 |                 |               |-gnome-settings----2*[{gnome-settings-}]
+        |            |                 |                 |               |-gnome-shell-+-firefox---19*[{firefox}]
+        |            |                 |                 |               |             |-gnome-terminal-+-bash
+        |            |                 |                 |               |             |                |-gnome-pty-helpe
+        |            |                 |                 |               |             |                `-3*[{gnome-terminal}]
+        |            |                 |                 |               |             `-6*[{gnome-shell}]
+        |            |                 |                 |               |-nm-applet---{nm-applet}
+        |            |                 |                 |               |-tracker-miner-f---3*[{tracker-miner-f}]
+        |            |                 |                 |               |-tracker-store---6*[{tracker-store}]
+        |            |                 |                 |               `-3*[{gnome-session}]
+        |            |                 |                 `-2*[{gdm-session-wor}]
+        |            |                 `-{gdm-simple-slav}
+        |            `-{gdm-binary}
+        |-gnome-keyring-d---7*[{gnome-keyring-d}]
+(省略)
+```

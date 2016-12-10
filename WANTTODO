@@ -14,8 +14,11 @@
 # やりたい(中)
 - gccのattributeについて調べる
 - c++のboostを使ったgdbの方法
+- seleniumサンプルいろいろ
 
 # コマンド関連
+- debugfs
+ - http://qiita.com/gucci3/items/1b97cc2b3deee59f0acd
 - route
 - awk
 - sed
