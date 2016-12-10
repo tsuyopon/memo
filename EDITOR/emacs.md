@@ -1,6 +1,7 @@
 # 概要
 emacsについて
 
+# 入力操作
 ### 簡単なキーバインド
 ```
 emacs -nw ファイル名 ...新しいウィンドウを開かない
@@ -123,4 +124,46 @@ M-x info ...........infoを読む
 M-x telnet .........telnetモードを実行する。
 M-x ftp ............ftpモードを実行する。
 M-x w3m ............w3mを実行する。
+```
+
+# emacs関連tips
+
+### Emacsをターミナルとして使用する
+```
+M-x を押した後、shellを入力してエンターすればよい。
+```
+
+但し、sshやftpでログインしようとするとパスワードが平文で表示されるので 以下の設定を.emacsなどに行う。
+```
+(add-hook `comint-output-filter-functions
+          `comint-watch-for-password-prompt)
+```
+
+### lessからemacsを呼び出す。
+通常、lessでファイルを閲覧して「v」を押すとviが起動できる。 これを、viでなくemacsにするには環境変数EDITORをemacsにセットすれば「v」を 押すとemacsが起動できるようになる。
+
+### .emacs.elの設定
+```
+;;　バックアップファイルを作成しない
+(setq make-backup-files nil)
+
+;;バッファ最後で矢印キーによる改行挿入をしない
+(setq next-line-add-newlines nil) 
+
+;;一行が80字以上になった時には自動改行する。
+(setq fill-column 80)
+(setq text-mode-hock 'turn-on-auto-fill)
+```
+
+### emacsで日本語が表示できない場合には 
+以下の内容を.emacsに追加すればよい。
+```
+(set-terminal-coding-system 'euc-jp)
+(set-keyboard-coding-system 'euc-jp)
+```
+
+### emacsでバイナリファイルを編集したい 
+以下のモードにすればよい。
+```
+M-x hexl-find-file
 ```
