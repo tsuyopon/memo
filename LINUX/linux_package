@@ -1,9 +1,0 @@
-Linuxパッケージ管理
-
-*** パッケージを検索しインストールする
-$ yum search <pkgname>
-$ yum install <pkgname>
-
-php-mbstringを入れる
-$ sudo yum --enablerepo=remi,epel,rpmforge install php-mbstring
-

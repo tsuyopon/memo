@@ -3,8 +3,11 @@ yumコマンドについて
 
 # 詳細
 
-## 表示系コマンド
-
+### パッケージを検索しインストールする
+```
+$ yum search <pkgname>
+$ yum install <pkgname>
+```
 
 ## アップデート関連コマンド
 
@@ -62,6 +65,8 @@ $yum --enablerepo='hogerepo' install mypackage
 ```
  less /var/log/yum.log
 ```
+
+
 
 # 参考
 - http://www.atmarkit.co.jp/flinux/rensai/linuxtips/795tmprepo.html
