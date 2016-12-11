@@ -144,6 +144,90 @@ Ctrl-H    バックスペース(set backspace=2)があれば行をさかのぼ�
           ファイル全体の上からn％の位置に飛ぶ
 ```
 
+# ファイル関連操作について
+### リドゥしたい
+アンドゥを取り消すリドゥがしたい場合 Ctrl + R でできる。
+
+### 複数行の先頭に#を付与したい
+これはCtrl+Vで選択範囲を絞って、I(カーソルのある行頭から挿入)を実行し、その後#(シャープ)を入力すればよい。
+
+### ^Aや^Bなどのセパレータの入力方法について
+Ctrl + Vの後にCtrl + AやCtrl + Bを押下すればよい。
+
+### 10単語分の文字を削除したい。
+カーソルの位置から10単語分削除したい場合にはコマンドモードで
+```
+10dw
+```
+とすればよい。
+
+### ある文字まで削除したい。
+カーソル位置からある文字まで削除したい場合には
+```
+df<1文字>
+```
+とする。 例えば、以下の行があったとする。 
+- http://itpro.nikkeibp.co.jp/article/COLUMN/20060228/231169/
+
+カーソル位置がhttp:のコロン(:)の位置にあると仮定して、
+```
+df2
+```
+とすると以下の部分が削除されることになる。
+```
+://itpro.nikkeibp.co.jp/article/COLUMN/2
+```
+
+つまり、以下の様な行になる。
+```
+http0060228/231169/
+```
+
+これは非常に便利なので覚えておくと良い。
+
+### レジスタ管理(register)
+レジスタはa〜zの26種類が格納できるクリップボードです。
+```
+"ay    選択範囲をレジスタ a に保存
+"ayy   今いる行をレジスタ a に保存
+"ap    レジスタ a の内容をカーソル位置にペースト
+```
+
+### 記録操作(recording)を行いたい。 
+```
+[操作開始]
+:qa   操作の記録を開始し、レジスタ a に保存する 
+```
+
+```
+[操作終了]
+:q    操作の記録を終了する。
+```
+
+```
+[記録の再生]
+:@a   レジスタ a に保存された操作を再生する 
+:5@a  レジスタ a に保存された操作を5回再生する 
+```
+
+記録しているレジスタ一覧が知りたい場合には:regとすれば確認できる。 以下に例を示す。
+```
+:reg
+--- Registers ---
+""   --------------------------------------------------------------------^J
+"0   --------------------------------------------------------------------^J
+```
+
+### カーソル上の文字の大文字小文字を切り替えたい
+カーソル上で~(ニョロ)を押せば切り替えることができる。
+
+### コマンドの実行結果を現在のviの編集画面に埋め込みたい
+```
+:r!ls -al
+```
+とすると、カーソル位置に「ls -al」のコマンド実行結果が埋め込まれます。
+
+
 # 設定について
 設定は.exrcか.vimrcに記述する。 ダブルクォーテーション以降がコメントとして扱われる。
 
@@ -287,6 +371,93 @@ set fileencodings=iso-2022-jp,utf-8,euc-jp,ucs-2le,ucs-2,cp932p
 ```
 
 ### vimの検索結果をハイライトする
-```
+
 :set hlsearch
 ```
+
+# syntax関連
+
+### syntax関連の設定について
+```
+:set highlight ハイライトを設定する
+:set nohighlight ハイライトを解除する
+:syn on 構文ハイライトを有効にする
+:syn off 構文ハイライトを無効にする
+:set filetype=c cのシンタックスでハイライトする
+:set filetype=html htmlのシンタックスでハイライトする 
+```
+
+### ある拡張子を特定の拡張子のsyntaxファイルと認識させたい。
+たとえば、.testという拡張子のファイルをhtmlファイルと認識させたいような 場合には.vimrcに以下の記述をすればよい。
+```
+augroup filetypedetect
+au BufRead,BufNewFile *.test setfiletype html
+augroup END
+```
+
+### 個人用のsyntaxファイルを利用したい
+```
+~/.vim/colors
+```
+のディレクトリ中にsyntaxファイル(拡張子:.vim)を設置すれば、
+```
+:colorscheme  testsyntax
+```
+とすれば、~/.vim/colors/testsyntax.vimのファイルの読み込みを 行います。
+
+### 色の指定について
+```
+:colorscheme [targetcolor]
+```
+でよい。以下にtargetcolorを示す。 これは[TAB]により、引数候補が出るので覚える必要はない。 blue, darkblue, default, elford, evening, koehler morning, murphy, pablo, peachpuff, ron, shinetorte, zellner
+↑
+
+### カラースキームファイルで何が利用できるか知りたい。
+```
+/usr/share/vim/vim63/colors/
+```
+上記の場所に様々なカラースキームが存在します。
+
+# ヘルプページ
+
+### ヘルプの参照方法
+```
+:help
+```
+
+### ヘルプページへの移動方法 と 「:help」トップページへの戻り方
+「:help」実行後に下記画面が表示されたら
+```
+Getting Started ~
+|usr_01.txt|  About the manuals
+|usr_02.txt|  The first steps in Vim
+```
+「user_01.txt」や「user_02.txt」の上にカーソルを持って「Ctrl + ]」と押下することによって、閲覧したいヘルプドキュメントに遷移できます。 「:help」実行時の画面に戻る際には、「Ctrl + T」によって戻ることができるようになります。
+
+以下ははvimヘルプページの日本語版です。
+- http://www.ac.cyberhome.ne.jp/~yakahaira/vimdoc/
+
+
+# 参考URL
+- VIMドキュメント 日本語訳
+ - http://sites.google.com/site/vimdocja/
+- vim様々なリンク集 by 2ch
+ - http://www.bookshelf.jp/2ch/unix/1284344926.html
+- サイト更新停滞ちゅう
+ - http://advweb.seesaa.net/
+- Vim日本語ドキュメント
+ - http://www.kaoriya.net/vimdoc_j/
+- JVim3非公式ガイド 目次
+ - http://homepage1.nifty.com/niwatori/vi/index.html
+- Vim documentation: syntax
+ - http://www.ac.cyberhome.ne.jp/~yakahaira/vimdoc/syntax.html
+- vim - 文字コードの自動認識
+ - http://www.ksknet.net/vi/vim_1.html
+- vim設定コマンド リファレンス
+ - http://www15.ocn.ne.jp/~tusr/vim/options.html
+ - http://www15.ocn.ne.jp/~tusr/vim/options_help.html
+- vimの小技
+ - http://d.hatena.ne.jp/bonar/20070415/1176651778
+http://www.not-enough.org/abe/manual/comm/tips.html
+
+
