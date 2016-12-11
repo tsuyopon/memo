@@ -63,3 +63,7 @@ CPU:0 [EVENTS DROPPED]
 (省略)
 ```
 
+
+# 参考URL
+- LWN.net: trace-cmd: A front-end for Ftrace
+ - https://lwn.net/Articles/410200/
