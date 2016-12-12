@@ -152,3 +152,5 @@ print_ht   --- HashTableの中身を見る。
 # 参考URL
 - PHP公式ドキュメントによるgdbの使い方(ためになる)
  - https://bugs.php.net/bugs-generating-backtrace.php
+- Debugging PHP segfault backtraces with `gdb`
+ - http://www.robertames.com/blog.cgi/entries/debugging-php-segfault-backtraces-with-gdb.html
