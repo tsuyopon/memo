@@ -108,6 +108,46 @@ $16 = 0x816afbc "/home/yohgaki/php/DEV/segfault.php"
 (gdb) 
 ```
 
+### coreから調査を行う
+```
+$ gdb /usr/sbin/apache2 --core /var/tmp/core/core.<pid> --command /usr/local/src/php-5.5.5/.gdbinit
+```
+
+### 参照に便利そうなメモ
+```
+(gdb) set print pretty on
+(gdb) zbacktrace
+(gdb) print *executor_globals->active_op_array
+(gdb) print sapi_globals->request_info
+```
+
+- sapi_globals
+- executor_globals 	
+- compiler_globals
+- core_globals
+- ps_globals
+
+### .gdbinit
+この辺にgdbinitが存在する。
+- https://github.com/php/php-src/blob/master/.gdbinit
+使い方はまた時間をとって抑えておきたい。
+
+```
+zbacktrace --- backtraceをみる
+printzv    --- zvalの内容をみる
+print_ht   --- HashTableの中身を見る。
+```
+
+実行中のグローバル変数をみる
+```
+(gdb) print_ht executor_globals->symbol_table->pListHead
+```
+
+セッションの中身をみる
+```
+(gdb) printzv ps_globals.http_session_vars
+```
+
 
 # 参考URL
 - PHP公式ドキュメントによるgdbの使い方(ためになる)
