@@ -154,3 +154,5 @@ print_ht   --- HashTableの中身を見る。
  - https://bugs.php.net/bugs-generating-backtrace.php
 - Debugging PHP segfault backtraces with `gdb`
  - http://www.robertames.com/blog.cgi/entries/debugging-php-segfault-backtraces-with-gdb.html
+- How to set breakpoints in a php script using gdb
+ - http://stackoverflow.com/questions/30664274/how-to-set-breakpoints-in-a-php-script-using-gdb
