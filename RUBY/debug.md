@@ -43,5 +43,11 @@ test.rb:2:f = open("http://0xcc.net/", "r")
     #2 test.rb:2
 ```
 
+### 起動中のプロセスにアタッチする
+参考になりそうなのはこの辺?
+- http://weblog.jamisbuck.org/2006/9/22/inspecting-a-live-ruby-process
+- http://axonflux.com/inspect-a-live-running-ruby-process
+- https://spin.atomicobject.com/2013/08/19/debug-ruby-processes/
+
 # 参考URL
 - http://0xcc.net/blog/archives/000162.html
