@@ -26,6 +26,7 @@ h             # ヘルプ
 
 ### ソースコード中でブレークポイントを指定する
 以下のコードを入れておけば自動的にブレークポイントが設定されるようです。
+$DBというのはデバッガの為のクラスです(データベースじゃありません)
 ```
 $DB::single = 1;
 ```
@@ -147,8 +148,24 @@ Tを使えばOK
 $ = main::get_country_from_lang(ref(HASH), 'English') called from file 'test.pl' line 29
 ```
 
-### ブレークポイントの設定・削除
+### ブレークポイントの設定
+bコマンドでオプションを設定することができる。
 ```
+  DB<10> b get_population_total
+  DB<11> b get_country_from_lang
+```
+
+Lコマンドでブレークポイント、ウォッチ、アクションを閲覧できる。
+```
+  DB<12> L       
+test.pl:
+ 35:	  my $countries = shift;
+    break if (1)
+ 47:	  my ($countries, $one_language) = @_;
+    break if (1)
+```
+
+
 
 ### サブルーチンから戻る
 gdbでのfinishと同じと思われるのがr(return)となります。  
@@ -166,7 +183,18 @@ main::(test.pl:31):	1;
 ```
 
 ### プログラムを再実行する
-runに相当するのがRです。大文字と小文字では役割が違うので注意が必要です。
+runに相当するのがRです。大文字と小文字では役割が違うので注意が必要です。  
+スクリプトの実行が終了すると以下のメッセージが表示されます。
+```
+Debugged program terminated.  Use q to quit or R to restart,
+use o inhibit_exit to avoid stopping after program termination,
+h q, h R or h o to get additional info.
+```
+
+Rコマンドで再度スクリプトを実行します。
+```
+  DB<15> R
+```
 
 ### 現在いる行を表示する。
 ```
