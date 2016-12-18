@@ -1,6 +1,18 @@
 # 概要
 コマンドラインに関するTIPS
 
+### sudoでリダイレクトしたい場合
+cオプションあとは囲めばOK
+```
+$ sudo sh -c "echo 'redirect' >> /var/test/hoge.txt"
+```
+
+teeを使っても同様のことをできます
+```
+$ echo "redirect" | tee -a /var/test/hoge.txt
+```
+
+
 ### ファイルのサイズを0にする。
 たとえば、何かのプロセスがログを吐き出していてrmやmvなどを実行したくないような場合にはtruncateが利用できます。
 ```
