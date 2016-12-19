@@ -369,8 +369,49 @@ Data Examination:     expr     Execute perl code, also see: s,n,t expr
 For more help, type h cmd_letter, or run man perldebug for all docs.
 ```
 
+
+### 起動しているプロセスにアタッチする
+起動しているプロセスにアタッチする場合、残念ながら公式で色々と探したがあまりなさそう。
+
+ちゃんと試したわけではないが、方法があったので載せておく。
+
+個人で以下のスクリプトを作ってくれている人がいたのでこちらを使ってみる
+```
+$ wget https://raw.github.com/ahiguti/gdbperl/master/gdbperl.pl
+$ perl gdbperl.pl $pid
+```
+use IO::Socket::INET;
+
+sub baz {
+	while(1){
+		my $sd = new IO::Socket::INET(PeerAddr => '10.1.0.0:80');   # ここで固まる
+		sleep(1);
+	}
+}
+
+sub bar {
+	baz($_[0]);
+}
+
+sub foo {
+	bar(35, 5.98, "xyz", @_);
+}
+
+foo("abc");
+```
+
+ただし、これを使うためには-gが付与されたデバッグシンボルで起動している必要があるらしい
+
+使い方は以下のスライドシェアでも説明されている
+- http://www.slideshare.net/akirahiguchi/gdbperl
+
+gdbperlではないが次のやつを試してみてもいいかも
+- http://www.slideshare.net/hirose31/inspect-runningperl
+- http://d.hatena.ne.jp/hirose31/20130924/1380000414
+
 # TODO
-全ヘルプオプションを試せていない...
+- 全ヘルプオプションを試せていない...
+- gdbperlを試せていない...
 
 # 参考URL
 - http://d.hatena.ne.jp/perlcodesample/20080109/1199880506
@@ -378,3 +419,5 @@ For more help, type h cmd_letter, or run man perldebug for all docs.
  - http://perldoc.jp/docs/perl/5.8.8/perldebug.pod
 - perldebug.html
  - https://argrath.ub32.org/perldocjp/5.10.0/perldebug.html
+- How to inspect a RUNNING perl process
+ - http://www.slideshare.net/hirose31/inspect-runningperl
