@@ -290,3 +290,6 @@ mysql> select * from departments where dept_no in ('d009', 'd002');
 +---------+------------------+
 2 rows in set (0.02 sec)
 ```
+
+### VIEW一覧を表示する
+- http://stackoverflow.com/questions/2834016/how-to-get-a-list-of-mysql-views
