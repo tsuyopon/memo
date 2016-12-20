@@ -149,7 +149,8 @@ $ = main::get_country_from_lang(ref(HASH), 'English') called from file 'test.pl'
 ```
 
 ### ブレークポイントの設定
-bコマンドでオプションを設定することができる。
+bコマンドでオプションを設定することができる。  
+行番号やサブルーチン名を指定することができます。
 ```
   DB<10> b get_population_total
   DB<11> b get_country_from_lang
@@ -165,6 +166,15 @@ test.pl:
     break if (1)
 ```
 
+なお、特定のブレークポイントを削除したい場合には行番号やサブルーチン名を指定します。
+```
+  DB<13> b get_country_from_lang
+```
+
+引数を指定しない場合には全てのブレークポイントを削除します。
+```
+  DB<14> b
+```
 
 
 ### サブルーチンから戻る
@@ -407,5 +417,7 @@ gdbperlではないが次のやつを試してみてもいいかも
 - http://d.hatena.ne.jp/perlcodesample/20080109/1199880506
 - perldoc.jp(公式ドキュメント)
  - http://perldoc.jp/docs/perl/5.8.8/perldebug.pod
+- perldebug.html
+ - https://argrath.ub32.org/perldocjp/5.10.0/perldebug.html
 - How to inspect a RUNNING perl process
  - http://www.slideshare.net/hirose31/inspect-runningperl
