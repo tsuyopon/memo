@@ -27,7 +27,7 @@ $ sudo sudo strace -tt -T -p <pid1つめ> -p <pid２つめ>
 # strace -tt -T -f -p `pidof rsyslogd`
 ```
 
-### 実行されたコマンドのシステムコールの統計値を表示する
+### 実行されたコマンドのシステムコールの統計値を表示する(アタッチする場合も含めて)
 ```
 $ sudo strace -c ls
 2nd	    Desktop    Downloads  Music  Pictures  SOURCE   asm        dumpssl	httpd  packet_00001_20161203094801  yatos
@@ -58,6 +58,14 @@ BuildTools  Documents  MEMO.sh	  NODE	 Public    UNIX_V6  buildroot  git	key    
 ------ ----------- ----------- --------- --------- ----------------
 100.00    0.000000                   112         3 total
 ```
+
+なお、稼働中のプロセスのpidを指定して統計情報を取得する方法もあります。
+測定したい時間たったらCtrl + Cなどを押下すると統計情報が出ます。何も統計情報が出力されない場合にはsleep状態の可能性が高いです。
+```
+$ sudo strace -c -p <pid>
+```
+
+-pと-cオプションを入れ替えると自分は使えなかったので注意が必要かもしれません。
 
 ### 表示される文字数を増やす
 デフォルトだと引数が32文字しか表示されないので、もっとたくさんを表示させるには次のようにする
