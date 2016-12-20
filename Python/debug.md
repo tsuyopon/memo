@@ -61,17 +61,62 @@ Breakpoint 1 at /Users/tsuyoshi/git/mymemo/memo/Python/UnittestPdbSample.py:10
 (Pdb) 
 ```
 
-以下は代表的な
+以下は代表的なコマンドです。
 ```
-b        ブレークポイントを貼る
-s(tep)   ステップイン
-n(ext)   ステップオーバー
-r(eturn) ステップアウト(現在の関数が終了するまで実行する)
-l(ist)   現在行の前後のソースコードを表示
-a(rgs)   現在いる関数の引数を表示
-p        変数の中身を出力する
-c        次のブレイクポイントまで実行
-q        デバッガを終了する
+b         ブレークポイントを貼る
+s(tep)    ステップイン
+n(ext)    ステップオーバー
+r(eturn)  ステップアウト(現在の関数が終了するまで実行する)
+l(ist)    現在行の前後のソースコードを表示
+a(rgs)    現在いる関数の引数を表示
+p         変数の中身を出力する
+c         次のブレイクポイントまで実行
+q         デバッガを終了する
+d(own)    カレントフレームを1レベル下げる
+u(p)      カレントフレームを1レベル上げる
+tbreak    一時的なブレークポイント([file:]lineno|function[, condition]])が指定できる。
+cl(ear)   引数があれば指定されたブレークポイントを解除し、引数がなければ全てのブレークポイントを解除する
+enable    指定したブレークポイントを有効にする
+disable   指定されたブレークポイントを無効にする
+where     現在のスタックトレースを表示する
+whatis    引数の型を表示する
+run       プログラムを再実行する
+ignore    指定された回数だけブレーク無効化
+alias     変数にエイリアスを付与する
+unalias   上記aliasの解除
+h         ヘルプを表示する
+!         1文実行する
+condition ブレークポイント実行条件
+```
+
+上記オプションなどについては以下のドキュメントに詳しく記述されています。
+- http://docs.python.jp/2/library/pdb.html
+
+### ブレークポイントを設定する
+
+ファイルが1つしかない場合には行数などで指定できる。以下は25行目に設定する例
+```
+b 25
+```
+
+ファイル名と行数を指定する場合には次のようにする
+設定しても意味がないような箇所に設定すると以下の最初の例のようなエラーが表示されるので注意すること
+```
+(Pdb) b ./UnittestPdbSample.py:1
+*** Blank or comment                  // 意味がない箇所への設定
+(Pdb) b UnittestPdbSample.py:30
+Breakpoint 1 at /Users/tsuyoshi/git/mymemo/memo/Python/UnittestPdbSample.py:30
+```
+
+関数に設定するには次のようにする
+```
+b methodname
+```
+
+クラス中のメソッドを指定する場合には次のようになります。
+- http://stackoverflow.com/questions/8221040/how-to-make-a-breakpoint-on-class-member-function-of-python
+```
+b classname.methodname
 ```
 
 ### プログラムに仕掛けた場所でブレークポイントを貼りたい
@@ -93,3 +138,5 @@ http://lightson.dip.jp/zope/ZWiki/211Python_e3_82_b9_e3_82_af_e3_83_aa_e3_83_97_
  - http://www.sakito.com/2012/10/python-debuggerpdb.html
 - pdb - The Python Debugger
  - https://docs.python.org/3/library/pdb.html
+- 上記の日本語訳
+ - http://docs.python.jp/2/library/pdb.html
