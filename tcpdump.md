@@ -27,7 +27,7 @@ tcpdumpコマンドについて
 $ tcpdump -Z root -i eth0 -X -S port 80
 ```
 
-### 通信の内容をASCIIで表示したい場合
+### 通信の内容をASCIIで表示したい場合(よく使う!!!)
 HTTPリクエストやレスポンスのヘッダ及びボディを綺麗に出力してみることができます。
 ```
 $ sudo tcpdump -i eth0 -A port 80
@@ -172,6 +172,29 @@ $ tcpdump greater 128
 ```
 # tcpdump 'ip[6] & 128 != 0'
 ```
+
+### mysqlへのクエリリクエストを知りたい
+こんな感じのリクエストを発行すれば良い。前者は簡易にSELECTだけ知りたいような場合。後者は文字列で抽出している。
+```
+# tcpdump -l -i eth0 -A -n -s 0 dst port 3306 | grep SELECT
+```
+や
+```
+#!/bin/bash
+tcpdump -i eth0 -s 0 -l -w - dst port 3306 | strings | perl -e '
+while(<>) { chomp; next if /^[^ ]+[ ]*$/;
+    if(/^(SELECT|UPDATE|DELETE|INSERT|SET|COMMIT|ROLLBACK|CREATE|DROP|ALTER|CALL)/i)
+    {
+        if (defined $q) { print "$q\n"; }
+        $q=$_;
+    } else {
+        $_ =~ s/^[ \t]+//; $q.=" $_";
+    }
+}'
+```
+
+- http://keyamb.hatenablog.com/entry/20120725/1343198298
+- https://web.liferay.com/ja/web/david.zhang/blog/-/blogs/how-to-catch-mysql-sql-with-tcpdump-in-linux
 
 ### tcpdumpの出力がわからない
 このサイトをみるとよさそうです。
