@@ -2,6 +2,11 @@
 # MAC関連設定
 
 # 設定
+### mysql起動
+```
+$ sudo mysql.server start
+```
+
 ### ️ローカルアクセス
 http://localhost:8080/
 ssh localhost -p 50022
