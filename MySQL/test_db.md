@@ -1,6 +1,6 @@
-# mysqlについて
-mysql関連について
-MySQLのテスト用データを使って説明します。
+# test_dbについて
+大規模なレコードが入ったデータを使って簡単なテストをしたいような場合には以下のデータベースは非常に有用です。
+- https://github.com/datacharmer/test_db.git
 
 # 詳細
 
