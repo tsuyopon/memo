@@ -56,9 +56,169 @@ mysql> show tables;
 ```
 
 
+### ビューのテーブル一覧
+```
+mysql> select TABLE_SCHEMA,TABLE_NAME from information_schema.tables where TABLE_TYPE = 'VIEW' and  TABLE_SCHEMA = 'sakila';
++--------------+----------------------------+
+| TABLE_SCHEMA | TABLE_NAME                 |
++--------------+----------------------------+
+| sakila       | actor_info                 |
+| sakila       | customer_list              |
+| sakila       | film_list                  |
+| sakila       | nicer_but_slower_film_list |
+| sakila       | sales_by_film_category     |
+| sakila       | sales_by_store             |
+| sakila       | staff_list                 |
++--------------+----------------------------+
+7 rows in set (0.01 sec)
+```
+
+### 設定されているINDEX一覧
+```
+mysql> select TABLE_NAME,INDEX_NAME from  information_schema.statistics where TABLE_SCHEMA='sakila';
++---------------+-----------------------------+
+| TABLE_NAME    | INDEX_NAME                  |
++---------------+-----------------------------+
+| actor         | PRIMARY                     |
+| actor         | idx_actor_last_name         |
+| address       | PRIMARY                     |
+| address       | idx_fk_city_id              |
+| category      | PRIMARY                     |
+| city          | PRIMARY                     |
+| city          | idx_fk_country_id           |
+| country       | PRIMARY                     |
+| customer      | PRIMARY                     |
+| customer      | idx_fk_store_id             |
+| customer      | idx_fk_address_id           |
+| customer      | idx_last_name               |
+| film          | PRIMARY                     |
+| film          | idx_title                   |
+| film          | idx_fk_language_id          |
+| film          | idx_fk_original_language_id |
+| film_actor    | PRIMARY                     |
+| film_actor    | PRIMARY                     |
+| film_actor    | idx_fk_film_id              |
+| film_category | PRIMARY                     |
+| film_category | PRIMARY                     |
+| film_category | fk_film_category_category   |
+| film_text     | PRIMARY                     |
+| film_text     | idx_title_description       |
+| film_text     | idx_title_description       |
+| inventory     | PRIMARY                     |
+| inventory     | idx_fk_film_id              |
+| inventory     | idx_store_id_film_id        |
+| inventory     | idx_store_id_film_id        |
+| language      | PRIMARY                     |
+| payment       | PRIMARY                     |
+| payment       | idx_fk_staff_id             |
+| payment       | idx_fk_customer_id          |
+| payment       | fk_payment_rental           |
+| rental        | PRIMARY                     |
+| rental        | rental_date                 |
+| rental        | rental_date                 |
+| rental        | rental_date                 |
+| rental        | idx_fk_inventory_id         |
+| rental        | idx_fk_customer_id          |
+| rental        | idx_fk_staff_id             |
+| staff         | PRIMARY                     |
+| staff         | idx_fk_store_id             |
+| staff         | idx_fk_address_id           |
+| store         | PRIMARY                     |
+| store         | idx_unique_manager          |
+| store         | idx_fk_address_id           |
++---------------+-----------------------------+
+47 rows in set (0.00 sec)
+```
+
+### 関数一覧
+```
+mysql> SHOW FUNCTION STATUS \G
+*************************** 1. row ***************************
+                  Db: sakila
+                Name: get_customer_balance
+                Type: FUNCTION
+             Definer: root@localhost
+            Modified: 2016-12-22 08:46:36
+             Created: 2016-12-22 08:46:36
+       Security_type: DEFINER
+             Comment: 
+character_set_client: utf8
+collation_connection: utf8_general_ci
+  Database Collation: utf8_general_ci
+*************************** 2. row ***************************
+                  Db: sakila
+                Name: inventory_held_by_customer
+                Type: FUNCTION
+             Definer: root@localhost
+            Modified: 2016-12-22 08:46:36
+             Created: 2016-12-22 08:46:36
+       Security_type: DEFINER
+             Comment: 
+character_set_client: utf8
+collation_connection: utf8_general_ci
+  Database Collation: utf8_general_ci
+*************************** 3. row ***************************
+                  Db: sakila
+                Name: inventory_in_stock
+                Type: FUNCTION
+             Definer: root@localhost
+            Modified: 2016-12-22 08:46:36
+             Created: 2016-12-22 08:46:36
+       Security_type: DEFINER
+             Comment: 
+character_set_client: utf8
+collation_connection: utf8_general_ci
+  Database Collation: utf8_general_ci
+3 rows in set (0.01 sec)
+```
+
+### ストアドプロシージャ一覧
+```
+mysql> SHOW PROCEDURE STATUS \G
+*************************** 1. row ***************************
+                  Db: sakila
+                Name: film_in_stock
+                Type: PROCEDURE
+             Definer: root@localhost
+            Modified: 2016-12-22 08:46:36
+             Created: 2016-12-22 08:46:36
+       Security_type: DEFINER
+             Comment: 
+character_set_client: utf8
+collation_connection: utf8_general_ci
+  Database Collation: utf8_general_ci
+*************************** 2. row ***************************
+                  Db: sakila
+                Name: film_not_in_stock
+                Type: PROCEDURE
+             Definer: root@localhost
+            Modified: 2016-12-22 08:46:36
+             Created: 2016-12-22 08:46:36
+       Security_type: DEFINER
+             Comment: 
+character_set_client: utf8
+collation_connection: utf8_general_ci
+  Database Collation: utf8_general_ci
+*************************** 3. row ***************************
+                  Db: sakila
+                Name: rewards_report
+                Type: PROCEDURE
+             Definer: root@localhost
+            Modified: 2016-12-22 08:46:36
+             Created: 2016-12-22 08:46:36
+       Security_type: DEFINER
+             Comment: Provides a customizable report on best customers
+character_set_client: utf8
+collation_connection: utf8_general_ci
+  Database Collation: utf8_general_ci
+3 rows in set (0.01 sec)
+```
+
 
 # 参考URL
-
+- MySQL公式ドキュメント(Sakila Sample Database)
+ - https://dev.mysql.com/doc/sakila/en/
 - Sakila Sample Database
  - しっかりと書かれているPDFドキュメント
  - http://downloads.mysql.com/docs/sakila-en.pdf
+

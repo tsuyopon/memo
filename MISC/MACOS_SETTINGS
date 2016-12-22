@@ -6,6 +6,7 @@
 ```
 $ sudo mysql.server start
 ```
+- http://qiita.com/hkusu/items/cda3e8461e7a46ecf25d
 
 ### ️ローカルアクセス
 http://localhost:8080/
