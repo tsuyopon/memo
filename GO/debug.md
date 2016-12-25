@@ -63,6 +63,11 @@ runtime.printstring (v=void) at /usr/lib64/golang/src/pkg/runtime/print.c:351
 355		if(v.len > runtime·maxstring) {
 ```
 
+# TODO
+- ブレークポイントに「info goroutines」という現在実行しているゴルーチンのリストを返すものがあります。
+
 # 参考
 - Debugging Go Code with GDB
  - https://golang.org/doc/gdb
+- 11.2 GDBを使用してデバッグする
+ - https://astaxie.gitbooks.io/build-web-application-with-golang/content/ja/11.2.html
