@@ -7,7 +7,27 @@
 - https://stedolan.github.io/jq/
 
 # 使ってみる
+ドットでルートノードを表すようです。
+```
+$ echo '[{},{}]' | ~/jq .
+[
+  {},
+  {}
+]
+```
 
+中かっこの中を取り出したい場合には次のようにする。
+```
+$ echo '[1,2,3]' | ~/jq '.[]'
+1
+2
+3
+$ echo '[1,2,3]' | ~/jq '.[0,2]'    // カンマで複数指定が可能
+1
+3
+```
+
+単純に綺麗に整形たいだけであればjqに引数無しでパイプで渡せばOK
 ```
 $ echo '{"items":[{"item_id":1,"name":"hoge","age":15},{"item_id":2,"name":"fuga","age":20}]}' | ~/jq
 {
@@ -49,7 +69,35 @@ $ echo '{"items":[{"item_id":1,"name":"hoge","age":15},{"item_id":2,"name":"fuga
 "fuga"
 ```
 
+
+### オブジェクトの中身を取り出す
+```
+$ echo '{ "a":1 , "b":2 }'  | ~/jq '.b'
+2
+$ echo '{ "a": { "c": 1 }, "b":2 }'  | ~/jq '.a.c'
+1
+```
+
+### 特定の要素だけ取り出す
+パイプを使うことができます
+```
+$ echo '[ { "a":1 },  { "x": 1 } ]'  | ~/jq '.[] | select(.x)'
+{
+  "x": 1
+}
+```
+
+### 要素の値を比較してtrue, falseを判定する
+```
+$ echo '[ { "a":1 },  { "x": 1 } ]'  | ~/jq '(.[].a==1)'
+true
+false
+```
+
+
 # 参考URL
 - 公式ドキュメント
  - http://stedolan.github.io/jq/manual/
 - http://qiita.com/takeshinoda@github/items/2dec7a72930ec1f658af
+- jq で 条件にマッチするオブジェクトを取り出す where 句的なこと
+ - http://takuya-1st.hatenablog.jp/entry/2016/12/26/180057

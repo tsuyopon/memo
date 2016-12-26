@@ -15,6 +15,9 @@
 - gccのattributeについて調べる
 - c++のboostを使ったgdbの方法
 - seleniumサンプルいろいろ
+- ELF周りの仕様について深追い
+- SSL周りの仕様について
+- アプリのパフォーマンス解析について
 
 # コマンド関連
 - debugfs
@@ -30,10 +33,13 @@
  - gems
 
 # プログラム
-- POSIXMQ
+- namespace
 
 # 暇なら
 - GCCのドキュメント充実しているんで眺めたい
  - https://gcc.gnu.org/onlinedocs/
 - boost
  - http://theboostcpplibraries.com/
+- 低レイヤーの歩き方
+ - バイブルに
+ - http://rkx1209.hatenablog.com/entry/2016/12/25/141543
