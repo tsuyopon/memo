@@ -18,6 +18,9 @@
 - ELF周りの仕様について深追い
 - SSL周りの仕様について
 - アプリのパフォーマンス解析について
+- fuseについて
+ - http://www.usupi.org/sysad/230.html
+- ipcs, ipcrmについて
 
 # コマンド関連
 - debugfs
