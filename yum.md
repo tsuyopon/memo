@@ -9,9 +9,6 @@ $ yum search <pkgname>
 $ yum install <pkgname>
 ```
 
-## アップデート関連コマンド
-
-
 ### アップデート可能なパッケージを確認したい場合
 ```
 $ yum check-update       // アップデート可能なパッケージを確認する
@@ -38,6 +35,22 @@ exclude=kernel*
 例えば、rubyとその他に依存しない関連パッケージを除去するにはremoveを実行します
 ```
 $ sudo yum remove ruby
+```
+
+### 古いパッケージをインストールする場合
+
+例えば、以下のように最新版がインストールされてsystemtapが使えないような場合、
+```
+$ uname -r
+3.3.4-5.fc17.x86_64
+$ rpm -qa | grep -i kernel-debug
+kernel-debuginfo-common-x86_64-3.9.10-100.fc17.x86_64
+kernel-debuginfo-3.9.10-100.fc17.x86_64
+```
+
+このサーバに古いパッケージをインストールする場合には次のようにdowngradeでバージョンを指定すると良い
+```
+$ sudo yum downgrade kernel-debuginfo-common-x86_64-3.3.4-5.fc17.x86_64 kernel-debuginfo-3.3.4-5.fc17.x86_64
 ```
 
 
