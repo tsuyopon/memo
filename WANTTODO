@@ -10,6 +10,10 @@
  - http://succzero.hatenablog.com/entry/2013/09/01/181615
 - Writing C software without the standard library
  - http://weeb.ddns.net/0/programming/c_without_standard_library_linux.txt
+- SystemTapについて
+ - http://php.plus-server.net/features.dtrace.systemtap.html#example-421
+ - http://dtrace.org/blogs/brendan/2011/10/15/using-systemtap/
+ - http://myaut.github.io/dtrace-stap-book/app/web.html
 
 # やりたい(中)
 - gccのattributeについて調べる
@@ -22,6 +26,7 @@
  - http://www.usupi.org/sysad/230.html
 - ipcs, ipcrmについて
 - jenkinsについて
+- irqbalanceの仕組みが知りたい
 
 # コマンド関連
 - debugfs
