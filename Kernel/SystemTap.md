@@ -143,6 +143,12 @@ exit_group 0
 exit 0
 ```
 
+### stapファイルを指定する。
+SystemTapSample1サンプルを参考のこと
+```
+$ sudo stap sample.stp -c ./a.out
+```
+
 # 参考URL
 - (SystemTap公式サイト)[https://sourceware.org/systemtap/]
 - (SystemTap Beginners Guide)[https://sourceware.org/systemtap/SystemTap_Beginners_Guide/index.html]

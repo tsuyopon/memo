@@ -49,6 +49,26 @@ DirectMap4k:       73664 kB
 DirectMap2M:      974848 kB
 ```
 
+以下に各項目の日本語の説明があるので参考のこと
+- http://www.atmarkit.co.jp/ait/articles/0903/25/news131.html
+
+
+上記記事によると大きくは２種類に大別されますが、それぞれの中はさらに入り組んでいます。
+- 利用可能なメモリ
+ - MemFree
+ - Inactive
+- 解放不可能なメモリ
+ - Active
+ - Vmalloc Used
+ - Slab
+ - Page Tables
+ - Others
+
+/proc/meminfoだと次の式が成り立つようです。
+```
+Active＋Inactive＝AnonPages＋Cached＋Buffers＋SwapCached
+```
+
 ### slabinfoを確認する
 ```
 $ sudo cat /proc/slabinfo  | head -10
@@ -65,6 +85,8 @@ UDPLITEv6              0      0   1088   15    4 : tunables    0    0    0 : sla
 ```
 
 ### /proc/buddyinfo
+現在の空きページの状態がわかります。  
+この例の場合では、DMAゾーンの2^0(4KB)に14個、2^1(8KB)に11個、...、2^10に1個、2^11に0個の空きがあることがわかります。
 ```
 $ cat /proc/buddyinfo 
 Node 0, zone      DMA     14     11     10      1      2      2      2      3      0      1      0 

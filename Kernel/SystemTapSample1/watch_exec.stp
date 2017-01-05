@@ -1,0 +1,69 @@
+probe kernel.function("sys_execve") {
+	printf("%s -> %s\n", thread_indent(1), probefunc());
+	printf("%s    name    = %s\n", thread_indent(0), kernel_string($name));
+	printf("%s    argv[0] = %s\n", thread_indent(0), kernel_string($argv[0]));
+	printf("%s    envp[0] = %s\n", thread_indent(0), kernel_string($envp[0]));
+	printf("%s    envp[1] = %s\n", thread_indent(0), kernel_string($envp[1]));
+}
+
+probe kernel.function("do_execve") {
+	printf("%s -> %s\n", thread_indent(1), probefunc());
+	printf("%s    filename  = %s\n", thread_indent(0), kernel_string($filename));
+	printf("%s    __argv[0] = %s\n", thread_indent(0), kernel_string($__argv[0]));
+	printf("%s    __envp[0] = %s\n", thread_indent(0), kernel_string($__envp[0]));
+	printf("%s    __envp[1] = %s\n", thread_indent(0), kernel_string($__envp[1]));
+}
+
+probe kernel.function("do_execve_common") {
+	printf("%s -> %s\n", thread_indent(1), probefunc());
+	printf("%s    filename = %s\n", thread_indent(0), kernel_string($filename));
+}
+
+probe kernel.function("open_exec") {
+	printf("%s -> %s\n", thread_indent(1), probefunc());
+	printf("%s    filename = %s\n", thread_indent(0), kernel_string($name));
+}
+
+
+probe   kernel.function("unshare_files"), 
+	kernel.function("unshare_fd"), 
+	kernel.function("dup_fd"),
+	kernel.function("sched_exec"),
+	kernel.function("stop_one_cpu"),
+	kernel.function("bprm_mm_init"),
+	kernel.function("count"),
+	kernel.function("prepare_binprm"),
+	kernel.function("copy_strings_kernel"),
+	kernel.function("copy_strings"),
+	kernel.function("search_binary_handler"),
+	kernel.function("acct_update_integrals")
+{
+	printf("%s -> %s\n", thread_indent(1), probefunc());
+	printf("%s    %s\n", thread_indent(0), $$vars);
+}
+
+probe   kernel.function("sys_execve").return, 
+	kernel.function("do_execve").return, 
+	kernel.function("do_execve_common").return,
+	kernel.function("unshare_files").return,
+	kernel.function("unshare_fd").return,
+	kernel.function("dup_fd").return,
+	kernel.function("open_exec").return,
+	kernel.function("stop_one_cpu").return,
+	kernel.function("bprm_mm_init").return,
+	kernel.function("count").return,
+	kernel.function("prepare_binprm").return,
+	kernel.function("copy_strings_kernel").return,
+	kernel.function("copy_strings").return,
+	kernel.function("search_binary_handler").return
+{
+	printf("%s <- %s ret= %d\n", thread_indent(-1), probefunc(), $return);
+}
+
+probe	kernel.function("sched_exec").return,
+	kernel.function("acct_update_integrals").return
+{
+	printf("%s <- %s \n", thread_indent(-1), probefunc());
+}
+
+
