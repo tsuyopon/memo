@@ -56,8 +56,17 @@ RSS (resident set size) 実際に消費してるメイン・メモリの大き�
 START                   プロセスが生成された時刻。 
 ```
 
+### メモリ使用量でソートする
+- RSSでソートする
+```
+$ ps aux --sort -rss
+```
+- VSZでソートする
+```
+$ ps aux --sort -vsize
+```
 
-### 現状のプロセスの/proc/<PID>statusを覗いてみる。
+### 現状のプロセスの/proc/<PID>/statusを覗いてみる。
 ```
 $ head -11 /proc/$$/status
 Name:	bash
@@ -133,3 +142,4 @@ systemd-+-NetworkManager-+-dhclient
         |-gnome-keyring-d---7*[{gnome-keyring-d}]
 (省略)
 ```
+
