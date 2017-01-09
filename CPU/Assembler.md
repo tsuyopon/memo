@@ -22,8 +22,9 @@
 2004     Pentium-M 	      32     Pentium4の熱問題が原因で、新しく設計された省電力版Pentium
 ```
 
-* 参考資料
-** [http://ascii.jp/elem/000/000/536/536012/]
+- 参考資料
+ - [http://ascii.jp/elem/000/000/536/536012/]
+
 # x86系(8086)アセンブラ
 ### アセンブラの基礎構造
 ```
@@ -275,9 +276,14 @@ x86拡張インラインアセンブリは以下の構文で表すことがで�
 	これによって、%0がx、%2がyで結果はxに出力するという準備が整いました。
 ```
 
-* 参考資料
-	* http://d.hatena.ne.jp/naoya/20070924/1190653790
+- 参考資料
+ - http://d.hatena.ne.jp/naoya/20070924/1190653790
 
+### "=a"や"=r"などについての意味
+"Constraint and Modifier"などで検索すると表示される。
+
+この辺の資料を参考にすると良い
+- https://gcc.gnu.org/onlinedocs/gcc/Constraints.html
 
 ### .bssとは
 Block Started by Symbolの略称
@@ -294,7 +300,6 @@ ELFでは以下のように定義
 - 初期値が0の大域変数
 - 初期値を持たない静的局所変数
 - 初期値が0の静的局所変数
-
 
 レジスタ
 - eax 	汎用レジスタ
@@ -341,13 +346,15 @@ ELFでは以下のように定義
 ```
 
 # 参考URL
-* GNU アセンブラ入門(GAS) 
-	* http://www.oklab.org/program/assembler/gas.html
-* x86系(8086系)アセンブラ入門
-	* http://www5c.biglobe.ne.jp/~ecb/index.html
-	* http://www5c.biglobe.ne.jp/~ecb/assembler/assembler00.html
-* 記法
-	* http://sci10.org/on_gcc_asm.html
-* x86レジスタ一覧
-	* http://www.wiki.os-project.jp/?x86%2FRegister
+- GNU アセンブラ入門(GAS) 
+ - http://www.oklab.org/program/assembler/gas.html
+- x86系(8086系)アセンブラ入門
+ - http://www5c.biglobe.ne.jp/~ecb/index.html
+ - http://www5c.biglobe.ne.jp/~ecb/assembler/assembler00.html
+- 記法
+ - http://sci10.org/on_gcc_asm.html
+- x86レジスタ一覧
+ - http://www.wiki.os-project.jp/?x86%2FRegister
+- GCC-Inline-Assembly-HOWTO
+ - http://www.ibiblio.org/gferg/ldp/GCC-Inline-Assembly-HOWTO.html
 
