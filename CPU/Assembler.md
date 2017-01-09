@@ -285,6 +285,42 @@ x86拡張インラインアセンブリは以下の構文で表すことがで�
 この辺の資料を参考にすると良い
 - https://gcc.gnu.org/onlinedocs/gcc/Constraints.html
 
+### x86のConstraint and Modifier
+上記の続き。
+
+Constraintsは次の通り
+```
+"a"       eax
+"b"       ebx
+"c"       ecx
+"d"       edx
+"s"       esi
+"D"       edi
+"I"       0～31までの定数 for 32 bit shifts
+"J"       0～63までの定数 for 64 bit shifts
+"K"       定数0xff
+"L"       定数0xffff
+"M"       0,1,2,3のうちの定数 (shifts for `lea')
+"N"       0～255までの定数 (`out'命令向け)
+"G"       80387標準浮動小数点定数
+"q"       自動割り当て(eax,ebx,ecx,edxの中から)
+"r"       自動割り当て(eax,ebx,ecx,edx,esi,ediの中から)
+"g"       eax,ebx,ecx,edx もしくは許される凡ゆるアドレスのメモリ
+"m"       許される凡ゆるアドレスのメモリ
+"A"       eaxとedxを合わせて64bitのlong long型で使う。
+"f"       数値浮動小数点レジスタの中から自動割り当て
+"t"       浮動小数点スタックの先頭の数値浮動小数点レジスタ
+"u"       浮動小数点スタックの2番目の数値浮動小数点レジスタ
+"0","1","2",...       入出力オペランド部分で割り当てられたレジスタやメモリを割り当てられた順に指す。
+```
+
+Modifier Charactersは次の通り
+```
+=   書き込み専用を意味し、以前の値を消して、asm文のアセンブリ部分で書き込まれた値を持つようにする。
++   読み書き両用を意味する。　
+&   そのオペランドが、入力オペランドの使用が終わる前に破損することに対して適切に対処する。すなわち、そのオペランドをインプット用のレジスタやメモリから切り離すことで、入力オペランドが壊れたレジスタに影響されることを防ぐ。
+```
+
 ### .bssとは
 Block Started by Symbolの略称
 - http://www.ertl.jp/~takayuki/readings/info/no03.html
