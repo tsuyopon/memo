@@ -32,6 +32,119 @@
 
 STACK、mallocはユーザープログラムで使われ、vmalloc、kmallocなどはカーネルで利用される。
 
+### 論理アドレスから物理ページへの変換方法について
+レイアウト変換は次のようにしておこなわれる。
+- 1. LinearAddressとして32bitsがあり、物理アドレスの算出には先頭bitから次のようにして分割します。
+ - (a) 先頭10bits(PageDirecotry offset)
+ - (b) 次の10bits(PageTable offset:  PageTableはPageFileと呼ばれることもあるらしい)
+ - (c) 次の12bits(Frame offset)
+- 2. CR3に登録された相対アドレスはPDの先頭ポインタをさしている。
+- 3. 2の先頭ポインタとPD offset(10bits)を加算して、ページディレクトリの該当アドレスからPTへの先頭ポインタを取得する。
+- 4. PT先頭ポインタとPT offset(10bits)を加算して、実アドレスの先頭ポインタを取得する
+- 5. 実アドレスの先頭ポインタとFrame Offset(12bits)を加算して実際の物理アドレスを取得する
+```
+  ------------------------------------------------------------------
+   L    I    N    E    A    R         A    D    D    R    E    S    S
+   ------------------------------------------------------------------
+        \___/                 \___/                     \_____/ 
+ 
+     PD offset              PT offset                 Frame offset 
+     [10 bits]              [10 bits]                 [12 bits]       
+          |                     |                          |
+          |                     |     -----------          |        
+          |                     |     |  Value  |----------|---------
+          |     |         |     |     |---------|   /|\    |        |
+          |     |         |     |     |         |    |     |        |
+          |     |         |     |     |         |    | Frame offset |
+          |     |         |     |     |         |   \|/             |
+          |     |         |     |     |---------|<------            |
+          |     |         |     |     |         |      |            |
+          |     |         |     |     |         |      | x 4096     |
+          |     |         |  PT offset|_________|-------            |
+          |     |         |       /|\ |         |                   |
+      PD offset |_________|-----   |  |         |          _________|
+            /|\ |         |    |   |  |         |          | 
+             |  |         |    |  \|/ |         |         \|/
+ _____       |  |         |    ------>|_________|   PHYSICAL ADDRESS 
+|     |     \|/ |         |    x 4096 |         |
+| CR3 |-------->|         |           |         |
+|_____|         | ....... |           | ....... |
+                |         |           |         |    
+ 
+               Page Directory          Page File
+
+                       Linux i386 Paging
+```
+
+上記だと２段テーブルとなっていますが、３段テーブル、４段テーブルもあります。(Linear Addressのbitもそれ専用に分割されます)
+- 2段テーブル(PD, PT)
+ - IA-32
+- 3段テーブル(PDポインタテーブル, PD, PT)
+ - IA-32(PAE)   // PAE(Physical Address Extension)で64GBまで扱うことができる
+- 4段テーブル(PGD, PUD, PMD, PT)
+ - 64bit
+ - 実はカーネル2.6.11以前では3段テーブル(PGD, PMD, PT)構成で行われていました。
+
+PGD, PUD, PMD, PTなどはカーネルを読むときの関数やマクロなどで頻繁に出てくるので用語を押さえておく必要がある。
+
+
+### メモリレイアウト(IA-32)
+
+以下はIA-32のカーネル空間レイアウトを表します。
+```
+Linux uses only 4 segments:
+
+    2 segments (code and data/stack) for KERNEL SPACE from [0xC000 0000] (3 GB) to [0xFFFF FFFF] (4 GB)
+    2 segments (code and data/stack) for USER SPACE from [0] (0 GB) to [0xBFFF FFFF] (3 GB)
+
+                               __
+   4 GB--->|                |    |
+           |     Kernel     |    |  Kernel Space (Code + Data/Stack)
+           |                |  __|
+   3 GB--->|----------------|  __
+           |                |    |
+           |                |    |
+   2 GB--->|                |    |
+           |     Tasks      |    |  User Space (Code + Data/Stack)
+           |                |    |
+   1 GB--->|                |    |
+           |                |    |
+           |________________|  __| 
+ 0x00000000
+          Kernel/User Linear addresses
+```
+
+### メモリレイアウト(32bit)
+メモリは次のようにレイアウトされることになる。Kernel Space以外は全てUser Spaceとなる。
+下に伸びるのはgrow down、上に伸びるのはgrow upとなる。
+```
+Kernel space(1G)
+Random Stack Offset(?)
+引数と環境変数
+Stack(最大:RLIMIT_STACK)[grow down] (~0x7FFFFFFF)
+Random Map Offset(?)
+Mapping Memory Segment(dynamic libraryやmallocなどのshared memory) [grow down]
+Heap[grow up] (~0x10000000)
+Random brk offset
+BSS Segment(未初期化された変数)
+Data Segment(初期化されたstatic変数)
+Text Segment(ELF)(~0x00400000)
+Reserved
+0x00000000
+```
+
+
+- 参考
+ - 画像などがあるのでイメージしやすい
+ - http://duartes.org/gustavo/blog/post/anatomy-of-a-program-in-memory/
+ - 参考になる
+ - http://th0x4c.github.io/blog/2012/10/10/os-virtual-memory-map/
+
+### メモリレイアウト(64bit)
+
+
+
+
 ### freeコマンドを読み解く
 
 ```
@@ -234,6 +347,56 @@ $ cat /proc/sys/fs/dentry-state
 - 5番目: 予約
 - 6番目: 予約
 
+### プロセスのマッピングを確認する
+pmapでわかりやすい表記で確認することができる
+```
+$ pmap -x `pidof layout`
+20287:   ./layout
+Address           Kbytes     RSS   Dirty Mode   Mapping
+0000000000400000       4       4       0 r-x--  layout
+0000000000600000       4       4       4 rw---  layout
+000000000174d000     132       8       8 rw---    [ anon ]
+0000003897600000     128     108       0 r-x--  ld-2.15.so
+000000389781f000       4       4       4 r----  ld-2.15.so
+0000003897820000       4       4       4 rw---  ld-2.15.so
+0000003897821000       4       4       4 rw---    [ anon ]
+0000003897a00000    1712     272       0 r-x--  libc-2.15.so
+0000003897bac000    2048       0       0 -----  libc-2.15.so
+0000003897dac000      16      12       8 r----  libc-2.15.so
+0000003897db0000       8       8       8 rw---  libc-2.15.so
+0000003897db2000      20      12      12 rw---    [ anon ]
+00007f344d644000     412      24      24 rw---    [ anon ]
+00007f344d6bf000       4       4       4 rw-s-    [ shmid=0xe8002 ]
+00007f344d6c0000       4       4       4 rw---    [ anon ]
+00007fffccfb6000     132      12      12 rw---    [ stack ]
+00007fffccfff000       4       4       0 r-x--    [ anon ]
+ffffffffff600000       4       0       0 r-x--    [ anon ]
+----------------  ------  ------  ------
+total kB            4644     488      96
+```
+
+/procでは上記プロセスは次のように表されることが確認できるのでpmap結果と比較してみると良い
+```
+$ sudo cat /proc/`pidof layout`/maps
+00400000-00401000 r-xp 00000000 fd:01 933203                             /home/tsuyoshi/git/cpp/memory/mapping_layout/layout
+00600000-00601000 rw-p 00000000 fd:01 933203                             /home/tsuyoshi/git/cpp/memory/mapping_layout/layout
+0174d000-0176e000 rw-p 00000000 00:00 0                                  [heap]
+3897600000-3897620000 r-xp 00000000 fd:01 135298                         /usr/lib64/ld-2.15.so
+389781f000-3897820000 r--p 0001f000 fd:01 135298                         /usr/lib64/ld-2.15.so
+3897820000-3897821000 rw-p 00020000 fd:01 135298                         /usr/lib64/ld-2.15.so
+3897821000-3897822000 rw-p 00000000 00:00 0 
+3897a00000-3897bac000 r-xp 00000000 fd:01 135311                         /usr/lib64/libc-2.15.so
+3897bac000-3897dac000 ---p 001ac000 fd:01 135311                         /usr/lib64/libc-2.15.so
+3897dac000-3897db0000 r--p 001ac000 fd:01 135311                         /usr/lib64/libc-2.15.so
+3897db0000-3897db2000 rw-p 001b0000 fd:01 135311                         /usr/lib64/libc-2.15.so
+3897db2000-3897db7000 rw-p 00000000 00:00 0 
+7f344d644000-7f344d6ab000 rw-p 00000000 00:00 0 
+7f344d6bf000-7f344d6c0000 rw-s 00000000 00:04 950274                     /SYSV00000000 (deleted)
+7f344d6c0000-7f344d6c1000 rw-p 00000000 00:00 0 
+7fffccfb6000-7fffccfd7000 rw-p 00000000 00:00 0                          [stack]
+7fffccfff000-7fffcd000000 r-xp 00000000 00:00 0                          [vdso]
+ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  [vsyscall]
+```
 
 
 # 参考URL

@@ -438,6 +438,12 @@ do
 done
 ```
 
+全要素、配列数を取得するには次のようにする
+```
+VAR[@] - 配列の全要素
+VAR[#] - 配列の要素数
+```
+
 - http://shellscript.sunone.me/array.html
 
 
@@ -495,7 +501,7 @@ if [ x"$answer" = xyes ]; then
 ```
 
 ### "[]"と"[[]]"の違いについて
-
+[はテストコマンドで、[[はbash組み込みコマンドとなる。
 動作上の違いとして次の違いがある。
 ```
 $ unset hoge
@@ -717,6 +723,40 @@ CMD=foo
 type -p "$CMD" 1>/dev/null 2>&1 || echo "command not found: $CMD" >&2
 ```
 
+## TIPS
+
+
+### grepするときにハイフンをコマンドラインオプションとして解釈しないようにする
+"-hoge"という文字列をgrepしようとするとエラーとなる
+```
+$ echo "-hoge" > hoge
+$ cat hoge 
+-hoge
+$ grep "-hoge" hoge 
+grep: invalid option -- 'g'
+Usage: grep [OPTION]... PATTERN [FILE]...
+Try 'grep --help' for more information.
+```
+
+"--"をコマンドの後に付与するとそれ以降をコマンドラインオプションとして解釈しないようになる
+```
+$ grep -- "-hoge" hoge 
+-hoge
+```
+
+### パスワード文字列を入力させたい
+-sで文字のechoをoffにする
+```
+$ read -s -p "MSG " PASSWD
+```
+
+ユーザー入力の後に改行が表示できないので次のを入れて回避するのが一般的となる
+```
+printf "%b" "\n"
+```
+
+ただし、パスワードは/proc/coreから覗くことは可能である。
+
 # 参考URL
 - UNIX&LINUXコマンド・シェルスクリプトリファレンス
  - 今後もリファレンスとして非常によさそう
@@ -725,4 +765,6 @@ type -p "$CMD" 1>/dev/null 2>&1 || echo "command not found: $CMD" >&2
  - http://qiita.com/katsukii/items/383b241209fe96eae6e7
 - UNIX&LINUXコマンド・シェルスクリプトリファレンス
  - http://shellscript.sunone.me/variable.html
+- 割りと便利だけど微妙に忘れがちなbashのコマンド・チートシート
+ - http://qiita.com/jpshadowapps/items/d6f9b55026637519347f
 

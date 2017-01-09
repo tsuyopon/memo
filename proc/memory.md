@@ -198,6 +198,13 @@ fffc0000-ffffffff : reserved
 ポートマップドI/Oでは、入出力用の特別なCPU命令を使用する。  
 例えば、インテルのX86の場合だと、入出力専用のIN命令とOUT命令があり、入出力機器の1つのバイトに読み書きを行います。
 
+### ドキュメントについて
+x86_64であればこの辺を参考にすることができる。
+- http://lxr.free-electrons.com/source/Documentation/x86/x86_64/mm.txt
+
+armのカーネルレイアウトは次を参考にすることができる
+- http://lxr.free-electrons.com/source/Documentation/arm/memory.txt
+
 - 参考
  - https://ja.wikipedia.org/wiki/%E3%83%A1%E3%83%A2%E3%83%AA%E3%83%9E%E3%83%83%E3%83%97%E3%83%89I/O
  - http://www.linuxmania.jp/mem_mapped_io.html

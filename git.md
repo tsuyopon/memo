@@ -93,6 +93,11 @@ $ git diff --ignore-blank-lines
 $ git diff --color-words
 ```
 
+### ブランチ間を比較したい場合
+名前だけ表示したければ、--name-onlyを付与すればよい。
+```
+$ git diff --name-only branch1 branch2
+```
 
 
 # git pull
