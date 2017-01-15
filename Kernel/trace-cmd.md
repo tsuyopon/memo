@@ -63,6 +63,14 @@ CPU:0 [EVENTS DROPPED]
 (省略)
 ```
 
+### kernelsharkを使う
+GUIでグラフィカルにtrace-cmdした情報を閲覧するためにはkernelsharkを利用することができる。  
+例えば、以下のようにするとkernelsharkで閲覧できるらしい(実際にはまだ試せていない)
+```
+$ trace-cmd -record -p function_graph <command>
+$ trace-cmd report > [file]
+$ kernelshark
+```
 
 # 参考URL
 - LWN.net: trace-cmd: A front-end for Ftrace

@@ -7,6 +7,13 @@ yumが利用できるならばtsharkも含めて以下のコマンドでイン�
 $ sudo yum install wireshark
 ```
 
+# 
+```
+$ trace-cmd -record -p function_graph <command>
+$ trace-cmd report > [file]
+$ kernelshark
+```
+
 # tshark
 
 - SSLをみる
