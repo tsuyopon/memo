@@ -149,6 +149,47 @@ SystemTapSample1サンプルを参考のこと
 $ sudo stap sample.stp -c ./a.out
 ```
 
+### カーネル関数のバックトレースを取得する
+例えば、次のようなstapファイルを用意する。
+```
+$ cat sample.stap 
+#!/usr/bin/stap
+
+global count
+
+probe begin {
+	count = 0
+}
+
+probe kernel.function("do_timer"){
+	printf("ticks %d jffies %d\n", $ticks, $jiffies_64)
+	print_backtrace()
+	count++
+	if(count >= 1)
+		exit()
+}
+```
+
+実行して少し待つとdo_timerはすぐに呼ばれるので以下が出力される。
+```
+$ sudo stap -v sample.stap 
+Pass 1: parsed user script and 124 library script(s) using 166284virt/89920res/2884shr/87980data kb, in 450usr/50sys/537real ms.
+Pass 2: analyzed script: 2 probe(s), 4 function(s), 0 embed(s), 1 global(s) using 338016virt/214428res/92328shr/122972data kb, in 570usr/60sys/692real ms.
+Pass 3: using cached /root/.systemtap/cache/5a/stap_5adecf105a769fb3e2527c124f972b7a_2463.c
+Pass 4: using cached /root/.systemtap/cache/5a/stap_5adecf105a769fb3e2527c124f972b7a_2463.ko
+Pass 5: starting run.
+ticks 1 jffies 4295787543
+ 0xffffffff810a40e0 : do_timer+0x0/0x470 [kernel]
+ 0xffffffff810aad68 : tick_do_update_jiffies64+0x78/0xc0 [kernel]
+ 0xffffffff810aaf78 : tick_sched_timer+0xb8/0xc0 [kernel]
+ 0xffffffff8107c9c3 : __run_hrtimer+0x73/0x1d0 [kernel]
+ 0xffffffff8107d2c7 : hrtimer_interrupt+0xd7/0x1f0 [kernel]
+ 0xffffffff815f56e9 : smp_apic_timer_interrupt+0x69/0x99 [kernel]
+ 0xffffffff815f439e : apic_timer_interrupt+0x6e/0x80 [kernel]
+Pass 5: run completed in 0usr/10sys/297real ms.
+```
+
+
 # 参考URL
 - (SystemTap公式サイト)[https://sourceware.org/systemtap/]
 - (SystemTap Beginners Guide)[https://sourceware.org/systemtap/SystemTap_Beginners_Guide/index.html]
