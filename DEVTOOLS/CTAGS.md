@@ -23,6 +23,13 @@ $ ctags -R
 $ ctags -R --exclude=.git --exclude=log *
 ```
 
+## キーバインドについて
+以下のキーバインドは重要です。
+```
+Ctrl + ]    定義位置に移動する。
+Ctrl + O    移動前の位置に戻る
+```
+
 ## MACの場合のセットアップ方法
 MACの場合のセットアップは次を参照すること。ctagsは入っているが「ctags -R」のRオプションが解釈されない場合などは以下を参照すべし。
 - https://gist.github.com/nazgob/1570678
