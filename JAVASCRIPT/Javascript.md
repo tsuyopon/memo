@@ -35,6 +35,9 @@ var human =
    }
 }
 ```
+- 呼び出す関数の引数が不足していたらどうなるのか?
+ - 全てundefinedに定義される。javascriptではoverloadができないため
+ - http://stackoverflow.com/questions/1846679/what-happens-when-i-call-a-javascript-function-which-takes-parameters-without-s
 
 # Angular関連
 
