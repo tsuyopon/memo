@@ -4,7 +4,8 @@ rubyやjavascriptなどはcscope, globalなどではうまい具合に動かな�
 
 # 詳細
 
-## ソースコードからのインストール
+## セットアップ
+### ソースコードからのインストール
 ```
 $ mkdir -p $HOME/local
 $ wget http://prdownloads.sourceforge.net/ctags/ctags-5.8.tar.gz
@@ -18,21 +19,41 @@ $ sudo make install
 あとはindex生成したいディレクトリに移動して-Rオプションを付与すれば良い。
 ```
 $ ctags -R
+```
 
 以下のように含める・含めないの指定もできる
+```
 $ ctags -R --exclude=.git --exclude=log *
 ```
 
-## キーバインドについて
+### MACの場合のセットアップ方法
+MACの場合のセットアップは次を参照すること。ctagsは入っているが「ctags -R」のRオプションが解釈されない場合などは以下を参照すべし。
+これはたいていのLinuxにインストールされる ctags は etags(Exuberant Ctags)で、多くの言語に対応している。しかし、Mac OSXに付属している ctags はBSD由来のもので、-Rオプションが使えなかったりする。
+- https://gist.github.com/nazgob/1570678
+
+基本的にはbrew install ctagsでインストールしてログインしなおせばOKです。
+
+## キーバインドやコマンドなど
+### キーバインドについて
 以下のキーバインドは重要です。
 ```
 Ctrl + ]    定義位置に移動する。
 Ctrl + O    移動前の位置に戻る
+Ctrl + I    Ctrl+Oを実行して移動前の位置に戻った後に、再度戻る
 ```
 
-## MACの場合のセットアップ方法
-MACの場合のセットアップは次を参照すること。ctagsは入っているが「ctags -R」のRオプションが解釈されない場合などは以下を参照すべし。
-- https://gist.github.com/nazgob/1570678
+### vimのコマンド
+```
+:tselect 	現在のタグの一覧を表示
+:tfirst 	（タグが重複している場合）最初のタグへ
+:tn 	    （タグが重複している場合）次のタグへ
+:tp 	    （タグが重複している場合）前のタグへ
+:tlast 	    （タグが重複している場合） 最後のタグへ
+:tags 	    移動経路を確認
+:tag 	    タグリストの前方にジャンプ。(:3tagなども可)
+:tag        [タグ名] 	指定したタグにジャンプ。(:taと同じ)
+:ptag       [タグ名] 	[タグ名]の定義をプレビューウィンドウで開く。
+```
 
 ## .ctagsファイルについて
 $HOME/.ctagsに配置するとindexを生成する際に参照するファイルが指定できる。
@@ -42,84 +63,45 @@ $HOME/.ctagsに配置するとindexを生成する際に参照するファイル
 javascriptの場合だとこの辺の説明が.ctags生成の理解に役立つ
 - http://dance.computer.dance/posts/2015/04/using-ctags-on-modern-javascript.html
 
-# .ctags生成方法
+### JavaScript用の.ctags
 先ほども示したこの辺の例が役に立ちそうだ。
-- http://dance.computer.dance/posts/2015/04/using-ctags-on-modern-javascript.html
+- http://cortyuming.hateblo.jp/entry/2016/01/01/171216
 
 上記サイトからの抜粋
 ```
+--exclude=.git
+--exclude=.hg
+--exclude=log
+--exclude=tmp
+--exclude=node_modules
+
 --languages=-javascript
 --langdef=js
 --langmap=js:.js
 --langmap=js:+.jsx
 
-//
-// Constants
-//
-
-// A constant: AAA0_123 = { or AAA0_123: {
 --regex-js=/[ \t.]([A-Z][A-Z0-9._$]+)[ \t]*[=:][ \t]*([0-9"'\[\{]|null)/\1/n,constant/
 
-//
-// Properties
-//
-
-// .name = {
 --regex-js=/\.([A-Za-z0-9._$]+)[ \t]*=[ \t]*\{/\1/o,object/
-
-// "name": {
 --regex-js=/['"]*([A-Za-z0-9_$]+)['"]*[ \t]*:[ \t]*\{/\1/o,object/
-
-// parent["name"] = {
 --regex-js=/([A-Za-z0-9._$]+)\[["']([A-Za-z0-9_$]+)["']\][ \t]*=[ \t]*\{/\1\.\2/o,object/
 
-//
-// Classes
-//
-
-// name = (function()
 --regex-js=/([A-Za-z0-9._$]+)[ \t]*=[ \t]*\(function\(\)/\1/c,class/
-
-// "name": (function()
 --regex-js=/['"]*([A-Za-z0-9_$]+)['"]*:[ \t]*\(function\(\)/\1/c,class/
-
-// class ClassName
 --regex-js=/class[ \t]+([A-Za-z0-9._$]+)[ \t]*/\1/c,class/
-
-// ClassName = React.createClass
 --regex-js=/([A-Za-z$][A-Za-z0-9_$()]+)[ \t]*=[ \t]*[Rr]eact.createClass[ \t]*\(/\1/c,class/
-
-// Capitalised object: Name = whatever({
 --regex-js=/([A-Z][A-Za-z0-9_$]+)[ \t]*=[ \t]*[A-Za-z0-9_$]*[ \t]*[{(]/\1/c,class/
-
-// Capitalised object: Name: whatever({
 --regex-js=/([A-Z][A-Za-z0-9_$]+)[ \t]*:[ \t]*[A-Za-z0-9_$]*[ \t]*[{(]/\1/c,class/
 
-//
-// Functions
-//
-
-// name = function(
 --regex-js=/([A-Za-z$][A-Za-z0-9_$]+)[ \t]*=[ \t]*function[ \t]*\(/\1/f,function/
 
-//
-// Methods
-//
-
-// Class method or function (this matches too many things which I filter out separtely)
-// name() {
 --regex-js=/(function)*[ \t]*([A-Za-z$_][A-Za-z0-9_$]+)[ \t]*\([^)]*\)[ \t]*\{/\2/f,function/
-
-// "name": function(
 --regex-js=/['"]*([A-Za-z$][A-Za-z0-9_$]+)['"]*:[ \t]*function[ \t]*\(/\1/m,method/
-
-// parent["name"] = function(
 --regex-js=/([A-Za-z0-9_$]+)\[["']([A-Za-z0-9_$]+)["']\][ \t]*=[ \t]*function[ \t]*\(/\2/m,method/
 ```
 
-
-## golang用ctagsの生成
-以下を参考のこと
+### go言語用の.ctags
+.ctagsは以下を参考のこと
 ```
 --langdef=Go
 --langmap=Go:.go
@@ -131,7 +113,28 @@ javascriptの場合だとこの辺の説明が.ctags生成の理解に役立つ
 goだとデフォルトでsyntax onじゃないっぽいので、vimrc設定も載せておく
 - https://www.seeds-std.co.jp/seedsblog/2494.html
 
-## 対応言語について
+### Perl用の.ctags
+```
+--regex-perl=/with\s+([^;]+)\s*?;/\1/w,role,roles/
+--regex-perl=/extends\s+['"]([^'"]+)['"]\s*?;/\1/e,extends/
+--regex-perl=/use\s+base\s+['"]([^'"]+)['"]\s*?;/\1/e,extends/
+--regex-perl=/use\s+parent\s+['"]([^'"]+)['"]\s*?;/\1/e,extends/
+--regex-perl=/Mojo::Base\s+['"]([^'"]+)['"]\s*?;/\1/e,extends/
+--regex-perl=/^\s*?use\s+([^;]+)\s*?;/\1/u,use,uses/
+--regex-perl=/^\s*?require\s+((\w|\:)+)/\1/r,require,requires/
+--regex-perl=/^\s*?has\s+['"]?(\w+)['"]?/\1/a,attribute,attributes/
+--regex-perl=/^\s*?\*(\w+)\s*?=/\1/a,alias,aliases/
+--regex-perl=/->helper\(\s?['"]?(\w+)['"]?/\1/h,helper,helpers/
+--regex-perl=/^\s*?our\s*?[\$@%](\w+)/\1/o,our,ours/
+--regex-perl=/^\=head1\s+(.+)/\1/p,pod,Plain Old Documentation/
+--regex-perl=/^\=head2\s+(.+)/-- \1/p,pod,Plain Old Documentation/
+--regex-perl=/^\=head[3-5]\s+(.+)/---- \1/p,pod,Plain Old Documentation/
+--recurse=yes
+--langmap=perl:+.pod
+```
+
+
+### 対応言語について
 対応言語の表示
 ```
 $ ctags --list-languages
@@ -203,3 +206,7 @@ $ ctags --languages=PHP,JavaScript
  - https://weblogs.asp.net/george_v_reilly/exuberant-ctags-and-javascript
 - Recommended Vim plugins for JavaScript coding?
  - http://stackoverflow.com/questions/4777366/recommended-vim-plugins-for-javascript-coding?noredirect=1&lq=1
+- exuberant ctags 日本語対応版
+ - http://hp.vector.co.jp/authors/VA025040/ctags/
+- Manpage of ctags
+ - http://hp.vector.co.jp/authors/VA025040/ctags/ctags_j.html

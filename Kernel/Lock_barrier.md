@@ -31,3 +31,37 @@ Lock Free Synchronizationにおいてメモリ・バリアが必要なことを�
 
 x86のCPU命令ではsfence(SSE), lfence, mfence(SSE2)の３つが存在する。
 なお、lfenceは50サイクル強、sfenceは50サイクル弱程度の実行レイテンシーがあるが、mfenceは130サイクル程度を要し、非常に遅い命令の一つである。
+
+x86だとlinux kernelでは次のように定義されている。
+```
+// arch/x86/include/asm/system.h
+350 /*
+351  * Force strict CPU ordering.
+352  * And yes, this is required on UP too when we're talking
+353  * to devices.
+354  */
+355 #ifdef CONFIG_X86_32
+356 /*
+357  * Some non-Intel clones support out of order store. wmb() ceases to be a
+358  * nop for these.
+359  */
+360 #define mb() alternative("lock; addl $0,0(%%esp)", "mfence", X86_FEATURE_XMM2)
+361 #define rmb() alternative("lock; addl $0,0(%%esp)", "lfence", X86_FEATURE_XMM2)
+362 #define wmb() alternative("lock; addl $0,0(%%esp)", "sfence", X86_FEATURE_XMM)
+363 #else
+364 #define mb()    asm volatile("mfence":::"memory")
+365 #define rmb()   asm volatile("lfence":::"memory")
+366 #define wmb()   asm volatile("sfence" ::: "memory")
+367 #endif
+```
+
+３つの命令について簡単に概要を記しておく
+- SFENCE（store fence）
+ -メモリへの書き込み順序を制御します。SFENCEの前に発行された書き込み命令が終わるまで、SFENCEより後の書き込み命令は開始されません。
+- LFENCE（load fence）
+ - メモリの読み込み順序を制御します。LFENCEの前に発行された読み込み命令が終わるまで、SFENCEより後の読み込み命令は開始されません。
+- MFENCE（m…?? fence）
+ - SFENCEとLFENCEの複合版です。MFENCEの間に発行された書き込み/読み込み命令が終わるまで、MFENCEより後の書き込み/読み込み命令は開始されません。
+
+
+
