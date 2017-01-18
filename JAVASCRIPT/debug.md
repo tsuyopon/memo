@@ -8,6 +8,9 @@ chromeツールが絶大な威力を発揮するので、下２つのページ�
  - 各項目の詳細な説明がされている
  - https://developers.google.com/web/tools/chrome-devtools/
 
+Chromeの機能として以下のドキュメントが多くを紹介しているのでこれも目を通しておくとよさそう
+- http://www.buildinsider.net/web/chromedevtools/01
+
 # 詳細
 
 ### alert
@@ -180,7 +183,12 @@ $ webpack
 試したわけではないがchromeで以下のプラグインがあるらしい
 - https://chrome.google.com/webstore/detail/ng-inspector-for-angularj/aadgmnobpdmgmigaicncghmmoeflnamj
 
-# 詳細
+### knockout.jsのデバッグ方法
+- http://qiita.com/MKGaru/items/4cf6fa1373357510b15e
+- http://qiita.com/hiradimir/items/1934be2b55ea5a51f208
+- http://stackoverflow.com/questions/9261296/how-to-debug-template-binding-errors-for-knockoutjs
+
+# 参考URL
 - http://postd.cc/how-to-not-hate-javascript-tips-from-the-frontline/
 - JavascriptのChromeでのデバッグ方法個人的まとめ2016
  - http://qiita.com/snoguchi/items/8f6bb62a3166eca23ac3
