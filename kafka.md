@@ -32,7 +32,7 @@ $ cd kafka_2.11-0.10.1.0
 $ bin/zookeeper-server-start.sh config/zookeeper.properties
 ```
 
-続いて、kafkaサーバを立ち上げます。
+続いて、kafkaサーバを立ち上げます。これはbrokerを指しています。
 ```
 $ bin/kafka-server-start.sh config/server.properties
 ```
@@ -124,6 +124,10 @@ Topic:test    PartitionCount:1 ReplicationFactor:3 Configs:
    Topic:test Partition:0 Leader:0 Replicas:0,2,1 Isr:0,2,1
 ```
 - PartitionCountはこのトピックを何台で保持しているかを表す。
+- "Leader" is the node responsible for all reads and writes for the given partition. Each node will be the leader for a randomly selected portion of the partitions.
+- "Replicas" is the list of nodes that replicate the log for this partition regardless of whether they are the leader or even if they are currently alive.
+- "Isr" is the set of "in-sync" replicas. This is the subset of the replicas list that is currently alive and caught-up to the leader.
+ - https://ishiis.net/2016/07/31/kafka-cluster-and-zookeeper-ensemble/
 
 
 ### パーティションカウントを変更する
@@ -131,25 +135,7 @@ Topic:test    PartitionCount:1 ReplicationFactor:3 Configs:
 $ bin/kafka-topics.sh —zookeeper localhost:2181 --alter --topic topic_name --parti-tions count
 ```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# 参考URL
+- kafka公式ドキュメント
+ - http://kafka.apache.org/documentation.html
 
