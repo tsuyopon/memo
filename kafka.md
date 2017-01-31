@@ -129,7 +129,6 @@ Topic:test    PartitionCount:1 ReplicationFactor:3 Configs:
 - "Isr" is the set of "in-sync" replicas. This is the subset of the replicas list that is currently alive and caught-up to the leader.
  - https://ishiis.net/2016/07/31/kafka-cluster-and-zookeeper-ensemble/
 
-
 ### パーティションカウントを変更する
 ```
 $ bin/kafka-topics.sh —zookeeper localhost:2181 --alter --topic topic_name --parti-tions count
@@ -138,4 +137,7 @@ $ bin/kafka-topics.sh —zookeeper localhost:2181 --alter --topic topic_name --p
 # 参考URL
 - kafka公式ドキュメント
  - http://kafka.apache.org/documentation.html
+- kafka Release Note
+ - https://kafka.apache.org/downloads
+- http://www.w3ii.com/en-US/apache_kafka/apache_kafka_cluster_architecture.html
 
