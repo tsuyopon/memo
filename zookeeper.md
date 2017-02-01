@@ -1,7 +1,35 @@
 # 概要
-zookeeperについてまとめておくこと
+zookeeperとはもともとはHadoopのサブプロジェクトとして稼働していたが、後にApacheのトッププロジェクトとなった。
+HadoopやHBaseなどの分散データのステータス管理などに利用されている。
+
+zookeeperは、クラスタの中での調整や共有データを強固な同期メカニズムを使って保っている仕組みです。  
+次のようなものがzookeeperによって提供されています。
+- 名前サービス(名前によるノードの識別)
+- 設定管理
+- クラスタ管理
+- リーダー選択
+- ロックと同期サービス
+- 高信頼性のデータレジストリの提供
+
+以下の用語を押さえておく
+- Leader
+ - もしleaderへの接続がfailedになったとしてもatomicに復旧をさせる
+- Follower
+ - Leaderの指示に従うzookeeperサーバ
+- Ensemble
+ - zookeeperサーバのグループ。最小ノード数は3つ必要である
+- znode
+ - /から始まる木構造のディレクトリツリーを表す。Unixのディレクトリツリーの概念と似ている
+ - 各znodeには1MBまでのデータを格納することができる。
+
+znodeのステータスとして重要なのは次のデータである。
+- version number
+- ACL
+- Timestamp
+- Data Length
 
 # 詳細
+
 
 ### スタンドアロンでzookeeperを稼働させる。
 以下にも記載していますが、再掲する。
@@ -187,8 +215,11 @@ Created /FirstZnode0000000018
 Created /FirstZnode0000000019
 ```
 
+シーケンシャルな仕組みはロックや同期で重要な意味を持つようです。
+
 ### 接続を解除したら消える一時的なデータ(エフェメラルznode)を作成する
 eオプションでephemeralなznodeを作成できる。  
+
 これは接続が解除されるとそのznodeがなくなってしまうデータである。以下にcreateとcreate -eの比較例を載せる。
 
 ```
@@ -251,6 +282,8 @@ numChildren = 0
 [zk: localhost:2181(CONNECTED) 47] get /fuga
 Node does not exist: /fuga
 ```
+
+このエフェメラルznodeはリーダー選出の際に重要な役割を持つようです。
 
 ### znodeの統計情報を表示する(stat, get, ls2)
 stat, get, ls2の違いを理解しておく。ほとんど同じだが出力結果をみるとわかりやすい。
@@ -594,8 +627,17 @@ listquota, setquota, delquotaなどはここで利用するようです。
 詳しくはまだ調べていないので以下を参考にしてください。
 - http://oss.infoscience.co.jp/hadoop/zookeeper/docs/r3.3.1/zookeeperQuotas.html
 
+# 動作仕様について
+### どのようにしてclientはserverへの接続を保っているのか?
+TODO
+
+
 # TODO
 - zkCli.shについてもっと調べる
  - helpで表示されるsync, listquota, setquota, delquotaなどについてまとめておく
  - quotaについては http://oss.infoscience.co.jp/hadoop/zookeeper/docs/r3.3.1/zookeeperQuotas.html あたり?
+- https://www.tutorialspoint.com/zookeeper/zookeeper_quick_guide.htm
+ - この辺もっと読む
+- https://ihong5.wordpress.com/2014/07/24/apache-zookeeper-setting-acl-in-zookeeper-client/
+ - 認証も読む
 
