@@ -100,6 +100,8 @@ bin/zkServer.sh:  a /usr/bin/env bash script, ASCII text executable
 - zkServer.sh
  - zookeeperサーバを起動するためのシェルスクリプト
 
+### zookeeperのAPI(JAVA)について
+- https://www.tutorialspoint.com/zookeeper/zookeeper_api.htm
 
 
 # zkCli.shについて
@@ -629,7 +631,24 @@ listquota, setquota, delquotaなどはここで利用するようです。
 
 # 動作仕様について
 ### どのようにしてclientはserverへの接続を保っているのか?
-TODO
+- 1. zookeeperサーバに接続を確立するとクライアントにseession idが割り当てられる。
+- 2. クライアントはセッションを維持するために特定の間隔でheartbeatsを送付する。
+- 3. zookeeperグループ(ensemble)がheartbeatsを一定期間受け取らなければクライアントが死んだと認識する。
+
+### リーダー選択について
+詳細はこの辺のドキュメントを読んだ方がいいかもしれません。
+- https://www.tutorialspoint.com/zookeeper/zookeeper_leader_election.htm
+
+以下の手順でリーダー選択が行われている。
+- 1. /app/leader_election/guid_.というパスでシーケンシャルでエフェメラルなznodeを作成する
+ - app/leader_election/guid_0000000001, /app/leader_election/guid_0000000002, ...が作成されることになる。
+- 2. (例えば、)ここでの数が最も小さい数を作成したサーバがLeaderとなり、他のサーバはFollowerとなる。
+- 3. 各Followerは自分が生成した番号よりもわずかに大きいnodeが作成したものをwatchする。
+ - 例えば、guid_0000000007はguid_0000000006をwatchし、guid_0000000006はguid_0000000005をwatchする。(厳密には1だけ大きいとは限らないかも)
+- 4. もし、Leaderがdownしたら、エフェメラルznodeなのでそのときの状態が検知されるようになる。
+- 5. 上記によって次々にFollowerにリーダーがdownしたことが検知される。
+- 6. Followerは一番小さい数のguid_Xが存在するかをチェックして、いなければLeaderとなる。
+
 
 
 # TODO

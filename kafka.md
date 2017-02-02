@@ -134,10 +134,15 @@ Topic:test    PartitionCount:1 ReplicationFactor:3 Configs:
 $ bin/kafka-topics.sh —zookeeper localhost:2181 --alter --topic topic_name --parti-tions count
 ```
 
+# TODO
+- この辺をひとめぐり
+ - https://kafka.apache.org/08/documentation.html
+
 # 参考URL
 - kafka公式ドキュメント
  - http://kafka.apache.org/documentation.html
 - kafka Release Note
  - https://kafka.apache.org/downloads
 - http://www.w3ii.com/en-US/apache_kafka/apache_kafka_cluster_architecture.html
+
 
