@@ -1,10 +1,58 @@
-
 # cscopeについて
-cscopeはC, C++, JAVAなどのソースコードを読んでいく際のタグジャンプなどに非常に役立つツールです。
-試した感じだとgolangに対してもctagsよりも呼び出し元も呼び出せるので良さそうです。
+cscopeはC, C++, JAVAなどのソースコードを読んでいく際のタグジャンプなどに非常に役立つツールです。  
 上記以外の言語の場合にはctags, globalなどの別のツールの方が適しているかもしれません。自分はPHPはGLOBALで、perl, Javascript, python, rubyなどはctagsを使っています。
 
 # 内容
+
+### セットアップ
+
+デフォルトだとvimでタグジャンプしないので設定ファイルを配置します。
+
+デフォルトだとvimからcscope設定が有効にならないので以下から$HOME/.vim/plugin/cscope_map.vimなどに以下のダウンロードしたものを配置します。
+- http://cscope.sourceforge.net/cscope_maps.vim
+
+上記が取得できなければ、$HOME/.vimrcに以下を追記します。
+```
+if has("cscope")
+    set cscopetag
+    set csto=0
+"    if filereadable("cscope.out")
+"        cs add cscope.out  
+"    elseif $CSCOPE_DB != ""
+"        cs add $CSCOPE_DB
+"    endif
+    set cscopeverbose  
+
+    nmap <C-\>s :cs find s <C-R>=expand("<cword>")<CR><CR>  
+    nmap <C-\>g :cs find g <C-R>=expand("<cword>")<CR><CR>  
+    nmap <C-\>c :cs find c <C-R>=expand("<cword>")<CR><CR>  
+    nmap <C-\>t :cs find t <C-R>=expand("<cword>")<CR><CR>  
+    nmap <C-\>e :cs find e <C-R>=expand("<cword>")<CR><CR>  
+    nmap <C-\>f :cs find f <C-R>=expand("<cfile>")<CR><CR>  
+    nmap <C-\>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+    nmap <C-\>d :cs find d <C-R>=expand("<cword>")<CR><CR>  
+
+    nmap <C-@>s :scs find s <C-R>=expand("<cword>")<CR><CR> 
+    nmap <C-@>g :scs find g <C-R>=expand("<cword>")<CR><CR> 
+    nmap <C-@>c :scs find c <C-R>=expand("<cword>")<CR><CR> 
+    nmap <C-@>t :scs find t <C-R>=expand("<cword>")<CR><CR> 
+    nmap <C-@>e :scs find e <C-R>=expand("<cword>")<CR><CR> 
+    nmap <C-@>f :scs find f <C-R>=expand("<cfile>")<CR><CR>
+    nmap <C-@>i :scs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+    nmap <C-@>d :scs find d <C-R>=expand("<cword>")<CR><CR>
+
+    nmap <C-@><C-@>s :vert scs find s <C-R>=expand("<cword>")<CR><CR>
+    nmap <C-@><C-@>g :vert scs find g <C-R>=expand("<cword>")<CR><CR>
+    nmap <C-@><C-@>c :vert scs find c <C-R>=expand("<cword>")<CR><CR>
+    nmap <C-@><C-@>t :vert scs find t <C-R>=expand("<cword>")<CR><CR>
+    nmap <C-@><C-@>e :vert scs find e <C-R>=expand("<cword>")<CR><CR>
+    nmap <C-@><C-@>f :vert scs find f <C-R>=expand("<cfile>")<CR><CR>
+    nmap <C-@><C-@>i :vert scs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+    nmap <C-@><C-@>d :vert scs find d <C-R>=expand("<cword>")<CR><CR>
+endif
+```
+
+
 ### cscopeを使ってみる
 
 cscopeを利用するためにはまずはインデックスを生成する必要があります。
