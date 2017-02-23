@@ -49,3 +49,4 @@ foo();          // => hoge1
  - http://qiita.com/tuno-tky/items/74ca595a9232bcbcd727
 - ES6の勉強をした
  - http://shokai.org/blog/archives/10229
+ - https://github.com/shokai/es6-study
