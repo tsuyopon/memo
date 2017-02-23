@@ -225,5 +225,9 @@ CREATE TABLE 子テーブル名(子カラム名 データ型,
 
 - http://qiita.com/suin/items/21fe6c5a78c1505b19cb
 
+### そのほかの参考資料
+- viewとstored procedureの違いについて
+ - http://stackoverflow.com/questions/3773277/stored-procedures-vs-views
+
 
 
