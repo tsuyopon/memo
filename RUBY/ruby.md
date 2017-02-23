@@ -25,6 +25,9 @@ $foo  #=> グローバル変数($)
 FOO   #=> 定数(大文字から始まる)
 ```
 
+@fooのインスタンス変数にはインスタンス変数とクラスインスタンス変数という２種類の利用法があるので注意しよう
+- http://qiita.com/mogulla3/items/cd4d6e188c34c6819709
+
 ### 文字列基本操作
 - str1を参照する
 ```
@@ -136,7 +139,7 @@ s = "hoge.com"
 puts s.include?("hoge")    # true
 ```
 
-### アクセサ
+### アクセサ(クラスアノテーション)
 次の３種類のアクセサがある。fooは変数名です。
 - attr_reader :foo
  - 参照が可能
@@ -297,6 +300,122 @@ rb(main):032:0> [1, 2, 3] << 4
 irb(main):033:0> [1, 2, 3] << [4, 5]
 => [1, 2, 3, [4, 5]]
 ```
+
+### MODULEとClassの違い
+これを見たら一目瞭然です。モジュール空間Zooの中にクラスCatが定義されるような感じです。
+```
+module Zoo
+  class Cat
+    def where_self
+      self
+    end
+  end
+end
+Zoo::Cat.new.where_self
+```
+
+言葉にすると
+- モジュールはインスタンス化する能力はもたないがクラスやメソッドを格納することができる。
+- クラスはオブジェクトになれる。つまりインスタンス化する能力を持ち、インスタンスメソッドとクラスメソッドを格納できる。
+
+### 関数の引数について
+通常の引数は次のような形で取得する。以下の場合num2は指定されなければデフォルト引数が1となります。
+```
+def plus(num1, num2=1)
+  num1 + num2
+end
+```
+次はキーワード引数です。これを利用すると引数の順番を逆にすることもできます。
+```
+def plus(num1:, num2:)
+  num1 + num2
+end
+
+plus(num1: 3, num2: 5) # => 8 
+plus(num2: 3, num1: 5) # => 8 
+```
+
+引数に*のアスタリスクを1つ付与すると、可変長引数となります。可変長引数は配列として受け付けられます。
+```
+def self.piyo(*msg)
+  p msg
+end
+
+Hoge.piyo('fuga')                # => ['huga']
+Hoge.piyo('huga', 'hugahuga')    #=> ['fuga', 'fugafuga']
+```
+
+引数に**のアスタリスクを２つ付与すると、オプション引数となります。オプション引数は"ハッシュ"として受け付けられるようになります。
+```
+def self.piyo(**msg)
+  p msg
+end
+
+Hoge.piyo(msg: 'fuga')                   #=> {:msg => 'huga'}
+Hoge.piyo(msg: 'huga', name: 'hugahuga') #=> { :msg => 'fuga', :name => 'fugafuga' }
+```
+
+アンパサンド(&)を付加することによって、ブロックも引数として渡すことができます。ブロックとは{ p "foo" } のように囲まれたものです。
+```
+def self.piyo(&block)
+  block.call
+end
+
+Hoge.piyo{ p 'fuga' } # => 'fuga'
+```
+
+上記のブロックについてはyieldと同じらしい。しかし、yieldは直感的なのでわかりにくいので個人的にはアンパサンドを使いたい。
+- http://d.hatena.ne.jp/yoshidaa/20090511/1241967137
+```
+def self.piyo
+  yield
+end
+```
+
+
+### インスタンスメソッド(def xxx)とクラスメソッド(def self.xxx)について
+クラスメソッドの方がstatic関数のような使われ方をします。
+
+これら２つの違いは呼び出し方の違いを見ると一目瞭然です。
+```
+#インスタンスメソッド
+dog = Dog.new
+dog.ihoge
+
+#クラスメソッド
+Dog.ihoge
+```
+
+Dogクラスの中にihogeとself.ihoge両方の定義を記述することができます。
+```
+class Dog
+
+   # コンストラクタ(インスタンスメソッドだけ呼ばれるはず...)
+   def initialize
+      puts "start"
+   end
+
+   # インスタンスメソッド
+   def ihoge
+      puts "ihoge"
+   end
+
+   # クラスメソッド
+   def self.ihoge
+      puts "self.ihoge"
+   end
+end
+```
+
+
+
+
+
+
+
+### 豆知識
+- rubyにはインクリメント演算子が存在しない
+- デストラクタのような概念は存在しない
 
 ### TODO
 - rubyのよく使いそうな関数をざっと見てもいいかも
