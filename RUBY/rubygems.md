@@ -220,6 +220,7 @@ rdoc-3.12.gem has 1 problems
 ```
 
 ### gem自身のバージョンアップデートを行う。
+gem本体のバージョンのアップデートを行う
 ```
 $ gem --version
 1.8.24
