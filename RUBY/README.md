@@ -3,4 +3,6 @@ rubyに関して
 
 # TODO
 - Rakefileについて
-- Rubygemsについて
+- rubycritic
+ - http://hoppie.hatenablog.com/entry/2016/12/02/102208
+ - https://github.com/whitesmith/rubycritic
