@@ -92,9 +92,90 @@ Finished in 0.00555 seconds (files took 0.15489 seconds to load)
 - https://github.com/tsuyopon/testing-with-rspec
 
 
+### カバレッジテストを追加する
+次のパッケージを利用します。
+- https://github.com/colszowka/simplecov
+
+パッケージをインストールします。
+```
+$ gem install simplecov
+```
+
+
+spec_helper.rbに以下のrequreとSimpleCov.startを追加する。
+```
+$ vim spec/spec_helper.rb
+require 'simplecov'          #<=この行を追加
+
+SimpleCov.start 'rails'      #<=この行を追加
+RSpec.configure do |config|
+```
+
+rpsecを実行する。coverageを生成した旨がひょうじされる
+```
+$ bundle exec rspec spec/
+...
+
+Finished in 0.00582 seconds (files took 0.14344 seconds to load)
+3 examples, 0 failures
+
+Coverage report generated for RSpec to /home/tsuyoshi/gemtest/a/testing-with-rspec/spec/a/coverage. 0.0 / 0.0 LOC (100.0%) covered.
+```
+
+treeでcoverage配下のディレクトリ構造を見てみる。
+```
+$ tree  coverage/
+coverage/
+|-- assets
+|   `-- 0.10.0
+|       |-- application.css
+|       |-- application.js
+|       |-- colorbox
+|       |   |-- border.png
+|       |   |-- controls.png
+|       |   |-- loading.gif
+|       |   `-- loading_background.png
+|       |-- favicon_green.png
+|       |-- favicon_red.png
+|       |-- favicon_yellow.png
+|       |-- loading.gif
+|       |-- magnify.png
+|       `-- smoothness
+|           `-- images
+|               |-- ui-bg_flat_0_aaaaaa_40x100.png
+|               |-- ui-bg_flat_75_ffffff_40x100.png
+|               |-- ui-bg_glass_55_fbf9ee_1x400.png
+|               |-- ui-bg_glass_65_ffffff_1x400.png
+|               |-- ui-bg_glass_75_dadada_1x400.png
+|               |-- ui-bg_glass_75_e6e6e6_1x400.png
+|               |-- ui-bg_glass_95_fef1ec_1x400.png
+|               |-- ui-bg_highlight-soft_75_cccccc_1x100.png
+|               |-- ui-icons_222222_256x240.png
+|               |-- ui-icons_2e83ff_256x240.png
+|               |-- ui-icons_454545_256x240.png
+|               |-- ui-icons_888888_256x240.png
+|               `-- ui-icons_cd0a0a_256x240.png
+`-- index.html
+
+5 directories, 25 files
+```
+
+coverageディレクトリ直下にhtmlファイルがあるのでウェブサーバを起動すれば良い。
+```
+$ python -m SimpleHTTPServer 8080
+```
+
+あとはブラウザで以下のURLにアクセスすればOK
+- http://localhost:8080/
+
+
+### モックを作成する
+
 
 # 参考URL
 - はじめてのRSpec - まずテスト書いてからコード書くシンプルなチュートリアル
  - http://qiita.com/luckypool/items/e3662170033347510c3c
 - https://github.com/rspec/rspec-expectations
  - expect関連のAPIについて役に立つページ
+- カバレッジテスト結果を生成するための仕組みです。HTML用に加工してくれます。
+ - https://github.com/colszowka/simplecov
