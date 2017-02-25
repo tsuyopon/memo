@@ -5,7 +5,7 @@ rubyのUnittestフレームワークであるrspecについて
 - https://github.com/rspec/rspec-expectations
 
 
-### はじめてのRspec
+## はじめてのRspec
 あらかじめrspecをインストールしておきます
 ```
 $ gem install rspec
@@ -91,8 +91,95 @@ Finished in 0.00555 seconds (files took 0.15489 seconds to load)
 以下に簡単な雛形(forkさせてもらったもの)を配置しています。
 - https://github.com/tsuyopon/testing-with-rspec
 
+## unittestファイルの説明
+rspecのテストコードに出てくる以下の意味を押さえておきます。
+- describe / it / expect の役割
+- context の使い方
+- before の使い方
 
-### カバレッジテストを追加する
+
+### describe, expect, itについて
+describeはテストのグループ化を宣言すること、itはテストを実行することです。
+rspec2.10以前はexpectではなくshouldというものを使っていました。
+```
+describe '四則演算' do
+  it '1 + 1 は 2 になること' do
+    expect(1 + 1).to eq 2
+  end
+
+  it '1 - 1, 2 - 2 は 0 になること' do
+    expect(1 - 1).to eq 0
+    expect(2 - 2).to eq 0
+  end
+end
+```
+
+describeのネストも可能です
+```
+describe '四則演算' do
+  describe '足し算' do
+    it '1 + 1 は 2 になること' do
+      expect(1 + 1).to eq 2
+    end
+  end
+  describe '引き算' do
+    it '10 - 1 は 9 になること' do
+      expect(10 - 1).to eq 9
+    end
+  end
+end
+```
+
+### contextについて
+describeとあまり違いがよくわかりませんがcontextというものでグルーピングできるようです。  
+contextの部分をdescribeと書いてもいいようなきもするが、、、　 
+一応記事などをみると、describe はテストする対象をあらわし、 context はテストする時の状況(特定の条件)をあらわしているようだ。contextはdescribeのエイリアスらしい。
+```
+describe User do
+  describe '#greet' do
+    context '12歳以下の場合' do
+      it 'ひらがなで答えること' do
+        user = User.new(name: 'たろう', age: 12)
+        expect(user.greet).to eq 'ぼくはたろうだよ。'
+      end
+    end
+    context '13歳以上の場合' do
+      it '漢字で答えること' do
+        user = User.new(name: 'たろう', age: 13)
+        expect(user.greet).to eq '僕はたろうです。'
+      end
+    end
+  end
+end
+```
+
+### beforeについて
+事前に共通する項目や事前条件などがあればbeforeを記述します。  
+以下の例では太郎を変数@paramに入れています。
+```
+describe User do
+  describe '#greet' do
+    before do
+      @params = { name: 'たろう' }
+    end
+    context '12歳以下の場合' do
+      it 'ひらがなで答えること' do
+        user = User.new(@params.merge(age: 12))
+        expect(user.greet).to eq 'ぼくはたろうだよ。'
+      end
+    end
+    context '13歳以上の場合' do
+      it '漢字で答えること' do
+        user = User.new(@params.merge(age: 13))
+        expect(user.greet).to eq '僕はたろうです。'
+      end
+    end
+  end
+end
+```
+
+
+## カバレッジテストを追加する
 次のパッケージを利用します。
 - https://github.com/colszowka/simplecov
 
@@ -168,14 +255,18 @@ $ python -m SimpleHTTPServer 8080
 あとはブラウザで以下のURLにアクセスすればOK
 - http://localhost:8080/
 
-
-### モックを作成する
-
-
 # 参考URL
+- RSpec公式ドキュメント
+ - https://www.relishapp.com/rspec
 - はじめてのRSpec - まずテスト書いてからコード書くシンプルなチュートリアル
  - http://qiita.com/luckypool/items/e3662170033347510c3c
 - https://github.com/rspec/rspec-expectations
  - expect関連のAPIについて役に立つページ
 - カバレッジテスト結果を生成するための仕組みです。HTML用に加工してくれます。
  - https://github.com/colszowka/simplecov
+
+# TODO
+- let / let! / subject の使い方
+- shared_examples の使い方
+- shared_context の使い方
+- pending と skip の使い分け
