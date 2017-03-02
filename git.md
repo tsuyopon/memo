@@ -203,6 +203,36 @@ $ git ls-remote --tags
 $ git pull --tags
 ```
 
+# サブモジュール
+
+### manを見る
+どうやらsubmoduleにはmanがあるようです。
+```
+$ man git-submodule
+```
+
+### サブモジュールを追加する
+```
+$ git submodule add https://gist.github.com/hoge.git WordPress
+$  git status
+On branch master
+Your branch is up-to-date with 'origin/master'.
+
+Changes to be committed:
+  (use "git reset HEAD <file>..." to unstage)
+
+      new file:   .gitmodules
+	      new file:   WordPress
+```
+
+登録したサブモジュールを更新するには次のようにします。
+```
+$ git submodule update
+
+以下はsubmodule内部のsubmoduleも更新したい場合
+$ git submodule update --recursive
+```
+
 # その他
 
 ### 誤って登録してしまったコミットメッセージを変更する
