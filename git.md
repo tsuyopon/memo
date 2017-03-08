@@ -253,4 +253,10 @@ $ git clean -n    # dry-runで確認
 $ git clean -f    # 削除実行
 ```
 
+ディレクトリも再帰的に削除するにはdオプションも付加します。
+```
+$ git clean -dn    # dry-runで確認
+$ git clean -df    # 削除実行
+```
+
 
