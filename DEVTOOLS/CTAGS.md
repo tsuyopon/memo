@@ -1,6 +1,9 @@
 # ctagsについて
-rubyやjavascriptなどはcscope, globalなどではうまい具合に動かなったので、ctagsについてもまとめておく
+ctagsはデフォルトでインストールされていることが多く、非常に便利なタグジャンプの仕組みです。
+C, C++, JavaなどはCscopeの方を自分は好みますが、それ以外のJavascript, Perl, Ruby, Go, PHP, Scala, Markdown, CSSなどはこのctagsで十分です。
+なお、PHPやC++ではGLOBALも利用されるようですが、呼び出し元まで辿れるというのが利点となっているようです。
 
+.ctagsファイルについてはdotfilesレポジトリに置いてあるので参考にすること
 
 # 詳細
 
@@ -24,6 +27,12 @@ $ ctags -R
 以下のように含める・含めないの指定もできる
 ```
 $ ctags -R --exclude=.git --exclude=log *
+```
+
+### 複数のディレクトリを指定してインデックスを作る場合
+単純に後ろに複数指定すれば良いだけです。
+```
+$ ctags -R  path/dir1   path2/dir2
 ```
 
 ### MACの場合のセットアップ方法
@@ -53,6 +62,13 @@ Ctrl + I    Ctrl+Oを実行して移動前の位置に戻った後に、再度�
 :tag 	    タグリストの前方にジャンプ。(:3tagなども可)
 :tag        [タグ名] 	指定したタグにジャンプ。(:taと同じ)
 :ptag       [タグ名] 	[タグ名]の定義をプレビューウィンドウで開く。
+```
+
+### vimでtagsファイルを登録しておきたい場合。
+$HOME/.vimrcに次のような行を追加することでvimを開いた時にどのtagsファイルを使うのかを指定することができます。
+```
+set tags+=$HOME/tags
+set tags+=$HOME/tags2
 ```
 
 ## .ctagsファイルについて

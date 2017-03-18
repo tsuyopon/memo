@@ -1,5 +1,5 @@
 # cscopeについて
-cscopeはC, C++, JAVAなどのソースコードを読んでいく際のタグジャンプなどに非常に役立つツールです。  
+cscopeはC, C++, JAVA, PHP4のソースコードを読んでいく際のタグジャンプなどに非常に役立つツールです。  
 上記以外の言語の場合にはctags, globalなどの別のツールの方が適しているかもしれません。自分はPHPはGLOBALで、perl, Javascript, python, rubyなどはctagsを使っています。
 
 # 内容
@@ -139,12 +139,12 @@ Ctrl + i
 
 - C++の場合の例
 ```
-$ find . -name '*.cpp' -o -name '*.c' -o -name '*.h' -o -name '*.hpp' > cscope.files
+$ find -L . -name '*.cpp' -o -name '*.c' -o -name '*.h' -o -name '*.hpp' > cscope.files
 $ cscope -R -b
 ```
 - JAVAの場合の例
 ```
-$find . -name '*.java' > cscope.files
+$find -L . -name '*.java' > cscope.files
 $ cscope -R -b
 ```
 

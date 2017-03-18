@@ -147,6 +147,8 @@ map <C-p> :cp<CR>
 grepをかけたい場合には「Ctrl-G」してgrepしたい文言を入力します。   
 検索をかけて画面下に候補ウィンドウが表示されますが、これを消したい場合には「Ctrl-W,O」です。   
 
+### htag
+
 ### 参考URL
 - GNU GLOBALとvimで巨大なコードでも快適にコードリーディング
  - http://blog.matsumoto-r.jp/?p=2369
