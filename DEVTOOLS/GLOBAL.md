@@ -1,8 +1,11 @@
 # GLOBALについて
-cscopeだとPHPのソースコードを追いかける場合に不便を感じるのでGNU GLOBALを導入するとよさそうです。
+GLOBALは高機能なタグジャンプツールです。Cscopeと比較されることが多いが、使い勝手としてはC++のみに関して言えばcscopeの方が個人的にはいいかも。ヘッダファイル移動や呼び出し元のみ参照などできるので...。PHPなどでたまに利用させてもらっています。
+- 対応言語は C, C++, Yacc, Java, PHP4, アセンブリ言語
+-- https://www.gnu.org/software/global/global.html
+- GLOBALはソースコードを見ながら該当箇所を移動できるなどcscopeとは違ったメリットやhtagsというHTMLのタグジャンプコードを生成するツールがあります。
 
 ### ソースコードからのインストール
-即座に導入することができます。
+次のコマンドで即座に導入することができます。
 ```
 $ wget http://tamacom.com/global/global-6.5.tar.gz
 $ tar zxvf global-6.5.tar.gz
@@ -14,7 +17,7 @@ $ which global
 /usr/local/bin/global
 ```
 
-### 使ってみる
+### vimと連携して使う
 ソースコードがあるトップディレクトリに移動してインデックスファイルを生成します。
 ```
 $ cd <path>
@@ -25,15 +28,50 @@ GRTAGS: Berkeley DB 1.85/1.86 (Btree, version 3, native byte-order)
 TAGS:  Berkeley DB 1.85/1.86 (Btree, version 3, native byte-order)
 ```
 このgtagsを実行したディレクトリ内部でglobalコマンドを使います。  
-以下はcakephpのソースコードを取得して展開した結果
-
-ネット上からDownloadします。
+たとえば、以下はcakephpのソースコードを取得して展開して、GNU GLOBALを試してみます。
 ```
 $ unzip cakephp-2.6.7.zip
 $ cd cakephp-2.6.7
 $ sudo gtags -v
 ```
 
+ソースコードからインストールした場合、以下のようにfindで検索するとgtags.vimがあります。
+```
+$ find /usr/local/share/gtags -name gtags.vim
+/usr/local/share/gtags/gtags.vim
+```
+
+個人環境設定としてこのプラグインをコピーします。
+```
+$ mkdir -p $HOME/.vim/plugin
+$ cp /usr/local/share/gtags/gtags.vim $HOME/.vim/plugin/
+```
+
+デフォルトのgtags.vimの設定だと使いにくい部分があるので、gtags.vimの設定を上書きするために下記設定を
+$HOME/.vimrcに追加します。
+
+```
+map <C-g> :Gtags 
+map <C-h> :Gtags -f %<CR>
+map <C-j> :GtagsCursor<CR>
+map <C-n> :cn<CR>
+map <C-p> :cp<CR>
+```
+
+以下はGNU GLOBALの大事な操作方法なので使いながら覚えると良いでしょう。
+- 定義元に遷移したい場合には、カーソルを合わせて「Ctrl-J」を押下する。   
+- ジャンプした後に定義元に戻る場合には「Ctrl-O」とする。   
+- ちなみに、直前の表示に戻りたい場合には「Ctrl+I」となります。
+- 次の候補や前の候補の場合には「Ctrl-N」「Ctrl-P」で移動します。   
+- grepをかけたい場合には「Ctrl-G」してgrepしたい文言を入力します。   
+- 検索をかけて画面下に候補ウィンドウが表示されますが、これを消したい場合には「Ctrl-W,O」です。   
+- 「Ctrl-W」を２回実行すると上下にあるウィンドウ間をトグルします。
+- 「Ctrl-H」を押下すると開いているファイルのクラス・メソッド一覧が表示されます。これらにタグが振られているので遷移しやすくなります。
+
+- 参考URL
+-- http://blog.matsumoto-r.jp/?p=2369
+
+### globalコマンドを使って見る
 execute関数が定義されているファイルを出力してみます。
 ```
 $ global execute
@@ -106,7 +144,6 @@ $ global -r -x executable
 executable        353 lib/Cake/Test/Case/Utility/FileTest.php 		$this->assertFalse($someFile->executable());
 ```
 
-
 ### GLOBALオプション一覧
 ```
 global 関数名          関数名からソースコード(定義)を検索する
@@ -117,42 +154,24 @@ global -g 検索文字列   ソースコードのgrepを行う
 ```
 上記コマンドに対して-xオプションを付与することによって、詳細情報(行番号と内容)を出力することができます。
 
-### VIMとの連携
-ソースコードからインストールした場合、以下のようにfindで検索するとgtags.vimがあります。
+### htagsを使ってHTML上からソースコードタグジャンプを行う。
+GNU GlobalにはhtagsというHTMLからタグジャンプを実現するツールが付属でついいます。
 ```
-$ find /usr/local/share/gtags -name gtags.vim
-/usr/local/share/gtags/gtags.vim
-```
-
-個人環境設定としてこのプラグインをコピーします。
-```
-$ mkdir -p $HOME/.vim/plugin
-$ cp /usr/local/share/gtags/gtags.vim $HOME/.vim/plugin/
+$ sudo gtags -v
+$ htags -aosnFfw
 ```
 
-デフォルトのgtags.vimの設定だと使いにくい部分があるので、gtags.vimの設定を上書きするために下記設定を
-$HOME/.vimrcに追加します。
-
+これを実行するとHTMLというディレクトリが生成される。あとはその中で簡易webサーバを起動してみると良い。
 ```
-map <C-g> :Gtags 
-map <C-h> :Gtags -f %<CR>
-map <C-j> :GtagsCursor<CR>
-map <C-n> :cn<CR>
-map <C-p> :cp<CR>
+$ cd HTTP
+$ python -m CGIHTTPServer   // for python3の場合
 ```
 
-定義元に遷移したい場合には、カーソルを合わせて「Ctrl-J」を押下する。   
-ジャンプした後に定義元に戻る場合には「Ctrl-O」とする。   
-次の候補や前の候補の場合には「Ctrl-N」「Ctrl-P」で移動します。   
-grepをかけたい場合には「Ctrl-G」してgrepしたい文言を入力します。   
-検索をかけて画面下に候補ウィンドウが表示されますが、これを消したい場合には「Ctrl-W,O」です。   
-
-### htag
-
-### 参考URL
+## 参考URL
+- 公式サイト
+-- https://www.gnu.org/software/global/global.html
 - GNU GLOBALとvimで巨大なコードでも快適にコードリーディング
  - http://blog.matsumoto-r.jp/?p=2369
-
 - ソースコードを快適に読むための GNU GLOBAL 入門(前編・中編・後編)
  - http://www.machu.jp/diary/20090307.html
  - http://www.machu.jp/diary/20090308.html
