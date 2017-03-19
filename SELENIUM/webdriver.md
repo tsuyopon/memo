@@ -53,5 +53,9 @@ $ cd spec
 $ bundle exec rspec mytest.rb
 ```
 
+### User-Agentを偽装して実行したい
+次のwebdriver-user-agentというgemを使えば良い。
+- http://qiita.com/oh_rusty_nail/items/2dacfc22f06f9669cba5
+
 # 参考URL
 - http://decknotes.net/slides/33
