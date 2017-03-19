@@ -161,16 +161,16 @@
 ```
 
 # 参考URL
-* Selenium マニュアル(英語)  
+* Selenium マニュアル(英語)
 ** http://seleniumhq.org/docs/
-* Selenium 日本語ドキュメント  
+* Selenium 日本語ドキュメント
 ** http://oss.infoscience.co.jp/seleniumhq/docs/index.html
-* Selenium IDE ドキュメント  
+* Selenium IDE ドキュメント
 ** http://oss.infoscience.co.jp/seleniumhq/docs/03_selenium_ide.html
-* Selenium コマンド ドキュメント  
+* Selenium コマンド ドキュメント
 ** http://oss.infoscience.co.jp/seleniumhq/docs/04_selenese_commands.html
-* Selenium IDE firefox addon  
+* Selenium IDE firefox addon
 ** https://addons.mozilla.org/ja/firefox/addon/2079
-* Selenium リファレンスガイド（日本語版）  
+* Selenium リファレンスガイド（日本語版）
 ** http://wiki.openqa.org/display/SEL/Selenium+0.7+Reference+%28Japanese%29
 
