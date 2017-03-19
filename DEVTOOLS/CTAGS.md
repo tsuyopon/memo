@@ -213,6 +213,25 @@ v  global variables
 $ ctags --languages=PHP,JavaScript
 ```
 
+### .ctags設定ファイルの読み込み順序
+以下のサイトによると
+- http://ctags.sourceforge.net/ctags.html
+
+次の順番で読み込まれるらしい。つまりレポジトリ直下におくことによって、$HOME直下よりも優先されるようになるらしい
+- /ctags.cnf (on MSDOS, MSWindows only)
+- /etc/ctags.conf
+- /usr/local/etc/ctags.conf
+- $HOME/.ctags
+- $HOME/ctags.cnf (on MSDOS, MSWindows only)
+- .ctags
+- ctags.cnf (on MSDOS, MSWindows only)
+
+### ctags関連でよく使う設定について
+- append=yes:    tagsがすでにあれば上書きではなく追加する
+- recurse=yes:   配下ディレクトリを再帰的にタグ作成するかどうか。これがあればctagsコマンドに-Rが不要
+- tags-relative: 作成されるtagsファイル内のキーワードのパスが相対パスになる。
+- sort=yes:      作成されたキーワードをsortする
+
 # 参考
 - 公式ドキュメント
  - http://ctags.sourceforge.net/ctags.html
