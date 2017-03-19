@@ -44,7 +44,7 @@ $ cd spec
 
 ただし、mytest.rbにはそのままだといくつかの不具合があります。自分の場合には次の３つも不具合がありました。
 - vim上で:%s/${receiver}/@driver/gとして${receiver}を@driverに変換しましょう。
-- sholdの箇所をexpectに書き直す必要があります。
+- shouldの箇所をexpectに書き直す必要があります。
 -- expect(@verification_errors).to eq []
 - @driver.manage.timeouts.implicit_wait = 30がなぜかNot a Numberと表示されてしまうのでコメントアウトする
 
