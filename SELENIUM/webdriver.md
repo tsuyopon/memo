@@ -2,7 +2,7 @@
 次の資料に感化されたのでスタンドアロン環境でSELENIUMテストを動かせるようにすることを目的とする。
 - http://decknotes.net/slides/33
 
-# Rspec経由でSelenium Web Driverを稼働させる
+# Rspec経由でSelenium Web Driverを稼働させる(Firefoxを想定)
 
 ```
 $ cat Gemfile

@@ -1,4 +1,4 @@
-* Seleniumとは [#s07e979d]
+# Seleniumとは
 - Selenium Core 
 -- Seleniumの本体 
 - Selenium IDE(Selenium Coreが既に含まれている)
@@ -13,28 +13,16 @@
 -- http://oss.infoscience.co.jp/seleniumhq/projects/index.html
 
 
-* 参考URL [#f11a27d0]
-- Selenium マニュアル(英語)
--- http://seleniumhq.org/docs/
-- Selenium 日本語ドキュメント
--- http://oss.infoscience.co.jp/seleniumhq/docs/index.html
+# Selenium基礎知識
 
-#########################################################################
-Selenium基礎知識
-#########################################################################
-* 概要 [#o93c92d5]
-Seleniumの基礎概念やコマンドについてまとめます。
-
-* 詳細 [#o5343957]
-
-** 基礎概念 [#fa76c2f1]
-*** コマンド呼び出しについて [#o45a161c]
+## 基礎概念
+*** コマンド呼び出しについて
 - Seleniumのテストは下記３つの仕組みから成り立ちます。
 -- コマンド
 -- ターゲット
 -- バリュー
 
-*** コマンドについて [#w268ab9d]
+## コマンドについて
 下記３種類のコマンドがあります。
 - Action
 -- アプリケーションの状態を一般に操作するものです。動作に失敗するかエラーが発生した場合にはテストは中止される。
@@ -50,7 +38,7 @@ Seleniumの基礎概念やコマンドについてまとめます。
 
 COLOR(red): 各コマンドの詳細は[[こちらのページ>http://wiki.openqa.org/display/SEL/Selenium+0.7+Reference+%28Japanese%29]]を参考にしてください。
 
-*** ターゲットで指定可能な機能 [#tb7a1cbb]
+## ターゲットで指定可能な機能
 - Elemenet Locator
 -- Seleniumにおいて、コマンドが参照するhtml要素を特定するものです。
 --- identifier, id, name, dom, xpath, link
@@ -61,20 +49,13 @@ COLOR(red): 各コマンドの詳細は[[こちらのページ>http://wiki.openq
 -- 文字列のマッチングとしてパターン構文が利用可能です。
 --- glob, regexp, exact
 
-*** バリューについて [#tcb60819]
+## バリューについて
 - バリューはコマンドの第２引数として利用されることが多いです。
 - コマンドによってはバリューは指定不要な場合もあります。
 
-* 参考URL [#m0bcbe0f]
-- Selenium リファレンスガイド（日本語版）
--- http://wiki.openqa.org/display/SEL/Selenium+0.7+Reference+%28Japanese%29
+# Seleniumコマンドについて
 
-
-#########################################################################
-Seleniumコマンドについて
-#########################################################################
-
-*** Yahoo Japanのトップページを開いて検索ボックスにあるワードを入力するサンプル
+### Yahoo Japanのトップページを開いて検索ボックスにあるワードを入力するサンプル
 
 このサンプルは入力の簡単なテストを行います。
 - 1.Yahoo Japanトップページを開きます。
@@ -82,6 +63,7 @@ Seleniumコマンドについて
 - 3.プロンプトで入力した文字を検索し、その検索結果ページを表示します。
 
 サンプルは以下、
+```
 	 <?xml version="1.0" encoding="UTF-8"?>
 	 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 	 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -123,41 +105,49 @@ Seleniumコマンドについて
 	 </tbody></table>
 	 </body>
 	 </html>
+```
 
-
-*** 現在表示されているページに「ヘルプ」という文字列があるかどうかを検証する場合 [#r19451da]
+### 現在表示されているページに「ヘルプ」という文字列があるかどうかを検証する場合
+```
 	 <tr>
 	     <td>assertTextPresent</td>
 	     <td>//</td>
 	     <td>ヘルプ</td>
 	 </tr>
+```
 
-*** リンクURLを調べたい場合 [#h7f4bce2]
+### リンクURLを調べたい場合
+```
 	 <tr>
 	    <td>verifyText</td>
 	    <td>//a[@href='http://this.web.site/index.html</td>
 	    <td>著作権について</td>
 	 </tr>
+```
 
-*** xpathにてリンクをチェックしたいような場合 [#aba9d218]
+*** xpathにてリンクをチェックしたいような場合
+```
 	 <tr>
 	     <td>linkCheck</td>
 	     <td>xpath=/html/body/div/div[2]/div[3]/a</td>
 	     <td>http://this.web.site/index.html</td>
 	 </tr>
+```
 
-*** 正規表現を利用してチェックしたい場合 [#abab978d]
+*** 正規表現を利用してチェックしたい場合
+```
 	 <tr>
 	     <td>verifyText</td>
 	     <td><div flag="?">*</div></td>
 	     <td></td>
 	 </tr>
+```
+- 「*」や「?」には下記の意味があります。
+-  *は任意の複数の文字にマッチします
+-  ?は1文字にマッチします
 
-「*」や「?」には下記の意味があります。
- *は任意の複数の文字にマッチします
- ?は1文字にマッチします
-
- *** 画像のキャプチャーを取得する。 [#z2a96062]
+### 画像のキャプチャーを取得する
+```
  <tr>
  	<td>open</td>
  	<td>/</td>
@@ -168,13 +158,11 @@ Seleniumコマンドについて
  	<td>C:\Documents and Settings\path\to\My Documents\selenium\capture.jpg</td>
  	<td></td>
  </tr>
+```
 
-
-
-#########################################################################
-Selenium IDE
-#########################################################################
-*** 参考URL
+# 参考URL
+- Selenium マニュアル(英語)
+-- http://seleniumhq.org/docs/
 - Selenium 日本語ドキュメント
 -- http://oss.infoscience.co.jp/seleniumhq/docs/index.html
 - Selenium IDE ドキュメント
@@ -183,3 +171,6 @@ Selenium IDE
 -- http://oss.infoscience.co.jp/seleniumhq/docs/04_selenese_commands.html
 - Selenium IDE firefox addon
 -- https://addons.mozilla.org/ja/firefox/addon/2079
+- Selenium リファレンスガイド（日本語版）
+-- http://wiki.openqa.org/display/SEL/Selenium+0.7+Reference+%28Japanese%29
+
