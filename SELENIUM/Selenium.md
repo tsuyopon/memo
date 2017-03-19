@@ -36,7 +36,7 @@
 --- verify: 失敗した場合は、失敗はログに記録されてテストは継続実施されます。
 --- waitFor: いくつかの条件が満たされることを待ちます。
 
-COLOR(red): 各コマンドの詳細は[[こちらのページ>http://wiki.openqa.org/display/SEL/Selenium+0.7+Reference+%28Japanese%29]]を参考にしてください。
+各コマンドの詳細は http://wiki.openqa.org/display/SEL/Selenium+0.7+Reference+%28Japanese%29 を参考にしてください。
 
 ### ターゲットで指定可能な機能
 - Elemenet Locator
@@ -125,7 +125,7 @@ COLOR(red): 各コマンドの詳細は[[こちらのページ>http://wiki.openq
 	 </tr>
 ```
 
-*** xpathにてリンクをチェックしたいような場合
+### xpathにてリンクをチェックしたいような場合
 ```
 	 <tr>
 	     <td>linkCheck</td>
@@ -134,7 +134,7 @@ COLOR(red): 各コマンドの詳細は[[こちらのページ>http://wiki.openq
 	 </tr>
 ```
 
-*** 正規表現を利用してチェックしたい場合
+### 正規表現を利用してチェックしたい場合
 ```
 	 <tr>
 	     <td>verifyText</td>
@@ -161,16 +161,16 @@ COLOR(red): 各コマンドの詳細は[[こちらのページ>http://wiki.openq
 ```
 
 # 参考URL
-- Selenium マニュアル(英語)
+- Selenium マニュアル(英語)  
 -- http://seleniumhq.org/docs/
-- Selenium 日本語ドキュメント
+- Selenium 日本語ドキュメント  
 -- http://oss.infoscience.co.jp/seleniumhq/docs/index.html
-- Selenium IDE ドキュメント
+- Selenium IDE ドキュメント  
 -- http://oss.infoscience.co.jp/seleniumhq/docs/03_selenium_ide.html
-- Selenium コマンド ドキュメント
+- Selenium コマンド ドキュメント  
 -- http://oss.infoscience.co.jp/seleniumhq/docs/04_selenese_commands.html
-- Selenium IDE firefox addon
+- Selenium IDE firefox addon  
 -- https://addons.mozilla.org/ja/firefox/addon/2079
-- Selenium リファレンスガイド（日本語版）
+- Selenium リファレンスガイド（日本語版）  
 -- http://wiki.openqa.org/display/SEL/Selenium+0.7+Reference+%28Japanese%29
 
