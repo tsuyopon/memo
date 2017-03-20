@@ -20,24 +20,24 @@ TLS1.3 	? 	[ドラフト]インターネット環境の変化とTLS1.2までの�
 
 ### SSLハンドシェイク
 
-- DNS Lookup
-- Initial Connection(TCP SYN/ACK)
--- TCP SYNのリクエストとTCP SYN+ACKの応答レスポンス
-- SSL Negotiation
--- Client Hello(クライアント=>サーバ)
--- Server Hello, Certificate(クライアント<=サーバ)
--- Certificate Verify(クライアント=>CRL配布orOCSPレスポンダサーバ)
--- OCSPレスポンダへのリクエスト(クライアント=>CRL配布orOCSPレスポンダサーバ)
--- ChangeCipherSpec(クライアント=>サーバ)
--- ChangeCipherSpec(クライアント<=サーバ)
-- Time to First Byte
--- GET /index.html HTTP1.1
-- Content Download
--- ウェブページコンテンツの取得
+* DNS Lookup
+* Initial Connection(TCP SYN/ACK)
+  * TCP SYNのリクエストとTCP SYN+ACKの応答レスポンス
+* SSL Negotiation
+  * Client Hello(クライアント=>サーバ)
+  * Server Hello, Certificate(クライアント<=サーバ)
+  * Certificate Verify(クライアント=>CRL配布orOCSPレスポンダサーバ)
+  * OCSPレスポンダへのリクエスト(クライアント=>CRL配布orOCSPレスポンダサーバ)
+  * ChangeCipherSpec(クライアント=>サーバ)
+  * ChangeCipherSpec(クライアント<=サーバ)
+* Time to First Byte
+  * GET /index.html HTTP1.1
+* Content Download
+  * ウェブページコンテンツの取得
   
-- 参考
--- 上記のフェーズに応じた高速化の手法について記述されている
--- https://www.jp.websecurity.symantec.com/welcome/pdf/wp_ssl_speedup.pdf
+* 参考
+  * 上記のフェーズに応じた高速化の手法について記述されている
+  * https://www.jp.websecurity.symantec.com/welcome/pdf/wp_ssl_speedup.pdf
 
 
 ### SSL接続確立フロー(超概要)
@@ -64,12 +64,11 @@ TLS1.3 	? 	[ドラフト]インターネット環境の変化とTLS1.2までの�
 
 ### SSL要点
 - 対象暗号
-
 - http://blog.shibayu36.org/entry/2015/10/26/120000
 
 
 ### SSL Session Resumption(セッション再利用)
-初回の通信でクライアントとwebサーバ間との間で確立した暗号化のためのセッション情報を、同じ相手であれば２度目以降の通信で使い回すテクニックである。  
+初回の通信でクライアントとwebサーバ間との間で確立した暗号化のためのセッション情報を、同じ相手であれば２度目以降の通信で使い回すテクニックである。   
 初回の通信で生成したセッションIDを２回目の通信のSSLハンドシェイクの最初のステップ(ClientHello)に含めてwebサーバに送信することで、証明書のダウンロードや失効確認を省略することで、即座に暗号化されたアプリケーションデータを交換することができる。
 
 例えば、Apache2.4だと以下のように設定するとセッションの有効時間を300秒と指定することができます。
@@ -117,9 +116,9 @@ Strict-Transport-Security: max-age=15768000;includeSubDomains         // 一般�
 chromeとfirefoxにはこの仕組みが搭載されています。
 
 例えば、Chrome, Firefoxの場合には次のようなリストが記載されているようです。
-- Chrome
+- Chrome  
 -- https://src.chromium.org/viewvc/chrome/trunk/src/net/http/transport_security_state_static.json
-- Firefox
+- Firefox  
 -- https://dxr.mozilla.org/mozilla-central/source/security/manager/tools/PreloadedHPKPins.json
 
 たとえば、ChromeのPreloaded HSTSに組み込むには次から申請をするらしい
@@ -128,7 +127,7 @@ chromeとfirefoxにはこの仕組みが搭載されています。
 chromeで特定のドメインが登録されているかどうかを確認するには次から確認すればいいようだ。
 - chrome://net-internals/#hsts
 
-- 参考
+- 参考  
 -- http://blog.cybozu.io/entry/6096
 
 ### HPKP(HTTP Public Key Pinning)
@@ -148,7 +147,7 @@ TBD
 |デジタル署名| 改竄、なりすまし、第三者に対する証明、否認|公開鍵が本物の送信者のものであるかどうかの確認|
 |証明書|公開鍵を証明すること|認証局自体の信頼|
 
-- 参考
+- 参考  
 -- http://blog.shibayu36.org/entry/2015/10/26/120000
 
 ### CRL(Certificate Revocation List)とは
@@ -167,16 +166,16 @@ CRLを処理するのはクライアント側のソフトウェアの仕事で�
 
 DNS偽装やDoS攻撃を防ぐため、CRLには発行者のデジタル署名が付与されている。
 CRLでの証明書の失効理由は以下の２つに大別することができる。
-- Revoked(失効)
--- CAが不正に証明書を発行したことが判明した場合や秘密鍵を失効したと考えられる場合、証明書は不可逆で失効とされる。
-- Hold(停止)
--- 有効な状態に戻すことができる。例えば、ユーザーが秘密鍵を紛失したような場合には一時的に証明書を停止させることができる。無事見つかれば後日復旧させることも可能。この場合、証明書のシリアル番号はCRLから削除されることがあります。
+* Revoked(失効)
+  * CAが不正に証明書を発行したことが判明した場合や秘密鍵を失効したと考えられる場合、証明書は不可逆で失効とされる。
+* Hold(停止)
+  * 有効な状態に戻すことができる。例えば、ユーザーが秘密鍵を紛失したような場合には一時的に証明書を停止させることができる。無事見つかれば後日復旧させることも可能。この場合、証明書のシリアル番号はCRLから削除されることがあります。
 
 CRLはRFC5280で定義されています
 - https://tools.ietf.org/html/rfc5280
 
-- 参考
--- https://ja.wikipedia.org/wiki/%E8%A8%BC%E6%98%8E%E6%9B%B8%E5%A4%B1%E5%8A%B9%E3%83%AA%E3%82%B9%E3%83%88
+* 参考
+  * https://ja.wikipedia.org/wiki/%E8%A8%BC%E6%98%8E%E6%9B%B8%E5%A4%B1%E5%8A%B9%E3%83%AA%E3%82%B9%E3%83%88
 
 ### OCSP(Online Certificate Status Protocol)
 先で説明したCRLの場合、証明書失効リストとしてCRLが利用されていたがだんだんとリストが肥大化し、ダウンロードに時間がかかるようになってきた。  
@@ -187,16 +186,16 @@ OSCPサーバのことをOCSPレスポンダと呼ぶ。OCSPレスポンダは�
 以下に特徴を記す。
 - 内部的にはクライアントがOSCPの応答をキャッシュすることによって、要求回数の増大によるレスポンス遅延を回避している。
 
-- RFC6960: X.509 Internet Public Key Infrastructure Online Certificate Status Protocol - OCSP
--- https://tools.ietf.org/html/rfc6960
-- RFC2560: X.509 Internet Public Key Infrastructure Online Certificate Status Protocol - OCSP
--- https://tools.ietf.org/html/rfc2560
+* RFC6960: X.509 Internet Public Key Infrastructure Online Certificate Status Protocol - OCSP
+  * https://tools.ietf.org/html/rfc6960
+* RFC2560: X.509 Internet Public Key Infrastructure Online Certificate Status Protocol - OCSP
+  * https://tools.ietf.org/html/rfc2560
 
 
-- http://blog.mylibs.jp/archives/173
--- OCSPに関する図が載っていて非常にわかりやすいです。
-- http://d.hatena.ne.jp/tkng/20130108/1357610340
--- 説明がわかりやすい
+* http://blog.mylibs.jp/archives/173
+  * OCSPに関する図が載っていて非常にわかりやすいです。
+* http://d.hatena.ne.jp/tkng/20130108/1357610340
+  * 説明がわかりやすい
 
 OCSPに関するブラウザでのサポート状況について(参考: https://ja.wikipedia.org/wiki/Online_Certificate_Status_Protocol)
 - Firefoxは全バージョンでOSCPチェックをサポートしている。Firefox3では既定でチェックが有効となる。
@@ -205,8 +204,8 @@ OCSPに関するブラウザでのサポート状況について(参考: https:/
 - IEではWindows Vista上のversion7でOSCPチェックのサポートを開始している
 
 利用フローとプロトコル詳細については以下を確認すること
-- 参考資料
--- https://ja.wikipedia.org/wiki/Online_Certificate_Status_Protocol
+* 参考資料
+  * https://ja.wikipedia.org/wiki/Online_Certificate_Status_Protocol
 
 
 ### OCSP Stapling
@@ -246,9 +245,9 @@ SSL/TLS接続の際には下層から順に(3, 2, 1の順で)、最上位のル�
 - 2. 中間CA証明書(各製品専用の中間CA証明書をダウンロードして、webサーバにインストールする)
 - 3. サーバID
 
-- 参考
--- https://knowledge.symantec.com/jp/support/ssl-certificates-support/index?vproductcat=V_C_S&vdomain=VERISIGN.JP&page=content&id=SO22871&locale=ja_JP&redirected=true
--- https://jp.globalsign.com/support/faq/58.html
+* 参考
+  * https://knowledge.symantec.com/jp/support/ssl-certificates-support/index?vproductcat=V_C_S&vdomain=VERISIGN.JP&page=content&id=SO22871&locale=ja_JP&redirected=true
+  * https://jp.globalsign.com/support/faq/58.html
 
 
 ### SNI(Server Name Indication)
@@ -258,12 +257,12 @@ SSL/TLS接続の際には下層から順に(3, 2, 1の順で)、最上位のル�
 
 注意点としてはクライアントとサーバ側双方で対応できている必要があり、フィーチャーフォンではほとんど利用できないとのことです。
 また、Androidでは4.0以降では対応しているらしいですが、3.0未満だと以下の不具合があるようです。
-- 参考
--- 標準ブラウザ、ネイティブアプリHTTPクライアント、ネイティブアプリwebviewに分けて詳細な説明やどのように表示されるかなどが確認できます。
--- http://knowledge.sakura.ad.jp/tech/1706/
-
-- ブラウザのSNI対応状況などはwikipediaを参考のこと
--- https://ja.wikipedia.org/wiki/Server_Name_Indication
+* 参考
+  * 標準ブラウザ、ネイティブアプリHTTPクライアント、ネイティブアプリwebviewに分けて詳細な説明やどのように表示されるかなどが確認できます。
+  * http://knowledge.sakura.ad.jp/tech/1706/
+  
+* ブラウザのSNI対応状況などはwikipediaを参考のこと
+  * https://ja.wikipedia.org/wiki/Server_Name_Indication
 
 
 ### SAN(異なるFQDNでアクセスしても1枚のSSL証明書で実現する仕組み)
@@ -279,15 +278,15 @@ SSLサーバ証明書を発行するためには申請時に作成するCSRの�
 
 ### TSLネゴシエーションの仕組み(NPNとALPNの違い)
 現在ではサーバ側がプロトコルを決定できるALPNの方向に動いているようだ
-- TLS-NPN(Next Protocol Negotiation)
--- 使用できるプロトコル(HTTP1, SPDY2, SPDY3など)はクライアントが決定できる
-- TLS-ALPN(Application Layer Protocol Negotiation)
--- 使用できるプロトコル(HTTP1, SPDY2, SPDY3など)はサーバが決定できる
--- 使用できるプロトコルがクライアントに存在しない場合にはハンドシェイクアラートで切断される。
--- https://tools.ietf.org/html/rfc7301
-
-- 以下のサイトで図付きで説明してくれている
--- http://d.hatena.ne.jp/ASnoKaze/20130207/1360249692
+* TLS-NPN(Next Protocol Negotiation)
+  * 使用できるプロトコル(HTTP1, SPDY2, SPDY3など)はクライアントが決定できる
+* TLS-ALPN(Application Layer Protocol Negotiation)
+  * 使用できるプロトコル(HTTP1, SPDY2, SPDY3など)はサーバが決定できる
+  * 使用できるプロトコルがクライアントに存在しない場合にはハンドシェイクアラートで切断される。
+  * https://tools.ietf.org/html/rfc7301
+  
+* 以下のサイトで図付きで説明してくれている
+  * http://d.hatena.ne.jp/ASnoKaze/20130207/1360249692
 
 
 ### クロスルート
@@ -517,43 +516,43 @@ PORT    STATE SERVICE
 ```
 
 # スライド参考資料
-- SSL/TLSの基礎と最新動向
--- わかりやすく説明している。実演などを兼ねた後半はまだよくわかっていない
--- http://www.slideshare.net/shigeki_ohtsu/security-camp2015-tls
+* SSL/TLSの基礎と最新動向
+  * わかりやすく説明している。実演などを兼ねた後半はまだよくわかっていない
+  * http://www.slideshare.net/shigeki_ohtsu/security-camp2015-tls
 
 # SSLの強度テストなどを実行したい場合
-- QUALYS SSL LABS
--- https://www.ssllabs.com/ssltest/
-- 上記はGlobalSign提供のものもある
--- https://globalsign.ssllabs.com/
+* QUALYS SSL LABS
+  * https://www.ssllabs.com/ssltest/
+* 上記はGlobalSign提供のものもある
+  * https://globalsign.ssllabs.com/
 
 # PKCS（Public-Key Cryptography Standards）とは
 RSAセキュリティにより考案された公開鍵暗号標準のグループのこと
 こう鍵暗号に
 
-- 参考
--- http://qiita.com/kunichiko/items/7796ecfb88a62ce26b36
+* 参考
+  * http://qiita.com/kunichiko/items/7796ecfb88a62ce26b36
 
 # 参考リンク
-- SSL超概要
--- http://www.cpi.ad.jp/column/column08/
-- SSL全体像の図が記載されている
--- http://www.ibm.com/developerworks/jp/websphere/library/web/web_security/2.html
-- HSTS
--- https://ja.wikipedia.org/wiki/HTTP_Strict_Transport_Security
-- 情報処理推進機構
--- 一度目を通しておいたほうがよさそう
--- http://www.ipa.go.jp/security/pki/
-- 英語だけど目を通しておいたほうがよさそう
--- https://wiki.mozilla.org/Security/Server_Side_TLS
-- SSL/TLS暗号設定ガイドライン
--- http://www.ipa.go.jp/security/vuln/ssl_crypt_config.html
--- https://www.ipa.go.jp/files/000045645.pdf
-- https://www.jp.websecurity.symantec.com/welcome/pdf/wp_ssl_speedup.pdf
-- https://www.jp.websecurity.symantec.com/welcome/pdf/wp_sslandroot-certificate.pdf
+* SSL超概要
+  * http://www.cpi.ad.jp/column/column08/
+* SSL全体像の図が記載されている
+  * http://www.ibm.com/developerworks/jp/websphere/library/web/web_security/2.html
+* HSTS
+  * https://ja.wikipedia.org/wiki/HTTP_Strict_Transport_Security
+* 情報処理推進機構
+  * 一度目を通しておいたほうがよさそう
+  * http://www.ipa.go.jp/security/pki/
+* 英語だけど目を通しておいたほうがよさそう
+  * https://wiki.mozilla.org/Security/Server_Side_TLS
+* SSL/TLS暗号設定ガイドライン
+  * http://www.ipa.go.jp/security/vuln/ssl_crypt_config.html
+  * https://www.ipa.go.jp/files/000045645.pdf
+* https://www.jp.websecurity.symantec.com/welcome/pdf/wp_ssl_speedup.pdf
+* https://www.jp.websecurity.symantec.com/welcome/pdf/wp_sslandroot-certificate.pdf
 
 
 # TODO
-- SSL セッション再利用
-- master secret
-- HPKP
+* SSL セッション再利用
+* master secret
+* HPKP
