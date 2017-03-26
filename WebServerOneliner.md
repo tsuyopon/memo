@@ -22,7 +22,6 @@ $ python -m CGIHTTPServer 8080
 $ python3 -m http.server 8080
 ```
 
-
 ### ruby(1.9.3+)
 unライブラリというのがあるらしい
 ```
@@ -82,6 +81,18 @@ serving /home/suda on port 8000
 "Hello World"だけを返すウェブサーバ
 ```
 $ node -e "require('http').createServer(function(req, res) { res.end('hello world'); }).listen(3000);"
+```
+
+### Perl
+パッケージインストールが必要です。
+```
+$ sudo cpan Task::Plack
+```
+
+次のコマンドで実行可能です。
+```
+$ plackup -MPlack::App::Directory -e 'Plack::App::Directory->new({root=>$ENV{PWD}})->to_app'
+HTTP::Server::PSGI: Accepting connections at http://0:5000/
 ```
 
 # 参考
