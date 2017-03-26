@@ -4,6 +4,29 @@ mochaとpower-assertについて
 - power-assertは、mochaフレームワークを用いたテストで用いるassertライブラリ
 となります。
 
+セットアップ方法としては次の通りです。karmaと連携させずに「mocha test/hoge.js」と実行するにはこれでも問題ありません。
+```
+$ npm install mocha --save-dev
+$ npm install power-assert --save-dev
+```
+
+karmaと連携させる(karma.config.js)からも利用できるようにするには次のインストールをします。
+```
+$ npm install karma-mocha --save-dev
+```
+
+karma-mochaでmochaを実行した結果の表示色を変更するには次をインストールします。
+- http://qiita.com/chihiro/items/f289ce458091e179e606
+```
+$ npm install karma-mocha-reporter --save-dev
+```
+
+assertのような感じでshouldやexpectを使いたければchaiもインストールしておきます。
+- (参考) http://chaijs.com/guide/styles/
+```
+$ sudo npm install chai --save-dev
+```
+
 
 # mochaについて
 
