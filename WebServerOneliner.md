@@ -12,6 +12,8 @@ $ python -m SimpleHTTPServer 8080
 python3で使えるかどうかわかっていないけど以下を使えばCGIが動かせるみたい
 ```
 $ python -m CGIHTTPServer
+or 
+$ python -m CGIHTTPServer 8080
 ```
 
 ### Python3
@@ -56,6 +58,30 @@ $ while :; do { echo -e 'HTTP/1.1 200 OK\n\n'; cat index.html; } | nc -l 8000; d
 こんな感じで確認できる。
 ```
 $ curl http://localhost:8000/
+```
+
+### Node
+次のようにしてhttpサーバが起動できます。
+```
+$ npm install -g http-server
+$ http-server -p 8000
+Starting up http-server, serving ./public
+Available on:
+  http:127.0.0.1:8000
+  http:192/168/0.1:8000
+Hit CTRL-C to stop the server
+```
+
+またはserveというモジュールを利用してもOK
+```
+$ npm install -g serve
+$ serve -p 8000
+serving /home/suda on port 8000
+```
+
+"Hello World"だけを返すウェブサーバ
+```
+$ node -e "require('http').createServer(function(req, res) { res.end('hello world'); }).listen(3000);"
 ```
 
 # 参考

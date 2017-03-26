@@ -8,6 +8,11 @@ JavascriptをCLIで実行するための方法について
 $ node sample.js
 ```
 
+eオプションを渡すとそのまま文字列を渡して実行することができます。
+```
+$ node -e "console.log('hello world');"
+```
+
 ### MAC用(確認済)
 ```
 $ osascript sample.js

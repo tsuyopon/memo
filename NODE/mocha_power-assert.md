@@ -45,6 +45,19 @@ or
 $ mocha -w
 ```
 
+### mochaが自動的に読み込むファイルに追加する
+mochaが自動的に読み込んでオプションとして付加してくれる設定ファイルがあります。
+それはテスト標準ディレクトリのtest/配下のmocha.optsにmochaのコマンドラインオプションを記述するとmochaコマンドを叩くだけで勝手に実行します。
+
+たとえば、次のような設定を追加すると、テストファイルを読み込む時にbable-registerで前処理しテストコードもES-6で記述で、再帰的に記述できるようになる。
+babel-polyfillによってブラウザでbabelで変換したものを利用する場合にはこのpolyfillが必要になります。これはES6の新しい機能などを利用するためのES5向けのライブラリです。
+```
+$ vim test/mocha.opts
+--compilers js:babel-register
+--recursive
+--require babel-polyfill
+```
+
 # power-assertについて
 各種assert関連関数一覧についてはこちらを参考のこと
 - https://github.com/power-assert-js/power-assert
