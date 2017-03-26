@@ -43,6 +43,7 @@ current_tracerにトレーサを登録する
 ```
 
 トレースログを採取して確認する。
+```
 # cat /sys/kernel/debug/tracing/trace_pipe > trace.log
 ```
 
