@@ -1,5 +1,6 @@
 # 概要
 - sinonを使うとstubを作成できる
+  - http://sinonjs.org/
 - jasmineを使うとspy, mock機能が備わっている
   - http://qiita.com/armorik83/items/693eb3b95e6476c4bbfb
 
