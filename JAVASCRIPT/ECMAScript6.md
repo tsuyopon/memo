@@ -194,11 +194,11 @@ foo();          // => hoge1
 
 # 参考
 - BABEL
- - https://babeljs.io/learn-es2015/
+  - https://babeljs.io/learn-es2015/
 - es6features(github)
- - https://github.com/lukehoban/es6features#readme
+  - https://github.com/lukehoban/es6features#readme
 - ES2015 (ES6)についてのまとめ
- - http://qiita.com/tuno-tky/items/74ca595a9232bcbcd727
+  - http://qiita.com/tuno-tky/items/74ca595a9232bcbcd727
 - ES6の勉強をした
- - http://shokai.org/blog/archives/10229
- - https://github.com/shokai/es6-study
+  - http://shokai.org/blog/archives/10229
+  - https://github.com/shokai/es6-study
