@@ -2,7 +2,7 @@
 よく忘れてしまって検索で引っかかりにくい特殊変数などに関するメモ
 
 以下のリファレンスが超絶役に立つので何かあればこちらを参考するとよさそう
- - http://shellscript.sunone.me/
+  - http://shellscript.sunone.me/
 
 # /bin/shメモ
 
@@ -46,7 +46,7 @@ ${var2//abc/XXX} =>  XXXdef XXXdef XXXdef xyz
 ```
 
 - 参考
- - http://d.hatena.ne.jp/ozuma/20130928/1380380390
+  - http://d.hatena.ne.jp/ozuma/20130928/1380380390
 
 ### 文字列長の取得
 文字列長の取得をするには${#変数}とすればよい。
@@ -231,7 +231,7 @@ ${VAR:+aaa}
 ```
 
 - 参考
- - http://shellscript.sunone.me/if_and_test.html
+  - http://shellscript.sunone.me/if_and_test.html
 
 ### ファイルが新しいか古いかでの評価
 ```
@@ -255,7 +255,7 @@ ${VAR:+aaa}
 ```
 
 - 参考
- - http://shellscript.sunone.me/if_and_test.html
+  - http://shellscript.sunone.me/if_and_test.html
 
 ### 計算
 
@@ -390,7 +390,7 @@ do
 done < /tmp/test.txt
 ```
 - 参考
- - http://server.etutsplus.com/sh-while-read-line-4pattern/
+  - http://server.etutsplus.com/sh-while-read-line-4pattern/
 
 パターン2のcatで読み込みパイプでwhile read lineなどを実行するときにはパイプ以降は別プロセスとして動作します。
 このため、以下のようにwhileで定義された変数をwhile文で参照することができません。
@@ -526,7 +526,7 @@ $ echo $?
 一方で [[ ]] ではエラーメッセージは表示されないのでこの辺は使い分けると良いかも
 
 - 参考
- - https://fumiyas.github.io/2013/12/15/test.sh-advent-calendar.html
+  - https://fumiyas.github.io/2013/12/15/test.sh-advent-calendar.html
 
 ### setコマンドについて
 シェルスクリプトでよく使われるのがsetコマンド
@@ -551,7 +551,7 @@ set -xやset +xなどについてはデバッグオプションで後述する�
 
 
 - 参考
- - http://qiita.com/youcune/items/fcfb4ad3d7c1edf9dc96
+  - http://qiita.com/youcune/items/fcfb4ad3d7c1edf9dc96
 
 ###
 ```
@@ -656,7 +656,7 @@ ls: cannot access /homuhomu: No such file or directory
 また、bashじゃないと配列が使えない場合もあるので注意が必要です。
 
 - 参考
- - http://sechiro.hatenablog.com/entry/20120806/1344267619
+  - http://sechiro.hatenablog.com/entry/20120806/1344267619
 
 ## デバッグ
 
@@ -759,12 +759,12 @@ printf "%b" "\n"
 
 # 参考URL
 - UNIX&LINUXコマンド・シェルスクリプトリファレンス
- - 今後もリファレンスとして非常によさそう
- - http://shellscript.sunone.me/debug.html
+  - 今後もリファレンスとして非常によさそう
+  - http://shellscript.sunone.me/debug.html
 - シェルスクリプトの基礎知識まとめ
- - http://qiita.com/katsukii/items/383b241209fe96eae6e7
+  - http://qiita.com/katsukii/items/383b241209fe96eae6e7
 - UNIX&LINUXコマンド・シェルスクリプトリファレンス
- - http://shellscript.sunone.me/variable.html
+  - http://shellscript.sunone.me/variable.html
 - 割りと便利だけど微妙に忘れがちなbashのコマンド・チートシート
- - http://qiita.com/jpshadowapps/items/d6f9b55026637519347f
+  - http://qiita.com/jpshadowapps/items/d6f9b55026637519347f
 

@@ -127,4 +127,4 @@ $ rsync -e 'ssh -c blowfish -ax' -avz example.org:/tmp .
 
 # 参考URL
 - Manpage of rsync
- - http://www.infoscience.co.jp/technical/rsync/README.html
+  - http://www.infoscience.co.jp/technical/rsync/README.html

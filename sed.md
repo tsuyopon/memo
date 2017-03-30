@@ -14,14 +14,14 @@ piyo
 
 ### 置換する
 - N番目に見つかった文字を置換する
- - 以下では2番目にみつかった「o」を「_」に置換する
+  - 以下では2番目にみつかった「o」を「_」に置換する
 ```
 $ echo "Hello World" | sed -e "s/o/_/2"
 Hello W_rld
 ```
 
 - sedを実行したい行の範囲指定を行う
- - 2〜3行目を対象として実行している
+  - 2〜3行目を対象として実行している
 ```
 $ sed -e "2,3s/hoge/HOGE/g" test.txt 
 hoge
@@ -42,7 +42,7 @@ piyo
 ```
 
 - ある文字列にマッチした行からある文字列にマッチした行までに対して置換対象とする場合
- - 「hoge2」にマッチした行から「hoge3」にマッチした行に対して置換する
+  - 「hoge2」にマッチした行から「hoge3」にマッチした行に対して置換する
 ```
 $ sed '/hoge2/,/hoge3/ s/oge/ello/g' test.txt 
 hoge
@@ -53,7 +53,7 @@ piyo
 ```
 
 - パスを置換する
- - この場合にはdelimiterとして:や@がおすすめ
+  - この場合にはdelimiterとして:や@がおすすめ
 ```
 $ echo "/a/b/c" | sed -e "s:/a/b/c:/x/y/z:g"
 ```
@@ -186,7 +186,7 @@ $ sed '/^#/d' <input>
 ```
 
 - sedで一番最初に現れたbbbbをddddに置換したい場合
- - 参考: http://d.hatena.ne.jp/n9d/20081110/1226284188
+  - 参考: http://d.hatena.ne.jp/n9d/20081110/1226284188
 "1,/bbbb"を付与する可能です。bbbbが２箇所にあるのが冗長でコマンドの理解に苦しむ
 ```
 $ echo -e "aaaa\n bbbb\n  cccc\naaaa\n bbbb\naaaa\n bbbb" | sed 1,/bbbb/s/bbbb/dddd/

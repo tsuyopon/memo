@@ -41,7 +41,7 @@ pcapファイルがある場合には次のようにして解析することも�
 $ ssldump -r <File_Name>.pcap -k <Key_File>.key -d host <IP_Address>
 ```
 - 参考
- - https://support.citrix.com/article/CTX116978
+  - https://support.citrix.com/article/CTX116978
 
 
 # 出力を見る
