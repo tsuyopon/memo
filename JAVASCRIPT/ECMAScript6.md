@@ -132,7 +132,7 @@ import React, { Component, PropTypes } from 'react';
 
 ### 分割代入
 複数のvarを1行で記述できるようになりました。nameとageの例
-``
+```
 var [name, age] = ['hoge', 21];
 console.log(name, age) // hoge 21
 ```
