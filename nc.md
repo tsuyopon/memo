@@ -161,6 +161,6 @@ $ echo flush_al | nc localhost 11211
 
 # 参考URL
 - nc コマンド 使い方メモ: Qiita
- - http://qiita.com/yasuhiroki/items/d470829ab2e30ee6203f
+  - http://qiita.com/yasuhiroki/items/d470829ab2e30ee6203f
 - ncのManpage
- - http://www.computerhope.com/unix/nc.htm
+  - http://www.computerhope.com/unix/nc.htm

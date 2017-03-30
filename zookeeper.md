@@ -13,14 +13,14 @@ zookeeperは、クラスタの中での調整や共有データを強固な同�
 
 以下の用語を押さえておく
 - Leader
- - もしleaderへの接続がfailedになったとしてもatomicに復旧をさせる
+  - もしleaderへの接続がfailedになったとしてもatomicに復旧をさせる
 - Follower
- - Leaderの指示に従うzookeeperサーバ
+  - Leaderの指示に従うzookeeperサーバ
 - Ensemble
- - zookeeperサーバのグループ。最小ノード数は3つ必要である
+  - zookeeperサーバのグループ。最小ノード数は3つ必要である
 - znode
- - /から始まる木構造のディレクトリツリーを表す。Unixのディレクトリツリーの概念と似ている
- - 各znodeには1MBまでのデータを格納することができる。
+  - /から始まる木構造のディレクトリツリーを表す。Unixのディレクトリツリーの概念と似ている
+  - 各znodeには1MBまでのデータを格納することができる。
 
 znodeのステータスとして重要なのは次のデータである。
 - version number
@@ -91,14 +91,14 @@ bin/zkServer.sh:  a /usr/bin/env bash script, ASCII text executable
 ```
 
 - zkCleanup.sh
- - confのdataDirで設定したディレクトリやトランザクションログなどにある不要なものを削除し、不要なファイルを削減する
+  - confのdataDirで設定したディレクトリやトランザクションログなどにある不要なものを削除し、不要なファイルを削減する
 - zkCli.sh
- - zookeeper上のデータを操作するためのcliインターフェース
+  - zookeeper上のデータを操作するためのcliインターフェース
 - zkEnv.sh
- - zookeeper用の環境変数を設定しているだけ(100行弱しか行数がないので中を覗いた方が理解が早いかも)
- - CLASSPATH, LIBPATH, ZOO_LOG_DIR, ZOOCFGDIR, ZOOCFGなどの環境変数を設定しているだけです
+  - zookeeper用の環境変数を設定しているだけ(100行弱しか行数がないので中を覗いた方が理解が早いかも)
+  - CLASSPATH, LIBPATH, ZOO_LOG_DIR, ZOOCFGDIR, ZOOCFGなどの環境変数を設定しているだけです
 - zkServer.sh
- - zookeeperサーバを起動するためのシェルスクリプト
+  - zookeeperサーバを起動するためのシェルスクリプト
 
 ### zookeeperのAPI(JAVA)について
 - https://www.tutorialspoint.com/zookeeper/zookeeper_api.htm
@@ -394,27 +394,27 @@ numChildren = 0
 
 上記から抜粋した。
 - czxid
- - The zxid of the change that caused this znode to be created.
+  - The zxid of the change that caused this znode to be created.
 - mzxid
- - The zxid of the change that last modified this znode.
+  - The zxid of the change that last modified this znode.
 - pzxid
- - The zxid of the change that last modified children of this znode.
+  - The zxid of the change that last modified children of this znode.
 - ctime
- - The time in milliseconds from epoch when this znode was created.
+  - The time in milliseconds from epoch when this znode was created.
 - mtime
- - The time in milliseconds from epoch when this znode was last modified.
+  - The time in milliseconds from epoch when this znode was last modified.
 - version
- - The number of changes to the data of this znode.
+  - The number of changes to the data of this znode.
 - cversion
- - The number of changes to the children of this znode.
+  - The number of changes to the children of this znode.
 - aversion
- - The number of changes to the ACL of this znode.
+  - The number of changes to the ACL of this znode.
 - ephemeralOwner
- - The session id of the owner of this znode if the znode is an ephemeral node. If it is not an ephemeral node, it will be zero.
+  - The session id of the owner of this znode if the znode is an ephemeral node. If it is not an ephemeral node, it will be zero.
 - dataLength
- - The length of the data field of this znode.
+  - The length of the data field of this znode.
 - numChildren
- - The number of children of this znode.
+  - The number of children of this znode.
 
 
 ### 認証モード
@@ -641,10 +641,10 @@ listquota, setquota, delquotaなどはここで利用するようです。
 
 以下の手順でリーダー選択が行われている。
 - 1. /app/leader_election/guid_.というパスでシーケンシャルでエフェメラルなznodeを作成する
- - app/leader_election/guid_0000000001, /app/leader_election/guid_0000000002, ...が作成されることになる。
+  - app/leader_election/guid_0000000001, /app/leader_election/guid_0000000002, ...が作成されることになる。
 - 2. (例えば、)ここでの数が最も小さい数を作成したサーバがLeaderとなり、他のサーバはFollowerとなる。
 - 3. 各Followerは自分が生成した番号よりもわずかに大きいnodeが作成したものをwatchする。
- - 例えば、guid_0000000007はguid_0000000006をwatchし、guid_0000000006はguid_0000000005をwatchする。(厳密には1だけ大きいとは限らないかも)
+  - 例えば、guid_0000000007はguid_0000000006をwatchし、guid_0000000006はguid_0000000005をwatchする。(厳密には1だけ大きいとは限らないかも)
 - 4. もし、Leaderがdownしたら、エフェメラルznodeなのでそのときの状態が検知されるようになる。
 - 5. 上記によって次々にFollowerにリーダーがdownしたことが検知される。
 - 6. Followerは一番小さい数のguid_Xが存在するかをチェックして、いなければLeaderとなる。
@@ -653,10 +653,10 @@ listquota, setquota, delquotaなどはここで利用するようです。
 
 # TODO
 - zkCli.shについてもっと調べる
- - helpで表示されるsync, listquota, setquota, delquotaなどについてまとめておく
- - quotaについては http://oss.infoscience.co.jp/hadoop/zookeeper/docs/r3.3.1/zookeeperQuotas.html あたり?
+  - helpで表示されるsync, listquota, setquota, delquotaなどについてまとめておく
+  - quotaについては http://oss.infoscience.co.jp/hadoop/zookeeper/docs/r3.3.1/zookeeperQuotas.html あたり?
 - https://www.tutorialspoint.com/zookeeper/zookeeper_quick_guide.htm
- - この辺もっと読む
+  - この辺もっと読む
 - https://ihong5.wordpress.com/2014/07/24/apache-zookeeper-setting-acl-in-zookeeper-client/
- - 認証も読む
+  - 認証も読む
 

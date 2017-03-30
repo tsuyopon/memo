@@ -514,7 +514,7 @@ DONE
 ```
 
 - 参考
- - https://tech.nosuz.jp/2015/12/enable-ocsp-stapling/
+  - https://tech.nosuz.jp/2015/12/enable-ocsp-stapling/
 
 
 # 参考URL

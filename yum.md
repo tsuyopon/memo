@@ -29,7 +29,7 @@ exclude=kernel*
 ```
 
 - 参考
- - http://www.8wave.net/yum.html
+  - http://www.8wave.net/yum.html
 
 ### 不要なパッケージを丸ごと削除する
 例えば、rubyとその他に依存しない関連パッケージを除去するにはremoveを実行します
@@ -84,6 +84,6 @@ $yum --enablerepo='hogerepo' install mypackage
 # 参考
 - http://www.atmarkit.co.jp/flinux/rensai/linuxtips/795tmprepo.html
 - YUMコマンドチートシート - RedHat Enterprise Linux
- - https://access.redhat.com/sites/default/files/attachments/rh_yum_cheatsheet_1214_jcs_print-ja.pdf
+  - https://access.redhat.com/sites/default/files/attachments/rh_yum_cheatsheet_1214_jcs_print-ja.pdf
  
 

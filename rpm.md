@@ -301,8 +301,8 @@ $ cd mysql
 
 # 参考URL
 - RPMパッケージの管理に使うRPMコマンド使えるオプション一覧
- - http://jp.layer8.sh/reference/entry/show/id/662
+  - http://jp.layer8.sh/reference/entry/show/id/662
 - RPM Tips
- - http://www2.westwind.dyndns.org/contents/tips/rpm.html
+  - http://www2.westwind.dyndns.org/contents/tips/rpm.html
 - ITmedia RPMコマンドを使いこなしたい
- - http://www.itmedia.co.jp/help/tips/linux/l0052.html
+  - http://www.itmedia.co.jp/help/tips/linux/l0052.html
