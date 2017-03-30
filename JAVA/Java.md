@@ -243,3 +243,12 @@ Server is ready.
 次のようにしてアクセスしてヒープ状況を確認することができる。
 http://localhost:7000/
 
+
+### Javaデバッガを利用する
+```
+$ javac -g Counter.java
+$ jdb Counter
+```
+
+jdbコマンドの使い方はこの辺を参考のこと
+- http://qiita.com/dhomma/items/cbcbab679071b60c229b
