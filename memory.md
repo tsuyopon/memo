@@ -19,25 +19,25 @@
 
 ### 基本概念
 - STACK
- - プログラムなどに配置される
+  - プログラムなどに配置される
 - malloc(glibc)
- - 128KB未満brk, sbrkシステムコールを使ってHEAPを扱う
- - 128KB以上の場合にはmmapシステムコールを使って取得する
+  - 128KB未満brk, sbrkシステムコールを使ってHEAPを扱う
+  - 128KB以上の場合にはmmapシステムコールを使って取得する
 - vmalloc
- - 論理的に連続するアドレスを確保する。
+  - 論理的に連続するアドレスを確保する。
 - kmalloc
- - 物理的にも連続した領域を確保する
- - スタブアロケータと呼ばれる領域はこれに該当する。inodeキャッシュ, dentryキャッシュの構造体はこれを使っている。
- - slabキャッシュにはSReclaimable(回収可能)とSUnreclaim(回収不可)なものがある
+  - 物理的にも連続した領域を確保する
+  - スタブアロケータと呼ばれる領域はこれに該当する。inodeキャッシュ, dentryキャッシュの構造体はこれを使っている。
+  - slabキャッシュにはSReclaimable(回収可能)とSUnreclaim(回収不可)なものがある
 
 STACK、mallocはユーザープログラムで使われ、vmalloc、kmallocなどはカーネルで利用される。
 
 ### 論理アドレスから物理ページへの変換方法について
 レイアウト変換は次のようにしておこなわれる。
 - 1. LinearAddressとして32bitsがあり、物理アドレスの算出には先頭bitから次のようにして分割します。
- - (a) 先頭10bits(PageDirecotry offset)
- - (b) 次の10bits(PageTable offset:  PageTableはPageFileと呼ばれることもあるらしい)
- - (c) 次の12bits(Frame offset)
+  - (a) 先頭10bits(PageDirecotry offset)
+  - (b) 次の10bits(PageTable offset:  PageTableはPageFileと呼ばれることもあるらしい)
+  - (c) 次の12bits(Frame offset)
 - 2. CR3に登録された相対アドレスはPDの先頭ポインタをさしている。
 - 3. 2の先頭ポインタとPD offset(10bits)を加算して、ページディレクトリの該当アドレスからPTへの先頭ポインタを取得する。
 - 4. PT先頭ポインタとPT offset(10bits)を加算して、実アドレスの先頭ポインタを取得する
@@ -78,12 +78,12 @@ STACK、mallocはユーザープログラムで使われ、vmalloc、kmallocな�
 
 上記だと２段テーブルとなっていますが、３段テーブル、４段テーブルもあります。(Linear Addressのbitもそれ専用に分割されます)
 - 2段テーブル(PD, PT)
- - IA-32
+  - IA-32
 - 3段テーブル(PDポインタテーブル, PD, PT)
- - IA-32(PAE)   // PAE(Physical Address Extension)で64GBまで扱うことができる
+  - IA-32(PAE)   // PAE(Physical Address Extension)で64GBまで扱うことができる
 - 4段テーブル(PGD, PUD, PMD, PT)
- - 64bit
- - 実はカーネル2.6.11以前では3段テーブル(PGD, PMD, PT)構成で行われていました。
+  - 64bit
+  - 実はカーネル2.6.11以前では3段テーブル(PGD, PMD, PT)構成で行われていました。
 
 PGD, PUD, PMD, PTなどはカーネルを読むときの関数やマクロなどで頻繁に出てくるので用語を押さえておく必要がある。
 
@@ -135,10 +135,10 @@ Reserved
 
 
 - 参考
- - 画像などがあるのでイメージしやすい
- - http://duartes.org/gustavo/blog/post/anatomy-of-a-program-in-memory/
- - 参考になる
- - http://th0x4c.github.io/blog/2012/10/10/os-virtual-memory-map/
+  - 画像などがあるのでイメージしやすい
+    - http://duartes.org/gustavo/blog/post/anatomy-of-a-program-in-memory/
+  - 参考になる
+    - http://th0x4c.github.io/blog/2012/10/10/os-virtual-memory-map/
 
 ### メモリレイアウト(64bit)
 
@@ -243,17 +243,17 @@ Cached＋Buffers = Active(file) + Inactive(file) + Shmem
 
 以下のURLが大変参考になったので載せておく
 - /proc/meminfoを考える
- - http://enakai00.hatenablog.com/entry/20110906/1315315488
+  - http://enakai00.hatenablog.com/entry/20110906/1315315488
 - prox.txt
- - http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/Documentation/filesystems/proc.txt?id=HEAD#n866
+  - http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/Documentation/filesystems/proc.txt?id=HEAD#n866
 - SystemTapで真犯人を捕まえろ！
- - http://www.atmarkit.co.jp/ait/articles/0903/25/news131.html
+  - http://www.atmarkit.co.jp/ait/articles/0903/25/news131.html
 - Entries in /proc/meminfo
- - http://stackoverflow.com/questions/658411/entries-in-proc-meminfo
+  - http://stackoverflow.com/questions/658411/entries-in-proc-meminfo
 - HardwareCorrupted, DirectMap4k, DirectMap2Mの参考
- - http://unix.stackexchange.com/questions/204286/what-does-mean-by-hardwarecorrupted-directmap4k-directmap2m-fields-in-proc-m
+  - http://unix.stackexchange.com/questions/204286/what-does-mean-by-hardwarecorrupted-directmap4k-directmap2m-fields-in-proc-m
 - what is significance of “Mlocked” in /proc/meminfo file in Linux (CentOS)
- - http://stackoverflow.com/questions/18094410/what-is-significance-of-mlocked-in-proc-meminfo-file-in-linux-centos
+  - http://stackoverflow.com/questions/18094410/what-is-significance-of-mlocked-in-proc-meminfo-file-in-linux-centos
 
 
 ### カーネルスラブアロケータの統計を確認する(/proc/slabinfo)
@@ -295,7 +295,7 @@ slabdata
 - sharedavail: 教養利用可能
 
 - 参考
- - https://linuxjm.osdn.jp/html/LDP_man-pages/man5/slabinfo.5.html
+  - https://linuxjm.osdn.jp/html/LDP_man-pages/man5/slabinfo.5.html
 
 
 ### メモリ使用量でソートする
