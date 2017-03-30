@@ -62,12 +62,12 @@ set completeopt=menu,preview
 syntaxだけで言えば、1行目と4行目だけでいけるようだ
 
 - 参考
- - https://www.seeds-std.co.jp/seedsblog/2494.html
+  - https://www.seeds-std.co.jp/seedsblog/2494.html
 
 
 # 参考URL
 - http://aibou.hateblo.jp/entry/2014/07/11/115920
 - SlideShare(Go言語によるWebアプリの作り方)
- - http://www.slideshare.net/yasi_life/goweb-16448500
+  - http://www.slideshare.net/yasi_life/goweb-16448500
 - VimでGo言語を書く環境を設定する 
- - https://www.seeds-std.co.jp/seedsblog/2494.html
+  - https://www.seeds-std.co.jp/seedsblog/2494.html

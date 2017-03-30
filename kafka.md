@@ -396,14 +396,14 @@ Option                                   Description
 
 # TODO
 - この辺をひとめぐり
- - https://kafka.apache.org/08/documentation.html
+  - https://kafka.apache.org/08/documentation.html
 - kafka-console-producer.sh, kafka-topics.sh, kafka-console-consumer.shコマンドのオプションをざっと使ってみるといいかもしれない
 
 # 参考URL
 - kafka公式ドキュメント
- - http://kafka.apache.org/documentation.html
+  - http://kafka.apache.org/documentation.html
 - kafka Release Note
- - https://kafka.apache.org/downloads
+  - https://kafka.apache.org/downloads
 - http://www.w3ii.com/en-US/apache_kafka/apache_kafka_cluster_architecture.html
 
 

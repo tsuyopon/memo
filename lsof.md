@@ -240,16 +240,16 @@ $ sudo lsof -N
 
 # TODO
 - この辺にまだlsofで知らないことが書いてありそうなので時間があれば見ておく
- - https://opensource.apple.com/source/lsof/lsof-41/lsof/00QUICKSTART
+  - https://opensource.apple.com/source/lsof/lsof-41/lsof/00QUICKSTART
 
 # 参考
 - A Quick Start for Lsof
- - https://opensource.apple.com/source/lsof/lsof-41/lsof/00QUICKSTART
+  - https://opensource.apple.com/source/lsof/lsof-41/lsof/00QUICKSTART
 - Manpage of lsof
- - https://netadmintools.com/html/lsof.man.html
+  - https://netadmintools.com/html/lsof.man.html
 - Frequently Asked Questions about lsof
- - ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/FAQ
+  - ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/FAQ
 - Finding open files with lsof
- - http://www.ibm.com/developerworks/aix/library/au-lsof.html
+  - http://www.ibm.com/developerworks/aix/library/au-lsof.html
 - Vic Abell's Home Page
- - https://people.freebsd.org/~abe/
+  - https://people.freebsd.org/~abe/

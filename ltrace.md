@@ -368,9 +368,9 @@ $  ltrace -F ltrace.conf hostname
 
 # 参考URL
 - Manpage of ltrace
- - https://linux.die.net/man/1/ltrace
+  - https://linux.die.net/man/1/ltrace
 - ltrace(1) Manpage
- - http://latrace.sourceforge.net/latrace.html
+  - http://latrace.sourceforge.net/latrace.html
 - ltrace公式サイト
- - http://www.ltrace.org/
- - https://anonscm.debian.org/gitweb/?p=collab-maint/ltrace.git
+  - http://www.ltrace.org/
+  - https://anonscm.debian.org/gitweb/?p=collab-maint/ltrace.git
