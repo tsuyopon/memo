@@ -872,6 +872,118 @@ $ gdb -tui
 (gdb) set logging off
 ```
 
+### メモリダンプする
+書式は次の通り
+```
+[書式]
+    x/(個数)(フォーマット)   (変数名)
+```
+
+```
+(gdb) x/20x argv    // hex
+0x7fffffffe3b8:	0xffffe5e4	0x00007fff	0x00000000	0x00000000
+0x7fffffffe3c8:	0xffffe621	0x00007fff	0xffffe632	0x00007fff
+0x7fffffffe3d8:	0xffffe651	0x00007fff	0xffffe661	0x00007fff
+0x7fffffffe3e8:	0xffffe675	0x00007fff	0xffffe683	0x00007fff
+0x7fffffffe3f8:	0xffffe6a0	0x00007fff	0xffffe6b3	0x00007fff
+
+(gdb) x/20o argv    // octal
+0x7fffffffe3b8:	037777762744	077777	0	0
+0x7fffffffe3c8:	037777763041	077777	037777763062	077777
+0x7fffffffe3d8:	037777763121	077777	037777763141	077777
+0x7fffffffe3e8:	037777763165	077777	037777763203	077777
+0x7fffffffe3f8:	037777763240	077777	037777763263	077777
+
+(gdb) x/20d argv    // decimal
+0x7fffffffe3b8:	-6684	32767	0	0
+0x7fffffffe3c8:	-6623	32767	-6606	32767
+0x7fffffffe3d8:	-6575	32767	-6559	32767
+0x7fffffffe3e8:	-6539	32767	-6525	32767
+0x7fffffffe3f8:	-6496	32767	-6477	32767
+
+(gdb) x/20u argv   // unsigned decimal
+0x7fffffffe3b8:	4294960612	32767	0	0
+0x7fffffffe3c8:	4294960673	32767	4294960690	32767
+0x7fffffffe3d8:	4294960721	32767	4294960737	32767
+0x7fffffffe3e8:	4294960757	32767	4294960771	32767
+0x7fffffffe3f8:	4294960800	32767	4294960819	32767
+
+(gdb) x/20t argv   // binary
+0x7fffffffe3b8:	11111111111111111110010111100100	00000000000000000111111111111111	00000000000000000000000000000000	00000000000000000000000000000000
+0x7fffffffe3c8:	11111111111111111110011000100001	00000000000000000111111111111111	11111111111111111110011000110010	00000000000000000111111111111111
+0x7fffffffe3d8:	11111111111111111110011001010001	00000000000000000111111111111111	11111111111111111110011001100001	00000000000000000111111111111111
+0x7fffffffe3e8:	11111111111111111110011001110101	00000000000000000111111111111111	11111111111111111110011010000011	00000000000000000111111111111111
+0x7fffffffe3f8:	11111111111111111110011010100000	00000000000000000111111111111111	11111111111111111110011010110011	00000000000000000111111111111111
+
+(gdb) x/20f argv   // float
+0x7fffffffe3b8:	-nan(0x7fe5e4)	4.59163468e-41	0	0
+0x7fffffffe3c8:	-nan(0x7fe621)	4.59163468e-41	-nan(0x7fe632)	4.59163468e-41
+0x7fffffffe3d8:	-nan(0x7fe651)	4.59163468e-41	-nan(0x7fe661)	4.59163468e-41
+0x7fffffffe3e8:	-nan(0x7fe675)	4.59163468e-41	-nan(0x7fe683)	4.59163468e-41
+0x7fffffffe3f8:	-nan(0x7fe6a0)	4.59163468e-41	-nan(0x7fe6b3)	4.59163468e-41
+
+(gdb) x/20a argv   // addrss
+0x7fffffffe3b8:	0x7fffffffe5e4	0x0
+0x7fffffffe3c8:	0x7fffffffe621	0x7fffffffe632
+0x7fffffffe3d8:	0x7fffffffe651	0x7fffffffe661
+0x7fffffffe3e8:	0x7fffffffe675	0x7fffffffe683
+0x7fffffffe3f8:	0x7fffffffe6a0	0x7fffffffe6b3
+0x7fffffffe408:	0x7fffffffe6c1	0x7fffffffee12
+0x7fffffffe418:	0x7fffffffee1e	0x7fffffffee82
+0x7fffffffe428:	0x7fffffffeea0	0x7fffffffeeaf
+0x7fffffffe438:	0x7fffffffeeea	0x7fffffffeef1
+0x7fffffffe448:	0x7fffffffeefa	0x7fffffffef11
+
+(gdb) x/20i argv   // instruction
+   0x7fffffffe3b8:	in     $0xe5,%al
+   0x7fffffffe3ba:	(bad)  
+   0x7fffffffe3bb:	(bad)  
+   0x7fffffffe3bc:	(bad)  
+   0x7fffffffe3bd:	jg     0x7fffffffe3bf
+   0x7fffffffe3bf:	add    %al,(%rax)
+   0x7fffffffe3c1:	add    %al,(%rax)
+   0x7fffffffe3c3:	add    %al,(%rax)
+   0x7fffffffe3c5:	add    %al,(%rax)
+   0x7fffffffe3c7:	add    %ah,(%rcx)
+   0x7fffffffe3c9:	out    %al,$0xff
+   0x7fffffffe3cb:	(bad)  
+   0x7fffffffe3cc:	(bad)  
+   0x7fffffffe3cd:	jg     0x7fffffffe3cf
+   0x7fffffffe3cf:	add    %dh,(%rdx)
+   0x7fffffffe3d1:	out    %al,$0xff
+   0x7fffffffe3d3:	(bad)  
+   0x7fffffffe3d4:	(bad)  
+   0x7fffffffe3d5:	jg     0x7fffffffe3d7
+   0x7fffffffe3d7:	add    %dl,-0x1a(%rcx)
+
+(gdb) x/20c argv    // char
+0x7fffffffe3b8:	-28 '\344'	-27 '\345'	-1 '\377'	-1 '\377'	-1 '\377'	127 '\177'	0 '\000'	0 '\000'
+0x7fffffffe3c0:	0 '\000'	0 '\000'	0 '\000'	0 '\000'	0 '\000'	0 '\000'	0 '\000'	0 '\000'
+0x7fffffffe3c8:	33 '!'	-26 '\346'	-1 '\377'	-1 '\377'
+
+(gdb) x/20s argv    // string
+0x7fffffffe3b8:	 "\344\345\377\377\377\177"
+0x7fffffffe3bf:	 ""
+0x7fffffffe3c0:	 ""
+0x7fffffffe3c1:	 ""
+0x7fffffffe3c2:	 ""
+0x7fffffffe3c3:	 ""
+0x7fffffffe3c4:	 ""
+0x7fffffffe3c5:	 ""
+0x7fffffffe3c6:	 ""
+0x7fffffffe3c7:	 ""
+0x7fffffffe3c8:	 "!\346\377\377\377\177"
+0x7fffffffe3cf:	 ""
+0x7fffffffe3d0:	 "2\346\377\377\377\177"
+0x7fffffffe3d7:	 ""
+0x7fffffffe3d8:	 "Q\346\377\377\377\177"
+0x7fffffffe3df:	 ""
+0x7fffffffe3e0:	 "a\346\377\377\377\177"
+0x7fffffffe3e7:	 ""
+0x7fffffffe3e8:	 "u\346\377\377\377\177"
+0x7fffffffe3ef:	 ""
+```
+
 ### 正規表現でブレークポイントを設定する
 
 ### リバースデバッギング
@@ -887,6 +999,9 @@ gdb7.0から逆方向にnext, nexti, step, stepiなどを実行することが�
 - 参考
  - https://www.sourceware.org/gdb/news/reversible.html
 
+### TODO
+- ざっとながめてみて機能を見るのもいいかも
+  - http://www.asahi-net.or.jp/~wg5k-ickw/html/online/gdb-5.0/gdb-ja_9.html
 
 ### 参考URL
 - http://typea.info/tips/wiki.cgi?page=Linux+C+gdb%A4%CB%A4%E8%A4%EB%A5%C7%A5%D0%A5%C3%A5%B0

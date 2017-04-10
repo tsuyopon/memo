@@ -1,5 +1,5 @@
 # 概要
-odコマンドについてまとめる
+od, hexdumpコマンドについてまとめる
 
 # 詳細
 
@@ -42,4 +42,29 @@ $ od -t x1z -A x a.out  | more
 0001b0 66 00 5f 49 4f 5f 73 74 64 69 6e 5f 75 73 65 64  >f._IO_stdin_used<
 0001c0 00 5f 5f 6c 69 62 63 5f 73 74 61 72 74 5f 6d 61  >.__libc_start_ma<
 (以下略)
+```
+
+### 16進数とテキストデータを同一列で表示する
+-tx1でzが付与されていないのでこの場合上と異なり行で表示する。
+```
+$ cat yum.md  | od -tx1 -a | tail -10
+          s   i   t   e   s   /   d   e   f   a   u   l   t   /   f   i
+0005160  6c  65  73  2f  61  74  74  61  63  68  6d  65  6e  74  73  2f
+          l   e   s   /   a   t   t   a   c   h   m   e   n   t   s   /
+0005200  72  68  5f  79  75  6d  5f  63  68  65  61  74  73  68  65  65
+          r   h   _   y   u   m   _   c   h   e   a   t   s   h   e   e
+0005220  74  5f  31  32  31  34  5f  6a  63  73  5f  70  72  69  6e  74
+          t   _   1   2   1   4   _   j   c   s   _   p   r   i   n   t
+0005240  2d  6a  61  2e  70  64  66  0a  20  0a  0a
+          -   j   a   .   p   d   f  nl  sp  nl  nl
+```
+
+### 16進数を即座に取得する
+Cオプションを付与すると標準的な 16進数 + ASCII での表示を行います。
+```
+$ echo "abcdefghijklmnopabcdefghijklmnopqrstu" | hexdump -C
+00000000  61 62 63 64 65 66 67 68  69 6a 6b 6c 6d 6e 6f 70  |abcdefghijklmnop|
+*
+00000020  71 72 73 74 75 0a                                 |qrstu.|
+00000026
 ```
