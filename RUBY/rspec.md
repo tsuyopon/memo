@@ -255,6 +255,22 @@ $ python -m SimpleHTTPServer 8080
 あとはブラウザで以下のURLにアクセスすればOK
 - http://localhost:8080/
 
+### 遅いテストを見つける
+profileオプションをつけると遅いテストを表示してくれます。
+```
+$ rspec --profile
+
+(snip)
+
+Top 10 slowest examples (10.58 seconds, 96.4% of total time):
+  AndroidMarket use stub content behaves like android_market_base_examples #get_top_selling_paid_apps_in_category 
+    1.54 seconds ./spec/android_market_spec.rb:83
+  AndroidMarket use stub content behaves like android_market_base_examples #get_overall_top_grossing_apps 
+    1.38 seconds ./spec/android_market_spec.rb:101
+  AndroidMarket use stub content behaves like android_market_base_examples #get_top_selling_free_apps_in_category 
+    1.32 seconds ./spec/android_market_spec.rb:77
+```
+
 # 参考URL
 - RSpec公式ドキュメント
  - https://www.relishapp.com/rspec
