@@ -5,6 +5,9 @@ PromiseとはECMAScript6世代の機能です。以下でPromiseの対応状況�
 非同期の受け取りにはコールバック関数を利用していましたが、大抵の場合にはライブラリで独自仕様となることが問題でした。
 Promiseは、結果の受け取り方法を統一化し、非同期処理を並行・直列に実行することができるのでこの課題を解決することができます。
 
+Promiseでつまずいたらこのmdで説明する基本事項と次のPromiseの本を読むこと
+- Promiseの本
+  - https://azu.github.io/promises-book/#introduction
 
 # 詳細
 ### 基本事項
