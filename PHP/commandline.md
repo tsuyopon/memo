@@ -1,7 +1,6 @@
 # 概要
 PHPのコマンドライン処理について
 
-
 ### phpのsytanxチェックを行う
 ```
 $ php -l test.php
