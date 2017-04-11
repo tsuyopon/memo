@@ -3,10 +3,10 @@ Javascriptのデバッグに関するテクニックについて
 chromeツールが絶大な威力を発揮するので、下２つのページは見ておいた方がいいかもしれない。
 
 - Chrome DevTools Overview
- - https://developer.chrome.com/devtools#debugging-JavaScript
+  - https://developer.chrome.com/devtools#debugging-JavaScript
 - Chrome DevTools 
- - 各項目の詳細な説明がされている
- - https://developers.google.com/web/tools/chrome-devtools/
+  - 各項目の詳細な説明がされている
+  - https://developers.google.com/web/tools/chrome-devtools/
 
 Chromeの機能として以下のドキュメントが多くを紹介しているのでこれも目を通しておくとよさそう
 - http://www.buildinsider.net/web/chromedevtools/01
@@ -157,7 +157,7 @@ chrome://chrome-urls/
 
 ### リクエストを投げてみる
 - chrome
- - https://chrome.google.com/webstore/detail/dhc-restlet-client/aejoelaoggembcahagimdiliamlcdmfm
+  - https://chrome.google.com/webstore/detail/dhc-restlet-client/aejoelaoggembcahagimdiliamlcdmfm
 
 この辺を参考にするとよさそう
 - http://qiita.com/snoguchi/items/8f6bb62a3166eca23ac3
@@ -191,11 +191,11 @@ $ webpack
 # 参考URL
 - http://postd.cc/how-to-not-hate-javascript-tips-from-the-frontline/
 - JavascriptのChromeでのデバッグ方法個人的まとめ2016
- - http://qiita.com/snoguchi/items/8f6bb62a3166eca23ac3
+  - http://qiita.com/snoguchi/items/8f6bb62a3166eca23ac3
 - JavaScriptのデバッグ方法 – JSを嫌いにならないためのTips
- - http://postd.cc/how-to-not-hate-javascript-tips-from-the-frontline/
+  - http://postd.cc/how-to-not-hate-javascript-tips-from-the-frontline/
 - Chromeが用意しているデバッグのためのページ
- - chromeでできるデバッグUA変更、位置情報、DOM変更、CSS変更、Network、Timeline、Profileなどについて載っている
- - https://developers.google.com/web/tools/chrome-devtools/
+  - chromeでできるデバッグUA変更、位置情報、DOM変更、CSS変更、Network、Timeline、Profileなどについて載っている
+  - https://developers.google.com/web/tools/chrome-devtools/
 - How can I debug my JavaScript code?
- - http://stackoverflow.com/questions/988363/how-can-i-debug-my-javascript-code
+  - http://stackoverflow.com/questions/988363/how-can-i-debug-my-javascript-code
