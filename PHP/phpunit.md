@@ -81,6 +81,10 @@ $ phpunit --filter="/あいう/" SampleTest.php   // マルチバイトは/ /で
 $ phpunit -c phpunit.xml 
 ```
 
+### コマンドラインオプションが知りたい
+ここを見ろ
+- https://phpunit.de/manual/current/ja/textui.html
+
 ### 存在するassertion一覧が知りたい
 ここを見ろ
 - https://phpunit.de/manual/6.1/ja/appendixes.assertions.html
