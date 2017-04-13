@@ -40,7 +40,8 @@ var human =
   - http://stackoverflow.com/questions/1846679/what-happens-when-i-call-a-javascript-function-which-takes-parameters-without-s
 
 
-###  bind, call, applyの違い
+###  bind, callの違い
+bindとcallはJavaScriptに「おまえのものはおれのもの、おれのものもおれのもの」というジャイアニズムを実現するための素晴らしいメソッドらしい。
 
 bindが遅延させたいときに使用し、callとapplyが即時実行したい場合に利用する。
 では、callとapplyの違いはなんだろうか?
@@ -75,6 +76,42 @@ var Boy = function() {
 new Girl().enterToilet();                // 女の子が女子トイレに入る
 new Girl().enterToilet.call(new Boy());  // 男の子が女子トイレに入る
 ```
+
+### 即時関数にcallを利用する
+```
+"use strict"; // 『strictモード』でJavaScriptを実行させます。
+ 
+(function(){
+    console.log(this); //  // 『windowオブジェクト』が出力されます。
+}).call(window); // 即時関数を『call(window)』してあげます。
+ 
+(function(){
+    console.log(this); //  // 『windowオブジェクト』が出力されます。
+}).call(this); // 関数外の『this』は『windowオブジェクト』になるので『this』を渡してしまってもOKです。『CoffeeScript』でコンパイルしたJavaScriptはこの形になりますね。
+```
+有名ライブラリとかの中身を見てみると即時関数などに『.call(window)』とか『.call(this)』とかがくっついている事が多いのですが、これはこのためだったりします。
+- http://wp-p.info/tpl_rep.php?cat=js-application&fl=r11
+
+### applyについて
+applyもthisの参照先を変更するための仕組みです。
+```
+var sum = function() {
+  var result = 0;
+  for (var i = 0; i < arguments.length; i++) {
+    result += arguments[i];
+  };
+  return result;
+};
+
+var args = [1,2,3,4,5];
+
+// 第1引数に渡された以下の例では、thisの参照先はwindowオブジェクトになる。
+// 第2引数に添字配列を渡すと、渡された添字配列の0番目から順番に元となる関数の引数になります
+sum.apply(window, args);  
+```
+
+- 参考
+  - http://wp-p.info/tpl_rep.php?cat=js-application&fl=r11
 
 
 
