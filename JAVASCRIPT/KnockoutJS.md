@@ -3,12 +3,12 @@ Knockout.jsについて
 
 次の３つの視点からKnockout.jsを理解しておくと理解しやすいです。
 - データのバインディング
- - (例) APIからデータを取得して特定の要素のdata-bind属性にバインディングできること
+  - (例) APIからデータを取得して特定の要素のdata-bind属性にバインディングできること
 - データ双方向のバインディング
- - ロジックからHTMLを変更するためにはko.computedを利用する
- - (例) HTML上からデータをフォームにデータを入力すると、変更等同時に合計も計算される仕組み。
+  - ロジックからHTMLを変更するためにはko.computedを利用する
+  - (例) HTML上からデータをフォームにデータを入力すると、変更等同時に合計も計算される仕組み。
 - データの受け取り
- - data-bindで設定されたデータを受け取ることができること(フォームから送信ボタンを押下されるような場合)
+  - data-bindで設定されたデータを受け取ることができること(フォームから送信ボタンを押下されるような場合)
 
 ### チュートリアル
 この辺にあるようです。
@@ -17,9 +17,9 @@ Knockout.jsについて
 ### ko.observableについて
 以下の違いを押さえておくことが重要です。
 - 引数があるとsetterとして値をセットします
- - (例) http://learn.knockoutjs.com/#/?tutorial=collections
+  - (例) http://learn.knockoutjs.com/#/?tutorial=collections
 - 引数がないとgetterとして値を取得できるようになります。
- - (例) http://learn.knockoutjs.com/#/?tutorial=loadingsaving
+  - (例) http://learn.knockoutjs.com/#/?tutorial=loadingsaving
 ```
 this.newTaskText = ko.observable();
 とすると

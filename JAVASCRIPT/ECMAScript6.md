@@ -16,7 +16,7 @@ console.log(foo);
 // => 1, 2, 3 (これがES5以前だと4, 5, 6が返ってくる)
 ```
 - letでやっとブロックスコープが実現できるようになったとのこと
- - http://qiita.com/takeharu/items/cbbe017bbdd120015ca0
+  - http://qiita.com/takeharu/items/cbbe017bbdd120015ca0
 
 ### クラスの記述方法
 以下のような感じでclass extendsにより定義が可能とった。
@@ -104,7 +104,7 @@ import {DefaultPrent} from '...';             // NG: defaultで指定したclass
 ```
 
 - 参考
- - http://qiita.com/HIGAX/items/28f3bec814928b7395da
+  - http://qiita.com/HIGAX/items/28f3bec814928b7395da
 
 ### importについて
 {}で囲む
