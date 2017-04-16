@@ -1,2 +1,208 @@
+# 概要
+
+# 一般的な利用方法
+
+### HEADメソッド
+Iオプションを実行するとHEADメソッドで取得してヘッダのみを表示する
+```
+$ curl -I http://www.yahoo.co.jp/
+HTTP/1.1 301 Redirect
+Date: Sun, 16 Apr 2017 03:37:22 GMT
+Connection: keep-alive
+Via: http/1.1 edge2128.img.djm.yahoo.co.jp (ApacheTrafficServer [c s f ])
+Server: ATS
+Cache-Control: no-store
+Location: https://www.yahoo.co.jp:443/
+Content-Type: text/html
+Content-Language: en
+Content-Length: 6794
+```
+
+### レスポンスと一緒にレスポンスヘッダも表示する。
+iオプション(include)を含めればレスポンスヘッダも表示する。
+```
+$ curl -i http://www.yahoo.co.jp
+```
+
+### POSTメソッド
+```
+$ curl http://example/test -X POST -d "age=1" -d "hoge=10"
+or
+$ curl http://example/test -X POST -d "age=1&hoge=test"
+```
+
+JSONを送る場合
+```
+$ curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"user":{"first_name":"firstname","last_name":"lastname","email":"email@email.com","password":"app123","password_confirmation":"app123"}}'  http://example/test
+```
+### DELETE
+以下はヘッダと値も付加しているサンプルです。
+```
+$ curl -X "DELETE" http://example.com/test -H "Content-Type:application/json" -d "{"value1": 1, "value2":[2, 3]}"
+```
+
+### リソースを保存する
+ウェブ上に存在するファイル名で保存する場合
+```
+$ curl -O  http://www.example.com/top.jpg
+```
+
+ファイル名を指定して保存する場合
+```
+$ curl -o my.jpg  http://www.example.com/top.jpg
+```
+
+### BASIC認証をさせたい場合
+```
+$ curl --basic --user user:password -X PUT -d 'example[foo]=bar' -d 'example[jane]=doe' http://example.com/test
+```
+
+### URLエンコードしたい場合
+```
+$ curl --data-urlencode "text1=a&b" --data-urlencode "text2=あ" http://example/test
+```
+
+### リダイレクト先も追跡して取得する場合
+次のように301 Moved Parmanentlyしか帰ってこないがリダイレクト先も追跡したい場合、
+```
+$ curl -I http://yahoo.co.jp
+HTTP/1.1 301 Moved Permanently
+Server: nginx
+Date: Sun, 16 Apr 2017 03:34:00 GMT
+Content-Type: text/html
+Connection: close
+P3P: policyref="http://privacy.yahoo.co.jp/w3c/p3p_jp.xml", CP="CAO DSP COR CUR ADM DEV TAI PSA PSD IVAi IVDi CONi TELo OTPi OUR DELi SAMi OTRi UNRi PUBi IND PHY ONL UNI PUR FIN COM NAV INT DEM CNT STA POL HEA PRE GOV"
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+X-Frame-Options: SAMEORIGIN
+Location: http://www.yahoo.co.jp/
+Cache-Control: private
+X-Frame-Options: SAMEORIGIN
+```
+
+この場合にはLオプションを用いると良い
+```
+$ curl -I -L http://yahoo.co.jp
+HTTP/1.1 301 Moved Permanently
+Server: nginx
+Date: Sun, 16 Apr 2017 03:34:05 GMT
+Content-Type: text/html
+Connection: close
+P3P: policyref="http://privacy.yahoo.co.jp/w3c/p3p_jp.xml", CP="CAO DSP COR CUR ADM DEV TAI PSA PSD IVAi IVDi CONi TELo OTPi OUR DELi SAMi OTRi UNRi PUBi IND PHY ONL UNI PUR FIN COM NAV INT DEM CNT STA POL HEA PRE GOV"
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+X-Frame-Options: SAMEORIGIN
+Location: http://www.yahoo.co.jp/
+Cache-Control: private
+X-Frame-Options: SAMEORIGIN
+
+HTTP/1.1 301 Redirect
+Date: Sun, 16 Apr 2017 03:34:05 GMT
+Connection: keep-alive
+Via: http/1.1 edge1437.img.bbt.yahoo.co.jp (ApacheTrafficServer [c s f ])
+Server: ATS
+Cache-Control: no-store
+Location: https://www.yahoo.co.jp:443/
+Content-Type: text/html
+Content-Language: en
+Content-Length: 6794
+
+HTTP/1.1 200 OK
+Server: ATS
+Date: Sun, 16 Apr 2017 03:34:05 GMT
+Content-Type: text/html; charset=UTF-8
+P3P: policyref="http://privacy.yahoo.co.jp/w3c/p3p_jp.xml", CP="CAO DSP COR CUR ADM DEV TAI PSA PSD IVAi IVDi CONi TELo OTPi OUR DELi SAMi OTRi UNRi PUBi IND PHY ONL UNI PUR FIN COM NAV INT DEM CNT STA POL HEA PRE GOV"
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+X-Frame-Options: SAMEORIGIN
+Expires: -1
+Pragma: no-cache
+Cache-Control: private, no-cache, no-store, must-revalidate
+X-XRDS-Location: https://open.login.yahooapis.jp/openid20/www.yahoo.co.jp/xrds
+X-Frame-Options: SAMEORIGIN
+Age: 0
+Connection: keep-alive
+Via: http/1.1 edge1123.img.bbt.yahoo.co.jp (ApacheTrafficServer [c sSf ])
+```
+
+# HTTPSに関する利用
+### 接続方法を指定する
+
+### アクセス先サーバ証明書の検証を行わない。
+```
+$ curl -k https://www.yahoo.co.jp/
+or
+$ curl --insecure https://www.yahoo.co.jp/
+```
+
+### Linuxのca-certはどこにあるのか?
+自分の試したUbuntuだと以下の箇所にルート証明書が配置されていた。
+```
+$ ls /etc/pki/tls/certs/
+Makefile  ca-bundle.crt  ca-bundle.trust.crt  make-dummy-cert
+```
+
+次のパッケージに含まれている。
+```
+$ rpm -qf /etc/pki/tls/certs/*
+openssl-1.0.0k-1.fc17.x86_64
+ca-certificates-2012.81-1.fc17.noarch
+ca-certificates-2012.81-1.fc17.noarch
+openssl-1.0.0k-1.fc17.x86_64
+```
+
+### ルート証明書を指定させる
+ルート証明書をcacertオプションで指定することもできる。
+```
+$ curl --cacert /etc/pki/tls/certs/ca-bundle.crt https://www.yahoo.co.jp/
+```
+
+ちなみに環境変数でも指定させることができる。
+```
+$ export CURL_CA_BUNDLE=cacert.pem
+$ curl https://ssl.example.com/
+```
+
+# その他
+
+### ヘッダ情報を変更したり、追加する
+```
+$ curl -H "Authorization: Bearer <ACCESS_TOKEN>" http://www.example.com
+```
+
+### IPv4, IPv6を指定する
+IPv4でアクセスする
+```
+$ curl -4 https://www.yahoo.co.jp/
+```
+
+IPv6でアクセスする
+```
+$ curl -6 https://www.yahoo.co.jp/
+```
+
+### curlのルート証明書が古いので最新のに置き換えたい場合
+既存の証明書をリネームしておく
+```
+$ cd /etc/pki/tls/certs/
+$ sudo mv ca-bundle.crt ca-bundle.crt.org
+```
+
+新しい証明書を取得して置き換える。ca-bundle.crtはcacert.pemといった名称が使われることも多い
+```
+$ sudo wget http://curl.haxx.se/ca/cacert.pem
+$ sudo mv ./cacert.pem ./ca-bundle.crt
+```
+
+### エラーを表示しない
+sオプション(silent)を使うとエラーなども表示しない。。
+```
+$  curl https://www.yahoo.co.jps
+curl: (6) Could not resolve host: www.yahoo.co.jps; Name or service not known
+$  curl -s https://www.yahoo.co.jps
+$ 
+```
+
 # curlコマンド
 - https://hydrocul.github.io/wiki/commands/curl.html
+- http://blog.wagavulin.jp/entry/2015/10/18/060938
