@@ -14,6 +14,8 @@
  - http://php.plus-server.net/features.dtrace.systemtap.html#example-421
  - http://dtrace.org/blogs/brendan/2011/10/15/using-systemtap/
  - http://myaut.github.io/dtrace-stap-book/app/web.html
+- GlobalSign失効騒ぎ
+  - http://ya.maya.st/d/201610b.html
 
 # やりたい(中)
 - gccのattributeについて調べる

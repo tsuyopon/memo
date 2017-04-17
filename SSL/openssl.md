@@ -2,8 +2,16 @@
 この辺を参考にする。
 - http://www.usupi.org/sysad/252.html
 
-
 # 詳細
+
+### 秘密鍵とサーバ証明書を作成する(超簡易版)
+実行結果については後で詳細を載せます。次のコマンドで秘密鍵server.keyを作成し、keyを元にCSRを作成し、CSRをCAに渡してサーバ証明書CRTを発行します。
+```
+$ openssl genrsa -des3 -out server.key 2048
+$ openssl req -new -key server.key -out server.csr
+$ openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
+```
+これらについての実行結果詳細は次の「鍵生成を行いopensslサーバを起動する」で載せています。
 
 ### 鍵生成を行いopensslサーバを起動する
 公開鍵の改竄を防ぐため、認証局(Certification Authority, CA) というところで署名してもらいます。これが、サーバ証明書(Certificate, CRT)です。  
@@ -67,7 +75,6 @@ ACCEPT
 ```
 $ sudo ssldump -a -A -H -k server.key -i lo
 ```
-
 
 SSLクライアントで14433ポートにリクエストする。
 ```
@@ -452,6 +459,60 @@ privateExponent:
 
 ```
 
+### 署名する
+一般的に1をよく使うのでこれだけ覚えておけば十分かも。2や3はこんなこともできるんだ程度に見ておけば良い。
+
+1. 自分の秘密鍵で自己署名した証明書を作成する
+```
+openssl x509 -in server.csr -out server.crt -req -signkey server.key -days 365
+```
+
+2. 秘密鍵作成,CSR作成,自己署名を一度にする(秘密鍵を暗号化しない)
+```
+$ openssl req -x509 -nodes -new -keyout server.key -out server.crt -days 365
+```
+
+3. 秘密鍵作成,CSR作成,自己署名を一度にする(秘密鍵を暗号化する)
+```
+$ openssl req -x509 -new -keyout server.key -out server.crt -days 365
+```
+
+
+### 証明書の内容を確認する
+
+以下の３つはコマンドが似ているので一応整理も含めて載せておく。
+
+証明書ファイルの内容を確認
+```
+$ sudo openssl x509 -text -noout -in <証明書>
+```
+
+秘密鍵ファイルの内容を確認
+```
+$ sudo openssl rsa -text -noout -in <秘密鍵>
+```
+
+CSRファイルの内容を確認
+```
+$ sudo  openssl req -text -noout -in <CSR>
+```
+
+### 証明書の使用目的を表示
+```
+$ openssl x509 -in server.crt -purpose
+```
+
+### ASN.1形式で表示
+```
+$ openssl asn1parse -in server.crt
+```
+
+### 証明書から公開鍵を取り出す
+```
+$ openssl x509 -in server.crt -pubkey -noout
+```
+
+
 ### opensslコマンドでハッシュ値を算出する
 利用できるアルゴリズムは次の通りです。
 ```
@@ -475,7 +536,6 @@ sha1は次のように算出できる。
 $ openssl sha1 server.key 
 SHA1(server.key)= c5794c3d0c3b0edc8d5c07800f939dc86e939eac
 ```
-
 
 ### ルート証明書を指定する(MACの場合)
 認証された機関を表示したい場合には次のようにします。
@@ -516,6 +576,61 @@ DONE
 - 参考
   - https://tech.nosuz.jp/2015/12/enable-ocsp-stapling/
 
+### .crtから.pemに変換する
+もちろん逆もできる
+```
+$ openssl x509 -in source.crt -out tmp.der -outform DER
+$ openssl x509 -in tmp.der -inform DER -out dest.pem -outform pem
+```
+
+### 秘密鍵と公開鍵からp12形式を取得する
+```
+$ openssl pkcs12 -export -inkey server.key -in server.crt -out server.p12
+```
+
+### PKCS#12形式(pfx or p12)から証明書を取り出す
+```
+$ openssl pkcs12 -nokeys -in cert.der.pfx -out cert.crt.pem
+or
+$ openssl pkcs12 -nokeys -in cert.der.p12 -out cert.crt.pem
+```
+
+### PKCS#12形式(pfx or p12)から秘密鍵を取り出す
+```
+$ openssl pkcs12 -nocerts -in cert.der.pfx -out private.key.pem
+or
+$ openssl pkcs12 -nocerts -in cert.der.p12 -out private.key.pem
+```
+
+### 証明書の失効処理を行う
+証明書の失効処理を行う
+```
+$ openssl ca -revoke newcerts/01.pem
+```
+
+CRLの生成を行う
+```
+$ openssl ca -gencrl -out CA.crl
+```
+
+CRLの内容を確認する
+```
+$ openssl crl -in CA.crl -text
+```
+
+### 証明書ファイルと秘密鍵ファイルの整合性を確認する
+次の２つのコマンドの結果を確認することで一致すれば整合性があることを表しています。
+```
+$ sudo openssl x509 -noout -modulus -in 証明書ファイル | md5sum
+$ openssl rsa -noout -modulus -in 秘密鍵ファイル | md5sum
+```
+
+# TODO
+この辺にたくさんのopensslコマンドが乗っているのでまとめたい
+- http://assimane.blog.so-net.ne.jp/2011-09-24
+- http://qiita.com/takech9203/items/5206f8e2572e95209bbc
+
+上記コマンドに実行例を載せておきたい
 
 # 参考URL
 - http://www.usupi.org/sysad/252.html
