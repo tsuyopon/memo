@@ -76,6 +76,18 @@ $ sudo vim /usr/sbin/apache2ctl
 176     ;;
 ```
 
+さらにgdbを実行しても次のエラーになる場合がある。
+```
+AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 127.0.0.1. Set the 'ServerName' directive globally to suppress this message
+```
+
+この場合次の２つのコマンドを実行すれば良い。
+```
+$ echo "ServerName localhost" | sudo tee /etc/apache2/conf-available/fqdn.conf
+$ sudo a2enconf fqdn
+```
+
+あとは以下のコマンドで動くようになります。2.4だとworkerがデフォルトとなります。
 ```
 $ sudo /usr/sbin/apache2ctl debug
 (gdb) b ap_process_request
