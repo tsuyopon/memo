@@ -1,5 +1,5 @@
 # 概要
-kafkaのSSLサーバ間認証とSSLクライアント認証について
+kafkaのSSLサーバ間認証とSSLクライアント認証する場合の鍵生成手順について
 
 ### SSLサーバ認証 
 秘密鍵server.keystore.jksを作成する
