@@ -63,54 +63,6 @@ $ git branch --all
 $ git branch --merged
 ```
 
-
-
-# 比較
-
-### コミットしたファイル同士の変更点の比較
-```
-$ git diff 変更後のSHA..変更前のSHA
-```
-
-または次のようにしても可能らしい
-```
-$ git diff commit1 commit2 -- path/to/file
-```
-
-### コミットしたSHAの比較を行う場合
-```
-$ git diff 確認したいコミットのSHA^..確認したいコミットのSHA
-```
-
-### 空白コードなどを無視する場合
-```
-$ git diff -w
-```
-
-### 空行を無視する場合
-```
-$ git diff --ignore-blank-lines
-```
-
-### コミット間の差分を色で表示する
-```
-$ git diff --color-words
-```
-
-### ブランチ間を比較したい場合
-名前だけ表示したければ、--name-onlyを付与すればよい。
-```
-$ git diff --name-only branch1 branch2
-```
-
-
-# git pull
-
-### pullする前にあらかじめファイルの変更点を確認しておきたい場合
-```
-$ git diff HEAD..リモート名/ブランチ名
-```
-
 # 復旧など
 ### 誤って消してしまったファイルを復活させる
 ```
@@ -258,5 +210,21 @@ $ git clean -f    # 削除実行
 $ git clean -dn    # dry-runで確認
 $ git clean -df    # 削除実行
 ```
+
+### .gitsubmoduleのハッシュ値に"-dirty"というのが付与されてしまう場合
+
+たとえば、更新しようとしているレポジトリの中で呼ばれているレポジトリも次のコマンドで更新した場合すべてがアタrしくなる
+```
+$ git submodule update --recursive
+```
+
+この状態で次のhogeレポジトリを落としてその直下にrepoaがあり、repoaは別のgitsubmodule repobを使っている場合
+```
+hoge/repoa
+      /repob
+```
+
+通常は、hogeレポジトリに入ったあとにrepoaにcdして、git checkout xxxxでブランチを切り替えてhogeに戻ってからgit diffなどして確認する。
+このときにxxxxxx-dirtyとなった場合、repobの方も更新されていることがある。
 
 
