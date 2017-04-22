@@ -86,6 +86,10 @@
   auth_basic_module (shared)
  auth_digest_module (shared)
 
+利用しているモードは次のようにして確認できます。
+  $ /usr/local/apache2.4.23/bin/httpd -M | grep -ie prefork -ie event -ie worker
+   mpm_prefork_module (static)
+
 *** 組み込みされたモジュールのソースコード名を確認する
  $ /usr/sbin/httpd -l
  Compiled in modules:
@@ -93,6 +97,7 @@
   prefork.c
   http_core.c
   mod_so.c
+
 
 *** 利用可能なディレクティブ情報を表示する
  $ /usr/sbin/httpd -L
