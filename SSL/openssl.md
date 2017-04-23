@@ -622,7 +622,7 @@ $ openssl crl -in CA.crl -text
 次の２つのコマンドの結果を確認することで一致すれば整合性があることを表しています。
 ```
 $ sudo openssl x509 -noout -modulus -in 証明書ファイル | md5sum
-$ openssl rsa -noout -modulus -in 秘密鍵ファイル | md5sum
+$ sudo openssl rsa -noout -modulus -in 秘密鍵ファイル | md5sum
 ```
 
 # TODO

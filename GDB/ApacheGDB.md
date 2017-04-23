@@ -32,6 +32,68 @@ $ sudo gdb /usr/sbin/httpd
 通常のgdbとしては問題なくソースコードが表示されていることが確認できます
 ```
 
+### Apacheにgdbを当てる(Ubuntu)
+Ubuntuの2.4をダウンロードした時のパッケージが以下の通り。debuginfoではなくdbgというパッケージ名になっている。
+```
+$ sudo apt-get install apache2 apache2-dbg
+```
+
+あとは通常どおり
+```
+$ gdb
+(gdb) file /usr/sbin/apache2
+Reading symbols from /usr/sbin/apache2...Reading symbols from /usr/lib/debug//usr/sbin/apache2...done.
+done.
+(gdb) b ap_process_request
+Breakpoint 1 at 0x6e810: file http_request.c, line 357.
+```
+
+しかし、環境変数になっている点があってうまくいかない。
+```
+(gdb) run -X
+Starting program: /usr/sbin/apache2 -X
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+[Tue Apr 18 08:35:37.340426 2017] [core:warn] [pid 2928] AH00111: Config variable ${APACHE_LOCK_DIR} is not defined
+[Tue Apr 18 08:35:37.341482 2017] [core:warn] [pid 2928] AH00111: Config variable ${APACHE_PID_FILE} is not defined
+[Tue Apr 18 08:35:37.342941 2017] [core:warn] [pid 2928] AH00111: Config variable ${APACHE_RUN_USER} is not defined
+[Tue Apr 18 08:35:37.343890 2017] [core:warn] [pid 2928] AH00111: Config variable ${APACHE_RUN_GROUP} is not defined
+[Tue Apr 18 08:35:37.344348 2017] [core:warn] [pid 2928] AH00111: Config variable ${APACHE_LOG_DIR} is not defined
+[Tue Apr 18 08:35:37.467419 2017] [core:warn] [pid 2928:tid 140737353983872] AH00111: Config variable ${APACHE_LOG_DIR} is not defined
+```
+
+この辺に解決法が記されていた。
+- https://msmania.wordpress.com/tag/apache/
+
+174-176行目をapache2ctlに追加する
+```
+$ sudo vim /usr/sbin/apache2ctl 
+171 fullstatus)
+172     get_status
+173     ;;
+174 debug)
+175     gdb $HTTPD
+176     ;;
+```
+
+さらにgdbを実行しても次のエラーになる場合がある。
+```
+AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 127.0.0.1. Set the 'ServerName' directive globally to suppress this message
+```
+
+この場合次の２つのコマンドを実行すれば良い。
+```
+$ echo "ServerName localhost" | sudo tee /etc/apache2/conf-available/fqdn.conf
+$ sudo a2enconf fqdn
+```
+
+あとは以下のコマンドで動くようになります。2.4だとworkerがデフォルトとなります。
+```
+$ sudo /usr/sbin/apache2ctl debug
+(gdb) b ap_process_request
+(gdb) run -X
+```
+
 ## Apache ソースコードからコンパイルしてgdbにあてる
 適当なバージョンのものを持ってきます。2.4だといろいろ大変そうだったので今回は2.2にしておきます。 
 CFLAGSに-gオプションを付与しているのがポイントです。

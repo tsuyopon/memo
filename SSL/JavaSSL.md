@@ -185,14 +185,12 @@ Write out database with 1 new entries
 Data Base Updated
 ```
   - これでCA側が持つCA秘密鍵、CA証明書が発行される。この２ファイルは(4)のCA署名作業として必要となる。
-```
-	CA秘密鍵
-		/etc/pki/CA/private/cakey.pem
-	CA証明書
-		/etc/pki/CA/cacert.pem 
-			次のコマンドで確認できる。
-				$ openssl x509 -in /etc/pki/CA/cacert.pem -text
-```
+    - CA秘密鍵
+      - /etc/pki/CA/private/cakey.pem
+    - CA証明書
+      - /etc/pki/CA/cacert.pem 
+      - 次のコマンドで確認できる。
+        - $ openssl x509 -in /etc/pki/CA/cacert.pem -text
 - (3)
   - 以下のコマンドでtest.csrを生成する
 ```
