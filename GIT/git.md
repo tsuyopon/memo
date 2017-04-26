@@ -205,10 +205,10 @@ $ git clean -n    # dry-runで確認
 $ git clean -f    # 削除実行
 ```
 
-ディレクトリも再帰的に削除するにはdオプションも付加します。
+ディレクトリも再帰的に削除するにはdオプションも付加します。次のコマンドは現在いるカレントディレクトリを起点として捜査します。
 ```
-$ git clean -dn    # dry-runで確認
-$ git clean -df    # 削除実行
+$ git clean -d -n    # dry-runで確認
+$ git clean -d -f    # 削除実行
 ```
 
 ### .gitsubmoduleのハッシュ値に"-dirty"というのが付与されてしまう場合

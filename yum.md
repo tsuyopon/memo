@@ -220,6 +220,15 @@ Azrashi <tsuyoshi>  | Over a year ago     | E, I, U          |      371
 history summary
 ```
 
+### 参照可能なレポジトリ数を表示すenow 
+list disabled
+```
+$ yum repolist all
+repolist: 0
+```
+
+### yumリポジトリ一追加リスト 完全版
+- http://qiita.com/bezeklik/items/9766003c19f9664602fe
 
 # 参考
 - http://www.atmarkit.co.jp/flinux/rensai/linuxtips/795tmprepo.html
