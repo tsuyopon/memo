@@ -227,4 +227,53 @@ hoge/repoa
 通常は、hogeレポジトリに入ったあとにrepoaにcdして、git checkout xxxxでブランチを切り替えてhogeに戻ってからgit diffなどして確認する。
 このときにxxxxxx-dirtyとなった場合、repobの方も更新されていることがある。
 
+### ブランチを作るのを忘れてmasterにコミットしてしまった場合に、そのブランチを作成してコミットを移す方法
+まずは誤ってmasterにコミットしたことに気づいた時点でブランチを作成します。
+```
+$ git branch testbranch
+```
+
+masterからブランチを切り替えます
+```
+$ git checkout testbranch
+```
+
+masterのコミット番号を確認する。m000001からm000003までの3コミットがtestbranchに移すためのコミットとする。
+```
+$ git log --oneline --decorate --graph master
+* m000003 (master) mod3
+* m000002 mod2
+* m000001 mod1
+* m000000 (origin/master, origin/HEAD) 作業開始地点
+```
+
+testbranchに古い順でチェリーピックでコミットをコピーします。
+```
+$ git cherry-pick m000001 
+$ git cherry-pick m000002
+$ git cherry-pick m000003 
+```
+
+masterとtestbranchの関係を確認します。コミット番号は新しく振られます。
+```
+$ git log --oneline --decorate --graph master testbranch
+* b000003 (HEAD, branch01) なんか修正3
+* b000002 なんか修正2
+* b000001 なんか修正1
+| * m000003 (master) mod3
+| * m000002 mod2
+| * m000001 mod1
+|/  
+* m000000 (origin/master, origin/HEAD) 作業開始地点
+```
+
+以上で完成です。後は、必要に応じてmasterのコミットを削除します。
+たとえば、今回はmasterからtestbranchに3件のcommitを移動したので次のようにします。
+```
+$ git reset --hard HEAD~3
+```
+
+- 参考
+  - http://qiita.com/atskimura/items/a90dfa8bfc72e3657ef9
+
 
