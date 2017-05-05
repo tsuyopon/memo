@@ -237,7 +237,7 @@ console.log(process.env.npm_config_foo)
 ```
 
 - 参考
- - http://memo.sugyan.com/entry/20110909/1315575343
+  - http://memo.sugyan.com/entry/20110909/1315575343
 
 # そのほか
 ### 検索する
@@ -453,8 +453,8 @@ npm help package.json                                                  express:4
 
 # 参考URL
 - github npm
- - https://github.com/npm/npm
+  - https://github.com/npm/npm
 - リリースバージョンなどはこちら
- - https://github.com/nodejs/node/releases
+  - https://github.com/nodejs/node/releases
 - https://docs.npmjs.com/
- - npm公式サイトでビデオ講義などもあるようだ
+  - npm公式サイトでビデオ講義などもあるようだ

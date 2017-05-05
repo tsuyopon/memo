@@ -45,8 +45,8 @@ var cats = require('json!./hoge.json');          // -loaderは省略可能
 
 # 参考URL
 - 公式チュートリアル
- - http://webpack.github.io/docs/tutorials/getting-started/
+  - http://webpack.github.io/docs/tutorials/getting-started/
 - step by stepではじめるwebpack
- - http://qiita.com/howdy39/items/48d85c430f90a21075cd
+  - http://qiita.com/howdy39/items/48d85c430f90a21075cd
 - json-loader
- - https://github.com/webpack/json-loader/blob/master/index.js
+  - https://github.com/webpack/json-loader/blob/master/index.js
