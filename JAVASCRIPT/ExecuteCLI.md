@@ -13,6 +13,8 @@ eオプションを渡すとそのまま文字列を渡して実行すること�
 $ node -e "console.log('hello world');"
 ```
 
+nodeコマンドでうまく動作しない場合、nodejsをインストールしてnodejsを実行しないとだめかもしれません。
+
 ### MAC用(確認済)
 ```
 $ osascript sample.js
@@ -21,6 +23,12 @@ $ osascript sample.js
 もしくは
 ```
 $ osascript -l JavaScript sample.js
+```
+
+インタラクティブモードで起動する。
+```
+$ osascript -l JavaScript -i
+>> 1+1
 ```
 
 ### Windows用(未確認)

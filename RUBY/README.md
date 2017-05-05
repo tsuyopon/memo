@@ -3,23 +3,23 @@ rubyに関して
 
 # 詳細
 - 基本文法について
- - ruby.md
+  - ruby.md
 - rubyのデバッグ(ruby -rdebug)について
- - debug.md
+  - debug.md
 - gemコマンドについて
- - rubygem.md
+  - rubygem.md
 - Gemfile, Gemfile.lock, bundleコマンドなどのgemパッケージ管理について
- - Gemfile.md
+  - Gemfile.md
 - 静的解析ツールRubocopのコマンドrubocopの使い方や.rubocop.ymlなどの説明
- - Rubocop.md
+  - Rubocop.md
 - ビルドツールRakefileやrakeコマンドについて
- - rake.md
+  - rake.md
 - Unittestツール
- - rspec.md
+  - rspec.md
 
 
 # TODO
 - Rakefileについて
 - rubycritic
- - http://hoppie.hatenablog.com/entry/2016/12/02/102208
- - https://github.com/whitesmith/rubycritic
+  - http://hoppie.hatenablog.com/entry/2016/12/02/102208
+  - https://github.com/whitesmith/rubycritic
