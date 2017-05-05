@@ -14,7 +14,7 @@ lsofコマンドはプロセスを調査するときに非常に役立つコマ�
 ```
 
 - ほかにもいろいろオプションがあるので詳細はManpageを参考のこと
- - https://netadmintools.com/html/lsof.man.html
+  - https://netadmintools.com/html/lsof.man.html
 
 
 ### lsofを引数なしで実行する

@@ -3,10 +3,10 @@ MacでのVirtual Boxの扱いについてまとめておく
 
 ### ネットワーク構成について
 - VirtualBoxで実現可能なネットワーク構成について
- - http://c-through.blogto.jp/archives/14539119.html
+  - http://c-through.blogto.jp/archives/14539119.html
 
 - NAT + ホストオンリーモード設定については以下を参照した
- - http://manchan-pc.blogspot.jp/2012/09/virtualboxpcnw.html
+  - http://manchan-pc.blogspot.jp/2012/09/virtualboxpcnw.html
 
 ### ホストOSからゲストOSにssh できるようにしたい。
 
