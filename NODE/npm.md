@@ -447,6 +447,14 @@ npm help package.json                                                  express:4
 (省略)
 ```
 
+
+### npm lsしてUNMET DEPENDENCYが表示された場合
+node_modulesを削除して次のコマンドを試してみる。
+```
+$ sudo npm cache clean -g 
+$ sudo npm cache clean
+```
+
 # TODO
 - npm -lしたときのいろいろなオプションを試せていないので時間があるときに試してもいいかもしれない
 
