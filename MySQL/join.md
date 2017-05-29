@@ -94,6 +94,18 @@ mysql> SELECT EXISTS (SELECT * FROM address ORDER BY postal_code, last_update DE
 1 row in set (0.00 sec)
 ```
 
+### UPDATEを使ってJOINして、結合した複数のテーブルを一気に更新する
+次の例ではuser_mainとuser_subの両方を更新する例です。
+```
+参考)
+mysql> UPDATE user_main a
+LEFT JOIN user_sub b
+ON a.user_id = b.user_id
+SET a.name = "name2a new!", b.name = "name2b new!"
+WHERE b.type = 2;
+```
+
+
 # 参考URL 
 - http://blog.livedoor.jp/sasata299/archives/51106595.html
 - http://stackoverflow.com/questions/5706437/whats-the-difference-between-inner-join-left-join-right-join-and-full-join
