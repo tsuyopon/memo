@@ -165,6 +165,13 @@ mysql> select date_add(now(), interval 3 day) UNION ALL select date_add(now(), i
 2 rows in set (0.00 sec)
 ```
 
+# 更新系
+
+### 古いテーブルのレコードを新しいテーブルにコピーする
+```
+mysql> SELECT * INTO oldtable FROM newtable;
+```
+
 
 # 参考URL 
 - http://blog.livedoor.jp/sasata299/archives/51106595.html
