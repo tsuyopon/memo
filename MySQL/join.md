@@ -17,6 +17,19 @@ sakilaデータベースを使ってjoinに使えそうなことをまとめる
 - left outer join
 - right outer join
 
+### 通常SELECTで表示される逆順から３件取得したい
+DESCしてLIMITで件数制限して取得すればOK
+```
+mysql> SELECT * FROM country ORDER BY country_id DESC LIMIT 0, 3;
++------------+------------+---------------------+
+| country_id | country    | last_update         |
++------------+------------+---------------------+
+|        109 | Zambia     | 2006-02-15 04:44:00 |
+|        108 | Yugoslavia | 2006-02-15 04:44:00 |
+|        107 | Yemen      | 2006-02-15 04:44:00 |
++------------+------------+---------------------+
+3 rows in set (0.01 sec)
+```
 
 ### ある列で並べて、さらに別の列で並べる
 ORDER BYの後にカラムを順番に記述します。  
@@ -82,6 +95,19 @@ mysql> SELECT * FROM city AS ci LEFT JOIN country AS co ON ci.country_id = co.co
 10 rows in set (0.00 sec)
 ```
 
+上記の例ではcountry_idの列が重複しているが、この列を重複せずに表示するにはUSINGを指定して結合したいカラムを指定する。
+```
+mysql> SELECT * FROM city LEFT JOIN country USING(country_id) LIMIT 3;
++------------+---------+--------------------+---------------------+----------------------+---------------------+
+| country_id | city_id | city               | last_update         | country              | last_update         |
++------------+---------+--------------------+---------------------+----------------------+---------------------+
+|         87 |       1 | A Corua (La Corua) | 2006-02-15 04:45:25 | Spain                | 2006-02-15 04:44:00 |
+|         82 |       2 | Abha               | 2006-02-15 04:45:25 | Saudi Arabia         | 2006-02-15 04:44:00 |
+|        101 |       3 | Abu Dhabi          | 2006-02-15 04:45:25 | United Arab Emirates | 2006-02-15 04:44:00 |
++------------+---------+--------------------+---------------------+----------------------+---------------------+
+3 rows in set (0.00 sec)
+```
+
 ### 存在するかどうかをチェックする
 存在するかどうかをチェックする場合にはEXISTSが使える。存在しない場合には「NOT EXISTS」にすればよい。
 ```
@@ -103,6 +129,40 @@ LEFT JOIN user_sub b
 ON a.user_id = b.user_id
 SET a.name = "name2a new!", b.name = "name2b new!"
 WHERE b.type = 2;
+```
+
+### UNIONを使って重複レコードを排除する。
+上の例では左側(3日前)と右側(2日前)のSELECTが異なるので２行表示されるが、下の出力例では左側と右側が同じなので1行だけで重複排除されている。
+```
+mysql> select date_add(now(), interval 3 day) UNION select date_add(now(), interval 2 day);
++---------------------------------+
+| date_add(now(), interval 3 day) |
++---------------------------------+
+| 2017-06-02 08:26:20             |
+| 2017-06-01 08:26:20             |
++---------------------------------+
+2 rows in set (0.00 sec)
+
+mysql> select date_add(now(), interval 3 day) UNION select date_add(now(), interval 3 day);
++---------------------------------+
+| date_add(now(), interval 3 day) |
++---------------------------------+
+| 2017-06-02 08:26:22             |
++---------------------------------+
+1 row in set (0.00 sec)
+```
+
+### UNION ALLを使って重複レコードも表示する
+UNIONだけだと重複レコードを排除していたが、UNION ALLだと重複レコードを表示する。
+```
+mysql> select date_add(now(), interval 3 day) UNION ALL select date_add(now(), interval 3 day);
++---------------------------------+
+| date_add(now(), interval 3 day) |
++---------------------------------+
+| 2017-06-02 08:28:15             |
+| 2017-06-02 08:28:15             |
++---------------------------------+
+2 rows in set (0.00 sec)
 ```
 
 
