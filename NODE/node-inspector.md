@@ -53,9 +53,9 @@ $ node-inspector --web-port 8081 --debug-port 5859
 
 # TODO
 - node6.3.0以降だと --inspectというオプションが出来たらしいので調査してもいいかも
- - http://qiita.com/y_fujieda/items/c190cbcc2fab6dd49809
+  - http://qiita.com/y_fujieda/items/c190cbcc2fab6dd49809
 - node-inspectorのオプションがgithubにいろいろ書かれているので試してみてもいいかも
 
 # 参考URL
 - github/node-inspector
- - https://github.com/node-inspector/node-inspector
+  - https://github.com/node-inspector/node-inspector

@@ -49,9 +49,9 @@ Created topic "test3".
 
 上記のオプションについて簡単に説明します。
 - replication-factor
- - kafkaクラスタ内に存在するkafkaブローカーの何台にトピックを作成するか指定できます、なのでkafkaブローカーが1つしかない場合は1以上は指定できません
+  - kafkaクラスタ内に存在するkafkaブローカーの何台にトピックを作成するか指定できます、なのでkafkaブローカーが1つしかない場合は1以上は指定できません
 - partitions
- - topicをいくつのパーティションに分割するかを指定します。
+  - topicをいくつのパーティションに分割するかを指定します。
 
 続いて、登録されているすべてのトピックを確認します。
 ```
@@ -113,7 +113,7 @@ listでの表示は少し(10秒程度!?)待たないと反映されないこと�
 消えない場合には、kafkaのconsumerが接続されている可能性が高いのですべてのconsumerを停止してください。
 
 - 参考
- - http://stackoverflow.com/questions/33537950/how-to-delete-a-topic-in-apache-kafka/33538299
+  - http://stackoverflow.com/questions/33537950/how-to-delete-a-topic-in-apache-kafka/33538299
 
 ### describeでtopicの詳細を確認する
 
@@ -127,7 +127,7 @@ Topic:test    PartitionCount:1 ReplicationFactor:3 Configs:
 - "Leader" is the node responsible for all reads and writes for the given partition. Each node will be the leader for a randomly selected portion of the partitions.
 - "Replicas" is the list of nodes that replicate the log for this partition regardless of whether they are the leader or even if they are currently alive.
 - "Isr" is the set of "in-sync" replicas. This is the subset of the replicas list that is currently alive and caught-up to the leader.
- - https://ishiis.net/2016/07/31/kafka-cluster-and-zookeeper-ensemble/
+  - https://ishiis.net/2016/07/31/kafka-cluster-and-zookeeper-ensemble/
 
 ### パーティションカウントを変更する
 ```

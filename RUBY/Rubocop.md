@@ -69,15 +69,15 @@ echo 'inherit_from: .rubocop_todo.yml' >> .rubocop.yml
 
 実際に試していないですが、Jenkinsであればrubocop-checkstyle_formatterを利用すればJenkinsのViolations pluginにCheckStyle形式でのレポートを読み込ますことができるようです。
 - Violations(Jenkinsプラグイン)
- - https://wiki.jenkins-ci.org/display/JENKINS/Violations
+  - https://wiki.jenkins-ci.org/display/JENKINS/Violations
 - RuboCop Checkstyle Formatter 
- - https://github.com/eitoball/rubocop-checkstyle_formatter
+  - https://github.com/eitoball/rubocop-checkstyle_formatter
 
 ### rubocop.ymlを育てる
 次のような流れになりそうです
 - .rubocop_todo.yml のコメントを見る
 - rubocop の config/default.yml を見る
- - https://github.com/bbatsov/rubocop/blob/master/config/default.yml
+  - https://github.com/bbatsov/rubocop/blob/master/config/default.yml
 - 著名なコーディング規約でどうなっているかを見る
 - 自プロダクトがどうあるべきか判断する
 
@@ -164,10 +164,10 @@ Style/MultilineOperationIndentation
 
 # 参考URL
 - rubocop github
- - https://github.com/bbatsov/rubocop
+  - https://github.com/bbatsov/rubocop
 - Rubocop公式ドキュメント
- - http://rubocop.readthedocs.io/en/latest/
+  - http://rubocop.readthedocs.io/en/latest/
 - ruby-style-guide
- - https://github.com/bbatsov/ruby-style-guide
+  - https://github.com/bbatsov/ruby-style-guide
 - http://kasei-san.hatenablog.com/entry/2015/09/22/091723
 

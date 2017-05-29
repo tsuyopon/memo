@@ -155,11 +155,11 @@ puts s.include?("hoge")    # true
 ### アクセサ(クラスアノテーション)
 次の３種類のアクセサがある。fooは変数名です。
 - attr_reader :foo
- - 参照が可能
+  - 参照が可能
 - attr_writer :foo
- - 更新が可能
+  - 更新が可能
 - attr_accessor :foo
- - 参照, 更新が可能
+  - 参照, 更新が可能
 
 - 参考: http://qiita.com/jordi/items/7baeb83788c7a8f2070d
 
@@ -436,10 +436,10 @@ Klass::Foo()
 
 ### 豆知識
 - 命名規則
- - クラス名は TestClassなどとして最初は大文字として_は使わないこと
- - メソッド名は英小文字のsnake_caseでadd_somethingなどを用いることaddSomethingはNGとなる。
- - 定数は大文字のsnake_caseでEXAMPLE_CONSTANTといった感じで定義する。
- - 変数は英小文字のsnake_caseとなる。local_variableのようにする。
+  - クラス名は TestClassなどとして最初は大文字として_は使わないこと
+  - メソッド名は英小文字のsnake_caseでadd_somethingなどを用いることaddSomethingはNGとなる。
+  - 定数は大文字のsnake_caseでEXAMPLE_CONSTANTといった感じで定義する。
+  - 変数は英小文字のsnake_caseとなる。local_variableのようにする。
 - rubyにはインクリメント演算子が存在しない
 - デストラクタのような概念は存在しない
 - 真偽にはfalseとnilがある。
@@ -447,7 +447,7 @@ Klass::Foo()
 
 ### TODO
 - rubyのよく使いそうな関数をざっと見てもいいかも
- - http://ref.xaio.jp/ruby/classes/string
+  - http://ref.xaio.jp/ruby/classes/string
 - シンボルについてのせておく
 - アクセサの例を乗せておく
 - クラス継承などについても触れておく
@@ -455,8 +455,8 @@ Klass::Foo()
 # 参考URL
 以下はざっと目をとおしておくと良い
 - Ruby基本文法まとめ
- - http://qiita.com/oshou/items/b7873c67cf22b5e8b42f
+  - http://qiita.com/oshou/items/b7873c67cf22b5e8b42f
 - Ruby基礎文法最速マスター
- - http://route477.net/d/?date=20100125
+  - http://route477.net/d/?date=20100125
 - Ruby 2.1 / Rails4.1 の意外に忘れられている便利なメソッド 
- - http://ruby-rails.hatenadiary.com/entry/20150101/1420049679
+  - http://ruby-rails.hatenadiary.com/entry/20150101/1420049679

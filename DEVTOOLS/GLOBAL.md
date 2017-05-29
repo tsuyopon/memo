@@ -174,8 +174,8 @@ $ python -m CGIHTTPServer   // for python3の場合
 - 公式サイト
 -- https://www.gnu.org/software/global/global.html
 - GNU GLOBALとvimで巨大なコードでも快適にコードリーディング
- - http://blog.matsumoto-r.jp/?p=2369
+  - http://blog.matsumoto-r.jp/?p=2369
 - ソースコードを快適に読むための GNU GLOBAL 入門(前編・中編・後編)
- - http://www.machu.jp/diary/20090307.html
- - http://www.machu.jp/diary/20090308.html
- - http://www.machu.jp/diary/20090309.html
+  - http://www.machu.jp/diary/20090307.html
+  - http://www.machu.jp/diary/20090308.html
+  - http://www.machu.jp/diary/20090309.html

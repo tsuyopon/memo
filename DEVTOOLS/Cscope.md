@@ -149,13 +149,13 @@ $ cscope -R -b
 ```
 
 - 参考
- - http://cscope.sourceforge.net/cscope_vim_tutorial.html
+  - http://cscope.sourceforge.net/cscope_vim_tutorial.html
 
 
 ## Linux Kernelなどで利用する。
 以下のドキュメントを参考にするとよい。
 - Using Cscope on large projects (example: the Linux kernel)
- - http://cscope.sourceforge.net/large_projects.html
+  - http://cscope.sourceforge.net/large_projects.html
 
 一言で表すとcscope.filesの対象を絞ってからデータベースを生成しろよということ。
 
@@ -510,10 +510,10 @@ Please see the manpage for more information.
 
 # 参考
 - The Vim/Cscope tutorial
- - http://cscope.sourceforge.net/cscope_vim_tutorial.html
+  - http://cscope.sourceforge.net/cscope_vim_tutorial.html
 - cscope Manpage
- - http://cscope.sourceforge.net/cscope_man_page.html
+  - http://cscope.sourceforge.net/cscope_man_page.html
 - How to use cscope?
- - http://stackoverflow.com/questions/3828157/how-to-use-cscope
+  - http://stackoverflow.com/questions/3828157/how-to-use-cscope
 - if_cscop - Vim日本語ドキュメント(Vimバージョン8.0)
- - http://vim-jp.org/vimdoc-ja/if_cscop.html
+  - http://vim-jp.org/vimdoc-ja/if_cscop.html

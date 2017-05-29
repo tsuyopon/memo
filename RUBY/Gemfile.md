@@ -4,9 +4,9 @@ bundlerにあるbundleコマンドから利用するためのファイルであ�
 
 レポジトリ直下に次のようなファイルが配置されることがある。 
 - Gemfile
- - ここにインストールするgemパッケージとバージョンなどを記載して、bundle installコマンドを実行するとサーバにパッケージがインストールされる。
+  - ここにインストールするgemパッケージとバージョンなどを記載して、bundle installコマンドを実行するとサーバにパッケージがインストールされる。
 - Gemfile.lock
- - bundle installが実行されるとGemfileから読み込みパッケージが生成されるが、その時インストールしたバージョン情報などを記録するファイルである。
+  - bundle installが実行されるとGemfileから読み込みパッケージが生成されるが、その時インストールしたバージョン情報などを記録するファイルである。
 
 
 つまり、Gemfileを使うと次の利点がある。
@@ -296,9 +296,9 @@ bundle configについては以下のドキュメントをみるといいかも�
 
 # TODO
 - budnle configについてもっと深く
- - http://bundler.io/v1.3/man/bundle-config.1.html
+  - http://bundler.io/v1.3/man/bundle-config.1.html
 
 # 参考URL
 - http://railsdoc.com/references/gemfile
- - gemfile公式ドキュメント
+  - gemfile公式ドキュメント
 - http://qiita.com/oshou/items/6283c2315dc7dd244aef

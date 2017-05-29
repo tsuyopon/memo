@@ -400,23 +400,23 @@ e.g. 'gem i rake' is short for 'gem install rake'.
 
 # 参考URL
 - https://rubygems.org/
- - gemパッケージを検索することができる。
+  - gemパッケージを検索することができる。
 - http://guides.rubygems.org/command-reference/
- - gemコマンドの使い方がすべて乗っている
+  - gemコマンドの使い方がすべて乗っている
 
 # TODO
 以下のコマンドがまだ未記載なので、いつかまた調べた時にでも。。。
 - gem build
- - gemspecからgemをつくる
+  - gemspecからgemをつくる
 - gem cert
- - サインの必要な証明のRubyGemsを管理する 
+  - サインの必要な証明のRubyGemsを管理する 
 - gem lock
- - gemのロックダウンリストを生成する
+  - gemのロックダウンリストを生成する
 - gem mirror
- - ローカルに gem を全部持ってきてくれる仕組み
+  - ローカルに gem を全部持ってきてくれる仕組み
 - gem pristine
- - gemの隠し場所にあるファイルからインストールしたgemを初期状態へ戻す
+  - gemの隠し場所にあるファイルからインストールしたgemを初期状態へ戻す
 - gem rdoc
- - プリインストールされたgemのRDocを生成する
+  - プリインストールされたgemのRDocを生成する
 - gem server
- - Documentation and gem repository HTTP server
+  - Documentation and gem repository HTTP server

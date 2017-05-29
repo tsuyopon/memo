@@ -65,6 +65,6 @@ Eclipseで便利なショートカットについて纏めます。
 
 # 参考URL 
 - ニートになりたいプログラマ
- - http://fukata.org/2010/05/30/useful-eclipse-keyboard-shortcut-java/
+  - http://fukata.org/2010/05/30/useful-eclipse-keyboard-shortcut-java/
 - Eclipseコマンドリファレンス
- - http://www.geocities.jp/turtle_wide/tools/eclipse/cmd_index.htm
+  - http://www.geocities.jp/turtle_wide/tools/eclipse/cmd_index.htm

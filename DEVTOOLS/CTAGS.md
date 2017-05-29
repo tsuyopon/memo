@@ -234,14 +234,14 @@ $ ctags --languages=PHP,JavaScript
 
 # 参考
 - 公式ドキュメント
- - http://ctags.sourceforge.net/ctags.html
+  - http://ctags.sourceforge.net/ctags.html
 - vimを使っている人はみんなctagsで幸せになれる権利を持っている
- - http://wknar.hatenablog.com/entry/vim-ctags
+  - http://wknar.hatenablog.com/entry/vim-ctags
 - Exuberant Ctags and JavaScript
- - https://weblogs.asp.net/george_v_reilly/exuberant-ctags-and-javascript
+  - https://weblogs.asp.net/george_v_reilly/exuberant-ctags-and-javascript
 - Recommended Vim plugins for JavaScript coding?
- - http://stackoverflow.com/questions/4777366/recommended-vim-plugins-for-javascript-coding?noredirect=1&lq=1
+  - http://stackoverflow.com/questions/4777366/recommended-vim-plugins-for-javascript-coding?noredirect=1&lq=1
 - exuberant ctags 日本語対応版
- - http://hp.vector.co.jp/authors/VA025040/ctags/
+  - http://hp.vector.co.jp/authors/VA025040/ctags/
 - Manpage of ctags
- - http://hp.vector.co.jp/authors/VA025040/ctags/ctags_j.html
+  - http://hp.vector.co.jp/authors/VA025040/ctags/ctags_j.html

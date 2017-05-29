@@ -98,36 +98,36 @@ prog: *.c
 ```
 
 - $<
- - 今、実行しようとしている生成コマンドの中で、そのターゲットが依存しているファイルのひとつに展開される。
- - ここでmakeがsub1.cからsub1.oを生成するためにこのコマンドを実行するならば、「$<」は「sub1.c」へと展開される。
+  - 今、実行しようとしている生成コマンドの中で、そのターゲットが依存しているファイルのひとつに展開される。
+  - ここでmakeがsub1.cからsub1.oを生成するためにこのコマンドを実行するならば、「$<」は「sub1.c」へと展開される。
 ```
 	 例: .c.o:
 	         cc -c $<
 ```
 
 - $?
- - 依存ファイルで更新されたもののリストに展開される。
- - 下記でもしも、sub1.cだけがa.outよりも新しければ「$?」→「sub1.c」に展開される。
+  - 依存ファイルで更新されたもののリストに展開される。
+  - 下記でもしも、sub1.cだけがa.outよりも新しければ「$?」→「sub1.c」に展開される。
 ```
 	 例: a.out: sub1.c sub2.c
 	             echo "$? are modified."
 ```
 
 - $^
- - 「$^」により依存関係のリストを表示させることができます。
+  - 「$^」により依存関係のリストを表示させることができます。
 ```
  all: testfile testfil2
  	@echo $^
 ```
- - 上記に対する出力例を以下に示します。
+  - 上記に対する出力例を以下に示します。
 ```
  $ make
  testfile testfile2
 ```
 
 - $*
- - ターゲット名からサフィックスを除いたものに展開される。
- - 下記の例では「$*」は「paper」に展開される。
+  - ターゲット名からサフィックスを除いたものに展開される。
+  - 下記の例では「$*」は「paper」に展開される。
 ```
 	 例: paper.ps: paper.dvi
 	             dvips $*
@@ -318,7 +318,7 @@ for文を利用する際には変数を「$i」等と記述しても動作しま
 ```
 
 - 参考資料
- - http://www.unixuser.org/~euske/doc/makefile/#cascade
+  - http://www.unixuser.org/~euske/doc/makefile/#cascade
 
 
 ### PHONY
@@ -443,7 +443,7 @@ endif
 - foreach : 引数を複数回展開する
 
 - 上記関数については以下のサイトに説明がありますので参考になります。
- - http://www.ecoop.net/coop/translated/GNUMake3.77/make_8.jp.html
+  - http://www.ecoop.net/coop/translated/GNUMake3.77/make_8.jp.html
 
 
 # FAQ
@@ -468,13 +468,13 @@ OBJS    = $(SRCS:.cpp=.o)
 
 # 参考
 - 公式ドキュメント
- - 非常に豊富なドキュメント群
- - https://www.gnu.org/software/make/manual/html_node/index.html#Top
+  - 非常に豊富なドキュメント群
+  - https://www.gnu.org/software/make/manual/html_node/index.html#Top
 - 公式マニュアル
- - http://www.gnu.org/software/make/manual/make.html
+  - http://www.gnu.org/software/make/manual/make.html
 - もっとも豊富な日本語リファレンス
- - http://www.ecoop.net/coop/translated/GNUMake3.77/make_toc.jp.html
+  - http://www.ecoop.net/coop/translated/GNUMake3.77/make_toc.jp.html
 - MakeとMakefileの説明
- - http://www.unixuser.org/~euske/doc/makefile/
+  - http://www.unixuser.org/~euske/doc/makefile/
 
 
