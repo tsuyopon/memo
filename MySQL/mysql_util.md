@@ -153,6 +153,13 @@ mysql> SELECT LPAD('abc', 10, '012');
 
 ### Žž
 ```
+mysql> SELECT NOW()+0;
++----------------+
+| NOW()+0        |
++----------------+
+| 20170531070950 |
++----------------+
+
 mysql> SELECT NOW(), CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP;
 +---------------------+---------------------+---------------------+
 | NOW()               | CURRENT_TIMESTAMP() | CURRENT_TIMESTAMP   |

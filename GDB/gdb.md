@@ -1036,6 +1036,44 @@ gdb7.0から逆方向にnext, nexti, step, stepiなどを実行することが�
 - 参考
  - https://www.sourceware.org/gdb/news/reversible.html
 
+### gdbで入力中にタブを押すとどうなるか?
+候補が表示されるので覚えておくとよい。
+```
+(gdb) p *bb
+$11 = {p = 0x721c78, list = {next = 0x728138, prev = 0x728138}, bucket_alloc = 0x71fc68}
+(gdb) p next       // ここでタブを押す
+next                 next_bit             next_opcode          next_state.9142      
+nextScaffoldPart     next_line            next_opcode.isra.17  next_to_use.12549    
+(gdb) p next.      // ここでタブを押す
+c     ctx   frec  next  r   
+```
+
+### voidの値を表示する。
+
+今回チェックするデータは次の通り
+```
+static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
+```
+
+newvのデータを見たく、データに入ってくる値がわかっている場合には正しく型を指定すると表示できる。
+```
+Breakpoint 1, merge_core_dir_configs (a=0x729cb8, basev=0x6e4fd0, newv=0x72b638) at core.c:201
+201	in core.c
+(gdb) p *newv
+Attempt to dereference a generic pointer.
+(gdb) p newv
+$4 = (void *) 0x72b638
+ (gdb) p *(core_dir_config *)0x72b638
+$7 = {d = 0x703e10 "/usr/local/apache2.4.23/htdocs/", d_components = 5, opts = 5 '\005', opts_add = 0 '\000', opts_remove = 0 '\000', override = 0, 
+  override_opts = 255 '\377', response_code_strings = 0x0, hostname_lookups = 3, content_md5 = 2, use_canonical_name = 3, d_is_fnmatch = 0, 
+  add_default_charset = 2, add_default_charset_name = 0x487f6d "iso-8859-1", limit_cpu = 0x0, limit_mem = 0x0, limit_nproc = 0x0, limit_req_body = -1, 
+  limit_xml_body = -1, server_signature = srv_sig_unset, sec_file = 0x0, sec_if = 0x0, r = 0x0, mime_type = 0x0, handler = 0x0, output_filters = 0x0, 
+  input_filters = 0x0, accept_path_info = 3, etag_bits = 0, etag_add = 0, etag_remove = 0, enable_mmap = 2, enable_sendfile = 2, 
+  use_canonical_phys_port = 2, allow_encoded_slashes = 0, decode_encoded_slashes = 0, condition_ifelse = 0, condition = 0x0, log = 0x0, override_list = 0x0, 
+  max_ranges = -1, max_overlaps = -1, max_reversals = -1, refs = 0x0, response_code_exprs = 0x0, cgi_pass_auth = 2, qualify_redirect_url = 2, 
+  expr_handler = 0x0, cgi_var_rules = 0x0}
+```
+
 ### TODO
 - ざっとながめてみて機能を見るのもいいかも
   - http://www.asahi-net.or.jp/~wg5k-ickw/html/online/gdb-5.0/gdb-ja_9.html

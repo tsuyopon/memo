@@ -2,6 +2,18 @@
 # MAC関連設定
 
 # 一般操作
+
+### catしてクリップボードにコピペする
+非常に大量の行があるファイルなどに便利
+```
+$ cat gdb.txt | pbcopy
+```
+
+リモートサーバにログインするためにsshを使っているような場合にもpbcopyを使うことができます。
+```
+$ ssh user@example.com 'cat hello.txt' | pbcopy
+```
+
 ### 必須アプリ
 - Alfred
 -- 即座に必要なリソースにアクセス
