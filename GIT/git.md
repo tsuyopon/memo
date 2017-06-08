@@ -27,6 +27,12 @@ $ git submodule update --init --recursive
 
 # ブランチ関連
 
+### ブランチ作成と同時にそのブランチに移動する
+ブランチ作成と同時にはよく使うので１行でできるようにしておくとよさそうです。
+```
+$ git checkout -b testbranch
+```
+
 ### ブランチを削除する
 ```
 $ git branch -d issue1

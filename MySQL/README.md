@@ -18,3 +18,5 @@ MySQLについて
 # TODO
 - 以下のサンプルデータベースをいじってみる
   - http://dev.mysql.com/doc/index-other.html
+- シミュレータがある。
+  - https://www.w3schools.com/sql/sql_union.asp

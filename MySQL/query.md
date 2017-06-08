@@ -1,11 +1,24 @@
 # 概要
-sakilaデータベースを使ってjoinに使えそうなことをまとめる
+queryについてまとめる
+
+### IFなどを試して見る
+次のようにして簡単に試すことができる。
+```
+mysql> SELECT 'INPUT 0' AS 'TEST', IF(0 = 0, 1, 0), IF(0 <> 0, 1, 0), IF(100 = 0, 1, 0), IF(100 <> 0, 1, 0), IF(null <> 0, 1, 0);
++---------+-----------------+------------------+-------------------+--------------------+---------------------+
+| TEST    | IF(0 = 0, 1, 0) | IF(0 <> 0, 1, 0) | IF(100 = 0, 1, 0) | IF(100 <> 0, 1, 0) | IF(null <> 0, 1, 0) |
++---------+-----------------+------------------+-------------------+--------------------+---------------------+
+| INPUT 0 |               1 |                0 |                 0 |                  1 |                   0 |
++---------+-----------------+------------------+-------------------+--------------------+---------------------+
+1 row in set (0.00 sec)
+```
 
 
 ### JOINのパターン
 たった、3つのパターンだけのようだ
 - inner join
   - 1:1の関係で結合する
+  - inner joinの場合には双方で結合できなければ、そのレコードは削除されることに注意する
 - left join
   - 左にあるテーブルを元に結合する
 - right join
@@ -108,16 +121,23 @@ mysql> SELECT * FROM city LEFT JOIN country USING(country_id) LIMIT 3;
 3 rows in set (0.00 sec)
 ```
 
-### 存在するかどうかをチェックする
-存在するかどうかをチェックする場合にはEXISTSが使える。存在しない場合には「NOT EXISTS」にすればよい。
+### 特定のカラムが重複している行を取得する
+重複排除はDISTINCで簡単に可能だが、重複する場合にはGROUP BYして特定の件数以上のもののみを出力させるようにする。
 ```
-mysql> SELECT EXISTS (SELECT * FROM address ORDER BY postal_code, last_update DESC);
-+-----------------------------------------------------------------------+
-| EXISTS (SELECT * FROM address ORDER BY postal_code, last_update DESC) |
-+-----------------------------------------------------------------------+
-|                                                                     1 |
-+-----------------------------------------------------------------------+
-1 row in set (0.00 sec)
+mysql> SELECT * FROM customer GROUP BY first_name HAVING COUNT(*) >= 2;
++-------------+----------+------------+-----------+----------------------------------+------------+--------+---------------------+---------------------+
+| customer_id | store_id | first_name | last_name | email                            | address_id | active | create_date         | last_update         |
++-------------+----------+------------+-----------+----------------------------------+------------+--------+---------------------+---------------------+
+|         146 |        1 | JAMIE      | RICE      | JAMIE.RICE@sakilacustomer.org    |        150 |      1 | 2006-02-14 22:04:36 | 2006-02-15 04:57:20 |
+|         215 |        2 | JESSIE     | BANKS     | JESSIE.BANKS@sakilacustomer.org  |        219 |      1 | 2006-02-14 22:04:36 | 2006-02-15 04:57:20 |
+|          67 |        1 | KELLY      | TORRES    | KELLY.TORRES@sakilacustomer.org  |         71 |      1 | 2006-02-14 22:04:36 | 2006-02-15 04:57:20 |
+|         143 |        1 | LESLIE     | GORDON    | LESLIE.GORDON@sakilacustomer.org |        147 |      1 | 2006-02-14 22:04:36 | 2006-02-15 04:57:20 |
+|         178 |        2 | MARION     | SNYDER    | MARION.SNYDER@sakilacustomer.org |        182 |      1 | 2006-02-14 22:04:36 | 2006-02-15 04:57:20 |
+|         253 |        1 | TERRY      | CARLSON   | TERRY.CARLSON@sakilacustomer.org |        258 |      1 | 2006-02-14 22:04:36 | 2006-02-15 04:57:20 |
+|         108 |        1 | TRACY      | COLE      | TRACY.COLE@sakilacustomer.org    |        112 |      1 | 2006-02-14 22:04:36 | 2006-02-15 04:57:20 |
+|         219 |        2 | WILLIE     | HOWELL    | WILLIE.HOWELL@sakilacustomer.org |        223 |      1 | 2006-02-14 22:04:36 | 2006-02-15 04:57:20 |
++-------------+----------+------------+-----------+----------------------------------+------------+--------+---------------------+---------------------+
+8 rows in set (0.00 sec)
 ```
 
 ### UPDATEを使ってJOINして、結合した複数のテーブルを一気に更新する
@@ -130,6 +150,8 @@ ON a.user_id = b.user_id
 SET a.name = "name2a new!", b.name = "name2b new!"
 WHERE b.type = 2;
 ```
+
+複数テーブルが更新されるとレコード数も1ではなく更新されたテーブル数になる。
 
 ### UNIONを使って重複レコードを排除する。
 上の例では左側(3日前)と右側(2日前)のSELECTが異なるので２行表示されるが、下の出力例では左側と右側が同じなので1行だけで重複排除されている。
@@ -162,6 +184,31 @@ mysql> select date_add(now(), interval 3 day) UNION ALL select date_add(now(), i
 | 2017-06-02 08:28:15             |
 | 2017-06-02 08:28:15             |
 +---------------------------------+
+2 rows in set (0.00 sec)
+```
+
+### CASE WHENを使ってみる
+```
+mysql> SELECT name, SID FROM staff_list;
++--------------+-----+
+| name         | SID |
++--------------+-----+
+| Mike Hillyer |   1 |
+| Jon Stephens |   2 |
++--------------+-----+
+2 rows in set (0.00 sec)
+
+mysql> SELECT name, SID, CASE 
+         WHEN SID = 1 THEN 'TOKYO' 
+		 WHEN SID = 2 THEN 'OSAKA' 
+		 ELSE 'OTHER' 
+	  END AS storeName FROM staff_list;
++--------------+-----+-----------+
+| name         | SID | storeName |
++--------------+-----+-----------+
+| Mike Hillyer |   1 | TOKYO     |
+| Jon Stephens |   2 | OSAKA     |
++--------------+-----+-----------+
 2 rows in set (0.00 sec)
 ```
 

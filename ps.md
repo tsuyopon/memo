@@ -57,6 +57,23 @@ START                   プロセスが生成された時刻。
 ```
 
 ### メモリ使用量でソートする
+
+- CPUでソートする
+```
+$ ps auxww --sort -pcpu | head -4
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+gdm        987  0.2  7.8 1234372 79896 ?       Sl   08:25   0:08 gnome-shell --gdm-mode
+tsuyoshi  1048  0.0  0.1 132360  1888 ?        S    08:25   0:02 sshd: tsuyoshi@pts/0
+root      2970  0.0  0.0      0     0 ?        S    09:10   0:00 [kworker/0:2]
+```
+- Sizeでソートする
+```
+$ ps auxww --sort -size | head -4
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+gdm        987  0.2  7.8 1234372 79896 ?       Sl   08:25   0:08 gnome-shell --gdm-mode
+gdm        836  0.0  1.7 793164 17816 ?        Sl   08:25   0:00 /usr/libexec/gnome-settings-daemon
+gdm        911  0.0  0.4 366092  4156 ?        Sl   08:25   0:00 /usr/libexec/at-spi-bus-launcher
+```
 - RSSでソートする
 ```
 $ ps aux --sort -rss
@@ -64,6 +81,37 @@ $ ps aux --sort -rss
 - VSZでソートする
 ```
 $ ps aux --sort -vsize
+```
+
+次のように定義されている。
+```
+KEY   LONG         DESCRIPTION
+c     cmd          simple name of executable
+C     pcpu         cpu utilization
+f     flags        flags as in long format F field
+g     pgrp         process group ID
+
+G     tpgid        controlling tty process group ID
+j     cutime       cumulative user time
+J     cstime       cumulative system time
+k     utime        user time
+m     min_flt      number of minor page faults
+M     maj_flt      number of major page faults
+n     cmin_flt     cumulative minor page faults
+N     cmaj_flt     cumulative major page faults
+o     session      session ID
+p     pid          process ID
+P     ppid         parent process ID
+r     rss          resident set size
+R     resident     resident pages
+s     size         memory size in kilobytes
+S     share        amount of shared pages
+t     tty          the device number of the controlling tty
+T     start_time   time process was started
+U     uid          user ID number
+u     user         user name
+v     vsize        total VM size in kB
+y     priority     kernel scheduling priority
 ```
 
 ### 現状のプロセスの/proc/<PID>/statusを覗いてみる。
