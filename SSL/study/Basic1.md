@@ -195,6 +195,8 @@ SAN(Subject Alter Name)
 
 	SNIと似ているような気はするが、SNI自体は1個のIPとポートの組み合わせで複数証明書を切り替える技術
 
+	- https://tools.ietf.org/html/rfc6066#section-3
+
 
 EV証明書(Extended Validation)になる技術的に何が変わってくるのか?
 	EV SSLにおいては、URLの正当性をCAが担保する目的から、通常のSSLで使われるようなワイルドカード証明書の発行は認めらない。
@@ -216,6 +218,11 @@ GCM
 AEAD
 
 
+SSLウェブサイトの強度を検証する
+	https://www.ssllabs.com/ssltest/
+
+	CからA+にするまでの記録
+		https://www.websec-room.com/2016/05/06/2606
 
 
 
