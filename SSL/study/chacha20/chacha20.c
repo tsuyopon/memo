@@ -2,7 +2,7 @@
 #include<stdio.h>
 #include<string.h>  // strtok, strlen
 #include<stdlib.h>  // atoi
-#include<math.h>    // floor
+#include<math.h>    // ceil
 
 #define VSIZE 16
 
@@ -40,42 +40,14 @@ void printState(unsigned int *state){
 	}
 }
 
-unsigned int convertLittleEndian(unsigned int x){
-	return ((x >> 24) & 0xff)  | (((x >> 16) & 0xff) << 8) | ((x >> 8) & 0xff) << 16 | ((x & 0xff) << 24);
-}
-
-void getKey(char* key, unsigned int* copyAry){
-
-   char* token;
-   token = strtok(key, ":" );
-
-   int i = 0;
-   unsigned int hash[4] = {0};
-   while ( token != NULL ){
-	  hash[i%4] = atoi(token);
-   	  if( 3 == i % 4 ) {
-	  	*copyAry = (hash[0] & 0xff)  | ((hash[1] & 0xff) << 8) | ((hash[2] & 0xff ) << 16) | (hash[3] & 0xff) << 24;
-		printf("%08x\n", *copyAry);
-		copyAry++;
-	  }
-	  i++;
-      token = strtok( NULL, ":" );
-   }
-
-   // TODO: 残り部分
-   if( i % 4 != 0){
-   }
-
-}
-
 int main(){
 
 	unsigned int constant[4] = { 0x61707865,  0x3320646e,  0x79622d32,  0x6b206574 };
+	unsigned int key[8] = { 0x03020100,  0x07060504,  0x0b0a0908,  0x0f0e0d0c, 0x13121110,  0x17161514,  0x1b1a1918,  0x1f1e1d1c };
 	unsigned int count = 0x00000001;
-	unsigned int nonce[3] = {0x09000000,  0x4a000000,  0x00000000};
+	unsigned int nonce[3] = {0x00000000,  0x4a000000,  0x00000000};
 	unsigned int state[VSIZE];
 
-	unsigned int copyAry[8];
 	char keystr[] = "00:01:02:03:04:05:06:07:08:09:0a:0b:0c:0d:0e:0f:10:11:12:13:14:15:16:17:18:19:1a:1b:1c:1d:1e:1f";
 	char plaintext[] = "Ladies and Gentlemen of the class of '99: If I could offer you only one tip for the future, sunscreen would be it.";
 
@@ -87,38 +59,34 @@ int main(){
 	//	printf("%02X ", plaintext[i]);
 	//}
 
-	getKey(keystr, copyAry);
-	//printState(copyAry);
-
-	// FIXME: やっつけ
+	// FIXME: 配列の入れ方が雑です
 	state[0] = constant[0];
 	state[1] = constant[1];
 	state[2] = constant[2];
 	state[3] = constant[3];
 
-	// もっときれいにかきたい
-	state[4] = copyAry[0];
-	state[5] = copyAry[1];
-	state[6] = copyAry[2];
-	state[7] = copyAry[3];
-	state[8] = copyAry[4];
-	state[9] = copyAry[5];
-	state[10] = copyAry[6];
-	state[11] = copyAry[7];
+	state[4] = key[0];
+	state[5] = key[1];
+	state[6] = key[2];
+	state[7] = key[3];
+	state[8] = key[4];
+	state[9] = key[5];
+	state[10] = key[6];
+	state[11] = key[7];
 
 	state[12] = count;
 	state[13] = nonce[0];
 	state[14] = nonce[1];
 	state[15] = nonce[2];
-	printState(state);
-
+	//printState(state);
 
 	unsigned int current[VSIZE];
 	for(int i=0;i<VSIZE;++i){
 		current[i] = state[i];
 	}
 
-	for(int j = 0; j < floor(strlen(plaintext)/64) -1; j++){
+	//printf("length=%lu\n", strlen(plaintext));
+	for(int j = 0; j <= ceil(strlen(plaintext)/64); j++){
 		unsigned int tmpstate[VSIZE];
 		for(int i=0;i<VSIZE;++i){
 			tmpstate[i] = current[i];
@@ -143,7 +111,7 @@ int main(){
 		// 2.3.2.  Test Vector for the ChaCha20 Block Function:  CheckPoint1
 		//printState(tmpstate);
 
-		// add original value
+		// add original value with tmpstate
 		for (int i = 0; i < VSIZE; ++i){
 			tmpstate[i] += current[i];
 		}
@@ -161,13 +129,14 @@ int main(){
 		//	if( (i+1) % 4 == 0) printf("\n");
 		//}
 		//printf("\n");
+
+		for (int i = 0; i < VSIZE; ++i){
+			printf("%02x ", plaintext[j*64+i*4] ^ (tmpstate[i] & 0xff));
+			printf("%02x ", plaintext[j*64+i*4+1] ^ ((tmpstate[i] >> 8) & 0xff));
+			printf("%02x ", plaintext[j*64+i*4+2] ^ ((tmpstate[i] >> 16) & 0xff));
+			printf("%02x ", plaintext[j*64+i*4+3] ^ ((tmpstate[i] >> 24) & 0xff));
+			if( i % 4 == 3) printf("\n");
+		}
+		printf("\n");
 	}
-
-	//int j = 0; 
-	//for(int i = 0; plaintext[i] != '\0'; i++){
-	//	printf("%02x ", plaintext[i] ^ state[j%16]);
-	//	j++;
-	//	if(j == 16) j = 0;
-	//}
-
 }
