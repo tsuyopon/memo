@@ -1,3 +1,4 @@
+// Implementation chacha20 about "2.4.  The ChaCha20 Encryption Algorithm" in RFC7539.
 #include<stdio.h>
 #include<string.h>  // strtok, strlen
 #include<stdlib.h>  // atoi
@@ -53,12 +54,12 @@ int main(){
 	unsigned int textlength;
 	textlength = strlen(plaintext);
 
-	// $BJ?J8$r(B16$B?J?t=PNO$7$F3NG'$9$k(B
+	// 平文を16進数出力して確認する(for debug)
 	//for(int i = 0; plaintext[i] != '\0'; i++){
 	//	printf("%02X ", plaintext[i]);
 	//}
 
-	// FIXME: $BG[Ns$NF~$lJ}$,;($G$9(B
+	// FIXME: 配列の入れ方が雑
 	state[0] = constant[0];
 	state[1] = constant[1];
 	state[2] = constant[2];
@@ -84,7 +85,6 @@ int main(){
 		current[i] = state[i];
 	}
 
-	//printf("length=%lu\n", strlen(plaintext));
 	for(int j = 0; j <= ceil(strlen(plaintext)/64); j++){
 		unsigned int tmpstate[VSIZE] = {0};
 		for(int i=0;i<VSIZE;++i){
@@ -108,7 +108,7 @@ int main(){
 			QUARTERROUND(&tmpstate[3], &tmpstate[4], &tmpstate[9],  &tmpstate[14]);
 		}
 
-		// 2.3.2.  Test Vector for the ChaCha20 Block Function:  CheckPoint1
+		// 2.3.2.  Test Vector for the ChaCha20 Block Function:  CheckPoint1 (for debug)
 		//printState(tmpstate);
 
 		// add original value with tmpstate
@@ -116,10 +116,10 @@ int main(){
 			tmpstate[i] += current[i];
 		}
 
-		// 2.3.2.  Test Vector for the ChaCha20 Block Function:  CheckPoint2
+		// 2.3.2.  Test Vector for the ChaCha20 Block Function:  CheckPoint2 (for debug)
 		//printState(tmpstate);
 
-		// 2.3.2.  Test Vector for the ChaCha20 Block Function:  CheckPoint3
+		// 2.3.2.  Test Vector for the ChaCha20 Block Function:  CheckPoint3 (for debug)
 		// convert into little endian
 		//for (int i = 0; i < VSIZE; ++i){
 		//	printf("%02x ", tmpstate[i] & 0xff);
@@ -130,7 +130,7 @@ int main(){
 		//}
 		//printf("\n");
 
-		// finish processing if exceeded strlen(plaintext)
+		// processing xor between plaintext and state. Break processing if exceeded plaintext string length.
 		for (int i = 0; i < VSIZE; ++i){
 			for(int k = 0; k < 4; k++){
 				if( strlen(plaintext) <= j*64 + i*4 + k ){
