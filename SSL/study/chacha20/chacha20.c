@@ -1,4 +1,3 @@
-// basic3を入力できるようにしたか
 #include<stdio.h>
 #include<string.h>  // strtok, strlen
 #include<stdlib.h>  // atoi
@@ -87,11 +86,12 @@ int main(){
 
 	//printf("length=%lu\n", strlen(plaintext));
 	for(int j = 0; j <= ceil(strlen(plaintext)/64); j++){
-		unsigned int tmpstate[VSIZE];
+		unsigned int tmpstate[VSIZE] = {0};
 		for(int i=0;i<VSIZE;++i){
 			tmpstate[i] = current[i];
 		}
-		tmpstate[12] += j;   // for counter
+		tmpstate[12] += j;           // for counter
+		current[12] = tmpstate[12];  // update current[12] as original number
 
 		// 20 round(10 column round and 10 diagonal round)
 		for(int i = 0; i < 10; i++){
