@@ -130,13 +130,21 @@ int main(){
 		//}
 		//printf("\n");
 
+		// finish processing if exceeded strlen(plaintext)
 		for (int i = 0; i < VSIZE; ++i){
-			printf("%02x ", plaintext[j*64+i*4] ^ (tmpstate[i] & 0xff));
-			printf("%02x ", plaintext[j*64+i*4+1] ^ ((tmpstate[i] >> 8) & 0xff));
-			printf("%02x ", plaintext[j*64+i*4+2] ^ ((tmpstate[i] >> 16) & 0xff));
-			printf("%02x ", plaintext[j*64+i*4+3] ^ ((tmpstate[i] >> 24) & 0xff));
+			for(int k = 0; k < 4; k++){
+				if( strlen(plaintext) <= j*64 + i*4 + k ){
+					goto exit;
+				}
+				// XOR with original
+				printf("%02x ", plaintext[j*64+i*4+k] ^ ((tmpstate[i] >> (8*k)) & 0xff));
+			}
 			if( i % 4 == 3) printf("\n");
 		}
 		printf("\n");
 	}
+
+	exit:
+		printf("\n");
+		return 0;
 }
