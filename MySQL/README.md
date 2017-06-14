@@ -8,6 +8,7 @@ MySQLについて
 公式にあるサンプルデータベースについて説明しておきます。
 - employee data
   - BIの検証とかにも使える大量データです。
+  - procedure, view, triggerなどもデフォルトであります。データのメモなどに便利
 - world database / world\_x database
   - 世界の国と都市のデータです。xの付いた方がUTF-8なので、日本ではxがついた方が使いやすいかもしれません。
 - sakila database
