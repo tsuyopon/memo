@@ -16,6 +16,12 @@ DESは次の問題があった。
 - ・時代の経過による相対的な強度の低下
 - ・NSAの関与があるその設計の不透明性
 
+入力としては64bit(8bytes)単位でデータと64bitの暗号化用の鍵を受け付ける。    
+入力されたデータを上下32bitずつに分けて、それに対して16段の暗号化処理を繰り返し適用する(ファイステル構造)。  
+出力としては64bitの暗号化済みデータを出力する。
+
+
+
 
 参考
 - https://ja.wikipedia.org/wiki/Data_Encryption_Standard
@@ -30,7 +36,15 @@ AESの特徴としては次の通り
 - 鍵長は128ビット・192ビット・256ビットの3つが利用できる。
 
 AESは無線LANで使われることが多く、安全とされるWPA2に採用されている。  
-(WEP, WPA, WPA2は暗号化に関する規格を表し、TKIPやAESは暗号化方式を表す概念)
+(WEP, WPA, WPA2は暗号化に関する規格を表し、TKIPやAESは暗号化方式を表す概念)  
+
+アルゴリズムとしては入力されたデータをいくつかのブロックに分割して、bitデータの
+「置換(Substitution)」を行い、それらをまとめてブロック全体へ「転置(Permutation)」する。これがSPN(Substitution Permutation Network)の由来です。
+
+具体的には
+- SubBytes、ShiftRows、MixColumns、AddRoundKeyはそれぞれ置換、シフト、混合、XOR演算を行うAESの基本処理である。
+- 上記一覧の処理をセットとしてこれを１ラウンドとして、入力されたデータに対して10, 12, 14ラウンドのいずれかを繰り返し適用する。
+
 
 - 参考ポインタ
   - AES仕様書
@@ -47,7 +61,7 @@ AESは無線LANで使われることが多く、安全とされるWPA2に採用�
    - https://ja.wikipedia.org/wiki/Advanced_Encryption_Standard
 
 ### DESとAESの技術的な違いについて
-DESとAESの比較を記述する。
+DESとAESの比較を記述する。DESの鍵長は56bitと非常に短いので安全とされない。
 - 鍵長
   - DES: 56bit
   - AES: 128/192/256bitから選択可能
