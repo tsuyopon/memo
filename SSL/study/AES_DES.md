@@ -31,21 +31,20 @@ AESの特徴としては次の通り
 
 AESは無線LANで使われることが多く、安全とされるWPA2に採用されている。  
 (WEP, WPA, WPA2は暗号化に関する規格を表し、TKIPやAESは暗号化方式を表す概念)
-- 参考: http://wa3.i-3-i.info/word15121.html
 
-参考ポインタ
-- AES仕様書
-  - http://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.197.pdf
-  - アルゴリズムやinput, outputなどが記述されている。
-- AES概説
-  - http://web.archive.org/web/20090503235219/http://www-ailab.elcom.nitech.ac.jp/security/aes/overview.html
-- NISTによる資料(Report on Development of the AES)
-  - http://csrc.nist.gov/archive/aes/round2/r2report.pdf
-- 専用のCPU命令がある。(出してみたい*TODO)
-  - https://ja.wikipedia.org/wiki/AES-NI
-  - https://ja.wikipedia.org/wiki/CLMUL_instruction_set
-- wikipedia
- - https://ja.wikipedia.org/wiki/Advanced_Encryption_Standard
+- 参考ポインタ
+  - AES仕様書
+    - http://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.197.pdf
+    - アルゴリズムやinput, outputなどが記述されている。
+  - AES概説
+    - http://web.archive.org/web/20090503235219/http://www-ailab.elcom.nitech.ac.jp/security/aes/overview.html
+  - NISTによる資料(Report on Development of the AES)
+    - http://csrc.nist.gov/archive/aes/round2/r2report.pdf
+  - 専用のCPU命令がある。(出してみたい*TODO)
+    - https://ja.wikipedia.org/wiki/AES-NI
+    - https://ja.wikipedia.org/wiki/CLMUL_instruction_set
+  - wikipedia
+   - https://ja.wikipedia.org/wiki/Advanced_Encryption_Standard
 
 ### DESとAESの技術的な違いについて
 DESとAESの比較を記述する。
