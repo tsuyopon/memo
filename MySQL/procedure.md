@@ -215,3 +215,14 @@ mysql> SELECT @out;
 ```
 mysql> DROP PROCEDURE procedure_name;
 ```
+
+### プロシージャのデバッグする
+
+SHOW PROCEDURE CODEというものが存在するようだ。実行された動作がわかるらしい
+- https://dev.mysql.com/doc/refman/5.6/ja/show-procedure-code.html
+
+自分の環境ではビルドオプション(--with-debug)が指定されておらずうまく動作しなかった。
+```
+mysql> SHOW PROCEDURE CODE sakila.film_in_stock;
+ERROR 1289 (HY000): The 'SHOW PROCEDURE|FUNCTION CODE' feature is disabled; you need MySQL built with '--with-debug' to have it working
+```
