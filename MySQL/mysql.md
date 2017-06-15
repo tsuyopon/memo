@@ -243,4 +243,58 @@ CREATE TABLE 子テーブル名(子カラム名 データ型,
  - http://stackoverflow.com/questions/3773277/stored-procedures-vs-views
 
 
+### テーブルの作成時刻、更新時刻、参照時刻を表示する
+Check_timeについてはすべてのエンジンが入るとは限らないので注意すること。その場合にはNULLになるらしい。  
+以下の各カラムの意味については以下の資料を参考のこと
+- https://dev.mysql.com/doc/refman/5.6/ja/show-table-status.html
+```
+mysql> SHOW TABLE STATUS FROM sakila \G
+*************************** 1. row ***************************
+           Name: actor
+         Engine: InnoDB
+        Version: 10
+     Row_format: Compact
+           Rows: 200
+ Avg_row_length: 81
+    Data_length: 16384
+Max_data_length: 0
+   Index_length: 16384
+      Data_free: 0
+ Auto_increment: 201
+    Create_time: 2016-12-22 08:46:35
+    Update_time: NULL
+     Check_time: NULL
+      Collation: utf8_general_ci
+       Checksum: NULL
+ Create_options: 
+        Comment: 
+```
+
+上記コマンドの時刻は次のinformation_schema.tablesテーブル参照でも確認することができる。  
+```
+mysql> SELECT * FROM information_schema.tables WHERE table_schema = DATABASE() LIMIT 2 \G
+*************************** 1. row ***************************
+  TABLE_CATALOG: def
+   TABLE_SCHEMA: sakila
+     TABLE_NAME: actor
+     TABLE_TYPE: BASE TABLE
+         ENGINE: InnoDB
+        VERSION: 10
+     ROW_FORMAT: Compact
+     TABLE_ROWS: 200
+ AVG_ROW_LENGTH: 81
+    DATA_LENGTH: 16384
+MAX_DATA_LENGTH: 0
+   INDEX_LENGTH: 16384
+      DATA_FREE: 0
+ AUTO_INCREMENT: 201
+    CREATE_TIME: 2016-12-22 08:46:35
+    UPDATE_TIME: NULL
+     CHECK_TIME: NULL
+TABLE_COLLATION: utf8_general_ci
+       CHECKSUM: NULL
+ CREATE_OPTIONS: 
+  TABLE_COMMENT: 
+```
+
 
