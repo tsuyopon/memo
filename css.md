@@ -13,3 +13,10 @@ div {
 - 参考
   - http://black-flag.net/css/20110513-3045.html
 
+### SVGにアイコンを使う
+```
+.logo {
+	background: url("logo.svg");
+}
+```
+.logo {
