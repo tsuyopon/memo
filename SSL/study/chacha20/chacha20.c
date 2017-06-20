@@ -137,7 +137,7 @@ int main(){
 					goto exit;
 				}
 				// XOR with original
-				printf("%02x ", plaintext[j*64+i*4+k] ^ ((tmpstate[i] >> (8*k)) & 0xff));
+				printf("0x%02x, ", plaintext[j*64+i*4+k] ^ ((tmpstate[i] >> (8*k)) & 0xff));
 			}
 			if( i % 4 == 3) printf("\n");
 		}
