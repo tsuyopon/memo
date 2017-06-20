@@ -37,6 +37,102 @@ $ ip addr show
        valid_lft forever preferred_lft forever
 ```
 
+```
+$ ip link show 
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default 
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+	2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP mode DEFAULT group default qlen 1000
+	    link/ether 08:00:27:9c:51:c6 brd ff:ff:ff:ff:ff:ff
+```
+
+### 固定IPを設定する
+```
+$ ip addr add 10.0.2.15/24 dev eth0
+```
+
+### デフォルトゲートウェイを設定する
+```
+$ ip route add default via 10.0.2.2
+```
+
+### IFの有効化、無効化を行う
+```
+# ip link set eth0 up
+# ip link set eth0 down
+```
+
+### MTUをセットする
+```
+# ip link set eth0 mtu 9000
+```
+
+### プロミスキャスモードを有効にする
+```
+# ip link set eth0 promisc on
+```
+
+### I/F統計情報を表示する
+```
+$ ip -s link
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default 
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    RX: bytes  packets  errors  dropped overrun mcast   
+    28958      337      0       0       0       0      
+    TX: bytes  packets  errors  dropped carrier collsns 
+    28958      337      0       0       0       0      
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP mode DEFAULT group default qlen 1000
+    link/ether 08:00:27:9c:51:c6 brd ff:ff:ff:ff:ff:ff
+    RX: bytes  packets  errors  dropped overrun mcast   
+    243573     3088     0       0       0       0      
+    TX: bytes  packets  errors  dropped carrier collsns 
+    507677     2255     0       0       0       0 
+```
+
+### マルチキャストアドレスの情報を表示する
+```
+$ ip maddr
+1:	lo
+	inet  224.0.0.1
+	inet6 ff02::1
+	inet6 ff01::1
+2:	eth0
+	link  01:00:5e:00:00:01
+	link  33:33:00:00:00:01
+	link  33:33:ff:9c:51:c6
+	link  01:00:5e:00:00:fb
+	link  33:33:00:00:00:fb
+	inet  224.0.0.251
+	inet  224.0.0.1
+	inet6 ff02::fb
+	inet6 ff02::1:ff9c:51c6
+	inet6 ff02::1
+	inet6 ff01::1
+```
+
+特定のデバイスだけ表示させたい場合
+```
+$ ip maddr show dev eth0
+2:	eth0
+	link  01:00:5e:00:00:01
+	link  33:33:00:00:00:01
+	link  33:33:ff:9c:51:c6
+	link  01:00:5e:00:00:fb
+	link  33:33:00:00:00:fb
+	inet  224.0.0.251
+	inet  224.0.0.1
+	inet6 ff02::fb
+	inet6 ff02::1:ff9c:51c6
+	inet6 ff02::1
+	inet6 ff01::1
+```
+
+### 特定のアドレスへのルートを表示する
+```
+$ ip route get 192.168.1.1
+192.168.1.1 via 10.0.2.2 dev eth0  src 10.0.2.15 
+    cache 
+```
+
 ### ARPテーブルを表示する
 ```
 $ ip neigh
