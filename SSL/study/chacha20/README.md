@@ -1,6 +1,17 @@
 # 概要
 chacha20について
 
+# 詳細
+
+### ソースコード詳細について
+- basic1.c, basic2.c, basic3.c
+  - RFCに記述された途中確認用プログラム
+- chacha20.c
+  - chacha20で20ラウンド終了後の暗号化プログラム。RFC記載のサンプルinput, outputと同じになっています。
+- chacha20decrypt.c
+  - chacha20で20ラウンド終了後の複合プログラム(chacha20.cの出力を複合しているものです)
+  - ソースコードはほとんどchacha20.cと同じで、出力のための修正を入れています。
+
 # 参考URL
 - 新しいTLSの暗号方式ChaCha20-Poly1305
   - http://d.hatena.ne.jp/jovi0608/20160404/1459748671

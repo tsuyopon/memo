@@ -1,4 +1,5 @@
 // 2.1.  The ChaCha Quarter Round 
+// https://tools.ietf.org/html/rfc7539#section-2.1  確認用プログラム
 #include<stdio.h>
 
 int main(){

@@ -1,3 +1,5 @@
+// 2.3.2.  Test Vector for the ChaCha20 Block Function
+// https://tools.ietf.org/html/rfc7539#section-2.3.2 確認用プログラム
 #include<stdio.h>
 
 #define VSIZE 16
