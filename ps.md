@@ -1,6 +1,17 @@
 # プロセス管理
 psコマンドや/proc/<pid>/statusなどプロセス関連のコマンド
 
+- option
+```
+a 	全ユーザのプロセスの状態を表示
+u 	ユーザ名と開始時刻を表示
+x 	制御端末を持たないデーモンなどのプロセスも合わせて表示
+ww 	表示結果を省略せずに行を折り返して全て表示
+e 	全プロセスの情報を表示
+f 	プロセスの親子関係をツリー状にして表示
+L 	スレッドを表示
+```
+
 #
 ### ps -lコマンド
 ```
@@ -76,14 +87,22 @@ gdm        911  0.0  0.4 366092  4156 ?        Sl   08:25   0:00 /usr/libexec/at
 ```
 - RSSでソートする
 ```
-$ ps aux --sort -rss
+$ ps aux --sort -rss | head -4
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+lightdm    728  1.5  3.8 816336 38916 ?        Sl   08:24   0:01 /usr/sbin/unity-greeter
+root       697  2.0  3.8 216516 38772 tty7     Ss+  08:24   0:01 /usr/bin/X -core :0 -seat seat0 -auth /var/run/lightdm/root/:0 -nolisten tcp vt7 -novtswitch
+lightdm    772  0.3  3.1 510644 32280 ?        Sl   08:24   0:00 nm-applet
 ```
 - VSZでソートする
 ```
-$ ps aux --sort -vsize
+$ ps aux --sort -vsize | head -4
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+lightdm    728  1.2  3.8 816336 38916 ?        Sl   08:24   0:01 /usr/sbin/unity-greeter
+lightdm    775  0.2  2.7 681924 28044 ?        Sl   08:24   0:00 /usr/lib/unity-settings-daemon/unity-settings-daemon
+lightdm    772  0.2  3.1 510644 32280 ?        Sl   08:24   0:00 nm-applet
 ```
 
-次のように定義されている。
+この他にもmanコマンドを見ると次のように定義されている。
 ```
 KEY   LONG         DESCRIPTION
 c     cmd          simple name of executable
@@ -129,7 +148,6 @@ Utrace:	0
 FDSize:	256
 Groups:	10 18 1000 
 ```
-
 
 ### プロセス強制終了
 
@@ -191,3 +209,89 @@ systemd-+-NetworkManager-+-dhclient
 (省略)
 ```
 
+### プロセスが起動した時刻を調べたいとき
+```
+$ ps -eo pid,lstart,args | grep -ie apache -ie COMMAND
+  PID                  STARTED COMMAND
+ 1174 Tue Jun 20 08:24:20 2017 /usr/sbin/apache2 -k start
+ 1176 Tue Jun 20 08:24:20 2017 /usr/sbin/apache2 -k start
+ 1177 Tue Jun 20 08:24:20 2017 /usr/sbin/apache2 -k start
+```
+
+
+### スレッドも含めて表示する
+たとえば、psにLオプションを表示するとスレッドも含めて表示します。
+```
+$ ps -efL | grep -ie apache -ie PPID
+UID        PID  PPID   LWP  C NLWP STIME TTY          TIME CMD
+root      1174     1  1174  0    1 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1176  1174  1176  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1176  1174  1181  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1176  1174  1182  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1176  1174  1183  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1176  1174  1184  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1176  1174  1185  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1176  1174  1186  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1176  1174  1187  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1176  1174  1188  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1176  1174  1189  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1176  1174  1190  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1176  1174  1191  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1176  1174  1192  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1176  1174  1193  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1176  1174  1194  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1176  1174  1195  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1176  1174  1196  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1176  1174  1197  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1176  1174  1198  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1176  1174  1199  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1176  1174  1200  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1176  1174  1201  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1176  1174  1202  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1176  1174  1203  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1176  1174  1204  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1176  1174  1205  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1176  1174  1206  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1177  1174  1177  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1177  1174  1208  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1177  1174  1209  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1177  1174  1210  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1177  1174  1211  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1177  1174  1212  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1177  1174  1213  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1177  1174  1214  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1177  1174  1215  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1177  1174  1216  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1177  1174  1217  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1177  1174  1218  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1177  1174  1219  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1177  1174  1220  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1177  1174  1221  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1177  1174  1222  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1177  1174  1223  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1177  1174  1224  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1177  1174  1225  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1177  1174  1226  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1177  1174  1227  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1177  1174  1228  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1177  1174  1229  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1177  1174  1230  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1177  1174  1231  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1177  1174  1232  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+www-data  1177  1174  1233  0   27 08:24 ?        00:00:00 /usr/sbin/apache2 -k start
+```
+
+### スレッド単位でCPU使用率も表示させる
+```
+$ ps auxww -L | grep -ie apache -ie COMMAND | head -10
+USER       PID   LWP %CPU NLWP %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root      1174  1174  0.0    1  0.4  71580  4292 ?        Ss   08:24   0:00 /usr/sbin/apache2 -k start
+www-data  1176  1176  0.0   27  0.6 360744  6188 ?        Sl   08:24   0:00 /usr/sbin/apache2 -k start
+www-data  1176  1181  0.0   27  0.6 360744  6188 ?        Sl   08:24   0:00 /usr/sbin/apache2 -k start
+www-data  1176  1182  0.0   27  0.6 360744  6188 ?        Sl   08:24   0:00 /usr/sbin/apache2 -k start
+www-data  1176  1183  0.0   27  0.6 360744  6188 ?        Sl   08:24   0:00 /usr/sbin/apache2 -k start
+www-data  1176  1184  0.0   27  0.6 360744  6188 ?        Sl   08:24   0:00 /usr/sbin/apache2 -k start
+www-data  1176  1185  0.0   27  0.6 360744  6188 ?        Sl   08:24   0:00 /usr/sbin/apache2 -k start
+www-data  1176  1186  0.0   27  0.6 360744  6188 ?        Sl   08:24   0:00 /usr/sbin/apache2 -k start
+www-data  1176  1187  0.0   27  0.6 360744  6188 ?        Sl   08:24   0:00 /usr/sbin/apache2 -k start
+```
