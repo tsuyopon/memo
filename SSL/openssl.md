@@ -419,6 +419,48 @@ $ openssl s_client -connect shopping.yahoo.co.jp:443  -debug
 ...
 ```
 
+### SSL/TLSバージョンを切り替える
+```
+$ openssl s_client -connect EXAMPLE.LOCAL:443 -ssl2
+$ openssl s_client -connect EXAMPLE.LOCAL:443 -ssl3
+$ openssl s_client -connect EXAMPLE.LOCAL:443 -tls1
+$ openssl s_client -connect EXAMPLE.LOCAL:443 -tls1_1
+$ openssl s_client -connect EXAMPLE.LOCAL:443 -tls1_2
+```
+
+
+接続に失敗すると次のような出力となる。(-msgオプションを付けておいたほうがいいかもしれない)
+```
+$ openssl s_client -connect shopping.yahoo.co.jp:443 -ssl3 -debug -msg
+CONNECTED(00000003)
+write to 0x7fa113e00150 [0x7fa11500b000] (94 bytes => 94 (0x5E))
+0000 - 16 03 00 00 59 01 00 00-55 03 00 59 3d 77 f6 9e   ....Y...U..Y=w..
+0010 - ec f1 5d a5 6b aa fb 71-f7 ba fe 43 54 55 7b 78   ..].k..q...CTU{x
+0020 - 53 c1 98 2d d2 ee 8a 25-57 6c a1 00 00 2e 00 39   S..-...%Wl.....9
+0030 - 00 38 00 35 00 16 00 13-00 0a 00 33 00 32 00 2f   .8.5.......3.2./
+0040 - 00 9a 00 99 00 96 00 05-00 04 00 15 00 12 00 09   ................
+0050 - 00 14 00 11 00 08 00 06-00 03 00 ff 01            .............
+005e - <SPACES/NULS>
+>>> SSL 3.0 Handshake [length 0059], ClientHello
+    01 00 00 55 03 00 59 3d 77 f6 9e ec f1 5d a5 6b
+    aa fb 71 f7 ba fe 43 54 55 7b 78 53 c1 98 2d d2
+    ee 8a 25 57 6c a1 00 00 2e 00 39 00 38 00 35 00
+    16 00 13 00 0a 00 33 00 32 00 2f 00 9a 00 99 00
+    96 00 05 00 04 00 15 00 12 00 09 00 14 00 11 00
+    08 00 06 00 03 00 ff 01 00
+read from 0x7fa113e00150 [0x7fa115006600] (5 bytes => 5 (0x5))
+0000 - 15 03 00 00 02                                    .....
+read from 0x7fa113e00150 [0x7fa115006605] (2 bytes => 2 (0x2))
+0000 - 02 28                                             .(
+<<< SSL 3.0 Alert [length 0002], fatal handshake_failure
+    02 28
+18704:error:14094410:SSL routines:SSL3_READ_BYTES:sslv3 alert handshake failure:/SourceCache/OpenSSL098/OpenSSL098-52/src/ssl/s3_pkt.c:1125:SSL alert number 40
+18704:error:1409E0E5:SSL routines:SSL3_WRITE_BYTES:ssl handshake failure:/SourceCache/OpenSSL098/OpenSSL098-52/src/ssl/s3_pkt.c:546:
+```
+
+なお、opensslコマンドでの接続に失敗した場合の例についてはこちらを参照のこと
+- http://sig9.hatenablog.com/entry/2016/07/03/230000
+
 ### cypherリストを表示する。
 ```
 $ openssl list-cipher-commands
@@ -623,6 +665,96 @@ $ openssl crl -in CA.crl -text
 ```
 $ sudo openssl x509 -noout -modulus -in 証明書ファイル | md5sum
 $ sudo openssl rsa -noout -modulus -in 秘密鍵ファイル | md5sum
+```
+
+### opensslヘルプ
+第１引数が間違っていると第１引数に指定するヘルプを表示する。
+```
+$ openssl -h
+openssl:Error: '-h' is an invalid command.
+
+Standard commands
+asn1parse      ca             ciphers        crl            crl2pkcs7      
+dgst           dh             dhparam        dsa            dsaparam       
+ec             ecparam        enc            engine         errstr         
+gendh          gendsa         genrsa         nseq           ocsp           
+passwd         pkcs12         pkcs7          pkcs8          prime          
+rand           req            rsa            rsautl         s_client       
+s_server       s_time         sess_id        smime          speed          
+spkac          verify         version        x509           
+
+Message Digest commands (see the `dgst' command for more details)
+md2            md4            md5            mdc2           rmd160         
+sha            sha1           
+
+Cipher commands (see the `enc' command for more details)
+aes-128-cbc    aes-128-ecb    aes-192-cbc    aes-192-ecb    aes-256-cbc    
+aes-256-ecb    base64         bf             bf-cbc         bf-cfb         
+bf-ecb         bf-ofb         cast           cast-cbc       cast5-cbc      
+cast5-cfb      cast5-ecb      cast5-ofb      des            des-cbc        
+des-cfb        des-ecb        des-ede        des-ede-cbc    des-ede-cfb    
+des-ede-ofb    des-ede3       des-ede3-cbc   des-ede3-cfb   des-ede3-ofb   
+des-ofb        des3           desx           rc2            rc2-40-cbc     
+rc2-64-cbc     rc2-cbc        rc2-cfb        rc2-ecb        rc2-ofb        
+rc4            rc4-40         rc5            rc5-cbc        rc5-cfb        
+rc5-ecb        rc5-ofb        seed           seed-cbc       seed-cfb       
+seed-ecb       seed-ofb       
+```
+
+第２引数が間違っていると第２引数に指定できるヘルプを表示する。
+```
+$ openssl s_client -help
+unknown option -help
+usage: s_client args
+
+ -host host     - use -connect instead
+ -port port     - use -connect instead
+ -connect host:port - who to connect to (default is localhost:4433)
+ -verify depth - turn on peer certificate verification
+ -cert arg     - certificate file to use, PEM format assumed
+ -certform arg - certificate format (PEM or DER) PEM default
+ -key arg      - Private key file to use, in cert file if
+                 not specified but cert file is.
+ -keyform arg  - key format (PEM or DER) PEM default
+ -pass arg     - private key file pass phrase source
+ -CApath arg   - PEM format directory of CA's
+ -CAfile arg   - PEM format file of CA's
+ -reconnect    - Drop and re-make the connection with the same Session-ID
+ -pause        - sleep(1) after each read(2) and write(2) system call
+ -showcerts    - show all certificates in the chain
+ -debug        - extra output
+ -msg          - Show protocol messages
+ -nbio_test    - more ssl protocol testing
+ -state        - print the 'ssl' states
+ -nbio         - Run with non-blocking IO
+ -crlf         - convert LF from terminal into CRLF
+ -quiet        - no s_client output
+ -ign_eof      - ignore input eof (default when -quiet)
+ -no_ign_eof   - don't ignore input eof
+ -ssl2         - just use SSLv2
+ -ssl3         - just use SSLv3
+ -tls1         - just use TLSv1
+ -dtls1        - just use DTLSv1
+ -mtu          - set the link layer MTU
+ -no_tls1/-no_ssl3/-no_ssl2 - turn off that protocol
+ -bugs         - Switch on all SSL implementation bug workarounds
+ -serverpref   - Use server's cipher preferences (only SSLv2)
+ -cipher       - preferred cipher to use, use the 'openssl ciphers'
+                 command to see what is available
+ -starttls prot - use the STARTTLS command before starting TLS
+                 for those protocols that support it, where
+                 'prot' defines which one to assume.  Currently,
+                 only "smtp", "pop3", "imap", "ftp" and "xmpp"
+                 are supported.
+ -engine id    - Initialise and use the specified engine
+ -rand file:file:...
+ -sess_out arg - file to write SSL session to
+ -sess_in arg  - file to read SSL session from
+ -servername host  - Set TLS extension servername in ClientHello
+ -tlsextdebug      - hex dump of all TLS extensions received
+ -status           - request certificate status from server
+ -no_ticket        - disable use of RFC4507bis session tickets
+ -legacy_renegotiation - enable use of legacy renegotiation (dangerous)
 ```
 
 # TODO
