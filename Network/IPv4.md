@@ -1,7 +1,7 @@
 # Overview 
-This markdown is about TCP/IP (mechanism)
+This markdown is about IPv4 Header Details
 
-# IPv4 Packet Structer 
+# IPv4 Packet Structure
 
 ## IPv4
 
@@ -40,9 +40,9 @@ This markdown is about TCP/IP (mechanism)
   - It is used as packet identifier.
   - If packet divided into some packets, we can ackowledge the original packet.
 - Flags(3bit)
-  - 0: It it a final packaet that is divided packet.
-  - 1: forbid packet divide.
-  - 2: continue to send divided packet.
+  - 0: Not used
+  - 1: forbid divide(1), allow divide(0)
+  - 2: continue fragment(1), last fragment(0)
 - Fragment Offset(13bit)
   - This flagment is used by to reconstruct fragmented-datagram.
 - Time to Live(8bit)
