@@ -1,6 +1,6 @@
 # 概要
 ChaCha20-Poly1305は新しい暗号方式です。
-- Chacha20はストリーム暗号方式で、Poly1305はメッセージ認証(MAC)の機能です。
+- Chacha20はストリーム暗号方式(共通鍵暗号)で、Poly1305はメッセージ認証(MAC)の機能です。
 - AEAD付きなCipher SuiteなのでAEADの規定がないTLS1.0/TLS1.1では利用することができません。
 
 ChachaはSHA-3選定の最終候補であったBLAKEの基礎となっている。

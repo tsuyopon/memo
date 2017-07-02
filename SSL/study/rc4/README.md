@@ -1,5 +1,5 @@
 # 概要
-RC4とはRSA Securityの Ronald Rivestによって作られたアルゴリズムであり、SSL, WEPやWPAなどに用いられているストリーム暗号である。  
+RC4とはRSA Securityの Ronald Rivestによって作られたアルゴリズムであり、SSL, WEPやWPAなどに用いられているストリーム暗号であり共通鍵暗号の１つである。
 RC4は営業秘密であったが何者かが匿名でCypherpunksのメーリングリストに解説を流してしまった。
 
 # 詳細
