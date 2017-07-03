@@ -11,6 +11,10 @@ Yahoo! JAPANのIDについて
 - OAuthは認可(Authorization)
   - 第三者サイトなどでヤフーのリソースなどにアクセスできる仕組みを提供すること
 
+ID連携v2で次の２つの大きな変更がある。
+- 標準仕様に準拠(いままではdraftだった)
+- Hybrid flowに対応
+
 # ヤフーが対応しているフロー
 - Authorization Code Flow
   - サーバサイドで認証
@@ -43,3 +47,4 @@ PHPのSDKを使ったAuthorization Code Flowについて説明しています。
 
 # 参考資料
 - https://www.slideshare.net/kura_lab/20161317-cloud-serverfesta2016yahooidfederation
+- https://www.slideshare.net/kura_lab/yahoo-japanopenid-certified-mark
