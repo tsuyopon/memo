@@ -44,6 +44,10 @@ error_reporting(-1);
 ini_set('error_reporting', E_ALL);
 ```
 
+### PHP関連の設定でエラーに関するもの
+php設定でerrorに関するものは結構多く存在します。以下を参考にしてください。
+- http://phpspot.net/php/man/php/errorfunc.configuration.html#ini.xmlrpc-errors
+
 ### xdebug
 ** TODO **
 
