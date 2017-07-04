@@ -10,8 +10,42 @@ var_dumpをpreエレメントで囲む手法などは結構重宝するとのこ
 <pre><?php var_dump($hoge) ?></pre>
 ```
 
-### xdebug
+### display_errorsとerror_reportingについて
+display_errorsをOnにすると画面上にエラーを表示してくれるようになります。デバッグ用途の設定です。
+```
+<?php
+ini_set('display_errors', 'On');
+error_reporting(E_ALL);
+```
 
+error_reportingについては出力する PHP エラーの種類を設定することができます。
+以下はドキュメントに記載のあった設定例
+```
+// 全てのエラー出力をオフにする
+error_reporting(0);
+
+// 単純な実行時エラーを表示する
+error_reporting(E_ERROR | E_WARNING | E_PARSE);
+
+// E_NOTICE を表示させるのもおすすめ（初期化されていない
+// 変数、変数名のスペルミスなど…）
+error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
+
+// E_NOTICE 以外の全てのエラーを表示する
+error_reporting(E_ALL & ~E_NOTICE);
+
+// 全ての PHP エラーを表示する (Changelog を参照ください)
+error_reporting(E_ALL);
+
+// 全ての PHP エラーを表示する
+error_reporting(-1);
+
+// error_reporting(E_ALL); と同じ
+ini_set('error_reporting', E_ALL);
+```
+
+### xdebug
+** TODO **
 
 
 ### debug_backtrace関数を利用する
