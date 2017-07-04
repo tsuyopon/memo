@@ -13,10 +13,23 @@ Chromeの機能として以下のドキュメントが多くを紹介してい�
 
 # 詳細
 
-### alert
-昔はよくアラート使っていたがいまではつかわないかな。。。
+### Objectを文字列として表示させたい。
+
+console.log(obj)のようにObjectであるobj引数をそのまま指定すると次のようにHobbyが束ねられてしまうことがあります。
 ```
-alert('hoge');
+var obj = {"Name":"John","Hobby":[{"Hobby1":"Tennis"},{"Hobby2":"Golf"}]};
+console.log(obj);
+
+// 出力結果
+Object{ Name="John", "Hobby"=[2] }
+```
+
+Objectとしてではなくjson文字列などどでconsole.log等に出したい場合には次のようにします。
+```
+var obj = {"Name":"John","Hobby":[{"Hobby1":"Tennis"},{"Hobby2":"Golf"}]};
+console.log(obj.toSource());
+
+// 出力結果としてはobjがそのまま表示される。
 ```
 
 ### 定番console
@@ -60,6 +73,13 @@ HTMLタグが表示されるところが階層形式で詳細をみることが�
 var elm = document.getElementById('hoge');
 console.log(elm);
 console.dir(elm);
+```
+DOMエレメントのツリーを見やすくする
+- http://qiita.com/kashira2339/items/874f95aaaa59f4a17d3d
+
+例えば、aタグだけを表示したい場合には次のようにする。
+```
+console.dirxml(document.getElementsByTagName('a'));
 ```
 
 以下のようにしてログをまとめることもできる。
@@ -121,6 +141,11 @@ console.time('timer0');
 console.timeStamp('stop');
 ```
 
+### サーバ側にエラーを送る
+エラーが見つかったらHTTP経由でサーバにエラーを送る方法です。  
+サーバ側には1つエラーを取得するためのエントリポイントを準備する必要があります
+- http://postd.cc/how-to-not-hate-javascript-tips-from-the-frontline/
+
 ### 関数のスタックトレースを表示する。
 スタックトレースを表示したい箇所で以下を挿入します。
 ```
@@ -140,6 +165,37 @@ Chromeのアイコンについては以下に公式説明があるので参考�
 ```
 debugger;
 ```
+
+### 実行している関数名を取得する
+
+ES6であれば次のようなことが可能
+```
+function functionName(fun) {
+  console.log(myFunction.name);         // xxxx.nameにより取得可能。xxxxは関数名となる
+  var ret = fun.toString();
+  ret = ret.substr('function '.length);
+  ret = ret.substr(0, ret.indexOf('('));
+  return ret;
+}
+```
+
+ちなみに無名関数であればcallee.nameを使うと良い
+```
+var x = function x() {
+    console.log( arguments.callee.name );
+}
+x();
+```
+
+この辺の詳細については以下を参照のこと
+- https://stackoverflow.com/questions/2648293/javascript-get-function-name
+
+### alert
+昔はよくアラート使っていたがブラウザじゃないと利用できないのであまりもう利用しないかも
+```
+alert('hoge');
+```
+
 
 ### HTML要素の位置が知りたい
 Developer Toolsであれば画面をポインティングしているアイコンを押下して画面にoverlayすれば、その箇所のHTML要素をしることができる。
