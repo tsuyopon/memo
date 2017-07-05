@@ -11,9 +11,17 @@ Yahoo! JAPANのIDについて
 - OAuthは認可(Authorization)
   - 第三者サイトなどでヤフーのリソースなどにアクセスできる仕組みを提供すること
 
+現在では認証と認可を組み合わせたOpenID ConnectというのがIDトレンドらしい
+
 ID連携v2で次の２つの大きな変更がある。
 - 標準仕様に準拠(いままではdraftだった)
 - Hybrid flowに対応
+
+# OAuth, OpenID, YConnectなどが混合している場合のメモ
+- https://www.slideshare.net/kura_lab/standardbased-identity-1
+
+認証・認可の歴史(OpenID, OAuth1.0, OAuth2.0, OpenID Connect)や関係性などについてわかりやすく記載されている。
+また、Authorization Codeのinput, outputで詳しい説明がある。
 
 # ヤフーが対応しているフロー
 - Authorization Code Flow
