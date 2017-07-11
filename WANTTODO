@@ -1,6 +1,23 @@
-# やりたいこと
-- OAuthやOpenID Connectについてもうちょっと深堀したい
+# やりたいこと(2017)
+- 7/4 OAuthやOpenID Connectについてもうちょっと深堀したい
   - userinfo APIたたいてみてる
+  - authorization code確認
+- 7/7
+  - L3switch関連深掘り(Network/LB.mdの追加)
+  - kafka周り(sendfileやキャッシュ機構)
+  - kafka周りでやっていたsystem tapを使ってみる関連
+  - kafkaのコードをちょっと読んでみたいと思った
+  - Diffie Helmanで双方で公開鍵・秘密鍵を用意する理由の確認
+  - SPN構造とファイステラル構造の確認
+  - yvipagentよみたい
+    - https://github.com/yahoo/l3dsr/blob/master/yvipagent/src/yvipagent.pl
+- 7/12
+  - HTTP同時接続数とConnection: keep-aliveの挙動について
+  - HTTP Multiplexing
+  - 認証・認可使ってみたい
+  - SlowDow攻撃についての概要を押さえておく
+  - normalize
+
 
 # やりたい(高)
 - Linuxシステムコール徹底ガイド
