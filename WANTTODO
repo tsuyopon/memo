@@ -15,7 +15,7 @@
   - HTTP同時接続数とConnection: keep-aliveの挙動について
   - HTTP Multiplexing
   - 認証・認可使ってみたい
-  - SlowDow攻撃についての概要を押さえておく
+  - SlowDow攻撃についての概要を押さえておく -> ok
   - normalize
 
 

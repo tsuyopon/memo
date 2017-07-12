@@ -1,6 +1,7 @@
 # 概要
 Slow HTTP Dosとは、各セッションの接続時間を可能な限り引き延ばすことによってWebサーバのTCPセッションを占有します。
 これはUDP FloodingやSYN Flooding等の攻撃とは異なり少量のパケットで攻撃が成立します。
+「Slow HTTP DoS Attack」は、共通した特徴を持つ複数のDoS攻撃手法の総称で、Slow Client AttackやSlow Rate Attackとも呼称されている。
 
 Slow HTTP Dosといっても継続時間の引き伸ばしを試みる通信対象によって次の３つが存在します。
 - (1) Slow HTTP Headers Attack
