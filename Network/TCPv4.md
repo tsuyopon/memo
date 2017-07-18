@@ -28,3 +28,7 @@ This is TCPv4 Header Details
 
                             TCP Header Format
 ```
+
+
+# Checksum
+- http://www.erg.abdn.ac.uk/users/gorry/course/inet-pages/ip-cksum.html
