@@ -13,10 +13,15 @@
     - https://github.com/yahoo/l3dsr/blob/master/yvipagent/src/yvipagent.pl
 - 7/12
   - HTTP同時接続数とConnection: keep-aliveの挙動について
-  - HTTP Multiplexing
   - 認証・認可使ってみたい
-  - SlowDow攻撃についての概要を押さえておく -> ok
-  - normalize
+  - SlowDow攻撃についての概要を押さえておく
+  - Accept-Encodingのnormalizeと呼ばれる機能を確認しておきたい
+- 7/13
+  - HTTP2 multiplexingについて調査
+  - 新規にEV証明書を発行した場合と、適用する場合などの注意などを確認したい
+  - クライアント<=>サーバ、サーバ<=>サーバの場合のHTTP Keep-aliveのソースコード上の動作を確認しておきたい
+  - TCP Keep-Aliveの動作をカーネル上で確認しておきたい。いつタイムアウトになるのかなど
+  - サーバ＋クライアントのTCP接続プログラムを記述することによって、どこでsyn, syn+ack, ackが送られているのかを確認しておきたい
 
 
 # やりたい(高)
