@@ -2,25 +2,107 @@
 queryの主にjoin関連についてまとめる
 
 ### JOINのパターン
-たった、3つのパターンだけのようだ
-- inner join
+joinは同じ意味であるがいろいろな書き方があるので混乱しやすいが主要なものをまとめると次の通り。
+inner join, left joinあたりを覚えておけば通常はあまり困ることはない
+- inner join(= join)
   - 1:1の関係で結合する
   - inner joinの場合には双方で結合できなければ、そのレコードは削除されることに注意する
-- left join
-  - 左にあるテーブルを元に結合する
-- right join
-  - 右にあるテーブルを元に結合する
-
-この他にも次のように煩わしいのがあるがきほんは上記の３つらしい
-- outer join
+- left join (= left outer join)
+  - 左にあるテーブルを元に結合する。右側に一致するレコードが存在しなくてもnullとしてレコードを表示する
+- right join (= right outer join)
+  - 右にあるテーブルを元に結合する。左側に一致するレコードが存在しなくてもnullとしてレコードを表示する
+- full join (= full outer join)
+  - 左右にあるテーブルを結合する。右側、左側どちらのテーブルでレコードが一致しなかったとしてもそのレコードを表示する。
 - cross join
-- left outer join
-- right outer join
+  - 左右のレコードの直積を求める。ON, USING を指定しない場合、左右のテーブルの直積を返します
+  - 右テーブルにN列、左テーブルにM列だと、cross joinするとMxNレコードが表示される。
 
 次のstackflowがすごいわかりやすい
 - https://stackoverflow.com/questions/38549/what-is-the-difference-between-inner-join-and-outer-join?rq=1
 
-### joinしてみる
+上記内容から引用すると、下記のようなテーブルが存在する場合
+```
+A    B
+-    -
+1    3
+2    4
+3    5
+4    6
+```
+
+- inner join
+```
+select * from a INNER JOIN b on a.a = b.b;
+select a.*,b.*  from a,b where a.a = b.b;
+
+a | b
+--+--
+3 | 3
+4 | 4
+```
+- left outer join
+```
+select * from a LEFT OUTER JOIN b on a.a = b.b;
+select a.*,b.*  from a,b where a.a = b.b(+);
+
+a |  b
+--+-----
+1 | null
+2 | null
+3 |    3
+4 |    4
+```
+- right outer join
+```
+select * from a RIGHT OUTER JOIN b on a.a = b.b;
+select a.*,b.*  from a,b where a.a(+) = b.b;
+
+a    |  b
+-----+----
+3    |  3
+4    |  4
+null |  5
+null |  6
+```
+- full outer join
+```
+select * from a FULL OUTER JOIN b on a.a = b.b;
+
+ a   |  b
+-----+-----
+   1 | null
+   2 | null
+   3 |    3
+   4 |    4
+null |    6
+null |    5
+```
+- cross join
+```
+select * from a CROSS JOIN b;
+
+A    B
+-    -
+1    3
+1    4
+1    5
+1    6
+2    3
+2    4
+2    5
+2    6
+3    3
+3    4
+3    5
+3    6
+4    3
+4    4
+4    5
+4    6
+```
+
+### joinを使って見る
+とりあえず今回はLEFT JOINの例です。
 ```
 mysql> SELECT * FROM city AS ci LEFT JOIN country AS co ON ci.country_id = co.country_id LIMIT 10;
 +---------+--------------------+------------+---------------------+------------+----------------------+---------------------+
