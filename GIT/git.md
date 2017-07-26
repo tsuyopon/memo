@@ -191,7 +191,7 @@ $ git submodule update
 $ git submodule update --recursive
 ```
 
-# その他
+# 復元
 
 ### 誤って登録してしまったコミットメッセージを変更する
 amendオプションを使います。
@@ -216,22 +216,6 @@ $ git clean -f    # 削除実行
 $ git clean -d -n    # dry-runで確認
 $ git clean -d -f    # 削除実行
 ```
-
-### .gitsubmoduleのハッシュ値に"-dirty"というのが付与されてしまう場合
-
-たとえば、更新しようとしているレポジトリの中で呼ばれているレポジトリも次のコマンドで更新した場合すべてがアタrしくなる
-```
-$ git submodule update --recursive
-```
-
-この状態で次のhogeレポジトリを落としてその直下にrepoaがあり、repoaは別のgitsubmodule repobを使っている場合
-```
-hoge/repoa
-      /repob
-```
-
-通常は、hogeレポジトリに入ったあとにrepoaにcdして、git checkout xxxxでブランチを切り替えてhogeに戻ってからgit diffなどして確認する。
-このときにxxxxxx-dirtyとなった場合、repobの方も更新されていることがある。
 
 ### ブランチを作るのを忘れてmasterにコミットしてしまった場合に、そのブランチを作成してコミットを移す方法
 まずは誤ってmasterにコミットしたことに気づいた時点でブランチを作成します。
@@ -278,6 +262,23 @@ $ git log --oneline --decorate --graph master testbranch
 ```
 $ git reset --hard HEAD~3
 ```
+
+# その他
+### .gitsubmoduleのハッシュ値に"-dirty"というのが付与されてしまう場合
+
+たとえば、更新しようとしているレポジトリの中で呼ばれているレポジトリも次のコマンドで更新した場合すべてがアタrしくなる
+```
+$ git submodule update --recursive
+```
+
+この状態で次のhogeレポジトリを落としてその直下にrepoaがあり、repoaは別のgitsubmodule repobを使っている場合
+```
+hoge/repoa
+      /repob
+```
+
+通常は、hogeレポジトリに入ったあとにrepoaにcdして、git checkout xxxxでブランチを切り替えてhogeに戻ってからgit diffなどして確認する。
+このときにxxxxxx-dirtyとなった場合、repobの方も更新されていることがある。
 
 - 参考
   - http://qiita.com/atskimura/items/a90dfa8bfc72e3657ef9
