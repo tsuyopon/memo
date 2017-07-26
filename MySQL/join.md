@@ -135,6 +135,39 @@ mysql> SELECT * FROM city LEFT JOIN country USING(country_id) LIMIT 3;
 3 rows in set (0.00 sec)
 ```
 
+### あるテーブルを２度参照させるようなSQL文を書く
+たとえば、次のようなAとBというテーブルが存在して
+````
+A
+
+<myid>   <name>
+1      hoge
+2      fuga
+3      piyo
+4      hoge2
+```
+
+```
+B
+<id>   <left_myid>   <right_myid>
+1      2             3
+2      2             4
+3      3             1
+4      3             4
+5      1             3
+```
+
+
+AのmyidとBのleft_myidを一致するright_myidを探索して、right_myidと一致するA.myidのnameを取得したい場合、 Aテーブルは２度参照されることになる。
+この場合には次のように記述する
+```
+SELECT A2.name FROM A AS A1
+INNER JOIN B AS B1 ON A1.myid = B1.left_myid
+INNER JOIN (SELECT * FROM A) AS A2 ON B1.right_myid = A2.name;
+```
+
+INNER JOINの後にテーブルではなく「(SELECT * FROM A) AS A2」などと記述できる点がポイントとなる
+
 ### UPDATEを使ってJOINして、結合した複数のテーブルを一気に更新する
 次の例ではuser_mainとuser_subの両方を更新する例です。
 ```

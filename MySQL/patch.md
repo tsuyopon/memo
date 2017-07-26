@@ -21,12 +21,15 @@ USE mydatabase
 -- -------------------------------------------
 -- 1. XXXXの確認
 -- -------------------------------------------
+\! echo ""
 \! echo "適用前のXXXX確認"
 SELECT * FROM XXXX;
 
+\! echo ""
 \! echo "適用"
 UPDATE mydatabase.XXXX SET hoge=1;
 
+\! echo ""
 \! echo "適用後のXXXX確認"
 SELECT ROW_COUNT();
 SELECT * FROM XXXX;
@@ -34,6 +37,7 @@ SELECT * FROM XXXX;
 -- -------------------------------------------
 -- 2. YYYYの確認
 -- -------------------------------------------
+\! echo ""
 \! echo "YYYYの確認"
 SELECT * FROM YYYY;
 ```
