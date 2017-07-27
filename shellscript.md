@@ -757,6 +757,15 @@ printf "%b" "\n"
 
 ただし、パスワードは/proc/coreから覗くことは可能である。
 
+### timeコマンドをファイルに出力させたい。
+実は組み込みコマンドのtimeは標準出力や標準エラー出力にやってもファイルにリダイレクトされない
+- https://stackoverflow.com/questions/2408981/how-can-i-redirect-the-output-of-the-time-command
+
+こんな感じで指定しなければならない　
+```
+(time ls) &> file
+```
+
 # 参考URL
 - UNIX&LINUXコマンド・シェルスクリプトリファレンス
   - 今後もリファレンスとして非常によさそう
