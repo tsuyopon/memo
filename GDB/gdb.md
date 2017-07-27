@@ -1036,6 +1036,24 @@ gdb7.0から逆方向にnext, nexti, step, stepiなどを実行することが�
 - 参考
  - https://www.sourceware.org/gdb/news/reversible.html
 
+### 関数のどの位置でreturnされたのかを知りたい
+関数の中に複数のreturnポイントが存在して、これらが同一の値を返す場合、  
+finishしてその後のreturnしている値を見るといった方法が通用しない。
+
+このような場合、次のような方法がある
+
+- 関数の中でいくつもブレークポイントを貼る方法
+- (gdb) disas funcを実行して特定の位置にブレークポイントを貼る
+- reverse-stepを用いる方法
+```
+(gdb) record
+(gdb) finish
+(gdb) reverse-step
+```
+
+- 参考
+  - https://stackoverflow.com/questions/3649468/setting-breakpoint-in-gdb-where-the-function-returns
+
 ### gdbで入力中にタブを押すとどうなるか?
 候補が表示されるので覚えておくとよい。
 ```
