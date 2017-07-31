@@ -166,6 +166,54 @@ Chromeのアイコンについては以下に公式説明があるので参考�
 debugger;
 ```
 
+### 条件付きbreakする方法
+ブレークポイントを右クリックして「Edit breakpoint」を選択します。
+ブレーク条件を指定します。たとえば、次のような感じで指定します。
+```
+e !=  null
+```
+
+参考
+- http://qiita.com/Shinji-Hashimoto/items/e6ab00be4f3dfbc20855
+
+### どこで例外が発生したかを知る方法
+(||)マークを押下します。詳細は以下のURLを参考のこと
+参考
+- http://qiita.com/Shinji-Hashimoto/items/e6ab00be4f3dfbc20855
+
+### XHR Breakpoints
+指定したURLへのAjax通信が発生した時にbreakする方法です。  
+SourcesパネルのXHR Breakpointsのアコーディオンを開いて、右クリックまたは+ボタンで任意のURLを指定します。
+
+URLを空で設定するとすべての通信時にブレイクする「Any HXR」として設定されます。
+
+
+参考
+- http://qiita.com/Shinji-Hashimoto/items/e6ab00be4f3dfbc20855
+
+### Event Listender Breakpoints
+どこかでイベントが発生したときにbreakする方法です。
+たとえば、クリックイベントが発生した時などbreakするイベントは指定することができます。
+
+SourcesパネルのEvent Listender Breakpointsのアコーディオンを開くと様々なイベントが表示されます。 
+任意のイベントを選択状態にしておくとイベント発生時にbreakします。
+
+参考
+- http://qiita.com/Shinji-Hashimoto/items/e6ab00be4f3dfbc20855
+
+### 要素の変更時にbreakする方法
+Elementsパネルでbreakさせたい要素を右クリックして「Break on...」を選択して、次のいずれかを選択する。
+* subtree modifications
+** 子要素の変更時
+* attribute modifications
+** 該当要素の属性変更時
+* node removal
+** 要素削除時
+
+参考
+- http://qiita.com/Shinji-Hashimoto/items/e6ab00be4f3dfbc20855
+
+
 ### 実行している関数名を取得する
 
 ES6であれば次のようなことが可能
