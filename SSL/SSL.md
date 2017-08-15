@@ -29,8 +29,6 @@ TLS1.3 	? 	[ドラフト]インターネット環境の変化とTLS1.2までの�
 概念図などは以下を参考のこと
 - http://qiita.com/kuni-nakaji/items/5118b23bf2ea44fed96e#comment-456cb90d89c71c924782
 
-
-
 # 概念
 
 ### SSLハンドシェイク
@@ -114,36 +112,6 @@ security.ssl.enable_false_start
 しかし、一部のロードバランサやSSLアクセラレータの製品バージョンによってSSL/TLS接続で問題が発覚しました。  
 また、BEASTアタックなどが指摘されたとのことで、Googleは2012年4月にSSL False Startのサポートを終了するとのアナウンスを行いました。
 
-
-### HSTS(HTTP Strict Transport Security)ヘッダについて
-サーバがクライアント側に送付するヘッダで、HTTPSでアクセスしなければならない時間を伝えるための仕組み
-このヘッダは非常にシンプルでmax-ageのパラメータのみを受け付ける
-```
-Strict-Transport-Security: max-age=15768000;includeSubDomains         // 一般的に6ヶ月
-```
-
-- https://tools.ietf.org/html/rfc6797
-
-2015年6月にマイクロソフトもIEへサポートを追加したことで全てのブラウザでHSTSの対応が完了している。
-
-### Preloaded HSTS
-ブラウザのソースコードに組み込まれているリストで、このリストに含まれていればwww.abc.comでもHTTPSでアクセスするといったルールを記述しておきます。  
-chromeとfirefoxにはこの仕組みが搭載されています。
-
-例えば、Chrome, Firefoxの場合には次のようなリストが記載されているようです。
-- Chrome  
--- https://src.chromium.org/viewvc/chrome/trunk/src/net/http/transport_security_state_static.json
-- Firefox  
--- https://dxr.mozilla.org/mozilla-central/source/security/manager/tools/PreloadedHPKPins.json
-
-たとえば、ChromeのPreloaded HSTSに組み込むには次から申請をするらしい
-- https://hstspreload.appspot.com/
-
-chromeで特定のドメインが登録されているかどうかを確認するには次から確認すればいいようだ。
-- chrome://net-internals/#hsts
-
-- 参考  
--- http://blog.cybozu.io/entry/6096
 
 ### HPKP(HTTP Public Key Pinning)
 TBD
