@@ -112,13 +112,6 @@ security.ssl.enable_false_start
 しかし、一部のロードバランサやSSLアクセラレータの製品バージョンによってSSL/TLS接続で問題が発覚しました。  
 また、BEASTアタックなどが指摘されたとのことで、Googleは2012年4月にSSL False Startのサポートを終了するとのアナウンスを行いました。
 
-
-### HPKP(HTTP Public Key Pinning)
-TBD
-
-- https://developer.mozilla.org/en-US/docs/Web/HTTP/Public_Key_Pinning
-- https://tools.ietf.org/html/rfc7469
-
 ### SSL技術要素の要点について
 
 |方式|解決可能な問題|解決できない問題|
@@ -535,7 +528,3 @@ RSAセキュリティにより考案された公開鍵暗号標準のグルー�
 * https://www.jp.websecurity.symantec.com/welcome/pdf/wp_sslandroot-certificate.pdf
 
 
-# TODO
-* SSL セッション再利用
-* master secret
-* HPKP
