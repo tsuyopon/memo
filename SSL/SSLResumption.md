@@ -1,6 +1,6 @@
 # 概要
 TLSはハンドシェイクがとても遅いのでこれを高速化する方法が存在します。  
-2回目以降のハンドシェイクで1回目のハンドシェイク時に利用したmaster_secretをキャッシュしておいてそれを利用するという方法があります。
+2回目以降のハンドシェイクで1回目のハンドシェイク時に利用したmaster_secretをキャッシュしておいてそれを利用することによって、証明書のダウンロード>や失効確認を省略することで、即座に暗号化されたアプリケーションデータを交換することができます。
 
 この２回目以降のハンドシェイク手順を「セッション再開(session resumption)」と呼びます。
 
@@ -150,3 +150,5 @@ TLS Session Ticket拡張は新しい方式なので、自分が調べた感じ�
 # 参考資料
 - TLSセッション再開 (session resumption) のしくみ  <= おすすめ
   - http://qiita.com/n-i-e/items/bb0e582011a5b1f9c28d
+- RFC5077 Transport Layer Security (TLS) Session Resumption without Server-Side State
+  - https://tools.ietf.org/html/rfc5077
