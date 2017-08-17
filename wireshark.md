@@ -126,6 +126,13 @@ ip.addr == 192.168.1.1 and tcp.port == 443 and ssl
 http.host matches "acme\.(org|com|net)"
 ```
 
+### HTTPSドメインで絞りたい
+HTTPSの場合だとSSLよりも上位層なのでHTTPヘッダやHTTPボディなどは全てencryptedされている。
+そのため、http.hostなどで確認することができないようだ。
+
+参考この辺??
+- https://security.stackexchange.com/questions/80991/can-someone-using-wireshark-obtain-the-full-url-if-my-program-uses-https
+
 ### 複合指定(AND, OR)する
 AND指定やNOTなどを組み合わせることができる。&&でも代用可能です。
 ```
