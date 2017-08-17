@@ -1,6 +1,5 @@
 # 概要
-wiresharkについてまとめる
-コマンドライン版のtsharkも使うことができる
+wiresharkについて主にフィルタリング方法についてまとめる。 コマンドライン版のtsharkも使うことができる
 
 yumが利用できるならばtsharkも含めて以下のコマンドでインストールすることができる。
 ```
@@ -11,6 +10,53 @@ MACなどではウェブサイトからdmgをダウンロードしてインス�
 
 
 # フィルタ
+
+### フィルタリングに入力されるとサジェストされる一覧
+次の文字列まで入力するとwiresharkのfiltering部分でsuggestされるので、該当名称がよくわからない時などに便利
+```
+eth
+vlan
+ip
+ipv6
+arp
+tcp
+udp
+icmp
+icmpv6
+fr
+ppp
+rip
+bgp
+mpls
+dtp
+vtp
+http
+```
+
+### フィルタリング用オペレータ
+```
+eq   ==
+ne   !=
+gt   >
+lt   <
+ge   >=
+le   <=
+contains
+matches        ~
+bitwise_and    &
+```
+
+ロジック関連
+```
+and  &&
+or   ||
+xor  ^^
+not  !
+[n]        // substring
+```
+
+- See
+  - https://www.wireshark.org/docs/wsug_html_chunked/ChWorkBuildDisplayFilterSection.html
 
 ### IPアドレスを抽出する
 ```
@@ -67,6 +113,17 @@ tcp
 udp
 http
 arp
+ssl
+```
+
+たとえば、SSLのハンドシェイクを見たい場合には次のような感じで指定すればOK
+```
+ip.addr == 192.168.1.1 and tcp.port == 443 and ssl
+```
+
+### HTTPドメインで絞る
+```
+http.host matches "acme\.(org|com|net)"
 ```
 
 ### 複合指定(AND, OR)する
@@ -122,8 +179,27 @@ tcp.flags.ack
 tcp contains 00:00:01
 ```
 
+### 何バイトまでを無視して、それ以外でのフィルタリングをする
 
+```
+udp[8:3]==81:60:03        // UDPヘッダ先頭8byteを無視して(バイトであることに注意)、3ビットでフィルタリングする
 
+eth.addr[0:3]==00:06:5B   // MACアドレスのvendorパートでフィルタリングしたい場合
+```
+
+- see 6.4.4
+  - https://www.wireshark.org/docs/wsug_html_chunked/ChWorkBuildDisplayFilterSection.html
+
+### 複数の値でフィルタリングしたい場合
+いくつかのポート番号でフィルタリングしたい場合には次のようにできます。
+```
+tcp.port in {80 443 8080}
+```
+
+上記フィルタリングは次の表現と等しい
+```
+tcp.port == 80 || tcp.port == 443 || tcp.port == 8080
+```
 
 
 # trace-cmd+kernelshark 
@@ -133,11 +209,18 @@ $ trace-cmd report > [file]
 $ kernelshark
 ```
 
+
 # TODO
-- tshark
+- tsharkをつかってみる
 
 
 # 参考URL
+- wiresharkのfilterlingのCheatseat。どのようなオプションを知るかを俯瞰するのにすごい便利
+  - http://packetlife.net/blog/2008/oct/18/cheat-sheets-tcpdump-and-wireshark/
+    - 以下のユーザーガイドの一部
+    - https://www.wireshark.org/docs/wsug_html_chunked/index.html
+- wiresharkのフィルタリング表現方法について
+  - https://www.wireshark.org/docs/wsug_html_chunked/ChWorkBuildDisplayFilterSection.html
 - SSLをみる
   - http://zentoo.hatenablog.com/entry/2015/11/29/145906
 
