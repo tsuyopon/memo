@@ -1,4 +1,4 @@
-<img src="_svg/rss.svg">
+<img src="https://github.com/tsuyopon/memo/blob/master/Network/_svg/rss.svg">
 
 ![エビフライトライアングル](_svg/rss.svg)
 
