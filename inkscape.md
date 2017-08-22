@@ -87,6 +87,25 @@ Ctrl + Iのショートカットからも可能です。
 ### 指定した形状(オブジェクト)にテキストを流し込む
 - https://sites.google.com/site/book001inkscape/home/text/shapetext
 
+
+### copy&pasteの注意(重要)
+- オリジナルからのコピー
+  - この場合には線の太さやstyleなどの変更も可能
+  - オリジナルを選択してCtrl + C, Ctrl + Dを実行する
+- オリジナルから同一オブジェクトのコピーを行う
+  - この場合には線の太さやStyleなどの変更はできない
+  - オリジナルを選択してCtrl + C, Ctrl + Vを実行する
+- cloneからコピー(clone)を作成する
+  - よくない。オリジナルからコピーを作成すべし
+
+
+- 参考
+  - http://www.linuxformat.com/wiki/index.php/Inkscape_-_cloning_and_tiling
+
+### 線をコピーしたい
+対象オブジェクトをコピーしたい場合、対象オブジェクトを選択してCopy&Paste(Ctrl+C, Ctrl+V)だとうまくいかない場合がある。
+そのような場合には、対象オブジェクトを選択した後にCtrl+C, Ctrl+V, Ctrl+Dとするとうまくいく場合がある。
+
 ### SVGパーツの探し方
 - Inkscapeと連携しているのは次のサイトなのでここから検索で探しても良い
   - https://openclipart.org/
