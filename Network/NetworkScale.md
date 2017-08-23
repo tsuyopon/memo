@@ -16,11 +16,14 @@
   - TSO: TCP Segmentation Offload (TSOはLSOやGSOと呼ばれることがある) 
   - GSO: Generic Segmentation Offload 
   - LSO: Large Segment Offload
-- LSO/GRO (H/WかS/W側の処理によるかの違い)
-  - LRO: Large Receive Offload
-  - GRO: Generic Receive Offload
+- LSO/GRO (H/WかS/W側の処理によるかの違い)  
+  - NICが受信したTCPパケットを結合して大きなパケットにしてからOSへ渡す仕組み
+    - LRO: Large Receive Offload
+    - GRO: Generic Receive Offload
 - TOE: TCP Offload Engine
+  - TCP/IPの処理を全てハードウェア側で実施する(フルオフロード)仕組み
 - Interrupt Coalescing
+  - NICがOS負荷を考慮して割り込みを間引く仕組み
 
 これらの用語を正しく説明し、生まれた背景(問題点)、解決策、H/WやOSなどの制約事項についてまとめていきます。
 
@@ -30,7 +33,7 @@
 
 
 ### Recieve Side Scaling(RSS)について
-最近のNICにおいてはH/Wの中で送受信用のキューを保持しています。
+最近のNIC(MultiQueue NIC)においてはH/Wの中でCPU毎の送受信用のキューを保持しています。
 この仕組みを利用することによって、通常は1つのCPUで行う受信制御を複数のCPUで行うことができます。
 <img src="_svg/rss.png">
 
@@ -45,19 +48,55 @@ RSS登場前の問題点、解決策、解決方法を確認する
   - ただし、TCPの順番保証を考えた場合にはパケットの並べ直しによるTCP Reorderingのコストが発生してパフォーマンスが低下する懸念はある。
 - 解決方法
   - CPUごとに別々の受信キュー(RX-queue)を持つNIC(MultiQueue NIC)が存在する。
-  - RX-queueごとに独立した割り込みを持つ
+  - RX-queueごとに独立した割り込みを持つことができる。
   - 同じフローに属するパケットは同じキューへ、異なるフローに属するパケットはなるべく別のキューへ分散(パケットヘッダのHash値計算により宛先キューを決定する)
 - 制約事項
   - 現在、RSSはWindowsとLinux両方でサポートされているハードウェアでPCIバスのMSI-Xサポート、NICへのRSS実装対応サポートが必要となる。
 
-### Receive Packet Steering(RPS)
-RSSの機能でNIC中のqueueから各CPUに分散されると、そのCPUからbacklogに登録されます。
+- 参考: スライドp30
+  - https://www.slideshare.net/syuu1228/ethernet-39611199
 
-利用方法
+### Receive Packet Steering(RPS)
+
+Receive Side Scaling(RSS)のソフトウェアエミュレーション版がRPSである。
+
+- 問題点
+  - RSS非対応のオンボードNICを利用することでサーバのネットワーク帯域を向上させたい。
+- 解決方法
+  - ソフトウェアでRSSと同じ仕組みを実装してしまおう
+  - ソフトウェア割り込みの段階でパケットを各CPUへばらまく。queueから各CPUに分散されると、そのCPUからbacklogに登録されます。
+  - CPU間割り込みを利用して他のCPUを稼働させる
+- 制約事項
+  - LinuxKernel-2.6.35以降
+- 利用方法
 ```
 # echo "f" > /sys/class/net/eth0/queues/rx-0/rps_cpus
 # echo 4096 > /sys/class/net/eth0/queues/rx-0/rps_flow_cnt
 ```
+
+- 参考: スライドp37
+  - https://www.slideshare.net/syuu1228/ethernet-39611199
+
+### Receive Flow Steering(RFS)
+- 問題点
+  - RPSではCPUの選択がランダムに行われますが、選択されたCPUコアが他のタスクでオーバーロードになっている場合には問題が生じます。
+- 解決方法
+  - RFSでは、"recvmsg()"というシステムコールを出しているCPUを選択することにより、キャッシュの利用効率を高めます。
+- 制約事項
+  - LinuxKernel-2.6.35以降
+- 利用方法
+```
+# echo "f" > /sys/class/net/eth0/queues/rx-0/rps_cpus
+# echo 4096 > /sys/class/net/eth0/queues/rx-0/rps_flow_cnt
+# echo 32768 > /proc/sys/net/core/rps_sock_flow_entries
+```
+
+- 参考: 
+  - スライドp45
+    - https://www.slideshare.net/syuu1228/ethernet-39611199
+  - LWN.net
+    - https://lwn.net/Articles/382428/
+  - https://access.redhat.com/documentation/ja-JP/Red_Hat_Enterprise_Linux/6/html/Performance_Tuning_Guide/main-network.html
 
 
 ### TCP Offload Engine(TOE)について
@@ -70,7 +109,14 @@ Linuxではサポート予定はない。
 ### Transmit Packet Steering(XPS)
 MultiQueue NICは送信キューも複数持っている。XPSはCPUと送信キューの割り当てを決めるI/F
 
+LinuxカーネルがCONFIG_XPSに対応している必要がある(SMPのデフォルト)
+```
+/sys/class/net/<dev>/queues/tx-<n>/xps_cpus
+```
 
+
+- 参考(LWN.net)
+  - https://lwn.net/Articles/412062/
 
 ### Interrupt Coalescing
 NICがOS負荷を考慮して割り込みを間引く仕組みであり、パケット数個に１回の割り込み処理を行う。或いは一定時間待ってから割り込みする。
@@ -83,6 +129,20 @@ NICがOS負荷を考慮して割り込みを間引く仕組みであり、パケ
 - 制約事項
   - 
 
+
+確認方法
+```
+# ethtool -c eth0
+Coalesce parameters for eth0:
+--snip--
+rx-usecs: 3
+--snip--
+```
+
+設定例(値が小さいほどコンテキストスイッチが大きくなる)
+```
+# ethtool -C eth0 rx-usecs 30
+```
 
 
 ### TSO/GSO/LSO
@@ -135,13 +195,14 @@ rx_queue_18_packets: 0
 rx_queue_19_packets: 8
 ```
 
-
-
 # TODO
+- ksoftirqdの役割について調べる
+- いまいち頭に入ってこないのでカーネルの実装を見る必要あり(RSS, RPS, RFS)
 - Direct Memory Access
 
 # 参考URL
-- https://www.kernel.org/doc/Documentation/networking/scaling.txt
+- Scaling in the Linux Networking Stack
+  - https://www.kernel.org/doc/Documentation/networking/scaling.txt
 - Boost UDP Transaction Performance
   - http://events.linuxfoundation.jp/sites/events/files/slides/LinuxConJapan2016_makita_160714.pdf
 - 10GbE時代のネットワークI/O高速化
@@ -149,3 +210,5 @@ rx_queue_19_packets: 8
   - 非常に素晴らしい資料
 - FreeBSD 10ギガビットネットワーク高速通信の秘密
   - http://news.mynavi.jp/articles/2008/10/29/bsdcon5/002.html
+- Receive Side Scaling and Receive Packet Steering
+  - http://balodeamit.blogspot.jp/2013/10/receive-side-scaling-and-receive-packet.html
