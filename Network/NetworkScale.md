@@ -1,6 +1,6 @@
-# $B%M%C%H%o!<%/%9%?%C%/$K$*$1$k%9%1!<%k(B
+# ネットワークスケール
 
-$B$3$l$i$NMQ8l$N0UL#$d5!G=$r@5$7$/2!$5$($F$*$/I,MW$,$"$j$^$9!#(B
+ネットワークをスケールするためには、 これらの用語の意味や機能を正しく押さえておく必要があります。
 
 - RSS: Receive Side Scaling
 - RPS: Receive Packet Steering
@@ -8,15 +8,101 @@
 - Accelerated Receive Flow Steering
 - XPS: Transmit Packet Steering
 
-### Recieve Side Scaling(RSS)$B$K$D$$$F(B
-$B:G6a$N(BNIC$B$K$*$$$F$O(BH/W$B$NCf$GAw<u?.MQ$N%-%e!<$rJ];}$7$F$$$^$9!#(B
-$B$3$N;EAH$_$rMxMQ$9$k$3$H$K$h$C$F!"DL>o$O(B1$B$D$N(BCPU$B$G9T$&<u?.@)8f$rJ#?t$N(BCPU$B$G9T$&$3$H$,$G$-$^$9!#(B
+上記用語の意味や機能については次でまとまっています。
+- https://www.kernel.org/doc/Documentation/networking/scaling.txt
+
+またこの他にも次の用語も押さえておく必要がある。
+- TSO/GSO/LSO (これら3つは同じ意味らしい)
+  - TSO: TCP Segmentation Offload (TSOはLSOやGSOと呼ばれることがある) 
+  - GSO: Generic Segmentation Offload 
+  - LSO: Large Segment Offload
+- LSO/GRO (H/WかS/W側の処理によるかの違い)
+  - LRO: Large Receive Offload
+  - GRO: Generic Receive Offload
+- TOE: TCP Offload Engine
+- Interrupt Coalescing
+
+これらの用語を正しく説明し、生まれた背景(問題点)、解決策、H/WやOSなどの制約事項についてまとめていきます。
+
+
+### irqbalance
+複数コアへの分散はirqbalanceデーモンにより10秒ごとに/proc配下のsmp_affinityが書き換えられています。
+
+
+### Recieve Side Scaling(RSS)について
+最近のNICにおいてはH/Wの中で送受信用のキューを保持しています。
+この仕組みを利用することによって、通常は1つのCPUで行う受信制御を複数のCPUで行うことができます。
 <img src="_svg/rss.png">
 
-/proc/irq/<irq>/smp_affinity$B$K$h$C$F(B
+RSS登場前の問題点、解決策、解決方法を確認する
+- 問題点
+  - ソフトウェア割り込みはNICの割り込みがかかったCPUへスケジューリングされる
+  - polling処理からデータのプロトコルスタックの処理の実行まではソフトウェア割り込み内で実行される。
+  - NICの割り込みがかかっているCPUにのみ負荷がかかる。
+  - ソフトウェア割り込みを実行しているCPUがボトルネックとなって性能がスケールしなくなる。
+- 解決策
+  - パケットを複数のCPUへ分散させてからプロトコルを処理する仕組みである必要がある。
+  - ただし、TCPの順番保証を考えた場合にはパケットの並べ直しによるTCP Reorderingのコストが発生してパフォーマンスが低下する懸念はある。
+- 解決方法
+  - CPUごとに別々の受信キュー(RX-queue)を持つNIC(MultiQueue NIC)が存在する。
+  - RX-queueごとに独立した割り込みを持つ
+  - 同じフローに属するパケットは同じキューへ、異なるフローに属するパケットはなるべく別のキューへ分散(パケットヘッダのHash値計算により宛先キューを決定する)
+- 制約事項
+  - 現在、RSSはWindowsとLinux両方でサポートされているハードウェアでPCIバスのMSI-Xサポート、NICへのRSS実装対応サポートが必要となる。
 
-### Receive Packet Steering
-RSS$B$N5!G=$G(BNIC$BCf$N(Bqueue$B$+$i3F(BCPU$B$KJ,;6$5$l$k$H!"$=$N(BCPU$B$+$i(Bbacklog$B$KEPO?$5$l$^$9!#(B
+### Receive Packet Steering(RPS)
+RSSの機能でNIC中のqueueから各CPUに分散されると、そのCPUからbacklogに登録されます。
+
+利用方法
+```
+# echo "f" > /sys/class/net/eth0/queues/rx-0/rps_cpus
+# echo 4096 > /sys/class/net/eth0/queues/rx-0/rps_flow_cnt
+```
+
+
+### TCP Offload Engine(TOE)について
+OSでプロトコル処理するのをやめてNICで処理させる仕組みで、TCP/IPの処理を全てハードウェア側で実施する(フルオフロード)仕組みである。
+Linuxではサポート予定はない。
+
+デメリットとしては、TOEにセキュリティホールが生じてもOS側から対応することができない。
+
+
+### Transmit Packet Steering(XPS)
+MultiQueue NICは送信キューも複数持っている。XPSはCPUと送信キューの割り当てを決めるI/F
+
+
+
+### Interrupt Coalescing
+NICがOS負荷を考慮して割り込みを間引く仕組みであり、パケット数個に１回の割り込み処理を行う。或いは一定時間待ってから割り込みする。
+
+- 問題点
+  - パケットが到達するごとにソフトウェア割り込みが発生するとコンテキストスイッチの負荷が非常に多くなる
+- 解決策
+  - 数個に1回でパケット割り込みするか、一定期間待ってからパケット割り込みする。
+  - レイテンシが上がってしまう
+- 制約事項
+  - 
+
+
+
+### TSO/GSO/LSO
+TCPセグメントへの分割処理をハードウェア側で実施する仕組み。
+CPUの処理速度よりもNICの処理速度の方が早いために処理を
+
+
+
+
+### Large Receive Offload(LRO) 
+セグメントの再構築をハードウェアで実施する仕組みです。つまり、NICが受信したTCPパケットを結合して大きなパケットにしてからOSへ渡します。
+LinuxではソフトウェアによりLROが実装されています。これをGROというようです。
+
+
+- 詳細
+  - https://www.slideshare.net/syuu1228/ethernet-39611199
+
+
+
+### メモ
 
 
 
@@ -49,10 +135,17 @@ rx_queue_18_packets: 0
 rx_queue_19_packets: 8
 ```
 
-### 
 
 
-# $B;29M(BURL
+# TODO
+- Direct Memory Access
+
+# 参考URL
 - https://www.kernel.org/doc/Documentation/networking/scaling.txt
 - Boost UDP Transaction Performance
   - http://events.linuxfoundation.jp/sites/events/files/slides/LinuxConJapan2016_makita_160714.pdf
+- 10GbE時代のネットワークI/O高速化
+  - https://www.slideshare.net/syuu1228/10-gbeio
+  - 非常に素晴らしい資料
+- FreeBSD 10ギガビットネットワーク高速通信の秘密
+  - http://news.mynavi.jp/articles/2008/10/29/bsdcon5/002.html
