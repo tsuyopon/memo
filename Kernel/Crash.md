@@ -16,6 +16,7 @@ kernel-debuginfo-3.3.4-5.fc17.x86_64
 ```
 
 パッケージをインストールしたらあとは引数なしでsudo権限でcrashコマンドを実行する。
+crashコマンドを実行しただけでcrashのインタプリタに遷移しない場合には、debuginfo等の必要なパッケージが不足していると思われる。
 ```
 $ sudo crash
 crash 6.1.0-1.fc17
@@ -60,9 +61,56 @@ LOAD AVERAGE: 0.19, 0.06, 0.06
 crash>
 ```
 
+vmlinux vmcoreを指定する場合には、その２つのファイルが存在するディレクトリに移動して次のコマンドを実行する。
+```
+$ crash vmlinux vmcore
+```
+
+### ヘルプを表示する
 どのようなコマンドがあるのかを調べるために最初はhelpを打ってみると良い。
 ```
 crash> help
+
+*              files          mach           repeat         timer          
+alias          foreach        mod            runq           tree           
+ascii          fuser          mount          search         union          
+bt             gdb            net            set            vm             
+btop           help           p              sig            vtop           
+dev            ipcs           ps             struct         waitq          
+dis            irq            pte            swap           whatis         
+eval           kmem           ptob           sym            wr             
+exit           list           ptov           sys            q              
+extend         log            rd             task           
+
+crash version: 6.1.0-1.fc17   gdb version: 7.3.1
+For help on any command above, enter "help <command>".
+For help on input options, enter "help input".
+For help on output options, enter "help output".
+```
+
+setサブコマンドのヘルプを表示するにはhelpのあとにsetを打つ。
+コマンドの実行例なども表示してくれます。
+```
+crash> help set
+
+NAME
+  set - set a process context or internal crash variable
+
+SYNOPSIS
+  set [[-a] [pid | taskp] | [-c cpu] | -p] | [crash_variable [setting]] | -v
+
+DESCRIPTION
+  This command either sets a new context, or gets the current context for
+  display.  The context can be set by the use of:
+
+      pid  a process PID.
+    taskp  a hexadecimal task_struct pointer.
+       -a  sets the pid or task as the active task on its cpu (dumpfiles only).
+   -c cpu  sets the context to the active task on a cpu (dumpfiles only).
+       -p  sets the context to the panic task, or back to the crash task on
+           a live system.
+       -v  display the current state of internal crash variables.
+(snip)
 ```
 
 
@@ -103,7 +151,7 @@ PID: 3265   TASK: ffff88001f205c80  CPU: 0   COMMAND: "crash"
     ORIG_RAX: 0000000000000000  CS: 0033  SS: 002b
 ```
 
-####プロセスを表示する。
+#### プロセスを表示する。
 ```
 crash> ps
    PID    PPID  CPU       TASK        ST  %MEM     VSZ    RSS  COMM
@@ -121,7 +169,7 @@ crash> ps
   (以下略)
 ```
 
-### 調査するプロセスを切り替える。
+### 調査するプロセスを切り替える + バックトレースを表示する
 
 psコマンドで以下のように表示されるPID=2443のsendmailプロセスを調査する。
 ```
@@ -167,6 +215,28 @@ PID: 2443   TASK: ffff88001d6f2e40  CPU: 0   COMMAND: "sendmail"
     ffff88001f04f998: 0000000000000005 0000000000000005 
     ffff88001f04f9a8: ffff88001f04f9b8 ffffffff815e9ac3 
  (snip)
+```
+
+### 特定のCPUが実行しているタスクに切り替える
+cオプションのあとにCPU番号を入れるとそのCPUが実行するプロセスに切り替えます。
+```
+crash> set -c 0
+    PID: 1696
+COMMAND: "insmod"
+   TASK: c74de000
+    CPU: 0
+  STATE: TASK_RUNNING (PANIC)
+```
+
+### カーネルパニックとなったプロセスに切り替える
+panicオプションを付与するとカーネルパニックとなったプロセスに切り替えます。
+```
+crash> set -p
+    PID: 1696
+COMMAND: "insmod"
+   TASK: c74de000
+    CPU: 0
+  STATE: TASK_RUNNING (PANIC)
 ```
 
 ### システム情報を表示する
@@ -408,6 +478,7 @@ ffff88001b7ce000  p7p1   192.168.56.1
 ```
 
 ### プロセスが握っているファイルを確認する
+プロセスをセットします
 ```
 crash> set 3404
     PID: 3404
@@ -415,6 +486,10 @@ COMMAND: "crash"
    TASK: ffff88001f205c80  [THREAD_INFO: ffff88001d7b6000]
     CPU: 0
   STATE: TASK_RUNNING (ACTIVE)
+```
+
+filesを引数なしで実行すると、PIDには先ほど指定したプロセス番号が表示され、このプロセスが握っているファイルが表示されます。
+```
 crash> files
 PID: 3404   TASK: ffff88001f205c80  CPU: 0   COMMAND: "crash"
 ROOT: /    CWD: /home/tsuyoshi
@@ -446,6 +521,39 @@ ffff88001d54d200  ffffc900000d5000 - ffffc90000116000  266240
 ```
 
 
+構造体が利用している箇所を取得する
+```
+crash> kmem -S task_struct
+CACHE            NAME                 OBJSIZE  ALLOCATED     TOTAL  SLABS  SSIZE
+ffff88003e007500 task_struct             5912        130       150     30    32k
+CPU 0 SLAB:
+  SLAB              MEMORY            NODE  TOTAL  ALLOCATED  FREE
+  ffffea0000ec5c00  ffff88003b170000     0      5          1     4
+  FREE / [ALLOCATED]
+   ffff88003b170000  (cpu 0 cache)
+   ffff88003b171720  (cpu 0 cache)
+   ffff88003b172e40  (cpu 0 cache)
+  [ffff88003b174560]
+   ffff88003b175c80  (cpu 0 cache)
+KMEM_CACHE_NODE   NODE  SLABS  PARTIAL  PER-CPU
+ffff88003e001840     0     30       12        1
+NODE 0 PARTIAL:
+  SLAB              MEMORY            NODE  TOTAL  ALLOCATED  FREE
+  ffffea0000dae800  ffff880036ba0000     0      4          4     0
+  ffffea0000d92200  ffff880036488000     0      4          4     0
+  ffffea0000db8600  ffff880036e18000     0      3          3     0
+  ffffea0000f45600  ffff88003d158000     0      4          4     0
+  ffffea0000f02e00  ffff88003c0b8000     0      3          3     0
+  ffffea0000f1c600  ffff88003c718000     0      3          3     0
+  ffffea0000f67c00  ffff88003d9f0000     0      4          4     0
+  ffffea0000f6c800  ffff88003db20000     0      3          3     0
+  ffffea0000db9600  ffff880036e58000     0      3          3     0
+  ffffea0000e8ea00  ffff88003a3a8000     0      3          3     0
+  ffffea0000e89000  ffff88003a240000     0      4          4     0
+  ffffea0000dbf200  ffff880036fc8000     0      2          2     0
+NODE 0 FULL:
+  (not tracked)
+```
 
 ### メモリ統計情報を表示する
 ```
@@ -489,6 +597,30 @@ ffff88001b25d000 dm_uevent               2608          0         0      0    32k
 ffff88001b25d100 dm_rq_target_io          408          0         0      0     4k
 ffff88001b25d900 cfq_io_cq                104         78        78      2     4k
 ffff88001b25da00 cfq_queue                232         68        68      4     4k
+```
+
+# 特定の番地から指定された分だけメモリを覗き見る
+次のe1000のモジュールのメモリを覗いてみることにする。
+```
+crash> mod -S
+     MODULE       NAME                 SIZE  OBJECT FILE
+ffffffffa0003180  video               18980  /lib/modules/3.3.4-5.fc17.x86_64/kernel/drivers/acpi/video.ko 
+ffffffffa0008ce0  i2c_piix4           13694  /lib/modules/3.3.4-5.fc17.x86_64/kernel/drivers/i2c/busses/i2c-piix4.ko 
+ffffffffa000e060  uinput              17673  /lib/modules/3.3.4-5.fc17.x86_64/kernel/drivers/input/misc/uinput.ko 
+ffffffffa0017120  binfmt_misc         17463  /lib/modules/3.3.4-5.fc17.x86_64/kernel/fs/binfmt_misc.ko 
+ffffffffa001c060  soundcore           14491  /lib/modules/3.3.4-5.fc17.x86_64/kernel/sound/soundcore.ko 
+ffffffffa0028600  i2c_core            38028  /lib/modules/3.3.4-5.fc17.x86_64/kernel/drivers/i2c/i2c-core.ko 
+ffffffffa004a680  e1000              145411  /lib/modules/3.3.4-5.fc17.x86_64/kernel/drivers/net/ethernet/intel/e1000/e1000.ko 
+```
+
+上記でe1000はffffffffa004a680なのでrd(read)コマンドを使って
+```
+crash> rd ffffffffa004a680 10
+ffffffffa004a680:  0000000000000000 ffffffffa0008ce8   ................
+ffffffffa004a690:  ffffffffa0069328 0000003030303165   (.......e1000...
+ffffffffa004a6a0:  0000000000000000 0000000000000000   ................
+ffffffffa004a6b0:  0000000000000000 0000000000000000   ................
+ffffffffa004a6c0:  0000000000000000 0000000000000000   ................
 ```
 
 ### シグナルを確認する
@@ -556,7 +688,12 @@ foreachを使うと良い。
 ```
 crash>foreach bt
 crash>foreach vm
+crash>foreach task
 crash>foreach files
+crash>foreach net
+crash>foreach set
+crash>foreach sig
+crash>foreach vtop
 crash>foreach -R files /opt
 ```
 
@@ -966,3 +1103,176 @@ struct zone {
 }
 SIZE: 1792
 ```
+
+### run queueに入っているリストを全て表示する 
+```
+crash> runq
+CPU 0 RUNQUEUE: ffff88003fc13580
+  CURRENT: PID: 1176   TASK: ffff88003648c560  COMMAND: "crash"
+  RT PRIO_ARRAY: ffff88003fc13718
+     [no tasks queued]
+  CFS RB_ROOT: ffff88003fc13628
+     [no tasks queued]
+```
+
+### grepを使う
+実はパイプ経由で普通に使えます
+```
+crash> task | grep uid
+  loginuid = 1000, 
+```
+
+### ファイルから入力させる
+```
+$ sudo crash -i inputfile
+```
+
+またはインタプリタから
+```
+crash> < inputfile
+```
+
+### ファイルに出力させる
+```
+crash> foreach bt > bt.all
+crash> ps >> process.data
+crash> kmem -i | grep SLAB > slab.pages
+```
+
+
+### crashコマンドの設定値を確認する
+```
+crash> set -v
+        scroll: off (/usr/bin/less)
+         radix: 10 (decimal)
+       refresh: on
+     print_max: 256
+       console: (not assigned)
+         debug: 0
+          core: off
+          hash: on
+        silent: off
+          edit: vi
+      namelist: /usr/lib/debug/lib/modules/3.3.4-5.fc17.x86_64/vmlinux
+      dumpfile: (null)
+        unwind: off
+ zero_excluded: off
+     null-stop: off
+           gdb: off
+         scope: 0 (not set)
+```
+
+これらの設定値は.crashrcファイルなどでデフォルト設定可能である
+
+### 構造体のサイズを確認する
+たとえば、intだと
+```
+crash> whatis int
+SIZE: 4
+```
+
+vm_area_structの場合は次の通り
+```
+crash> whatis vm_area_struct
+struct vm_area_struct {
+    struct mm_struct *vm_mm;
+    long unsigned int vm_start;
+    long unsigned int vm_end;
+    struct vm_area_struct *vm_next;
+    struct vm_area_struct *vm_prev;
+    pgprot_t vm_page_prot;
+    long unsigned int vm_flags;
+    struct rb_node vm_rb;
+    union {
+        struct {...} vm_set;
+        struct raw_prio_tree_node prio_tree_node;
+    } shared;
+    struct list_head anon_vma_chain;
+    struct anon_vma *anon_vma;
+    const struct vm_operations_struct *vm_ops;
+    long unsigned int vm_pgoff;
+    struct file *vm_file;
+    void *vm_private_data;
+    struct mempolicy *vm_policy;
+}
+SIZE: 176
+```
+
+### 画面表示文字数を超過した場合の表示方法
+たとえば、psなどを出力すると出力画面が多いので1画面に収まらない。このような場合scrollを固定にしたり、解除したりできる。
+```
+crash> set scroll on    // スクロールを固定する(moreで表示されるイメージ)
+crash> set scroll off   // スクロールを解除する(catで表示されるイメージ)
+```
+
+### サーバ情報を表示する
+```
+crash> mach
+          MACHINE TYPE: x86_64
+           MEMORY SIZE: 1 GB
+                  CPUS: 1
+       PROCESSOR SPEED: 2295 Mhz
+                    HZ: 1000
+             PAGE SIZE: 4096
+   KERNEL VIRTUAL BASE: ffff880000000000
+   KERNEL VMALLOC BASE: ffffc90000000000
+   KERNEL VMEMMAP BASE: ffffea0000000000
+      KERNEL START MAP: ffffffff80000000
+   KERNEL MODULES BASE: ffffffffa0000000
+     KERNEL STACK SIZE: 8192
+        IRQ STACK SIZE: 16384
+            IRQ STACKS:
+                 CPU 0: ffff88003fc00000
+ STACKFAULT STACK SIZE: 4096
+     STACKFAULT STACKS:
+                 CPU 0: ffff88003fc05000
+DOUBLEFAULT STACK SIZE: 4096
+    DOUBLEFAULT STACKS:
+                 CPU 0: ffff88003fc06000
+        NMI STACK SIZE: 4096
+            NMI STACKS:
+                 CPU 0: ffff88003fc07000
+      DEBUG STACK SIZE: 8192
+          DEBUG STACKS:
+                 CPU 0: ffff88003fc08000
+        MCE STACK SIZE: 4096
+            MCE STACKS:
+                 CPU 0: ffff88003fc0a000
+```
+
+### ASCIIを表示する
+ASCII文字列に変換
+```
+crash> ascii 62696c2f7273752f
+62696c2f7273752f: /usr/lib
+```
+
+ASCII表を表示
+```
+crash> ascii
+
+      0    1   2   3   4   5   6   7
+    +-------------------------------
+  0 | NUL DLE  SP  0   @   P   '   p
+  1 | SOH DC1  !   1   A   Q   a   q
+  2 | STX DC2  "   2   B   R   b   r
+  3 | ETX DC3  #   3   C   S   c   s
+  4 | EOT DC4  $   4   D   T   d   t
+  5 | ENQ NAK  %   5   E   U   e   u
+  6 | ACK SYN  &   6   F   V   f   v
+  7 | BEL ETB  `   7   G   W   g   w
+  8 |  BS CAN  (   8   H   X   h   x
+  9 |  HT  EM  )   9   I   Y   i   y
+  A |  LF SUB  *   :   J   Z   j   z
+  B |  VT ESC  +   ;   K   [   k   {
+  C |  FF  FS  ,   <   L   \   l   |
+  D |  CR  GS  _   =   M   ]   m   }
+  E |  SO  RS  .   >   N   ^   n   ~
+  F |  SI  US  /   ?   O   -   o  DEL
+```
+
+# 参考URL
+- 公式github
+  - https://github.com/crash-utility/crash
+- ドキュメントとして存在しているのは次のドキュメントぐらい?
+  - http://people.redhat.com/anderson/crash_whitepaper/
