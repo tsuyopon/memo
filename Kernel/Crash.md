@@ -1,7 +1,7 @@
 crashを使ったカーネルダンプについて
 ============================
 
-### パッケージインストール
+## パッケージインストール
 crashパッケージとkernelのdebuginfoパッケージが必要と思われる。
 
 以下は自身のパッケージ構成例
@@ -66,7 +66,9 @@ vmlinux vmcoreを指定する場合には、その２つのファイルが存在
 $ crash vmlinux vmcore
 ```
 
-### ヘルプを表示する
+## ヘルプを表示する(重要)
+crashコマンドはコマンドやその中のサブコマンドの数が大量にあるのでヘルプの使い方はマスターしておくのが重要となる。  　　
+
 どのようなコマンドがあるのかを調べるために最初はhelpを打ってみると良い。
 ```
 crash> help
@@ -255,6 +257,55 @@ LOAD AVERAGE: 0.07, 0.08, 0.05
      MACHINE: x86_64  (2217 Mhz)
       MEMORY: 511.5 MB
 ```
+
+システムコールテーブルを表示する
+```
+crash> sys -c
+NUM  SYSTEM CALL                FILE AND LINE NUMBER
+  0  sys_read                   ../fs/read_write.c: 461
+  1  sys_write                  ../fs/read_write.c: 479
+  2  sys_open                   ../fs/open.c: 998
+  3  sys_close                  ../fs/open.c: 1069
+  4  sys_newstat                ../fs/stat.c: 245
+  5  sys_newfstat               ../fs/stat.c: 282
+  6  sys_newlstat               ../fs/stat.c: 256
+  7  sys_poll                   ../fs/select.c: 912
+(snip)
+310  sys_process_vm_readv       ../mm/process_vm_access.c: 401
+311  sys_process_vm_writev      ../mm/process_vm_access.c: 409
+```
+
+システムコールテーブルから特定の文言にマッチするものを表示する。以下はreadでマッチしたものを表示する。
+```
+crash> sys -c read
+NUM  SYSTEM CALL                FILE AND LINE NUMBER
+  0  sys_read                   ../fs/read_write.c: 461
+ 17  sys_pread64                ../fs/read_write.c: 497
+ 19  sys_readv                  ../fs/read_write.c: 790
+ 89  sys_readlink               ../fs/stat.c: 322
+187  sys_readahead              ../mm/filemap.c: 1501
+267  sys_readlinkat             ../fs/stat.c: 294
+295  sys_preadv                 ../fs/read_write.c: 838
+310  sys_process_vm_readv       ../mm/process_vm_access.c: 401
+```
+
+システム設定情報を表示する(if CONFIG_IKCONFIG)
+```
+crash> sys config
+#
+# Automatically generated make config: don't edit
+# Linux kernel version: 2.6.16
+# Mon Apr 10 07:58:06 2006
+#
+CONFIG_X86_64=y
+CONFIG_64BIT=y
+CONFIG_X86=y
+CONFIG_SEMAPHORE_SLEEPERS=y
+CONFIG_MMU=y
+CONFIG_RWSEM_GENERIC_SPINLOCK=y
+CONFIG_GENERIC_CALIBRATE_DELAY=y
+```
+
 
 ### モジュールを表示する
 ```
@@ -468,13 +519,83 @@ ffff88001f08bc00 ffff88001b77a000 ext4   /dev/sda1              /boot
 ```
 
 
-### ネットワーク情報を表示する
+### ネットワーク情報を表示する(net)
+ネットワークデバイスの情報を表示する
 ```
 crash> net
    NET_DEVICE     NAME   IP ADDRESS(ES)
 ffff88001d413000  lo     127.0.0.1
 ffff88001d6b6000  p2p1   10.0.2.15
 ffff88001b7ce000  p7p1   192.168.56.1
+```
+
+ARPキャッシュテーブルを表示する
+```
+crash> net -a
+NEIGHBOUR        IP ADDRESS      HW TYPE    HW ADDRESS         DEVICE  STATE
+ffff88003ac5cc00 10.0.2.2        ETHER      52:54:00:12:35:02  p2p1    REACHABLE
+```
+
+プロセスで利用するソケット情報を表示する。ここでの例はpsコマンドでdhclientというプロセスのPIDを指定しています。
+```
+crash> net -s 2126
+PID: 2126   TASK: ffff880036e58000  CPU: 0   COMMAND: "dhclient"
+FD      SOCKET            SOCK       FAMILY:TYPE SOURCE-PORT DESTINATION-PORT
+ 1 ffff88003bba9b80 ffff88003a16a080 UNIX:STREAM 
+ 3 ffff88003b9ef680 ffff88003b0d7400 UNIX:DGRAM  
+ 5 ffff88003b9ee500 ffff880036d6e800 PACKET:RAW 
+ 6 ffff88003b9eea00 ffff88003a31ae00 INET:DGRAM   0.0.0.0-68 0.0.0.0-0
+20 ffff88003b9ef180 ffff88003a31aa80 INET:DGRAM   0.0.0.0-3000 0.0.0.0-0
+21 ffff88003b9eec80 ffff88003a4b4000 INET6:DGRAM  0:0:0:0:0:0:0:0-38429   0:0:0:0:0:0:0:0-0 
+```
+
+特定のプロセスのソケット関連の構造体を全て表示しています(task_structなどは表示されませんでした)。  
+そのままだと出力される情報量が多いので、以下では最初の３行(PIDという文字列から3行)とstructで始まるものを抽出しています。
+```
+crash> net -S 1094 | egrep -e "^struct " -e PID -A 3
+PID: 1094   TASK: ffff88003b1fae40  CPU: 0   COMMAND: "sshd"
+FD       SOCKET             SOCK      
+ 2  ffff88003b8cac80  ffff88003d469a00
+
+struct socket {
+  state = SS_CONNECTED, 
+  type = 1, 
+  flags = 0, 
+--
+struct inet_sock {
+  sk = {
+    __sk_common = {
+      skc_daddr = 0, 
+--
+struct socket {
+  state = SS_CONNECTED, 
+  type = 1, 
+  flags = 0, 
+--
+struct inet_sock {
+  sk = {
+    __sk_common = {
+      skc_daddr = 33685514, 
+--
+struct socket {
+  state = SS_UNCONNECTED, 
+  type = 2, 
+  flags = 0, 
+--
+struct inet_sock {
+  sk = {
+    __sk_common = {
+      skc_daddr = 0, 
+--
+struct socket {
+  state = SS_CONNECTED, 
+  type = 1, 
+  flags = 0, 
+--
+struct inet_sock {
+  sk = {
+    __sk_common = {
+      skc_daddr = 0, 
 ```
 
 ### プロセスが握っているファイルを確認する
@@ -598,6 +719,27 @@ ffff88001b25d100 dm_rq_target_io          408          0         0      0     4k
 ffff88001b25d900 cfq_io_cq                104         78        78      2     4k
 ffff88001b25da00 cfq_queue                232         68        68      4     4k
 ```
+
+### 特定のプロセスに関するVM情報を全て表示する。
+利用しているファイルやそのアドレス(VMA)を表示しています。
+```
+crash> vm
+PID: 1176   TASK: ffff88003648c560  CPU: 0   COMMAND: "crash"
+       MM               PGD          RSS    TOTAL_VM
+	   ffff880036f60e00  ffff88003649d000  282908k  333752k 
+	         VMA           START       END     FLAGS FILE
+			 ffff880036e6f0b0     400000     a1c000 8001875 /usr/bin/crash
+			 ffff880036e6f160     c1c000     c3e000 8101873 /usr/bin/crash
+			 ffff880036e6f210     c3e000     dd3000 100073 
+			 ffff880036e6f2c0     e3d000     e5c000 8101873 /usr/bin/crash
+			 ffff88003b141580    28bb000    bbe3000 100073 
+			 ffff880036e6fa50 3606200000 3606225000 8000075 /usr/lib64/libtinfo.so.5.9
+			 ffff880036e6f9a0 3606225000 3606424000 8000070 /usr/lib64/libtinfo.so.5.9
+			 ffff880036e6fb00 3606424000 3606428000 8100071 /usr/lib64/libtinfo.so.5.9
+			 ffff88003b1418f0 3606428000 3606429000 8100073 /usr/lib64/libtinfo.so.5.9
+(snip)
+```
+
 
 # 特定の番地から指定された分だけメモリを覗き見る
 次のe1000のモジュールのメモリを覗いてみることにする。
@@ -1122,6 +1264,8 @@ crash> task | grep uid
   loginuid = 1000, 
 ```
 
+試してみたところheadも使えました。
+
 ### ファイルから入力させる
 ```
 $ sudo crash -i inputfile
@@ -1240,6 +1384,44 @@ DOUBLEFAULT STACK SIZE: 4096
                  CPU 0: ffff88003fc0a000
 ```
 
+### タイマーキューを確認する。
+実行順でタイマーキュー及び実行される関数及びそのアドレスなどが表示されます。
+```
+crash> timer
+TVEC_BASES[0]: ffffffff81c61ac0
+  JIFFIES 
+4297232386
+  EXPIRES      TIMER_LIST         FUNCTION    
+4297232510  ffff88003a77d7a0  ffffffff81535180  <tcp_write_timer>
+4297232842  ffffffff81c66720  ffffffff810a5870  <clocksource_watchdog>
+4297233004  ffff88003fc10420  ffffffff81073990  <delayed_work_timer_fn>
+4297233408  ffff88003ac0f578  ffffffff81073990  <delayed_work_timer_fn>
+4297233864  ffff88003d03ef18  ffffffff81073990  <delayed_work_timer_fn>
+4297235008  ffffffff81d067c0  ffffffff8113d220  <sync_supers_timer_fn>
+4297235008  ffff88003d03e380  ffffffff814fcb60  <dev_watchdog>
+4297235200  ffffffff81a95d00  ffffffff81073990  <delayed_work_timer_fn>
+4297238883  ffff88003a3ffd08  ffffffff81064d40  <process_timeout>
+4297239872  ffffffff81a9f228  ffffffff81073990  <delayed_work_timer_fn>
+4297246400  ffffffff81a9a3e8  ffffffff81073990  <delayed_work_timer_fn>
+4297247872  ffff88003ac5cc50  ffffffff814ea700  <neigh_timer_handler>
+4297251840  ffffffff81d89e40  ffffffff81073990  <delayed_work_timer_fn>
+4297256064  ffff88003687c778  ffffffff812a71c0  <blk_rq_timed_out_timer>
+4297265920  ffffffff81d89d60  ffffffff81073990  <delayed_work_timer_fn>
+4297331200  ffffffff81a9e5e0  ffffffff81588710  <addrconf_verify>
+4297368000  ffff88003fc0da20  ffffffff8102afe0  <mce_start_timer>
+4297373988  ffff88003da93dd8  ffffffff81064d40  <process_timeout>
+4297379840  ffff88003fc0e2f8  ffffffff810719a0  <idle_worker_timeout>
+4297496576  ffff88003c2a9088  ffffffffa00e66a0  <death_by_timeout>
+4297497277  ffff88003c2a92f8  ffffffffa00e66a0  <death_by_timeout>
+4297674752  ffffffff81d8a0b0  ffffffff815559b0  <inet_frag_secret_rebuild>
+4297674752  ffffffff81d88cd0  ffffffff814f2510  <flow_cache_new_hashrnd>
+4297674752  ffffffff81d8c9d0  ffffffff815559b0  <inet_frag_secret_rebuild>
+4297682944  ffffffffa011c8f0  ffffffff815559b0  <inet_frag_secret_rebuild>
+4301914112  ffff88003a77d5f8  ffffffff81534640  <tcp_keepalive_timer>
+4380688384  ffff88003a9ddd00  ffffffff81584b90  <ipv6_regen_rndid>
+4729232309  ffff88003c2a9430  ffffffffa00e66a0  <death_by_timeout>
+```
+
 ### ASCIIを表示する
 ASCII文字列に変換
 ```
@@ -1269,6 +1451,151 @@ crash> ascii
   D |  CR  GS  _   =   M   ]   m   }
   E |  SO  RS  .   >   N   ^   n   ~
   F |  SI  US  /   ?   O   -   o  DEL
+```
+
+### SWAP情報を表示する
+```
+crash> swap
+FILENAME           TYPE         SIZE      USED   PCT  PRIORITY
+/dev/dm-0        PARTITION    1015804k       0k   0%     0
+```
+
+### jiffiesを表示する(時刻情報)
+```
+crash> rd jiffies
+ffffffff81ad7000:  00000001002e7d81                    .}......
+crash> rd -d jiffies
+ffffffff81ad7000:       4298020376 
+```
+
+### カーネルシンボルを表示する。
+
+lオプションによりカーネルに含まれるシンボル一覧を全て表示する。grepやheadなどを使わないと画面出力で膨大になる。  
+以下はksoftirqでgrepした例
+```
+crash> sym -l | grep -i ksoftirq
+e080 (D) ksoftirqd
+ffffffff8105ddb0 (t) run_ksoftirqd
+ffffffff81b04c8d (t) spawn_ksoftirqd
+ffffffff81bbb0f0 (t) __initcall_spawn_ksoftirqdearly
+```
+
+### virtualアドレスからphysicalアドレスへと変換する
+vtop(virtual to physical)コマンドを利用するとvirtualアドレスからphysicalアドレスに変換します。
+```
+crash> vtop 80b4000
+VIRTUAL     PHYSICAL        
+80b4000     138b4000        
+
+   PML: 3649d000 => 3655c067
+   PUD: 3655c000 => 36ebf067
+   PMD: 36ebf200 => 80000000138000e7
+  PAGE: 13800000  (2MB)
+
+      PTE         PHYSICAL  FLAGS
+80000000138000e7  13800000  (PRESENT|RW|USER|ACCESSED|DIRTY|PSE|NX)
+
+      VMA           START       END     FLAGS FILE
+ffff88003b141580    28bb000    adce000 100073 
+
+      PAGE       PHYSICAL      MAPPING       INDEX CNT FLAGS
+ffffea00004e2d00 138b4000                0        0  0 20000000008000
+```
+
+### IPCに関連する情報を表示する
+何も情報がないので面白くないが詳細は「help ipcs」を見た方がいいかも
+```
+crash> ipcs
+SHMID_KERNEL     KEY      SHMID      UID   PERMS BYTES      NATTCH STATUS
+(none allocated)
+
+SEM_ARRAY        KEY      SEMID      UID   PERMS NSEMS     
+(none allocated)
+
+MSG_QUEUE        KEY      MSQID      UID   PERMS USED-BYTES   MESSAGES    
+(none allocated)
+```
+
+### 16進数アドレスをページ番号に変換する
+```
+crash> btop 512a000
+512a000: 512a
+```
+
+### evalを使って計算する
+```
+crash> eval 128m
+hexadecimal: 8000000  (128MB)
+    decimal: 134217728  
+      octal: 1000000000
+     binary: 00001000000000000000000000000000
+ 
+crash> eval 128 * 1m
+hexadecimal: 8000000  (128MB)
+    decimal: 134217728  
+      octal: 1000000000
+     binary: 00001000000000000000000000000000
+ 
+crash> eval (1 << 27)
+hexadecimal: 8000000  (128MB)
+    decimal: 134217728  
+      octal: 1000000000
+     binary: 00001000000000000000000000000000
+
+crash> eval (1 << 32)
+hexadecimal: 100000000  (4GB)
+    decimal: 4294967296
+      octal: 40000000000
+     binary: 0000000000000000000000000000000100000000000000000000000000000000
+
+crash> eval -b 41dc065
+hexadecimal: 41dc065
+    decimal: 69058661  
+      octal: 407340145
+     binary: 00000100000111011100000001100101
+   bits set: 26 20 19 18 16 15 14 6 5 2 0 
+
+crash> eval -lb 64g
+hexadecimal: 1000000000  (64GB)
+    decimal: 68719476736
+      octal: 1000000000000
+     binary: 0000000000000000000000000001000000000000000000000000000000000000
+   bits set: 36
+```
+
+### ライブラリを現在使っているファイル所有者を特定する
+```
+crash> fuser /lib64/libnss3.so
+ PID         TASK        COMM             USAGE
+  575  ffff88003c744560  "NetworkManager  mmap 
+  668  ffff88003bff0000  "gdbus"          mmap 
+  692  ffff880036e1dc80  "gmain"          mmap 
+  981  ffff88003aa09720  "gnome-shell"    mmap 
+ 1006  ffff880036ba2e40  "sshd"           mmap 
+ 1007  ffff880036ba5c80  "gdbus"          mmap 
+ 1008  ffff880036ba1720  "dconf worker"   mmap 
+ 1009  ffff880036ba0000  "threaded-ml"    mmap 
+ 1010  ffff880036f2c560  "gnome-shell"    mmap 
+ 1087  ffff880036e5dc80  "threaded-ml"    mmap 
+ 1092  ffff88003b1f8000  "sshd"           mmap 
+ 1094  ffff88003b1fae40  "sshd"           mmap 
+ 1167  ffff88003a3adc80  "sudo"           mmap 
+ 2126  ffff880036e58000  "dhclient"       mmap 
+ 2145  ffff88003aa85c80  "sendmail"       mmap 
+ 2167  ffff880036fc9720  "sendmail"       mmap 
+ 2600  ffff880036fcdc80  "sshd"           mmap 
+ 2602  ffff880036f2ae40  "sshd"           mmap 
+```
+
+### 一定時間毎になにか処理を実行させる。
+以下の例では1秒ごとにjiffiesを出力させています。
+```
+crash> repeat -1 p jiffies
+jiffies = $10 = 4300991909
+jiffies = $11 = 4300992916
+jiffies = $12 = 4300993923
+jiffies = $13 = 4300994932
+jiffies = $14 = 4300995940
 ```
 
 # 参考URL
