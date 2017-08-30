@@ -394,6 +394,9 @@ Option                                   Description
 ```
 
 
+### kafkaにおけるzookeeperのデータ生成
+- https://cwiki.apache.org/confluence/display/KAFKA/Kafka+data+structures+in+Zookeeper
+
 # TODO
 - この辺をひとめぐり
   - https://kafka.apache.org/08/documentation.html

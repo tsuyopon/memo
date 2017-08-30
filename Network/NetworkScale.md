@@ -58,7 +58,7 @@ RSS登場前の問題点、解決策、解決方法を確認する
 
 ### Receive Packet Steering(RPS)
 
-Receive Side Scaling(RSS)のソフトウェアエミュレーション版がRPSである。
+Receive Side Scaling(RSS)のソフトウェアエミュレーション版(Linuxカーネルで実現)がRPSである。
 
 - 問題点
   - RSS非対応のオンボードNICを利用することでサーバのネットワーク帯域を向上させたい。
@@ -73,6 +73,9 @@ Receive Side Scaling(RSS)のソフトウェアエミュレーション版がRPS�
 # echo "f" > /sys/class/net/eth0/queues/rx-0/rps_cpus
 # echo 4096 > /sys/class/net/eth0/queues/rx-0/rps_flow_cnt
 ```
+- RPSのメリット
+  - フィルタの実装がソフトウェアなので新しいプロトコル用のフィルタも簡単に追加可能
+  - H/W割り込みを増やさない
 
 - 参考: スライドp37
   - https://www.slideshare.net/syuu1228/ethernet-39611199
@@ -212,3 +215,5 @@ rx_queue_19_packets: 8
   - http://news.mynavi.jp/articles/2008/10/29/bsdcon5/002.html
 - Receive Side Scaling and Receive Packet Steering
   - http://balodeamit.blogspot.jp/2013/10/receive-side-scaling-and-receive-packet.html
+- Linuxでロードバランサやキャッシュサーバをマルチコアスケールさせるためのカーネルチューニング
+  - http://blog.yuuk.io/entry/linux-networkstack-tuning-rfs
