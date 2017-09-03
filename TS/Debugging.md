@@ -57,6 +57,15 @@ traffic_server起動時にTオプションでタグを指定する方法があ�
 $ traffic_server -T"my-plugin"
 ```
 
+## デバッグ関数
+
+```
+TSDebug() prints out a formatted statement if you are running Traffic Server in debug mode.
+TSIsDebugTagSet() checks to see if a debug tag is set. If the debug tag is set, then Traffic Server prints out all debug statements associated with the tag.
+TSError() prints error messages to Traffic Server’s error log
+TSAssert() enables the use of assertion in a plugin.
+TSReleaseAssert() enables the use of assertion in a plugin.
+```
 
 # 参考URL
 - trafficserver公式ドキュメント(Debugging)

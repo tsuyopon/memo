@@ -1,5 +1,6 @@
 
 
+# 基本情報
 - Apache Traffic Server公式のコンフル
   - 設計やバージョン情報、プレゼンテーション情報などはこのページをポータルとして遷移できます。
   - https://cwiki.apache.org/confluence/display/TS/Apache+Traffic+Server
@@ -18,3 +19,9 @@
   - https://cwiki.apache.org/confluence/display/TS/Presentations
   - 例えば、2017年だと次のコンフルがあります。
     - https://cwiki.apache.org/confluence/display/TS/Presentations+-+2017
+
+# プラグイン開発
+- Developer’s Guide
+  - https://trafficserver.readthedocs.io/ja/latest/developer-guide/index.en.html
+  - Developer’s Guide » Plugin Development
+    - https://trafficserver.readthedocs.io/ja/latest/developer-guide/plugins/index.en.html
