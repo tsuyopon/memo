@@ -2,7 +2,7 @@
 specファイルを作成してrpmパッケージにする方法について
 
 # 詳細
-### 初めてのrpm作成(環境構築から)
+## 初めてのrpm作成(環境構築から)
 rpmbuildというコマンドが必要になるので次のパッケージをインストールします。
 ```
 $ sudo yum install rpm-build
@@ -84,16 +84,104 @@ hello-1.0-1.noarch.rpm
 ## specファイル説明
 
 specファイルは基本的には次の構成になります。
+イントロダクションはパッケージ基本情報を定義して他のセクションとは若干ことなります。
 ```
 イントロダクション　セクション
 description セクション
-prep セクション
-build セクション
-install セクション
-clean セクション
-files セクション
+prep セクション(下準備)
+build セクション(ビルド手順)
+install セクション(インストール手順)
+clean セクション(パッケージ構築後の後始末)
+files セクション(
 ```
 
+### イントロダクションセクション
+
+URL, Packager, Patch1, BuildArchなどは特になくても大丈夫そう。
+Sourceは複数あればSource0, Source1などと指定することになります。
+```
+Name: xyz
+Version: 1.2.3
+Release: 1%{?dist}
+Group: Utilities
+Vendor: Example Company
+URL: http://www.example.com/product/xyz
+Packager: Toru Takahashi <torutk@example.com>
+License: MIT
+Summary: Tools for doing something about xyz.
+Summary(ja): xyzについてなにかをするツール
+Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root
+BuildArch: i386
+Source: xyz-1.2.3.tar.gz
+Patch1: xyz-cvs.patch
+```
+
+- ビルド時に依存するパッケージを記述する。複数行に渡ってBuildRequiresを記述することができる。
+```
+BuildRequires: gcc-c++, libgnomeui-devel, guile-devel
+BuildRequires: libgnomecanvas-devel, gtk2-devel >= 2.6.0
+BuildRequires: fftw-devel, audiofile-devel, esound-devel
+BuildRequires: lame-devel, libmad-devel, libvorbis-devel, ladspa-devel
+```
+- 稼働時に依存するパッケージを記述する
+```
+Requires: tcl >= 8.4, tk >= 8.4
+```
+- 稼働させたくないアーキテクチャを指定する
+```
+ExclusiveArch: i386 x86_64
+```
+
+### descriptionセクション
+
+
+### buildセクション
+以下はこのセクションに置かれるサンプルです。
+```
+%build
+%configure
+%{__make} %{?_smp_mflags}
+```
+
+### installセクション
+以下はこのセクションに置かれるサンプルです。
+```
+%install
+%{__rm} -rf %{buildroot}
+%makeinstall -C src INSTALL_DIR="%{buildroot}%{_bindir}"
+```
+
+### cleanセクション
+以下はこのセクションに置かれるサンプルです。
+```
+%clean
+%{__rm} -rf %{buildroot}
+```
+
+### filesセクション
+以下はこのセクションに置かれるサンプルです。
+```
+%files
+%defattr(-, root, root, 0755)
+%doc doc/*.gif doc/*.html README
+%{_bindir}/iperf
+```
+
+### changelogセクション
+以下はこのセクションに置かれるサンプルです。
+```
+%changelog
+* Mon Apr 28 2008 hoge <hoge@hoge.com> - 0.0.0.3
+- Updated to release 0.0.0.3.
+
+* Thu Sep 27 2007 piyo piyo <piyo@piyo.com> - 0.0.0.2
+- patch
+
+* Sun Sep 18 2005 fuga <fuga@fuga.org> - 0.0.0.1
+- Updated to release 0.0.0.1.
+```
+
+## spec関連
 ### システムで利用されているマクロを確認する
 例えば、_rpmdirを知りたい場合には次のようにすれば確認することができます。
 ```
@@ -109,7 +197,7 @@ $ rpm --showrc
 - 参考
   - https://stackoverflow.com/questions/8076471/how-to-know-the-value-of-built-in-macro-in-rpm
 
-## rpmbuild
+## rpmbuildコマンド
 
 ### rpmbuildコマンドのオプションの説明
 次のようなオプションがあります。
@@ -133,7 +221,10 @@ rpmbuildコマンドは$HOME/.rpmmacrosファイルを設定ファイルとし�
 %_sysconfdir /etc
 ```
 
-
-
-
+# 参考URL
+- specファイル一覧
+  - rspecサンプルが多くあるのでこちらを参考にすること
+  - https://github.com/repoforge/rpms/tree/master/specs
+- Fedora Packaging Guidelines
+  - https://fedoraproject.org/wiki/Packaging:Guidelines
 
