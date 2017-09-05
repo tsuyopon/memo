@@ -111,4 +111,11 @@ or
 $ git diff HEAD^..HEAD
 ```
 
+### git logやgit uiのツール上で取得したハッシュ値同しで比較する
+
+```
+$ git log
+$ git diff <hash1>  <hash2>
+```
+
 
