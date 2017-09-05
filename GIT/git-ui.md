@@ -1,4 +1,7 @@
 # 概要
+githubのUI画面周りのメモ
+
+# 詳細
 
 ### ユーザーのcommit履歴を参照したい場合
 - https://github.com/rails/rails/commits/master?author=azarashi
@@ -67,3 +70,8 @@ commented-asc
 
 - 参考
   - http://qiita.com/shunjikonishi/items/c5024e70b0878817725f
+
+
+### Issuesのラベルを管理(編集)する方法
+- https://help.github.com/articles/creating-and-editing-labels-for-issues-and-pull-requests/
+- http://azunobu.hatenablog.com/entry/2015/09/22/143811

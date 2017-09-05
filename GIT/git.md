@@ -1,5 +1,16 @@
 # git
-git関連についてまとめておきます
+git関連の基礎知識についてまとめておきます
+
+# ファイルやディレクトリ名を変更する
+deleteして、addしてなんてことをやっているのが面倒であるので、git mvコマンドが存在します。
+```
+$ git mv oldname newname
+```
+
+すでに存在するファイル名に変更するにはfオプションが必要となるようです。
+```
+$ git mv -f oldname newname
+```
 
 # 設定関連
 リモートブランチの設定などを確認する場合
@@ -48,6 +59,12 @@ $ git push origin --delete issue1
 
 - 参考
  - http://chaika.hatenablog.com/entry/2016/03/01/080000
+
+### ブランチ名を変更する
+```
+$ git branch -m issue1 newissue
+$ git branch
+```
 
 ### ローカルブランチの一覧を表示する
 ```
@@ -209,7 +226,7 @@ $ git checkout -f path/to/xxxx
 $ git reset --hard HEAD
 ```
 
-### 誤って登録してしまったコミットメッセージを変更する
+### 誤って登録してしまった直前のコミットメッセージを変更する
 amendオプションを使います。
 ```
 $ git commit -m '修正版コメント' --amend
@@ -232,6 +249,11 @@ $ git clean -f    # 削除実行
 $ git clean -d -n    # dry-runで確認
 $ git clean -d -f    # 削除実行
 ```
+
+次のgitで意図的に無視しているファイルを削除する次のオプションもあります
+- x: .gitignoreや$GIT_DIR/info/excludeで指定されているファイルを除外せずに削除対象に含めたい場合
+- X: gitがignoreしているファイルのみを削除対象とする
+
 
 ### ブランチを作るのを忘れてmasterにコミットしてしまった場合に、そのブランチを作成してコミットを移す方法
 まずは誤ってmasterにコミットしたことに気づいた時点でブランチを作成します。
