@@ -301,6 +301,13 @@ $ git log --oneline --decorate --graph master testbranch
 $ git reset --hard HEAD~3
 ```
 
+### キャレットとチルダの違いについて
+- キャレット
+  - 指定したコミットの親を指す
+- チルダ
+  - 指定したコミットの前世代を指す
+- http://chulip.org/entry/20121006/1349406906
+
 # その他
 ### .gitsubmoduleのハッシュ値に"-dirty"というのが付与されてしまう場合
 
