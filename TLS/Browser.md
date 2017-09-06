@@ -81,6 +81,19 @@ Mozillaはユーザーの安全を守るために、どのルート証明書を�
   - http://www.clear-code.com/blog/2017/6/1.html
   - https://github.com/mozilla-japan/enterprise/issues/21
 
+### クライアントPCでApplicationDataの暗号化された内容をwiresharkで確認する
+ブラウザを稼働させるPCで次のようにSSLKEYLOGFILE環境変数を打つことで、その後firefoxで対象ページでアクセスします。
+それによって指定したファイルにrandomとmaster secretを出力します。
+```
+$ export SSLKEYLOGFILE=/tmp/sslkeylog.log
+$ open /Applications/Firefox.app/
+```
+
+wiresharkでは上記パスを参照して暗号化されているapplication dataを解読することができるようです。
+
+- 参考
+  - http://qiita.com/Hexa/items/ce0ac23526df12a64ad0
+
 # 参考URL
 - http://qiita.com/n-i-e/items/4de24ac543b07dd5cf82
 
