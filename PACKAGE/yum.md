@@ -230,6 +230,33 @@ repolist: 0
 ### yumリポジトリ一追加リスト 完全版
 - http://qiita.com/bezeklik/items/9766003c19f9664602fe
 
+### ソースコードを取得したい(rpm.mdと重複)
+たとえば、mysqlのソースコードを取得したい場合には次のようにします。拡張子が.src.rpmとなっていることに注意すること
+```
+$ yumdownloader --source mysql-server-5.5.32-1.fc17.x86_64
+$ ls
+mysql-5.5.32-1.fc17.src.rpm
+```
+
+src.rpmに含まれるファイル一覧を表示する場合は次のコマンドで確認できる。
+```
+$ rpm2cpio mysql-5.5.32-1.fc17.src.rpm | cpio --list
+```
+
+### rpmパッケージを取得して、展開する
+rpmをダウンロードする場合には次のようにします。destdirでダウンロード先を指定します。拡張子が.rpm隣っていることに注意すること
+```
+$ yumdownloader --destdir=/tmp httpd 
+httpd-2.2.23-1.fc17.x86_64.rpm
+```
+
+rpmを展開するには
+```
+$ mkdir xxxx; cp *.rpm xxx; cd xxxx
+$ rpm2cpio httpd-2.2.23-1.fc17.x86_64.rpm | cpio -idv
+```
+
+
 # 参考
 - http://www.atmarkit.co.jp/flinux/rensai/linuxtips/795tmprepo.html
 - YUMコマンドチートシート - RedHat Enterprise Linux

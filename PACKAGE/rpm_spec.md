@@ -8,6 +8,11 @@ rpmbuildというコマンドが必要になるので次のパッケージをイ
 $ sudo yum install rpm-build
 ```
 
+今回は上記だけで構いませんが、今後spectool, yumdownloaderなどを使う場合には以下を入れておくと重宝します。
+```
+$ sudo yum install -y rpmdevtools yum-utils
+```
+
 rpmパッケージに入れるのは次のプログラムhelloを入れることにします。
 ```
 $ cat hello.c
@@ -197,6 +202,25 @@ $ rpm --showrc
 - 参考
   - https://stackoverflow.com/questions/8076471/how-to-know-the-value-of-built-in-macro-in-rpm
 
+### specのBuildRequiresに指定されているものをインストールする
+```
+$ sudo yum-builddep ./your-spec.spec
+```
+
+### specファイルに含まれているソースやパッチをダウンロードして展開する
+spectoolを使うとSourcesに記載されているURLからダウンロードして展開してくれるようです。
+- https://stackoverflow.com/questions/33177450/how-do-i-get-rpmbuild-to-download-all-of-the-sources-for-a-particular-spec
+
+次のようにしてコマンドを実行します。
+```
+$ spectool -g -R ./your-spec.spec
+```
+
+specに含まれるソースやパッチの一覧を表示にはlオプションを利用する
+```
+$ spectool -l ./your-spec.spec
+```
+
 ## rpmbuildコマンド
 
 ### rpmbuildコマンドのオプションの説明
@@ -219,6 +243,41 @@ rpmbuildコマンドは$HOME/.rpmmacrosファイルを設定ファイルとし�
 %_topdir /home/mike/rpm
 %packager Mike <mike@example.org>
 %_sysconfdir /etc
+```
+
+## rpmdevtoolsパッケージ
+```
+rpmdev-setuptree: ユーザのホームディレクトリ内に RPM のビルドツリーを作成する
+rpmdev-diff: 二つのアーカイブの内容の差分を表示する
+rpmdev-newspec: テンプレートから新しい .spec ファイルを作成する
+rpmdev-rmdevelrpms: “development” RPMS から検索する
+rpmdev-checksig: RPM 署名をチェックする
+rpminfo: 実行ファイルやライブラリついての情報を表示する
+rpmdev-md5: RPM のすべてのファイルの md5sum を表示する
+rpmdev-vercmp: RPM バージョンを比較するチェッカー
+spectool: SPEC ファイルに含まれているソースやパッチをダウンロードして展開する
+rpmdev-wipetree: rpmdev-setupree によって作成されたディレクトリをすべて削除する
+rpmdev-extrac: さまざまなアーカイブを “tar xvf” スタイルで展開する
+```
+
+### 2つのrpmを比較する(rpmdev-diff)
+```
+$ rpmdev-diff  xxx.rpm yyy.rpm
+```
+
+### rpminfo
+```
+$ rpminfo httpd-2.2.23-1.fc17.x86_64.rpm  | head -10
+
+httpd-2.2.23-1.fc17.x86_64.rpm
+        /usr/lib64/httpd/modules/mod_actions.so DSO PIC
+        /usr/lib64/httpd/modules/mod_alias.so   DSO PIC
+        /usr/lib64/httpd/modules/mod_asis.so    DSO PIC
+        /usr/lib64/httpd/modules/mod_auth_basic.so      DSO PIC
+        /usr/lib64/httpd/modules/mod_auth_digest.so     DSO PIC
+        /usr/lib64/httpd/modules/mod_authn_alias.so     DSO PIC
+        /usr/lib64/httpd/modules/mod_authn_anon.so      DSO PIC
+        /usr/lib64/httpd/modules/mod_authn_dbd.so       DSO PIC
 ```
 
 # 参考URL

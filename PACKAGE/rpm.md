@@ -204,6 +204,97 @@ $ rpm -e --test httpd
 また、正常にアンインストールできる場合には何も表示されません。 このオプションでは、-vvのデバッグ出力オプションと同時に利用するのが一般的です。
 
 
+## まだインストールしていないrpmへの操作
+
+基本的にはpオプションを指定するとパッケージファイルを指定することができます。
+
+### rpmパッケージの情報を取得する
+
+```
+$ rpm -qpi httpd-2.2.23-1.fc17.x86_64.rpm 
+Name        : httpd
+Version     : 2.2.23
+Release     : 1.fc17
+Architecture: x86_64
+Install Date: (not installed)
+Group       : System Environment/Daemons
+Size        : 3123824
+License     : ASL 2.0
+Signature   : RSA/SHA256, Thu Jan 31 09:34:23 2013, Key ID 50e94c991aca3465
+Source RPM  : httpd-2.2.23-1.fc17.src.rpm
+Build Date  : Tue Jan 29 21:38:27 2013
+Build Host  : buildvm-07.phx2.fedoraproject.org
+Relocations : (not relocatable)
+Packager    : Fedora Project
+Vendor      : Fedora Project
+URL         : http://httpd.apache.org/
+Summary     : Apache HTTP Server
+Description :
+The Apache HTTP Server is a powerful, efficient, and extensible
+web server.
+
+```
+
+### config扱いとなっているファイルのみを表示する
+```
+$ rpm -qpc httpd-2.2.23-1.fc17.x86_64.rpm | tail -5
+/var/www/error/HTTP_VARIANT_ALSO_VARIES.html.var
+/var/www/error/contact.html.var
+/var/www/error/include/bottom.html
+/var/www/error/include/spacer.html
+/var/www/error/include/top.html
+```
+
+文書ファイルのみを抽出もできる
+```
+$ rpm -qpd httpd-2.2.23-1.fc17.x86_64.rpm | tail -5
+/usr/share/man/man8/httpd.event.8.gz
+/usr/share/man/man8/httpd.worker.8.gz
+/usr/share/man/man8/logresolve.8.gz
+/usr/share/man/man8/rotatelogs.8.gz
+/usr/share/man/man8/suexec.8.gz
+```
+
+### rpmの依存情報を確認する
+```
+$ rpm -qpR httpd-2.2.23-1.fc17.x86_64.rpm | tail -10
+rpmlib(CompressedFileNames) <= 3.0.4-1
+rpmlib(FileCaps) <= 4.6.1-1
+rpmlib(FileDigests) <= 4.6.0-1
+rpmlib(PayloadFilesHavePrefix) <= 4.0-1
+rtld(GNU_HASH)  
+system-logos >= 7.92.1-1
+systemd-units  
+systemd-units  
+systemd-units  
+rpmlib(PayloadIsXz) <= 5.2-1
+```
+
+この辺はおそらくspecファイル中のRequiresなどから指定される!?
+
+### パッケージファイルが正常かどうかを確認する
+```
+$ rpm -K httpd-2.2.23-1.fc17.x86_64.rpm 
+httpd-2.2.23-1.fc17.x86_64.rpm: rsa sha1 (md5) pgp md5 OK
+```
+### rpmに含まれるファイル一覧を取得する
+```
+$ rpm -qpl httpd-2.2.23-1.fc17.x86_64.rpm | head -5
+/etc/httpd
+/etc/httpd/conf
+/etc/httpd/conf.d
+/etc/httpd/conf.d/README
+/etc/httpd/conf.d/welcome.conf
+```
+
+### rpmパッケージ内のファイルを全て展開する
+rpmのダウンロード方法はあとでyumdownloaderコマンドを取得することで簡単に取得できる。
+展開は次のようにして行う。ディレクトリを新しく作ってその中で行うのが良いです。
+```
+$ mkdir xxxx; cp *.rpm xxx; cd xxxx
+$ rpm2cpio httpd-2.2.23-1.fc17.x86_64.rpm | cpio -idv
+```
+
 ## TIPS
 
 ### インストールされているパッケージ中のファイルが正常かどうかを確認する
@@ -297,6 +388,19 @@ $ tar zxvf mysql-5.5.32-nodocs.tar.gz
 $ cd mysql
 ```
 あとはこの中にソースコードが含まれている。
+
+### rpmパッケージを取得して、展開する
+rpmをダウンロードする場合には次のようにします。destdirでダウンロード先を指定します。拡張子が.rpm隣っていることに注意すること
+```
+$ yumdownloader --destdir=/tmp httpd 
+httpd-2.2.23-1.fc17.x86_64.rpm
+```
+
+rpmを展開するには
+```
+$ mkdir xxxx; cp *.rpm xxx; cd xxxx
+$ rpm2cpio httpd-2.2.23-1.fc17.x86_64.rpm | cpio -idv
+```
 
 
 # 参考URL
