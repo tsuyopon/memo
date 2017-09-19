@@ -100,3 +100,18 @@ Thread 1 (Thread 0x7fdd1b59c800 (LWP 15985)):
 #2  0x0000003899a47de2 in g_main_loop_run () from /lib64/libglib-2.0.so.0
 #3  0x000000000040d2df in main ()
 ```
+
+### 特定のプロセスのファイルディスクリプタ利用数を確認する
+xargsでIオプションを利用すると以前のPIDを引き継ぐことができる。そして"sh -c"などに引き渡して実行するのが肝となる。  
+/proc配下はsudoが必要なのでsudoを付与しています。
+```
+$ ps auxww | grep -i udevd | grep -v grep | awk -F' ' '{print $2}' | xargs -I{} sh -c 'sudo ls -1 /proc/{}/fd | wc -l'
+12
+9
+9
+```
+
+- 参考
+  - https://qiita.com/soymsk/items/7c1621ffca4d0f7ad678
+
+
