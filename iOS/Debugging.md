@@ -62,5 +62,20 @@ iPhone端末をMAC PCに接続して、Safariのweb inspectorから解析する�
 $ sudo tcpdump -i bridge100 -w hogehoge.pcap
 ```
 
+## DNS設定を行う
+
+### DNSサーバの起動及びiphone端末設定を行う
+dnsmasqなどを使うと非常に簡単にDNSサーバを構築できます。
+
+dnsmaspで設定したいDNSを設定したら
+あとは、iphone端末から
+- 「設定」-> 「Wi-Fi」-> Wifi名称の横に表示されるiマークをクリック -> 「DNSを構成」をクリック -> 手動にしてdnsmaspサーバのIPを入力すれば良い
+
+### hosts設定したい
+存じません
+
+
+
+
 
 
