@@ -246,6 +246,12 @@ Hypertext Transfer Protocol
 Online Certificate Status Protocol
 ```
 
+### wiresharkの各行の色付けルール設定とその確認方法について
+wiresharkの「表示」->「色付けルール」を選択するどのようなルールで何色に色付けされているのかを確認することが出来ます。ここで設定することもできます。
+
+- 参考
+  - http://kihon2nanimo.blog.fc2.com/blog-entry-6.html
+
 # trace-cmd+kernelshark 
 ```
 $ trace-cmd -record -p function_graph <command>
