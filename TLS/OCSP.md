@@ -15,7 +15,6 @@ OCSPとOCSP Staplingの違いについて抑えておきます。
   - TLSハンドシェイク中にキャッシュされたOCSPレコードをサーバが送信することを可能にします。これによってOCSP Responderをバイパスすることとなる。
   - これによってOCSP Responder間のラウンドトリップ時間を削減することができます。つまり、SSL/TLS通信の開始を早めることが可能とができます。
 
-
 上記２つについては以下に図があるのでそちらを参照すること
 - https://qiita.com/harukasan/items/fe37f3bab8a5ca3f4f92
 
@@ -171,6 +170,8 @@ Online Certificate Status Protocol
             signature: 1b8b7011003e4c3d18f861f220fead673b729e95fab49302...
 ```
 
+上記で特筆すべきはレスポンスが「Content-Type: application/ocsp-response」となっていること。レスポンス仕様はRFC2560の「4.2 Response Syntax」を参照のこと
+
 - 参考
   - https://www.ietf.org/rfc/rfc2560.txt
     - 4.2  Response Syntax
@@ -189,9 +190,11 @@ Online Certificate Status Protocol
   - https://devstreaming-cdn.apple.com/videos/wwdc/2017/204kty9amomlmk222/204/204_updating_your_app_for_ios_11.pdf
 
 # TODO
-* どのタイミングでどのようなリクエスト・レスポンスを受け取っているか?
-* CRTとの住み分けはどのようになっているのか?
-* RFCを確認する
+- どのタイミングでどのようなリクエスト・レスポンスを受け取っているか?
+- CRTとの住み分けはどのようになっているのか?
+- キャッシュはどのようになっている?
+  - Cache-ControlあたりがOCSPレスポンスに含まれているので
+- RFCを確認する
 
 # 参考URL
 - RFC2560: X.509 Internet Public Key Infrastructure Online Certificate Status Protocol - OCSP
