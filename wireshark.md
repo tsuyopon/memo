@@ -208,6 +208,49 @@ tcp.port in {80 443 8080}
 tcp.port == 80 || tcp.port == 443 || tcp.port == 8080
 ```
 
+### 特定の箇所をツリー状にすべてコピーしたい
+wiresharkで表示される特定のパケット情報をASCIIテキスト形式として取得したい場合がある。その場合には次のようにする。
+- 特定のパケットを選択する -> コピーしたい部分を予め展開しておく -> 右クリック -> コピー -> 「すべての見えている項目」
+
+「特定のパケットを選択する」とはパケットの情報が表示されている部分を指す。たとえば、「Hypertext Transfer Protocol」などの箇所で右クリックすること  
+たとえば、「Online Certificate Status Protocol」を展開していないと次のようにそのプロトコル情報は表示されなくなる。展開するとそのプロトコルの情報が詳細に表示された状態でコピーされるようになる。
+```
+Frame 4409: 924 bytes on wire (7392 bits), 924 bytes captured (7392 bits) on interface 0
+Ethernet II, Src: HonHaiPr_25:44:f6 (c0:cb:38:25:44:f6), Dst: Apple_de:96:39 (7c:d1:c3:de:96:39)
+Internet Protocol Version 4, Src: 178.255.83.1, Dst: 192.168.3.2
+Transmission Control Protocol, Src Port: 80, Dst Port: 56424, Seq: 1, Ack: 455, Len: 858
+Hypertext Transfer Protocol
+    HTTP/1.1 200 OK\r\n
+        [Expert Info (Chat/Sequence): HTTP/1.1 200 OK\r\n]
+            [HTTP/1.1 200 OK\r\n]
+            [Severity level: Chat]
+            [Group: Sequence]
+        Request Version: HTTP/1.1
+        Status Code: 200
+        Response Phrase: OK
+    Date: Fri, 22 Sep 2017 08:25:34 GMT\r\n
+    Server: Apache\r\n
+    Last-Modified: Thu, 21 Sep 2017 02:10:06 GMT\r\n
+    Expires: Thu, 28 Sep 2017 02:10:06 GMT\r\n
+    ETag: 4A931A0BEA14CC25FD804AD7B3BC9EA50B85E6A4\r\n
+    Cache-Control: max-age=495271,public,no-transform,must-revalidate\r\n
+    X-OCSP-Reponder-ID: fsedcaocsp5\r\n
+    Content-Length: 471\r\n
+    Connection: close\r\n
+    Content-Type: application/ocsp-response\r\n
+    \r\n
+    [HTTP response 1/1]
+    [Time since request: 0.182933000 seconds]
+    [Request in frame: 4330]
+    File Data: 471 bytes
+Online Certificate Status Protocol
+```
+
+### wiresharkの各行の色付けルール設定とその確認方法について
+wiresharkの「表示」->「色付けルール」を選択するどのようなルールで何色に色付けされているのかを確認することが出来ます。ここで設定することもできます。
+
+- 参考
+  - http://kihon2nanimo.blog.fc2.com/blog-entry-6.html
 
 # trace-cmd+kernelshark 
 ```
@@ -216,10 +259,8 @@ $ trace-cmd report > [file]
 $ kernelshark
 ```
 
-
 # TODO
 - tsharkをつかってみる
-
 
 # 参考URL
 - wiresharkのfilterlingのCheatseat。どのようなオプションを知るかを俯瞰するのにすごい便利
