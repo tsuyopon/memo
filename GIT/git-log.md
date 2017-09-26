@@ -122,6 +122,21 @@ $ git log --graph -oneline
 * 8794e72 added SlowHttpDos
 ```
 
+### 特定の文言が含まれるコミットのみを表示する
+```
+$ git log --grep mod | tail -10
+Author: tsuyopon <tsuyoppy@r2.dion.ne.jp>
+Date:   Sat Jun 27 02:30:48 2015 +0900
+
+    mod
+
+commit 667492289fb742f5cc2b377b6a0773631da741fd
+Author: tsuyopon <tsuyoppy@r2.dion.ne.jp>
+Date:   Sun Dec 28 22:58:34 2014 +0900
+
+    modified
+```
+
 ### git logを整形して出力する
 ```
 $ git log --pretty="%h %ai %s" --date-order HEAD | head -5
