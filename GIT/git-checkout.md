@@ -36,3 +36,7 @@ $ git checkout remotes/origin/develop
 $ git checkout <commit_id>
 ```
 
+### ブランチの作成と同時にそのブランチに切り替える
+```
+$ git checkout -b bugfix
+```

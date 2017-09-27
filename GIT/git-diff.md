@@ -57,14 +57,10 @@ $ git diff --cached
 $ git diff --cached -M
 ```
 
-### コミットしたファイル同士の変更点の比較
+### commitによる比較やブランチによる比較
+レポジトリ全体を比較したい場合には次のようにします。
 ```
 $ git diff 変更後のSHA..変更前のSHA
-```
-
-または次のようにしても可能らしい
-```
-$ git diff commit1 commit2 -- path/to/file
 ```
 
 また、ブランチを比較する場合も同じ
@@ -72,9 +68,15 @@ $ git diff commit1 commit2 -- path/to/file
 $ git diff ブランチA..ブランチB
 ```
 
-### コミットしたSHAの比較を行う場合
+### 特定のコミット間やブランチ間で、特定のファイルだけを比較対象としたい。
+特定のファイルでコミット間の比較をしたい場合には次のようにします。
 ```
-$ git diff 確認したいコミットのSHA^..確認したいコミットのSHA
+$ git diff commit1 commit2 -- /home/xxx/hoge.txt
+```
+
+それぞれのcommitにおいてパスやファイルを指定することにより比較することもできます。
+```
+$ git diff <コミット名>:<ファイル名> <コミット名>:<ファイル名>
 ```
 
 ### 変更点以外の前後の行も表示したい
@@ -86,6 +88,15 @@ $ git diff -U10
 ### 空白コードなどを無視する場合
 ```
 $ git diff -w
+or
+$ git diff --ignore-all-space
+```
+
+### ファイル内のスペース数の違いを無視する場合
+```
+$ git diff -b
+or
+$ git diff --ignore-space-changes
 ```
 
 ### 空行を無視する場合
@@ -95,6 +106,18 @@ $ git diff --ignore-blank-lines
 
 ### コミット間の差分を色で表示する
 ```
+$ git diff --color-words
+```
+
+### 文字レベルで違いを表示する
+```
+// 差分を文字レベルで表示する
+$ git diff --word-diff
+ 
+// 差分を文字レベルで表示する。色と＋、ーだけで、差分を表現する
+$ git diff --word-diff=color
+  
+// git diff HEAD --word-diff　と同じ効果
 $ git diff --color-words
 ```
 

@@ -16,5 +16,19 @@ $ git fetch upstream
 $ git merge upstream/master
 ```
 
+### マージしたけどやっぱり元に戻したい時
+mergeしてしまって、やっぱりmergeをやめたいと思った場合の対処方法
+```
+# マージする。
+$ git checkout <マージ先ブランチ>
+$ git merge <マージ元ブランチ>
+
+# マージしたあと、やっぱやめよって思ったらこれをやる
+# ORIG_HEADを指定すればマージ前に戻る
+$ git reset --hard ORIG_HEAD
+```
+
+
+# 参考URL
 - 参考
   - https://www.iana.org/assignments/tls-parameters/tls-parameters.xhtml
