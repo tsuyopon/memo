@@ -3,6 +3,13 @@ git remoteやそのセットアップについて
 
 # 詳細
 
+### リモートレポジトリ一覧を表示する
+```
+$ git remote
+origin
+upstream
+```
+
 ### リモートレポジトリ情報を見る
 ```
 $ git remote -v
