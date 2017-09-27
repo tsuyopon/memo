@@ -27,6 +27,10 @@ $ git branch -r
 $ git branch -a
 ```
 
+万が一、上記で表示されないような場合には次を実行しておくとリモートからブランチ情報を取得してくれる。
+```
+$ git fetch
+```
 
 その他にも次のようなオプションが存在する
 - HEADにマージ済みのブランチの一覧を表示する
@@ -60,3 +64,6 @@ $ git merge mergeOrigBranch
 git branch -u <upstream>
 git branch --unset-upstream
 ```
+
+# 参考URL
+- https://git-scm.com/book/ja/v1/Git-%E3%81%AE%E3%83%96%E3%83%A9%E3%83%B3%E3%83%81%E6%A9%9F%E8%83%BD-%E3%83%96%E3%83%A9%E3%83%B3%E3%83%81%E3%81%AE%E7%AE%A1%E7%90%86

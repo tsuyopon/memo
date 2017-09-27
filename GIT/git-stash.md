@@ -66,5 +66,10 @@ applyで適用したあとに削除したい場合には次のようなコマン
 $ git stash show -p stash@{0} | git apply -R
 ```
 
+### stashで退避された状態をすべて削除する場合
+```
+$ git stash clean
+```
+
 # 参考URL
 - https://git-scm.com/book/ja/v1/Git-%E3%81%AE%E3%81%95%E3%81%BE%E3%81%96%E3%81%BE%E3%81%AA%E3%83%84%E3%83%BC%E3%83%AB-%E4%BD%9C%E6%A5%AD%E3%82%92%E9%9A%A0%E3%81%99
