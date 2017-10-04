@@ -4,11 +4,13 @@ gitのdiffを見る方法について
 # 比較方法(ブラウザ)
 
 ### ブラウザで比較する
-
 以下はサンプルです。sha1を記載したりブランチ名を記載することが可能です。３点リーダーではさみます。
 指定できるのはブランチ、タグ、コミットIDです。
 - https://github.com/fastladder/fastladder/compare/2.3.5...711ae09c3de07532c4ee86d7a8ffb08bfa6d369e
 - https://github.com/fastladder/fastladder/compare/2.3.5...master
+
+### forkされたブランチと比較する
+- https://github.com/rails/rails/compare/byroot:master...master
 
 ### 空白を無視したい場合
 URLの最後に「?w=1」を付与する
@@ -23,6 +25,9 @@ URLに「?ts=4」などとすると良い
 https://github.com/rails/rails/compare/master@{1.day.ago}...master
 https://github.com/rails/rails/compare/master@{2014-10-04}...master
 ```
+
+- 参考
+  - https://qiita.com/sotayamashita/items/1cf05f2a2be3d6fb3388
 
 # 比較方法(コマンド)
 
