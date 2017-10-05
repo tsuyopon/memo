@@ -60,6 +60,15 @@ NODE_PATH=lib node server.js
 require('my_util');
 ```
 
+### Node.jsがモジュールを探しにいくパスを表示する。
+```
+$ node -e "console.log(global.module.paths)"
+[ '/home/vagrant/node_modules',
+  '/home/node_modules',
+  '/node_modules' ]
+```
+上記に不足しているようで「Cannot find module xxxx」などと表示されるようであればNODE_PATHに追加するとよい。
+
 ### NODE_DEBUG環境変数
 以下の例ではhttpとnetモジュールを指定して作成したサーバを起動してデバッグ出力を見ています。
 ```
@@ -82,6 +91,50 @@ xxx=yyy という変数をつけて実行すると、ランタイムからはpro
 $ NODE_MY_FLG=true node server.js
 ```
 
+### Node.jsのバインディング(C++ Native拡張)の作り方
+この辺を参考にすること
+- https://qiita.com/castaneai/items/f82b2523bcb603e42ea7
+
+手順としては
+- 1.ソースコードやbinding.gypを準備する。
+- 2.以下のコマンドを実行する
+```
+$ node-gyp configure
+$ node-gyp build
+```
+- 3. build/フォルダが作成されて、build/Release/xxxx.nodeといった拡張子のバイナリが生成される。
+- 4. 次のようにして利用することができる
+```
+var hoge = requre('./hoge');
+console.log(hoge);
+```
+
+なお、nodeはバージョンの進化が激しく微妙にバージョンごとに差異を吸収してくれる仕組みとしてNANというものがあります。
+```
+$ npm install --save nan
+```
+
+そして、binding.gypで次のinclude_dirsの1行を加える必要があります。プログラム側もNANに合わせて書き換えます(詳細は上のURLを参考のこと)
+```
+ {
+   "targets": [
+     {
+       "target_name": "my_extension",
+       "sources": ["my_extension.cc"],
++      "include_dirs": ["<!(node -e \"require('nan')\")"]
+     }
+   ]
+ }
+```
+
+
+以下は参考資料
+- node_gyp
+  - https://github.com/nodejs/node-gyp
+- nan
+  - https://github.com/nodejs/nan
+
 
 # 参考URL
 - http://jxck.hatenablog.com/entry/20120410/1334071898
+
