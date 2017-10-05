@@ -133,6 +133,25 @@ $ npm info knockout
   directories: {} }
 ```
 
+### package.jsonの仕様について
+この辺を参照のこと
+- https://docs.npmjs.com/files/package.json
+- 上記の日本語訳は以下
+  - https://garafu.blogspot.jp/2016/11/packagejson-specification-ja.html
+
+### インストールしたNPMモジュールが格納されるディレクトリを表示する
+ローカルインストールしたモジュールが格納されている場所を表示する。
+```
+$ npm root
+/home/tsuyoshi/git/memo/NODE/node_modules
+```
+
+グローバルインストールしたモジュールが格納されている場所を表示するにはgオプションを付与する。
+```
+$ npm root -g
+/usr/local/lib/node_modules
+```
+
 # インストール
 ### インストール
 ```
@@ -147,6 +166,11 @@ $ npm install cordova@5.4.1 [-g]
 ### アンインストール
 ```
 $ npm uninstall express
+```
+
+### 更新可能なパッケージの確認
+```
+$ npm outdated
 ```
 
 # pacakge.json周り
@@ -192,7 +216,8 @@ Is this ok? (yes) yes
 ```
 
 ### package.jsonからインストールする
-現在いるディレクトリにpackage.jsonが存在すれば以下のコマンドでpackage.jsonを参照してインストールされる
+現在いるディレクトリにpackage.jsonが存在すれば以下のコマンドでpackage.jsonを参照してインストールされる。
+この際にpackage.jsonに記述された"dependency"と"devDependencies"を参照する。
 ```
 $ npm install
 ```
@@ -204,6 +229,32 @@ $ npm install --save <package-name>
 - 開発環境のみに追加したい場合には次のようにする
 ```
 $ npm install --save-dev <package-name>
+```
+
+なお、saveだとpackage.jsonの"dependency"に登録され、save-devだと"devDependencies"に登録される。
+
+### package.jsonを更新する
+```
+$ npm install -g npm-check-updates
+```
+
+その後、package.jsonが存在するディレクトリに移動して次のコマンドを実行するだけでpackage.jsonを更新してくれます。
+```
+$ npm-check-updates -u
+```
+
+# 配布
+
+### npmパッケージを配布する
+package.jsonが存在するディレクトリで以下を実行します。これだけで全世界に公開されるようです。
+```
+$ npm publish  
+```
+
+確認してインストールします。
+```
+$ npm info xxx
+$ npm install xxx
 ```
 
 # 設定関連
