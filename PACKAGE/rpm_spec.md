@@ -86,6 +86,71 @@ hello-1.0-1.noarch.rpm
   - http://qiita.com/gucci3/items/f9fbab8396295385541f
 
 
+## rpmdev-setuptreeを使う
+この辺の作業を手動でやったりする場合もあったが上記パッケージを使うとこれらは不要となるらしい。
+- 参考
+  - http://blog.gachapin-sensei.com/archives/618872.html
+```
+$ mkdir -p ~/rpmbuild/{BUILD,BUILDROOT,RPMS,SOURCES,SPECS,SRPMS}
+$ echo '%_topdir %(echo $HOME)/rpmbuild' > ~/.rpmmacros
+```
+
+パッケージをインストールして実行すると$HOME/rpmbuildディレクトリ作成と$HOME/.rpmmacroを生成します。
+```
+$ yum install rpmdevtools
+$ rpmdev-setuptree 
+```
+
+.rpmmacroは以下の通り
+```
+%_topdir %(echo $HOME)/rpmbuild
+
+%_smp_mflags %( \
+[ -z "$RPM_BUILD_NCPUS" ] \\\
+&& RPM_BUILD_NCPUS="`/usr/bin/nproc 2>/dev/null || \\\
+/usr/bin/getconf _NPROCESSORS_ONLN`"; \\\
+if [ "$RPM_BUILD_NCPUS" -gt 16 ]; then \\\
+echo "-j16"; \\\
+elif [ "$RPM_BUILD_NCPUS" -gt 3 ]; then \\\
+echo "-j$RPM_BUILD_NCPUS"; \\\
+else \\\
+echo "-j3"; \\\
+fi )
+
+%__arch_install_post \
+[ "%{buildarch}" = "noarch" ] || QA_CHECK_RPATHS=1 ; \
+case "${QA_CHECK_RPATHS:-}" in [1yY]*) /usr/lib/rpm/check-rpaths ;; esac \
+/usr/lib/rpm/check-buildroot
+```
+
+上記設定でrpmをビルドするとrpmを生成する直前に rpmdevtools に含まれている  check-rpaths と check-buildroot というコマンドが実行されるようになっています。
+例えば、次のように実行すると
+```
+$ QA_RPATHS=$[ 0x0001|0x0010 ] rpmbuild -ba $HOME/rpmbuild/SPECS/foo.spec
+```
+
+
+QA_RPATHSについては以下の通り
+```
+*    0x0001 ... standard RPATHs (e.g. /usr/lib); such RPATHs are a minor
+*               issue but are introducing redundant searchpaths without
+*               providing a benefit. They can also cause errors in multilib
+*               environments.
+*    0x0002 ... invalid RPATHs; these are RPATHs which are neither absolute
+*               nor relative filenames and can therefore be a SECURITY risk
+*    0x0004 ... insecure RPATHs; these are relative RPATHs which are a
+*               SECURITY risk
+*    0x0008 ... the special '$ORIGIN' RPATHs are appearing after other
+*               RPATHs; this is just a minor issue but usually unwanted
+*    0x0010 ... the RPATH is empty; there is no reason for such RPATHs
+*               and they cause unneeded work while loading libraries
+*    0x0020 ... an RPATH references '..' of an absolute path; this will break
+*               the functionality when the path before '..' is a symlink
+```
+- 上記のQA_RPATHS環境変数の日本語説明については以下を参考のこと
+  - https://www.sssg.org/blogs/naoya/archives/1544
+
+
 ## specファイル説明
 
 specファイルは基本的には次の構成になります。

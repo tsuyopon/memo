@@ -1,4 +1,7 @@
 
+# Apple周りのソースコード
+- https://opensource.apple.com/
+
 # MAC関連設定
 
 # 一般操作
@@ -160,3 +163,18 @@ Ctrl+[, B
 $ networksetup -listnetworkserviceorder
 $ sudo networksetup -setv6off Wi-Fi
 ```
+
+# トラブルシューティング
+
+### SierraにアップデートするとSSH接続で秘密鍵のパスを覚えてくれない
+git cloneやgit pullでいままでパスワードを1回入力すればできていたのですが、常にパスワードを要求されるようになります。
+次のような設定が必要となる。
+```
+Host *
+	ForwardAgent yes
+	UseKeychain yes
+	AddKeysToAgent yes
+```
+
+- 参考
+  - https://qiita.com/takumikkusu/items/3b18e475de02a91b37e8

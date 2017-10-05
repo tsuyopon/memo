@@ -1,7 +1,12 @@
 # 概要
 githubのUI画面周りのメモ
 
+
+
 # 詳細
+
+### UI上からdiffを確認したい
+git-diff.mdに記載しているのでそちらを参照にすること
 
 ### ユーザーのcommit履歴を参照したい場合
 - https://github.com/rails/rails/commits/master?author=azarashi

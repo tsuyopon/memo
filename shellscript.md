@@ -766,6 +766,21 @@ printf "%b" "\n"
 (time ls) &> file
 ```
 
+### カンマ区切り2つは何?
+カンマ区切り２つは「Parameter Expansion」と呼ばれているもののようでbash4以降で利用できるようです。
+```
+${reportName,,}
+```
+サンプル出力はこちら
+```
+var=HeyThere
+echo ${var,,}
+heythere
+```
+
+- 参考
+  - https://stackoverflow.com/questions/41166026/what-does-2-commas-after-variable-name-mean-in-bash
+
 # 参考URL
 - UNIX&LINUXコマンド・シェルスクリプトリファレンス
   - 今後もリファレンスとして非常によさそう

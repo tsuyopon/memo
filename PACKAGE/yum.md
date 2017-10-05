@@ -600,6 +600,12 @@ or
 $ yum-config-manager --disable example\*            # 正規表現指定も可能
 ```
 
+### レポジトリで利用可能なrpmを取得する
+以下のコマンドを実行するとhoge_rpms-latestレポジトリに含まれるパッケージをすべて表示します。
+```
+$ repoquery -qa --repoid=hoge_rpms-latest
+```
+
 ### yumレポジトリを作成する
 この辺を参考に
 - http://kazmax.zpp.jp/linux_beginner/yum_createrepo.html

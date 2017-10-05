@@ -90,6 +90,18 @@ mysql> SELECT * FROM customer GROUP BY first_name HAVING COUNT(*) >= 2;
 8 rows in set (0.00 sec)
 ```
 
+
+### DATETIMEを日付順でレコード数集計をする
+次のようなDATETIMEレコードがカラムに存在していて、日付毎にレコードを集計したいような場合
+```
+YYYY-MM-DD hh:mm:ss
+```
+
+mysqlは次のようになる。
+```
+mysql> SELECT DATE_FORMAT(create_time, '%Y-%m-%d') AS time, COUNT(*) AS count FROM MyTable GROUP BY DATE_FORMAT(create_time, '%Y%m%d');
+```
+
 ### UNIONを使って重複レコードを排除する。
 上の例では左側(3日前)と右側(2日前)のSELECTが異なるので２行表示されるが、下の出力例では左側と右側が同じなので1行だけで重複排除されている。
 ```
