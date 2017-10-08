@@ -1,6 +1,12 @@
 # 概要
-dockerについて
+dockerについてのメモ
 
+基本コマンドについては以下を参考にすること
+- https://gist.github.com/tcnksm/7700047
+
+# 詳細
+
+### インストール
 dockerコマンドを使うには次のpackageをインストールするだけ
 ```
 $ sudo apt-get install docker.io
@@ -8,9 +14,6 @@ $ sudo apt-get install docker.io
 
 dockerコマンドを実行する際にはsudoコマンドを付与する必要があります。
 - - https://qiita.com/DQNEO/items/da5df074c48b012152ee
-
-
-# 詳細
 
 ### dockerコマンドのコマンドライン
 以下を参考にするとよさそう
@@ -57,6 +60,9 @@ alpine              3.2                 sha256:21e69d5899e4865b647f6a7aeaba3ddf0
 ```
 $ sudo docker run -h spam -i -t ubuntu:b44ce450cb60 /bin/bash
 ```
+
+起動時に環境変数を指定するeオプションもある。実行時の初期ディレクトリを変更するにはwオプションがある。詳しくは以下を参照のこと
+- https://qiita.com/shimo_yama/items/d0c42394689132fcb4b6
 
 ### dockerの停止後に破棄する
 rmオプションを付与するとコンテナ停止後にコンテナが破棄されます。
@@ -106,6 +112,8 @@ $ sudo docker push ubuntu/mysql:latest
 
 ### TODO
 - dockerレジストリ設定方法
+- この辺もまとめる
+  - https://qiita.com/bungoume/items/b8911fd243d9c084bd63 
 
 # 参考URL
 - docker公式資料
