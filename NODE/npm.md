@@ -8,6 +8,7 @@ $ npm --version
 
 # 参照
 
+
 ### インストールされているパッケージを参照する
 depthは表示階層を表す。--depthのオプションがなければ全ての階層を表示する。
 ```
@@ -133,6 +134,12 @@ $ npm info knockout
   directories: {} }
 ```
 
+次のコマンドでも情報を確認できる(TODO: コマンド出力結果を添付すること)
+```
+$ npm show knockout
+$ npm view knockout
+```
+
 ### package.jsonの仕様について
 この辺を参照のこと
 - https://docs.npmjs.com/files/package.json
@@ -152,6 +159,19 @@ $ npm root -g
 /usr/local/lib/node_modules
 ```
 
+### コマンドディレクトリを表示する
+ローカルインストールコマンドのディレクトリを表示する
+```
+$ npm bin
+/home/tsuyoshi/git/memo/node_modules/.bin
+```
+
+グローバルインストールしたコマンドのディレクトリを表示するにはgおオプションを付与する
+```
+$ npm bin -g
+/usr/local/bin
+```
+
 # インストール
 ### インストール
 ```
@@ -166,6 +186,12 @@ $ npm install cordova@5.4.1 [-g]
 ### アンインストール
 ```
 $ npm uninstall express
+```
+
+アンインストール時にpackage.jsonを操作するオプションもあります
+```
+$ npm uninstall express --save       // package.jsonのdependenciesからも削除
+$ npm uninstall express --save--dev  // package.jsonのdevDependenciesからも削除
 ```
 
 ### 更新可能なパッケージの確認
@@ -215,12 +241,19 @@ About to write to /Users/my_user/Development/node.js/sample/package.json:
 Is this ok? (yes) yes
 ```
 
+yオプションを付与するとすべてデフォルト値を使って作成します。
+```
+$ npm init -y
+```
+
 ### package.jsonからインストールする
 現在いるディレクトリにpackage.jsonが存在すれば以下のコマンドでpackage.jsonを参照してインストールされる。
 この際にpackage.jsonに記述された"dependency"と"devDependencies"を参照する。
 ```
 $ npm install
 ```
+
+gをつけない場合にはカレントディレクトリ上にnode_modulesフォルダを作成してその中にインストールします。
 
 ### パッケージインストール時にpackage.jsonに追加する
 ```
@@ -295,6 +328,12 @@ console.log(process.env.npm_config_foo)
 ```
 $ npm search express
 ```
+
+### 実行パスについて
+- グローバル
+  - /usr/local/bin
+- ローカル
+  - ./node_modules/.bin
 
 ### npmのヘルプを表示する。
 どのようなオプションがあるのかは以下で確認することができる。

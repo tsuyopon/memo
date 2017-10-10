@@ -117,3 +117,5 @@ nodejs-0.12からnanのAPIを使った変更を行うためにはAPI周りを変
     - https://github.com/nodejs/nan
   - NodejsのC++バインディングのサンプルモジュール
     - https://github.com/nodejs/node-addon-examples
+  - node中にあるサンプル(nanは使われていない)
+    - https://github.com/nodejs/node/tree/master/test/addons
