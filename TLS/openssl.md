@@ -910,6 +910,87 @@ $ openssl speed rsa2048
 $ openssl speed ecdhp256
 ```
 
+### お手軽にHTTPSサーバを立てて証明書確認を行う
+opensslコマンドにはお手軽にHTTPSサーバを立てる機能が存在します。次のような感じで指定します。
+```
+$ openssl s_server -accept 10443 -cert cert.pem -key keynp.pem -CAfile rapidssl.pem -WWW
+Using default temp DH parameters
+Using default temp ECDH parameters
+ACCEPT
+```
+- accept: HTTPS待受portがデフォルトで4433とややわかりにくいので指定するといいかもしれません。
+- cert: サーバ証明書のファイル名
+- key: 秘密鍵のファイル名
+- CAfile: 中間証明書のファイル名
+- WWW: 単順なWEBサーバをエミュレートする。URL のパス部分をカレントディレクトリからの相対パスで解決して、対応するファイルを返す。
+
+リクエストを確認するのも次のコマンドで可能なのですごい便利
+```
+$ openssl s_client -connect localhost:10433
+```
+
+- 参考
+  - https://bacchi.me/linux/openssl-tips/
+
+### CRLの中身を確認してみる
+以下からpca1.1.1.crlを取得する
+- https://www.jp.websecurity.symantec.com/repository/crl.html
+
+次のような書式で可能らしい。
+```
+$ openssl crl -inform der -in crl.der -text
+$ openssl crl -in crl.pem -text
+```
+
+crl拡張子はderファイルとのことだったので、指定してみたらCRLの内容が表示された。
+```
+$  openssl crl -inform der -in pca1.1.1.crl -text
+Certificate Revocation List (CRL):
+        Version 1 (0x0)
+        Signature Algorithm: sha1WithRSAEncryption
+        Issuer: /C=US/O=VeriSign, Inc./OU=Class 1 Public Primary Certification Authority
+        Last Update: Dec 15 00:00:00 2016 GMT
+        Next Update: Dec 31 23:59:59 2017 GMT
+Revoked Certificates:
+    Serial Number: 2CD24B62C497A417CD6EA3C89C7A2DC8
+        Revocation Date: Apr  1 17:56:15 2004 GMT
+    Serial Number: 3A45DE56CB02CDDCDC4E7763221BD4D5
+        Revocation Date: May  8 19:22:34 2001 GMT
+    Serial Number: 415D8836811520D5808346A85992782C
+        Revocation Date: Jul  6 16:57:23 2001 GMT
+    Serial Number: 473981FFFD8481F195F9EB18C27C0DF1
+        Revocation Date: Jan  9 18:06:12 2003 GMT
+    Serial Number: 70547E6AE2BAD8767F47A99910415E67
+        Revocation Date: Sep 23 17:00:08 2002 GMT
+    Serial Number: 7E0B5DDE18F2396682A68F65223823C8
+        Revocation Date: May  8 19:08:21 2001 GMT
+    Serial Number: D05448601867D3AD35CA2F0D4A27955E
+        Revocation Date: Dec 11 18:26:21 2001 GMT
+    Signature Algorithm: sha1WithRSAEncryption
+        c3:4b:60:3b:0d:72:df:46:09:c7:50:d1:b7:9b:28:93:68:d9:
+        f0:01:c0:2a:49:33:9b:22:9a:db:ea:5d:a5:40:62:5b:69:b6:
+        38:73:75:a6:eb:11:fd:fc:6a:9b:fc:2e:dd:d0:86:a6:ef:9f:
+        a4:16:86:3f:89:4e:a2:c6:e2:7a:5f:00:08:3a:cc:97:86:91:
+        e1:2f:ff:37:5a:c0:1c:61:a0:0b:d1:6a:29:31:e5:de:ad:dc:
+        a4:70:0e:59:d4:52:e7:18:f8:2d:1f:57:a9:a4:18:93:6c:f3:
+        cc:dd:dc:2b:d6:61:12:e5:6f:0d:cf:21:cd:65:c0:ea:b4:a3:
+        35:c5
+-----BEGIN X509 CRL-----
+MIICHjCCAYcwDQYJKoZIhvcNAQEFBQAwXzELMAkGA1UEBhMCVVMxFzAVBgNVBAoT
+DlZlcmlTaWduLCBJbmMuMTcwNQYDVQQLEy5DbGFzcyAxIFB1YmxpYyBQcmltYXJ5
+IENlcnRpZmljYXRpb24gQXV0aG9yaXR5Fw0xNjEyMTUwMDAwMDBaFw0xNzEyMzEy
+MzU5NTlaMIH2MCECECzSS2LEl6QXzW6jyJx6LcgXDTA0MDQwMTE3NTYxNVowIQIQ
+OkXeVssCzdzcTndjIhvU1RcNMDEwNTA4MTkyMjM0WjAhAhBBXYg2gRUg1YCDRqhZ
+kngsFw0wMTA3MDYxNjU3MjNaMCECEEc5gf/9hIHxlfnrGMJ8DfEXDTAzMDEwOTE4
+MDYxMlowIQIQcFR+auK62HZ/R6mZEEFeZxcNMDIwOTIzMTcwMDA4WjAhAhB+C13e
+GPI5ZoKmj2UiOCPIFw0wMTA1MDgxOTA4MjFaMCICEQDQVEhgGGfTrTXKLw1KJ5Ve
+Fw0wMTEyMTExODI2MjFaMA0GCSqGSIb3DQEBBQUAA4GBAMNLYDsNct9GCcdQ0beb
+KJNo2fABwCpJM5simtvqXaVAYltptjhzdabrEf38apv8Lt3Qhqbvn6QWhj+JTqLG
+4npfAAg6zJeGkeEv/zdawBxhoAvRaikx5d6t3KRwDlnUUucY+C0fV6mkGJNs88zd
+3CvWYRLlbw3PIc1lwOq0ozXF
+-----END X509 CRL-----
+```
+
 # TODO
 - https://nona.to/fswiki/OpenSSL+Command-Line+HOWTO.html
 
