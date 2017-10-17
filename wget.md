@@ -31,6 +31,27 @@ Saving to: ‘STDOUT’
 (以下省略)
 ```
 
+### Hostヘッダを付与して
+参考までにヘッダも付与するようにSオプションも指定してみている。
+```
+$ wget -S -O - http://www.yahoo.co.jp/ --header 'Host: hoge.yahoo.co.jp'
+--2017-10-18 08:58:59--  http://www.yahoo.co.jp/
+Resolving www.yahoo.co.jp... 183.79.248.252
+Connecting to www.yahoo.co.jp|183.79.248.252|:80... connected.
+HTTP request sent, awaiting response... 
+  HTTP/1.1 404 Not Found on Accelerator
+  Date: Tue, 17 Oct 2017 23:58:59 GMT
+  Connection: keep-alive
+  Via: http/1.1 edge2112.img.djm.yahoo.co.jp (ApacheTrafficServer [c s f ])
+  Server: ATS
+  Cache-Control: no-store
+  Content-Type: text/html
+  Content-Language: en
+  X-Frame-Options: SAMEORIGIN
+  Content-Length: 6794
+2017-10-18 08:58:59 ERROR 404: Not Found on Accelerator.
+```
+
 ### サーバのレスポンス内容とレスポンスヘッダを両方出力する
 ```
 $ wget https://www.yahoo.co.jp/ -S -O -
