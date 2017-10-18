@@ -120,6 +120,73 @@ SSL-Session:
 read:errno=0
 ```
 
+### 接続時の証明書の詳細な情報を表示する
+BEGIN CERTIFICATEからEND CERTIFICATEの部分をわかりやすい情報に変換して「Certificate:」以下を表示しています。
+有効期限、Issuer, Subject, Serial Number, X509拡張, 署名などを表示してくれています。
+```
+$ openssl s_client -connect www.yahoo.jp:443 | openssl x509 -text
+depth=1 C = JP, O = "Cybertrust Japan Co., Ltd.", CN = Cybertrust Japan Public CA G3
+verify error:num=20:unable to get local issuer certificate
+verify return:0
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number:
+            4f:07:85:9d:ad:f7:a3:f5:5c:45:62:1e:33:91:80:bc:b7:5c:1d:a1
+    Signature Algorithm: sha256WithRSAEncryption
+        Issuer: C=JP, O=Cybertrust Japan Co., Ltd., CN=Cybertrust Japan Public CA G3
+        Validity
+            Not Before: Mar 14 05:43:41 2017 GMT
+            Not After : Mar 14 14:59:00 2018 GMT
+        Subject: C=JP, ST=Tokyo, L=Chiyoda-ku, O=Yahoo Japan Corporation, OU=EDGE_20170313, CN=*.yahoo.co.jp
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                Public-Key: (2048 bit)
+                Modulus:
+                    00:d5:aa:23:10:8a:92:4f:64:8b:64:49:70:75:65:
+                    (snip)
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Basic Constraints: critical
+                CA:FALSE
+            X509v3 Certificate Policies: 
+                Policy: 1.2.392.200081.1.1
+                  User Notice:
+                    Explicit Text: For more details, please visit our website https://www.cybertrust.ne.jp .
+                  CPS: https://www.cybertrust.ne.jp/ssl/repository/index.html
+                Policy: 2.23.140.1.2.2
+
+            X509v3 Subject Alternative Name: 
+                DNS:*.yahoo.co.jp, DNS:*.yimg.jp, DNS:*.c.yimg.jp, DNS:*.yahooapis.jp, DNS:cgi2.r-agent.yahoo.co.jp, DNS:*.yoctfs.jp, DNS:*.edge.storage-yahoo.jp, DNS:*.east.edge.storage-yahoo.jp, DNS:*.west.edge.storage-yahoo.jp, DNS:*.global.edge.storage-yahoo.jp, DNS:*.listing.yahoo.co.jp, DNS:*.ane.yahoo.co.jp, DNS:*.chiebukuro.yahoo.co.jp, DNS:*.finance.yahoo.co.jp, DNS:*.auctions.yahoo.co.jp, DNS:*.shopping.yahoo.co.jp, DNS:*.travel.yahoo.co.jp, DNS:*.news.yahoo.co.jp, DNS:*.pmx.proatlas.net, DNS:add.dir.yahoo.co.jp, DNS:map.alpsmap.jp, DNS:ssl.map.srv.yimg.jp, DNS:ssl.api.olp.yahooapis.jp, DNS:subscription.push.yahooapis.jp, DNS:auth.carnavi.yahooapis.jp, DNS:vics.carnavi.yahooapis.jp, DNS:cm.froma.yahoo.co.jp, DNS:*.yahoobox.jp, DNS:info.hatalike.yahoo.co.jp, DNS:movie.chocotle.yahoo.co.jp, DNS:opetool.bylines.news.yahoo.co.jp, DNS:tool.bylines.news.yahoo.co.jp, DNS:poiedit.map.yahoo.co.jp, DNS:compass.ymobile.yahoo.co.jp, DNS:pf.carnavi.yahooapis.jp, DNS:rf.carnavi.yahooapis.jp, DNS:assist.search.yahooapis.jp, DNS:suggest.search.yahooapis.jp, DNS:arc.help.yahoo.co.jp, DNS:personalapp.news.yahooapis.jp, DNS:cksync.pdsp.yahoo.co.jp, DNS:suggest.auctions.yahooapis.jp, DNS:ssl-tools.kainavi.search.yahoo.co.jp, DNS:yoshimoto.gyao.yahoo.co.jp, DNS:lyrics.gyao.yahoo.co.jp, DNS:m.gyao.yahoo.co.jp, DNS:im.ov.yahoo.co.jp, DNS:xml.listing.yahoo.co.jp, DNS:app.news.yahooapis.jp, DNS:feedback.premiads.yahoo.co.jp, DNS:feedback.advertising.yahoo.co.jp, DNS:frame.games.yahoo.co.jp, DNS:sandbox.frame.games.yahoo.co.jp, DNS:*.yjtag.yahoo.co.jp, DNS:*.east.edge.storage-yahoobox.jp, DNS:*.shopping.c.yimg.jp, DNS:*.yjtag.jp, DNS:*.ys-insurance.co.jp, DNS:www.yjcard.co.jp, DNS:yahoo.co.jp
+            Authority Information Access: 
+                OCSP - URI:http://ocsp.cybertrust.ne.jp/OcspServer
+                CA Issuers - URI:http://sureseries-crl.cybertrust.ne.jp/SureServer/ctjpubcag3/ctjpubcag3_sha256.crt
+
+            X509v3 Key Usage: critical
+                Digital Signature, Key Encipherment
+            X509v3 Extended Key Usage: 
+                TLS Web Server Authentication, TLS Web Client Authentication
+            X509v3 Authority Key Identifier: 
+                keyid:73:A8:08:53:29:B8:15:FB:99:80:E5:C5:37:D8:F8:39:7B:A4:13:06
+
+            X509v3 CRL Distribution Points: 
+
+                Full Name:
+                  URI:http://sureseries-crl.cybertrust.ne.jp/SureServer/ctjpubcag3/cdp.crl
+
+            X509v3 Subject Key Identifier: 
+                77:8E:F7:67:6C:1C:B6:2E:BB:D8:71:BF:91:0E:DE:17:22:C1:02:E1
+            1.3.6.1.4.1.11129.2.4.2: 
+                (snip)
+    Signature Algorithm: sha256WithRSAEncryption
+         09:c4:3e:18:f5:13:38:53:22:eb:96:00:72:a2:7d:e4:da:21:
+         (snip)
+-----BEGIN CERTIFICATE-----
+MIIM8DCCC9igAwIBAgIUTweFna33o/VcRWIeM5GAvLdcHaEwDQYJKoZIhvcNAQEL
+(snip)
+-----END CERTIFICATE-----
+```
+
 ### 接続状態を表示する
 クライアントとサーバとの接続状況を以下のコマンドで確認できます。
 接続状況やサーバ証明書が表示されます。
