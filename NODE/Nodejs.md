@@ -141,6 +141,70 @@ gypの仕様書?
 スライドシェアもあります
 - https://www.slideshare.net/shigeki_ohtsu/nodegakuen5-ohtsu
 
+### UbuntuにNodeの最新バージョンを入れる + nodeバージョンの切り替えもできるようにする。
+自前のVirtualBoxにすごい簡単にVirtualBoxを入れる方法があったのでそのメモとなります。以下を参考にします。
+- https://qiita.com/seibe/items/36cef7df85fe2cefa3ea
+
+まずは最初にnodejsとnpmをインストールしておきます。
+```
+$ sudo apt-get install -y nodejs npm
+```
+
+次のnという一文字の名前のnpmパッケージをインストールします。
+- https://github.com/tj/n
+
+次のコマンドでインストールすることができます。
+```
+$ sudo npm cache clean
+$ sudo npm install n -g
+/usr/local/bin/n -> /usr/local/lib/node_modules/n/bin/n
+n@2.1.8 /usr/local/lib/node_modules/n
+```
+
+npackageを使ってnodeをインストールします。
+```
+$ sudo n stable
+
+     install : node-v8.6.0
+       mkdir : /usr/local/n/versions/node/8.6.0
+       fetch : https://nodejs.org/dist/v8.6.0/node-v8.6.0-linux-x64.tar.gz
+######################################################################## 100.0%
+   installed : v8.6.0
+
+$ sudo ln -sf /usr/local/bin/node /usr/bin/node
+```
+
+バージョンを確認してみます。
+```
+$node -v
+v8.6.0
+```
+
+nのnpmパッケージをインストールするために入れた不要なパッケージは混乱のもととなるので削除します。
+```
+$sudo apt-get purge -y nodejs npm 
+```
+
+以上で最新バージョンを入れることができました。  
+
+ちなみに、バージョンを切り替えることも可能です。たとえば、v4.2.3に切り替える場合には次のようになります。
+git fetchで取得してくれるようになります。
+```
+$sudo n 4.2.3
+
+     install : node-v4.2.3
+       mkdir : /usr/local/n/versions/node/4.2.3
+       fetch : https://nodejs.org/dist/v4.2.3/node-v4.2.3-linux-x64.tar.gz
+######################################################################## 100.0%
+   installed : v4.2.3
+
+$node -v
+v4.2.3
+```
+
+- 参考URL
+  - https://qiita.com/seibe/items/36cef7df85fe2cefa3ea
+
 # 参考URL
 - http://jxck.hatenablog.com/entry/20120410/1334071898
 

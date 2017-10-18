@@ -139,7 +139,7 @@ Ctrl + i
 
 - C++の場合の例
 ```
-$ find -L . -name '*.cpp' -o -name '*.c' -o -name '*.h' -o -name '*.hpp' > cscope.files
+$ find -L . -name '*.cpp' -o -name '*.c' -o -name '*.cc' -o -name '*.cxx' -o -name '*.cp' -o -name '*.c++' -o -name '*.h' -o -name '*.hpp' -o -name '*.hxx' -o -name '*.hh' -o -name '*.hp' -o -name '*.h++' > cscope.files
 $ cscope -R -b
 ```
 - JAVAの場合の例

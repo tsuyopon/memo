@@ -32,6 +32,16 @@ $ VBoxManage setextradata "FedoraTest1" "VBoxInternal/Devices/pcnet/0/LUN#0/Conf
 以下で設定を確認することができます。
 ```
 $ VBoxManage getextradata "FedoraTest1" enumerate
+Key: GUI/LastCloseAction, Value: PowerOff
+Key: GUI/LastGuestSizeHint, Value: 720,400
+Key: GUI/LastNormalWindowPosition, Value: 400,46,640,501
+Key: GUI/LastScaleWindowPosition, Value: 400,189,640,480
+Key: GUI/RestrictedRuntimeDevicesMenuActions, Value: HardDrives
+Key: GUI/RestrictedRuntimeMachineMenuActions, Value: SaveState,PowerOff
+Key: GUI/StatusBar/IndicatorOrder, Value: HardDisks,OpticalDisks,FloppyDisks,Network,USB,SharedFolders,Display,VideoCapture,Features,Mouse,Keyboard
+Key: VBoxInternal/Devices/pcnet/0/LUN#0/Config/guestssh/GuestPort, Value: 22
+Key: VBoxInternal/Devices/pcnet/0/LUN#0/Config/guestssh/HostPort, Value: 50022
+Key: VBoxInternal/Devices/pcnet/0/LUN#0/Config/guestssh/Protocol, Value: TCP
 ```
 
 あやまった設定を解除します。
@@ -64,3 +74,90 @@ http://<hostname>:8080/
 ```
 としてアクセスすることができるようになります。
 
+
+### サイズを拡張する
+
+```
+$ VBoxManage list hdds
+UUID:           8906af61-f2b4-4596-8bfb-6d32d4e92829
+Parent UUID:    base
+State:          created
+Type:           normal (base)
+Location:       /Users/tsuyoshi/VirtualBox VMs/FedoraTest1/FedoraTest1.vdi
+Storage format: VDI
+Capacity:       20480 MBytes
+Encryption:     disabled
+
+UUID:           24c1c950-b8c9-4216-98d1-b8e502c973ec
+Parent UUID:    base
+State:          created
+Type:           normal (base)
+Location:       /Users/tsuyoshi/VirtualBox VMs/LinuxStudy/LinuxStudy.vdi
+Storage format: VDI
+Capacity:       8192 MBytes
+Encryption:     disabled
+
+UUID:           14dc76ed-f735-452c-94e9-88ab1e05c2e2
+Parent UUID:    base
+State:          created
+Type:           normal (base)
+Location:       /Users/tsuyoshi/.docker/machine/machines/default/disk.vmdk
+Storage format: VMDK
+Capacity:       204800 MBytes
+Encryption:     disabled
+
+UUID:           1c79ce4a-5543-4323-b36a-ea570df6f45d
+Parent UUID:    base
+State:          created
+Type:           normal (base)
+Location:       /Users/tsuyoshi/VirtualBox VMs/LinuxNew/LinuxNew.vdi
+Storage format: VDI
+Capacity:       8192 MBytes
+Encryption:     disabled
+
+UUID:           f2882217-7967-4db0-8750-494b5b8b40ec
+Parent UUID:    base
+State:          created
+Type:           normal (base)
+Location:       /Users/tsuyoshi/VirtualBox VMs/NewOSUbuntu/NewOSUbuntu.vdi
+Storage format: VDI
+Capacity:       8192 MBytes
+Encryption:     disabled
+
+UUID:           755d2096-7e3d-4a6e-af04-db7feff6185c
+Parent UUID:    base
+State:          created
+Type:           normal (base)
+Location:       /Users/tsuyoshi/VirtualBox VMs/NewOSUbuntu/NewUbuntu.vdi
+Storage format: VDI
+Capacity:       32768 MBytes
+Encryption:     disabled
+```
+
+tsuyoshi:VirtualBox VMs tsuyoshi$ VBoxManage modifyhd f2882217-7967-4db0-8750-494b5b8b40ec --resize 32768
+0%...10%...20%...30%...40%...50%...60%...70%...80%...90%...100%
+tsuyoshi:VirtualBox VMs tsuyoshi$ VBoxManage showhdinfo f2882217-7967-4db0-8750-494b5b8b40ec
+UUID:           f2882217-7967-4db0-8750-494b5b8b40ec
+Parent UUID:    base
+State:          created
+Type:           normal (base)
+Location:       /Users/tsuyoshi/VirtualBox VMs/NewOSUbuntu/NewOSUbuntu.vdi
+Storage format: VDI
+Format variant: dynamic default
+Capacity:       32768 MBytes
+Size on disk:   7400 MBytes
+Encryption:     disabled
+In use by VMs:  NewOSUbuntu (UUID: abc81f5c-d5c3-4e4b-8a70-e15861d3117b)
+```
+
+### CentOSのイメージを取得する
+- http://www.osboxes.org/centos/
+
+# 参考URL
+- ソースコードは無料で閲覧可能
+  - http://download.virtualbox.org/virtualbox/5.1.28/VirtualBox-5.1.28.tar.bz2
+  - https://www.virtualbox.org/browser/vbox/trunk
+  - checkout
+```
+$ svn co http://www.virtualbox.org/svn/vbox/trunk vbox
+```
