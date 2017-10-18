@@ -151,6 +151,26 @@ Server certificate
 (以下省略)
 ```
 
+### 接続時にSSL/TLSバージョンを指定する
+```
+$ openssl s_client -connect www.yahoo.co.jp:443 -ssl2
+$ openssl s_client -connect www.yahoo.co.jp:443 -ssl3
+$ openssl s_client -connect www.yahoo.co.jp:443 -tls1
+$ openssl s_client -connect www.yahoo.co.jp:443 -tls1_1
+$ openssl s_client -connect www.yahoo.co.jp:443 -tls1_2
+```
+
+### 接続時に暗号を指定する
+たとえば、MD5関連の暗号だけ送るとすると、、、
+```
+$ openssl s_client -connect www.google.com:443 -cipher `openssl ciphers MD5`
+```
+
+### 接続時にCAファイルを指定する
+```
+$ openssl s_client -connect www.google.com:443 -CApath /etc/ssl/certs
+```
+
 ### パケット内容詳細も取得する
 debugオプションを付与するとパケット内容の詳細も表示する。
 ```
@@ -159,15 +179,6 @@ $ openssl s_client -connect shopping.yahoo.co.jp:443  -debug
 0000 - 0b 00 09 bf 00 09 bc 00-05 49 30 82 05 45 30 82   .........I0..E0.
 0010 - 04 2d a0 03 02 01 02 02-0c 44 a4 0f 87 fe 4d dd   .-.......D....M.
 ...
-```
-
-### SSL/TLSバージョンを切り替える
-```
-$ openssl s_client -connect EXAMPLE.LOCAL:443 -ssl2
-$ openssl s_client -connect EXAMPLE.LOCAL:443 -ssl3
-$ openssl s_client -connect EXAMPLE.LOCAL:443 -tls1
-$ openssl s_client -connect EXAMPLE.LOCAL:443 -tls1_1
-$ openssl s_client -connect EXAMPLE.LOCAL:443 -tls1_2
 ```
 
 接続に失敗すると次のような出力となる。(-msgオプションを付けておいたほうがいいかもしれない)

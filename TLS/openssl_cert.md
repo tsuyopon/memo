@@ -3,46 +3,14 @@ opensslコマンドの証明書・秘密鍵・CSR・CRLなどのファイルに�
 
 # 詳細
 
-## 署名する
-一般的に1をよく使うのでこれだけ覚えておけば十分かも。2や3はこんなこともできるんだ程度に見ておけば良い。
+## 証明書・秘密鍵・CSR・CRLの内容を確認する
 
-1. 自分の秘密鍵で自己署名した証明書を作成する
-```
-openssl x509 -in server.csr -out server.crt -req -signkey server.key -days 365
-```
-
-2. 秘密鍵作成,CSR作成,自己署名を一度にする(秘密鍵を暗号化しない)
-```
-$ openssl req -x509 -nodes -new -keyout server.key -out server.crt -days 365
-```
-
-3. 秘密鍵作成,CSR作成,自己署名を一度にする(秘密鍵を暗号化する)
-```
-$ openssl req -x509 -new -keyout server.key -out server.crt -days 365
-```
-
-## 証明書の内容を確認する
-
+### 各種証明書確認
 以下の３つはコマンドが似ているので一応整理も含めて載せておく。
 
-証明書ファイルの内容を確認
+- 証明書ファイルの内容を確認
 ```
-$ sudo openssl x509 -text -noout -in <証明書>
-```
-
-秘密鍵ファイルの内容を確認
-```
-$ sudo openssl rsa -text -noout -in <秘密鍵>
-```
-
-CSRファイルの内容を確認
-```
-$ sudo  openssl req -text -noout -in <CSR>
-```
-
-### 秘密鍵の内容を確認する
-```
-$  openssl rsa -text -noout -in server.key 
+$ openssl rsa -text -noout -in server.key 
 Private-Key: (2048 bit)
 modulus:
     00:dc:d4:78:45:af:ec:78:66:d7:6a:04:6f:58:7e:
@@ -67,21 +35,111 @@ publicExponent: 65537 (0x10001)
 privateExponent:
 ```
 
-### 証明書の使用目的を表示
+- 秘密鍵ファイルの内容を確認
+```
+$ sudo openssl rsa -text -noout -in <秘密鍵>
+```
+
+- CSRファイルの内容を確認
+```
+$ sudo  openssl req -text -noout -in <CSR>
+```
+
+- CRLファイルの内容を確認
+```
+$ openssl crl -inform der -in crl.der -text
+or
+$ openssl crl -in crl.pem -text
+```
+
+例えば、以下で取得できるcrlを覗いてみると
+- https://www.jp.websecurity.symantec.com/repository/crl.html
+```
+$  openssl crl -inform der -in pca1.1.1.crl -text
+Certificate Revocation List (CRL):
+        Version 1 (0x0)
+        Signature Algorithm: sha1WithRSAEncryption
+        Issuer: /C=US/O=VeriSign, Inc./OU=Class 1 Public Primary Certification Authority
+        Last Update: Dec 15 00:00:00 2016 GMT
+        Next Update: Dec 31 23:59:59 2017 GMT
+Revoked Certificates:
+    Serial Number: 2CD24B62C497A417CD6EA3C89C7A2DC8
+        Revocation Date: Apr  1 17:56:15 2004 GMT
+    Serial Number: 3A45DE56CB02CDDCDC4E7763221BD4D5
+        Revocation Date: May  8 19:22:34 2001 GMT
+    Serial Number: 415D8836811520D5808346A85992782C
+        Revocation Date: Jul  6 16:57:23 2001 GMT
+    Serial Number: 473981FFFD8481F195F9EB18C27C0DF1
+        Revocation Date: Jan  9 18:06:12 2003 GMT
+    Serial Number: 70547E6AE2BAD8767F47A99910415E67
+        Revocation Date: Sep 23 17:00:08 2002 GMT
+    Serial Number: 7E0B5DDE18F2396682A68F65223823C8
+        Revocation Date: May  8 19:08:21 2001 GMT
+    Serial Number: D05448601867D3AD35CA2F0D4A27955E
+        Revocation Date: Dec 11 18:26:21 2001 GMT
+    Signature Algorithm: sha1WithRSAEncryption
+        c3:4b:60:3b:0d:72:df:46:09:c7:50:d1:b7:9b:28:93:68:d9:
+        f0:01:c0:2a:49:33:9b:22:9a:db:ea:5d:a5:40:62:5b:69:b6:
+        38:73:75:a6:eb:11:fd:fc:6a:9b:fc:2e:dd:d0:86:a6:ef:9f:
+        a4:16:86:3f:89:4e:a2:c6:e2:7a:5f:00:08:3a:cc:97:86:91:
+        e1:2f:ff:37:5a:c0:1c:61:a0:0b:d1:6a:29:31:e5:de:ad:dc:
+        a4:70:0e:59:d4:52:e7:18:f8:2d:1f:57:a9:a4:18:93:6c:f3:
+        cc:dd:dc:2b:d6:61:12:e5:6f:0d:cf:21:cd:65:c0:ea:b4:a3:
+        35:c5
+-----BEGIN X509 CRL-----
+MIICHjCCAYcwDQYJKoZIhvcNAQEFBQAwXzELMAkGA1UEBhMCVVMxFzAVBgNVBAoT
+DlZlcmlTaWduLCBJbmMuMTcwNQYDVQQLEy5DbGFzcyAxIFB1YmxpYyBQcmltYXJ5
+IENlcnRpZmljYXRpb24gQXV0aG9yaXR5Fw0xNjEyMTUwMDAwMDBaFw0xNzEyMzEy
+MzU5NTlaMIH2MCECECzSS2LEl6QXzW6jyJx6LcgXDTA0MDQwMTE3NTYxNVowIQIQ
+OkXeVssCzdzcTndjIhvU1RcNMDEwNTA4MTkyMjM0WjAhAhBBXYg2gRUg1YCDRqhZ
+kngsFw0wMTA3MDYxNjU3MjNaMCECEEc5gf/9hIHxlfnrGMJ8DfEXDTAzMDEwOTE4
+MDYxMlowIQIQcFR+auK62HZ/R6mZEEFeZxcNMDIwOTIzMTcwMDA4WjAhAhB+C13e
+GPI5ZoKmj2UiOCPIFw0wMTA1MDgxOTA4MjFaMCICEQDQVEhgGGfTrTXKLw1KJ5Ve
+Fw0wMTEyMTExODI2MjFaMA0GCSqGSIb3DQEBBQUAA4GBAMNLYDsNct9GCcdQ0beb
+KJNo2fABwCpJM5simtvqXaVAYltptjhzdabrEf38apv8Lt3Qhqbvn6QWhj+JTqLG
+4npfAAg6zJeGkeEv/zdawBxhoAvRaikx5d6t3KRwDlnUUucY+C0fV6mkGJNs88zd
+3CvWYRLlbw3PIc1lwOq0ozXF
+-----END X509 CRL-----
+```
+
+### 証明書(crt)の内容を確認する
+- text形式で表示(先に出たコマンドと重複)
+```
+$ openssl x509 -in server.crt -text
+```
+
+- 証明書の使用目的を表示
 ```
 $ openssl x509 -in server.crt -purpose
 ```
 
-### ASN.1形式で表示
+- ASN.1形式で表示
 ```
 $ openssl asn1parse -in server.crt
 ```
 
-### 証明書から公開鍵を取り出す
+- 証明書から公開鍵を取り出す
 ```
 $ openssl x509 -in server.crt -pubkey -noout
 ```
 
+### 証明書の失効処理を行う
+- 証明書の失効処理を行う
+```
+$ openssl ca -revoke newcerts/01.pem
+```
+
+- CRLの生成を行う
+```
+$ openssl ca -gencrl -out CA.crl
+```
+
+- CRLの内容を確認する
+```
+$ openssl crl -in CA.crl -text
+```
+
+## 変換
 ### .crtから.pemに変換する
 もちろん逆もできる
 ```
@@ -108,25 +166,33 @@ or
 $ openssl pkcs12 -nocerts -in cert.der.p12 -out private.key.pem
 ```
 
-### 証明書の失効処理を行う
-証明書の失効処理を行う
-```
-$ openssl ca -revoke newcerts/01.pem
-```
-
-CRLの生成を行う
-```
-$ openssl ca -gencrl -out CA.crl
-```
-
-CRLの内容を確認する
-```
-$ openssl crl -in CA.crl -text
-```
-
 ### 証明書ファイルと秘密鍵ファイルの整合性を確認する
 次の２つのコマンドの結果を確認することで一致すれば整合性があることを表しています。
 ```
 $ sudo openssl x509 -noout -modulus -in 証明書ファイル | md5sum
 $ sudo openssl rsa -noout -modulus -in 秘密鍵ファイル | md5sum
 ```
+
+## 署名する
+一般的に1をよく使うのでこれだけ覚えておけば十分かも。2や3はこんなこともできるんだ程度に見ておけば良い。
+
+1. 自分の秘密鍵で自己署名した証明書を作成する
+```
+openssl x509 -in server.csr -out server.crt -req -signkey server.key -days 365
+```
+
+2. 秘密鍵作成,CSR作成,自己署名を一度にする(秘密鍵を暗号化しない)
+```
+$ openssl req -x509 -nodes -new -keyout server.key -out server.crt -days 365
+```
+
+3. 秘密鍵作成,CSR作成,自己署名を一度にする(秘密鍵を暗号化する)
+```
+$ openssl req -x509 -new -keyout server.key -out server.crt -days 365
+```
+
+# 参考URL
+- OpenSSLコマンドの備忘録
+  - https://qiita.com/takech9203/items/5206f8e2572e95209bbc
+- opensslコマンド（まとめ）
+  - http://assimane.blog.so-net.ne.jp/2011-09-24

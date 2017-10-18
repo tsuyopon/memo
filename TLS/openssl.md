@@ -3,6 +3,23 @@
 - http://www.usupi.org/sysad/252.html
 
 # 詳細
+### バージョンを表示する
+単順なバージョンのみ表示する
+```
+$ openssl version
+OpenSSL 1.0.1f 6 Jan 2014
+```
+
+すべての情報を表示する
+```
+$ openssl version -a
+OpenSSL 1.0.1f 6 Jan 2014
+built on: Fri Dec  4 13:26:29 UTC 2015
+platform: debian-amd64
+options:  bn(64,64) rc4(16x,int) des(idx,cisc,16,int) blowfish(idx) 
+compiler: cc -fPIC -DOPENSSL_PIC -DOPENSSL_THREADS -D_REENTRANT -DDSO_DLFCN -DHAVE_DLFCN_H -m64 -DL_ENDIAN -DTERMIO -g -O2 -fstack-protector-strong -Wformat -Werror=format-security -D_FORTIFY_SOURCE=2 -Wl,-Bsymbolic-functions -Wl,-z,relro -Wa,--noexecstack -Wall -DMD32_REG_T=int -DOPENSSL_IA32_SSE2 -DOPENSSL_BN_ASM_MONT -DOPENSSL_BN_ASM_MONT5 -DOPENSSL_BN_ASM_GF2m -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DMD5_ASM -DAES_ASM -DVPAES_ASM -DBSAES_ASM -DWHIRLPOOL_ASM -DGHASH_ASM
+OPENSSLDIR: "/usr/lib/ssl"
+```
 
 ### opensslヘルプ
 第１引数が間違っていると第１引数に指定するヘルプを表示する。
@@ -94,13 +111,6 @@ usage: s_client args
  -legacy_renegotiation - enable use of legacy renegotiation (dangerous)
 ```
 
-# TODO
-この辺にたくさんのopensslコマンドが乗っているのでまとめたい
-- http://assimane.blog.so-net.ne.jp/2011-09-24
-- http://qiita.com/takech9203/items/5206f8e2572e95209bbc
-
-上記コマンドに実行例を載せておきたい
-
 ### opensslのバージョンポリシーについて
 - https://stackoverflow.com/questions/42189880/how-to-determine-the-latest-openssl-version
 - https://www.openssl.org/blog/blog/2014/12/23/the-new-release-strategy/
@@ -112,6 +122,109 @@ opensslにはspeedというオプションが存在する。これによりベ�
 $ openssl speed -evp aes-128-gcm
 $ openssl speed rsa2048
 $ openssl speed ecdhp256
+```
+
+- たとえばRSAに関してテストコマンドを実行すると様々なオプションでテストを実行してくれます。
+```
+$ openssl speed rsa
+Doing 512 bit private rsa's for 10s: 142745 512 bit private RSA's in 9.76s
+Doing 512 bit public rsa's for 10s: 1776110 512 bit public RSA's in 9.88s
+Doing 1024 bit private rsa's for 10s: 44200 1024 bit private RSA's in 9.87s
+Doing 1024 bit public rsa's for 10s: 603680 1024 bit public RSA's in 9.83s
+Doing 2048 bit private rsa's for 10s: 5431 2048 bit private RSA's in 9.74s
+Doing 2048 bit public rsa's for 10s: 179589 2048 bit public RSA's in 9.82s
+Doing 4096 bit private rsa's for 10s: 796 4096 bit private RSA's in 9.84s
+Doing 4096 bit public rsa's for 10s: 49787 4096 bit public RSA's in 9.86s
+OpenSSL 1.0.1f 6 Jan 2014
+built on: Fri Dec  4 13:26:29 UTC 2015
+options:bn(64,64) rc4(16x,int) des(idx,cisc,16,int) aes(partial) blowfish(idx) 
+compiler: cc -fPIC -DOPENSSL_PIC -DOPENSSL_THREADS -D_REENTRANT -DDSO_DLFCN -DHAVE_DLFCN_H -m64 -DL_ENDIAN -DTERMIO -g -O2 -fstack-protector-strong -Wformat -Werror=format-security -D_FORTIFY_SOURCE=2 -Wl,-Bsymbolic-functions -Wl,-z,relro -Wa,--noexecstack -Wall -DMD32_REG_T=int -DOPENSSL_IA32_SSE2 -DOPENSSL_BN_ASM_MONT -DOPENSSL_BN_ASM_MONT5 -DOPENSSL_BN_ASM_GF2m -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DMD5_ASM -DAES_ASM -DVPAES_ASM -DBSAES_ASM -DWHIRLPOOL_ASM -DGHASH_ASM
+                  sign    verify    sign/s verify/s
+rsa  512 bits 0.000068s 0.000006s  14625.5 179768.2
+rsa 1024 bits 0.000223s 0.000016s   4478.2  61412.0
+rsa 2048 bits 0.001793s 0.000055s    557.6  18288.1
+rsa 4096 bits 0.012362s 0.000198s     80.9   5049.4
+```
+
+- 2CPUでテスト
+```
+$ openssl speed rsa -multi 2
+```
+
+### TLSサーバを立てる
+次のコマンドでTLSサーバを立てます
+```
+$ openssl s_server -cert server.crt -key server.key
+Using default temp DH parameters
+Using default temp ECDH parameters
+ACCEPT
+```
+
+server.crtやserver.keyは次の3つのコマンドですぐに作成できます。
+```
+$ openssl genrsa -des3 -out server.key 2048            // ここで適当に「test」などとしてパスワードを設定
+$ openssl req -new -key server.key -out server.csr
+$ openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
+```
+
+上記でデフォルトで4433ポートで起動するので、次のようにして接続確認ができます。
+```
+$ openssl s_client -connect localhost:4433 -quiet
+```
+
+msgオプションを付けると接続時にハンドシェイクの流れも表示してくれます
+```
+$ openssl s_server -cert server.crt -key server.key -www -msg
+Enter pass phrase for server.key:
+Using default temp DH parameters
+Using default temp ECDH parameters
+ACCEPT
+<<< TLS 1.2 Handshake [length 0122], ClientHello
+    01 00 01 1e 03 03 8a a5 dc 11 ea 9c b7 48 76 3a
+    (snip)
+>>> TLS 1.2 Handshake [length 0042], ServerHello
+    02 00 00 3e 03 03 c3 d8 52 27 17 bb 9f 6a 1d 90
+    (snip)
+>>> TLS 1.2 Handshake [length 0314], Certificate
+    0b 00 03 10 00 03 0d 00 03 0a 30 82 03 06 30 82
+    (snip)
+>>> TLS 1.2 Handshake [length 014d], ServerKeyExchange
+    0c 00 01 49 03 00 17 41 04 bb fe a5 3e 51 73 ad
+    (snip)
+>>> TLS 1.2 Handshake [length 0004], ServerHelloDone
+    0e 00 00 00
+<<< TLS 1.2 Handshake [length 0046], ClientKeyExchange
+    10 00 00 42 41 04 df 41 1d 97 0f 92 86 73 7f 2e
+    (snip)
+<<< TLS 1.2 ChangeCipherSpec [length 0001]
+    01
+<<< TLS 1.2 Handshake [length 0010], Finished
+    14 00 00 0c 73 70 b0 25 1a 79 82 78 eb 88 84 20
+>>> TLS 1.2 Handshake [length 00aa]???
+    04 00 00 a6 00 00 01 2c 00 a0 6a 7b ab d4 0c e8
+    (snip)
+>>> TLS 1.2 ChangeCipherSpec [length 0001]
+    01
+>>> TLS 1.2 Handshake [length 0010], Finished
+    14 00 00 0c b3 31 cd e5 7e a9 c4 52 5c 71 5c 69
+<<< TLS 1.2 Alert [length 0002], warning close_notify
+    01 00
+ACCEPT
+
+```
+
+debugオプションを付与するとパケット情報もダンプしてくれるようになります。
+```
+$ openssl s_server -cert server.crt -key server.key -www -debug
+Enter pass phrase for server.key:
+Using default temp DH parameters
+Using default temp ECDH parameters
+ACCEPT
+read from 0x1c6aa50 [0x1c70140] (11 bytes => 11 (0xB))
+0000 - 16 03 01 01 22 01 00 01-1e 03 03                  ...."......
+read from 0x1c6aa50 [0x1c7014e] (284 bytes => 284 (0x11C))
+0000 - 4a fd 40 ae 50 b2 2e 64-fa d1 9f fb 46 8d e9 f5   J.@.P..d....F...
+0010 - 25 f2 59 c9 39 8e 0d 98-59 32 7c 00 cc 9c 2f 7a   %.Y.9...Y2|.../z
 ```
 
 ### お手軽にHTTPSサーバを立てて証明書確認を行う
@@ -136,68 +249,10 @@ $ openssl s_client -connect localhost:10433
 - 参考
   - https://bacchi.me/linux/openssl-tips/
 
-### CRLの中身を確認してみる
-以下からpca1.1.1.crlを取得する
-- https://www.jp.websecurity.symantec.com/repository/crl.html
-
-次のような書式で可能らしい。
-```
-$ openssl crl -inform der -in crl.der -text
-$ openssl crl -in crl.pem -text
-```
-
-crl拡張子はderファイルとのことだったので、指定してみたらCRLの内容が表示された。
-```
-$  openssl crl -inform der -in pca1.1.1.crl -text
-Certificate Revocation List (CRL):
-        Version 1 (0x0)
-        Signature Algorithm: sha1WithRSAEncryption
-        Issuer: /C=US/O=VeriSign, Inc./OU=Class 1 Public Primary Certification Authority
-        Last Update: Dec 15 00:00:00 2016 GMT
-        Next Update: Dec 31 23:59:59 2017 GMT
-Revoked Certificates:
-    Serial Number: 2CD24B62C497A417CD6EA3C89C7A2DC8
-        Revocation Date: Apr  1 17:56:15 2004 GMT
-    Serial Number: 3A45DE56CB02CDDCDC4E7763221BD4D5
-        Revocation Date: May  8 19:22:34 2001 GMT
-    Serial Number: 415D8836811520D5808346A85992782C
-        Revocation Date: Jul  6 16:57:23 2001 GMT
-    Serial Number: 473981FFFD8481F195F9EB18C27C0DF1
-        Revocation Date: Jan  9 18:06:12 2003 GMT
-    Serial Number: 70547E6AE2BAD8767F47A99910415E67
-        Revocation Date: Sep 23 17:00:08 2002 GMT
-    Serial Number: 7E0B5DDE18F2396682A68F65223823C8
-        Revocation Date: May  8 19:08:21 2001 GMT
-    Serial Number: D05448601867D3AD35CA2F0D4A27955E
-        Revocation Date: Dec 11 18:26:21 2001 GMT
-    Signature Algorithm: sha1WithRSAEncryption
-        c3:4b:60:3b:0d:72:df:46:09:c7:50:d1:b7:9b:28:93:68:d9:
-        f0:01:c0:2a:49:33:9b:22:9a:db:ea:5d:a5:40:62:5b:69:b6:
-        38:73:75:a6:eb:11:fd:fc:6a:9b:fc:2e:dd:d0:86:a6:ef:9f:
-        a4:16:86:3f:89:4e:a2:c6:e2:7a:5f:00:08:3a:cc:97:86:91:
-        e1:2f:ff:37:5a:c0:1c:61:a0:0b:d1:6a:29:31:e5:de:ad:dc:
-        a4:70:0e:59:d4:52:e7:18:f8:2d:1f:57:a9:a4:18:93:6c:f3:
-        cc:dd:dc:2b:d6:61:12:e5:6f:0d:cf:21:cd:65:c0:ea:b4:a3:
-        35:c5
------BEGIN X509 CRL-----
-MIICHjCCAYcwDQYJKoZIhvcNAQEFBQAwXzELMAkGA1UEBhMCVVMxFzAVBgNVBAoT
-DlZlcmlTaWduLCBJbmMuMTcwNQYDVQQLEy5DbGFzcyAxIFB1YmxpYyBQcmltYXJ5
-IENlcnRpZmljYXRpb24gQXV0aG9yaXR5Fw0xNjEyMTUwMDAwMDBaFw0xNzEyMzEy
-MzU5NTlaMIH2MCECECzSS2LEl6QXzW6jyJx6LcgXDTA0MDQwMTE3NTYxNVowIQIQ
-OkXeVssCzdzcTndjIhvU1RcNMDEwNTA4MTkyMjM0WjAhAhBBXYg2gRUg1YCDRqhZ
-kngsFw0wMTA3MDYxNjU3MjNaMCECEEc5gf/9hIHxlfnrGMJ8DfEXDTAzMDEwOTE4
-MDYxMlowIQIQcFR+auK62HZ/R6mZEEFeZxcNMDIwOTIzMTcwMDA4WjAhAhB+C13e
-GPI5ZoKmj2UiOCPIFw0wMTA1MDgxOTA4MjFaMCICEQDQVEhgGGfTrTXKLw1KJ5Ve
-Fw0wMTEyMTExODI2MjFaMA0GCSqGSIb3DQEBBQUAA4GBAMNLYDsNct9GCcdQ0beb
-KJNo2fABwCpJM5simtvqXaVAYltptjhzdabrEf38apv8Lt3Qhqbvn6QWhj+JTqLG
-4npfAAg6zJeGkeEv/zdawBxhoAvRaikx5d6t3KRwDlnUUucY+C0fV6mkGJNs88zd
-3CvWYRLlbw3PIc1lwOq0ozXF
------END X509 CRL-----
-```
-
-# TODO
-- https://nona.to/fswiki/OpenSSL+Command-Line+HOWTO.html
-
 # 参考URL
+- opensslコマンドの中ではもっともしっかりしたマニュアル
+  - https://nona.to/fswiki/OpenSSL+Command-Line+HOWTO.html
+  - 上記翻訳の元
+    - https://www.madboa.com/geek/openssl/
 - http://www.usupi.org/sysad/252.html
 - http://d.hatena.ne.jp/blooper/20120910/1347285980
