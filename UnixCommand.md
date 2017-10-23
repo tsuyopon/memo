@@ -1,6 +1,39 @@
 # 概要
 コマンドラインに関するTIPS
 
+# 詳細
+### dateコマンド関連
+- 現在のunixtime
+```
+$ date +%s
+1508860937
+```
+- 特定の日時のunixtimeを取得する
+```
+$ date +%s --date "2005-01-01 00:00"
+1104505200
+```
+- unixtimeから日付への変換
+```
+$ date -d@1104505200
+Sat Jan  1 00:00:00 JST 2005
+```
+- 明日の時刻を取得する(dはdateと同じ)
+```
+$ date -d tomorrow +%s
+1508888328
+```
+- 30日後の日付を取得する
+```
+$ date "+%Y/%m/%d %H:%M:%S" -d "30days"
+2017/11/23 08:40:25
+```
+
+- 参考
+  - 以下にdateコマンドについて色々まとまっています。
+  - http://hydrocul.github.io/wiki/commands/date.html
+
+
 ### sudoでリダイレクトしたい場合
 cオプションあとは囲めばOK
 ```
@@ -118,5 +151,6 @@ $ ps auxww | grep -i udevd | grep -v grep | awk -F' ' '{print $2}' | xargs -I{} 
 
 - 参考
   - https://qiita.com/soymsk/items/7c1621ffca4d0f7ad678
+
 
 
