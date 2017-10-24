@@ -60,6 +60,11 @@ git stash popを利用するとapplyとdropを同時に行うことができま�
 $ git stash pop stash@{0}
 ```
 
+### git stash listで表示されるstashをクリアしたい
+```
+$ git stash clear
+```
+
 ### applyで適用したdiffを取り消したい
 applyで適用したあとに削除したい場合には次のようなコマンドで可能なようです。
 ```
