@@ -127,6 +127,7 @@ $ npm install --save nan
  }
 ```
 
+余談: binding.gypのgypはGenerate Your Projectsの略称です。
 
 以下は参考資料
 - node_gyp
@@ -134,6 +135,11 @@ $ npm install --save nan
 - nan
   - https://github.com/nodejs/nan
 
+gypの仕様書?
+- https://gyp.gsrc.io/docs/LanguageSpecification.md
+
+スライドシェアもあります
+- https://www.slideshare.net/shigeki_ohtsu/nodegakuen5-ohtsu
 
 ### UbuntuにNodeの最新バージョンを入れる + nodeバージョンの切り替えもできるようにする。
 自前のVirtualBoxにすごい簡単にVirtualBoxを入れる方法があったのでそのメモとなります。以下を参考にします。

@@ -3,6 +3,12 @@ git checkoutについて
 
 # 詳細
 
+### ローカルで行った変更を破棄する
+ファイル名を指定する
+```
+$ git checkout HEAD -- dir/xxxx
+```
+
 ### タグの状態をチェックアウトする
 ```
 $ git checkout <タグ名>

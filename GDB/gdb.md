@@ -317,6 +317,26 @@ Num Enb Expression
 There are no auto-display expressions now.
 ```
 
+### 表示文字数が途中で省略されてしまう場合
+次のように3点リーダーで省略されてしまっているような場合
+```
+(gdb) p hoge
+$1 = 0x1234567 "XXXXXXXXXXXXXXXXXXXXXXXXX"...
+```
+
+printfを使って表示するか、、、
+```
+(gdb) printf "%s\n", hoge
+```
+
+もしくは表示文字数を無制限にすることで対応できる。
+```
+(gdb) set print elements 0
+```
+
+- 参考
+  - https://stackoverflow.com/questions/233328/how-do-i-print-the-full-value-of-a-long-string-in-gdb
+
 ### setを使う
 構造体を見やすくする
 ```
@@ -327,6 +347,11 @@ There are no auto-display expressions now.
 printの表示文字数をセットする
 ```
 (gdb) set print elements 300
+```
+
+表示文字数を無制限にしたければ0を指定します。
+```
+(gdb) set print elements 0
 ```
 
 今セットされているものをみる

@@ -1,7 +1,6 @@
 # 概要
 curlについて
 
-
 最近ではWebAPIのレスポンスがjsonが流行っているので次のようなコマンドを用いて出力データを見やすくすることができる
 ```
 | jq .
@@ -9,6 +8,14 @@ curlについて
 ```
 
 # 一般的な利用方法
+
+### OAuth関連
+OAuth2.0のbearerでの確認は次のようにして流し込みすると確認が簡単となる。以下はjsonの場合を想定している
+```
+$ echo -n 'xxx' | xargs -I{} curl -v -H "Authorization: Bearer {}" -H "Accept: application/json" -H "Content-type: application/json" "https://example.co.jp/"
+```
+- 参考
+  - https://openid-foundation-japan.github.io/draft-ietf-oauth-v2-bearer-draft11.ja.html
 
 ### HEADメソッド
 Iオプションを実行するとHEADメソッドで取得してヘッダのみを表示する
@@ -43,10 +50,18 @@ JSONを送る場合
 ```
 $ curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"user":{"first_name":"firstname","last_name":"lastname","email":"email@email.com","password":"app123","password_confirmation":"app123"}}'  http://example/test
 ```
+
 ### DELETE
 以下はヘッダと値も付加しているサンプルです。
 ```
-$ curl -X "DELETE" http://example.com/test -H "Content-Type:application/json" -d "{"value1": 1, "value2":[2, 3]}"
+$ curl -X "DELETE" http://example.com/test -H "Content-Type:application/json" -d "{\"user\" :{\"first_name\":\"firstname\",\"last_name\":\"lastname\",\"email\":\"email@email.com\",\"password\":\"app123\",\"password_confirmation\":\"app123\"}}"
+```
+
+### ファイルをデータとして指定する
+```
+$ cat data.txt
+{"key":"val","key2":",val2"}
+$ curl -X "DELETE" http://example.com/test -H "Content-Type:application/json" -d '@data.txt'
 ```
 
 ### curlでリクエストした時のHeaderも見たい

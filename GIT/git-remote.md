@@ -42,6 +42,14 @@ $ git remote rm origin
 $ git remote add upstream git@github.com:tsuyopon/memo.git
 ```
 
+local:masterをupstream:masterに追従する場合には
+```
+$ git checkout master
+$ git fetch upstream
+$ git merge upstream/master
+$ git push -f origin master
+```
+
 ### 登録済のリモートレポジトリのアドレスを変更する
 ```
 $ git remote set-url origin git@github.com:tsuyopon/memo.git

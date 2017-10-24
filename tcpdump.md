@@ -1,6 +1,8 @@
 # 概要
 tcpdumpコマンドについて
 
+- うまくいかないときにはSELinuxが有効になっていることを疑う
+
 # 詳細
 ### オプション
 ```
@@ -26,11 +28,41 @@ tcpdumpコマンドについて
 ```
 $ tcpdump -Z root -i eth0 -X -S port 80
 ```
+Zオプションでは実行ユーザを指定している。
+
+### pcapなどに吐かせたい
+pcapに吐かせると、wiresharkなどで表示させることができます。
+```
+$ tcpdump -i eth0 -w ~/log_%Y%m%d_%H%M%S.pcap
+```
+
+### 100MBごとにローテーションしたい
+test.pcap, test.pcap1, test.pcap2, ...とファイル名の末尾に数字が付与される。
+```
+$ tcpdump -i eth0 -C 100 -w test.pcap
+```
+
+### 一定時間でローテーションしたい
+以下の例だと3600秒でローテーションさせることになる。
+```
+$ tcpdump -i eth0 -G 3600 -w test.pcap
+```
+
+ローテーションさせるときに自動的に圧縮させるようにするにはzオプションを指定すると良い。
+```
+$ tcpdump -i eth0 -G 3600 -w test.pcap -z gzip
+```
+
 
 ### 通信の内容をASCIIで表示したい場合(よく使う!!!)
 HTTPリクエストやレスポンスのヘッダ及びボディを綺麗に出力してみることができます。
 ```
 $ sudo tcpdump -i eth0 -A port 80
+```
+
+通常は上記で十分だが、メモリダンプ(X)とさらにパケットデータを表示したい(s0)場合には次のようにします。デバッグ用途などで使うレベルでしょう。
+```
+$ sudo tcpdump -i eth0 -A port 80 -s0 -X
 ```
 
 ### wireshirkで覗いてみる
