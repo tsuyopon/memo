@@ -172,7 +172,7 @@ $ openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
 $ openssl s_client -connect localhost:4433 -quiet
 ```
 
-msgオプションを付けると接続時にハンドシェイクの流れも表示してくれます
+msgオプションを付けると接続時にハンドシェイクの流れも表示してくれます。以下の例では中間証明書(-CAfile)を指定していませんが指定することも可能です。
 ```
 $ openssl s_server -cert server.crt -key server.key -www -msg
 Enter pass phrase for server.key:
@@ -229,6 +229,7 @@ read from 0x1c6aa50 [0x1c7014e] (284 bytes => 284 (0x11C))
 
 ### お手軽にHTTPSサーバを立てて証明書確認を行う
 opensslコマンドにはお手軽にHTTPSサーバを立てる機能が存在します。次のような感じで指定します。
+以下の例ではCAfileで中間証明書も指定していますが、省略もできます(ブラウザによってはえらーになりますが)
 ```
 $ openssl s_server -accept 10443 -cert cert.pem -key keynp.pem -CAfile rapidssl.pem -WWW
 Using default temp DH parameters
@@ -248,6 +249,12 @@ $ openssl s_client -connect localhost:10433
 
 - 参考
   - https://bacchi.me/linux/openssl-tips/
+
+### s_serverのwwwオプションとWWWオプションの違いについて
+wwwだと、アクセス時にレスポンスとして証明書の情報などを出力します。
+WWWだとコマンドを実行した関連とディレクトリをDocumentRootとして適当なファイルをURLで指定させることができます。
+ファイルや動画などを置いていろいろ試したいといった場合にはWWWが良いでしょう。
+
 
 # 参考URL
 - opensslコマンドの中ではもっともしっかりしたマニュアル
