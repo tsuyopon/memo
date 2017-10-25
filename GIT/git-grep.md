@@ -20,6 +20,12 @@ man git-grep
 ```
 
 # 詳細
+
+### word, igreno, numberオプションを使う
+```
+$ git grep -winH v8
+```
+
 ### 前後N行を表示する
 ```
 $ git grep -C 2 -e string
@@ -57,6 +63,20 @@ $ git grep --extended-regexp -e "[0-9]+"
 git config --global grep.lineNumber true
 ```
 
+### grepでマッチした行番号やファイル名の色を変更したい
+$HOME/.gitconfigに以下を配置します。
+```
+[color "grep"]
+match = cyan
+linenumber = bold white
+filename = yellow
+...
+```
+
+あとはgit grepを実行してみます。以下のコマンドは実行例です。
+```
+$ git grep -winH v8
+```
 
 # 参考
 - git-grep(1) Manual Page 

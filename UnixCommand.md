@@ -33,6 +33,15 @@ $ date "+%Y/%m/%d %H:%M:%S" -d "30days"
   - 以下にdateコマンドについて色々まとまっています。
   - http://hydrocul.github.io/wiki/commands/date.html
 
+### 特定の文字数以下・以上の行を取得したい
+例えば特定のファイルの各行が100文字以下のものだけを表示するには次のようにします。
+tail -fなどと組み合わせて使うことができそうです。
+```
+$ cat gist.md | awk 'length($0) < 100'
+```
+
+- 参考
+  - https://stackoverflow.com/questions/12815519/finding-lines-which-are-greater-than-120-characters-length-using-sed
 
 ### sudoでリダイレクトしたい場合
 cオプションあとは囲めばOK
