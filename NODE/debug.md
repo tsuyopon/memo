@@ -113,8 +113,13 @@ To start debugging, open the following URL in Chrome:
 
 上記を実行するとchromeのURLが表示されるので、これをchromeブラウザから開くとデバッグすることができます。
 
+inspectの使い方にはnode本家のdebuggerマニュアルがあるのでそちらを参考にすると良い
+- https://nodejs.org/api/debugger.html
 
 - 参考URL
   - https://qiita.com/y_fujieda/items/c190cbcc2fab6dd49809
   - https://qiita.com/onionmk2/items/de8a22d70e2be0b0ff92
   - https://medium.com/@paul_irish/debugging-node-js-nightlies-with-chrome-devtools-7c4a1b95ae27
+
+
+
