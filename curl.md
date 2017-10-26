@@ -10,10 +10,21 @@ curlについて
 # 一般的な利用方法
 
 ### OAuth関連
-OAuth2.0のbearerでの確認は次のようにして流し込みすると確認が簡単となる。以下はjsonの場合を想定している
+OAuth2.0のbearerでの確認は次のようにして流し込みすると確認が簡単となる。
 ```
+// 通常
+$ echo -n 'xxx' | xargs -I{} curl -v -H "Authorization: Bearer {}" "https://example.co.jp/"
+
+// jsonを扱うような場合
 $ echo -n 'xxx' | xargs -I{} curl -v -H "Authorization: Bearer {}" -H "Accept: application/json" -H "Content-type: application/json" "https://example.co.jp/"
 ```
+
+または環境変数などを使うとtokenを頻繁に変更してリクエストするような場合に非常に便利である。
+```
+$ export BTOKEN="XXXXXXXXXXXX"
+$ curl -v -H "Authorization: Bearer ${BTOKEN}" -H "Accept: application/json" -H "Content-type: application/json" "https://example.co.jp/"
+```
+
 - 参考
   - https://openid-foundation-japan.github.io/draft-ietf-oauth-v2-bearer-draft11.ja.html
 
@@ -266,6 +277,41 @@ $ cat savecookie.txt
 ```
 $ curl -b savecookie.txt https://auctions.yahoo.co.jp
 ```
+
+### 自分のホストでNICに直接グローバルIPが割り当てられていないような場合のグローバルIPを取得する。
+httpbin, inet-ip.info, ifconfig.meなどを使って取得可能です。ここではifconfig.meを使った方法を紹介します。
+```
+$ curl ifconfig.me      // http://ifconfig.meにアクセスしています。
+133.215.11.38
+```
+
+サーバから出ていく際にアクセスするには次のようにifconfig.me/allで確認することが出来ます。
+```
+$ curl ifconfig.me/all
+ip_addr: 133.215.11.38
+remote_host: hogehoge.panda-world.ne.jp
+user_agent: curl/7.38.0
+port: 39450
+lang: 
+connection: 
+keep_alive: 
+encoding: 
+mime: */*
+charset: 
+via: 
+forwarded: 
+```
+
+その他にも次のようなものがあります。
+```
+$ curl ifconfig.me
+$ curl ifconfig.me/host
+$ curl ifconfig.me/all.json
+```
+
+次のページにアクセスするとどのようなエントリポイントで何を表示してくれるかといったことも確認することができます。
+- http://ifconfig.me/
+
 
 # curlコマンド
 - https://hydrocul.github.io/wiki/commands/curl.html

@@ -318,3 +318,16 @@ DONE
 
 - 参考
   - https://tech.nosuz.jp/2015/12/enable-ocsp-stapling/
+
+### SNIの証明書を確認する
+servernameオプションを付与しないとSNIのような場合に、接続した際の正しい証明書のレスポンスが返ってこない事があるようです。
+詳しくは以下で確認すること
+- https://qiita.com/greymd/items/5d2fc55430105620a550
+
+### 有効期限情報を表示する
+```
+$ echo | openssl s_client -connect www.yahoo.co.jp:443 2> /dev/null |openssl x509 -dates -noout
+notBefore=Oct 16 11:04:19 2017 GMT
+notAfter=Nov 15 14:59:00 2018 GMT
+```
+
