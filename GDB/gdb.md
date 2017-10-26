@@ -43,16 +43,33 @@ attachした状態にてrunやquitを実行するとプロセスが停止して�
 	 quit       q       gdbを終了する
 ```
 
-### 起動
+### gdbを起動する
 ```
 $ gdb
 (gdb) file /usr/local/apache2/bin/httpd
 (gdb) run -X                              // apacheの場合は-Xオプションでシングルプロセスとして起動するのでデバッグで便利
 ```
 
-引数を指定する例
+### 引数を指定してgdbを起動する場合
+引数を指定する場合にはgdbの後ろにそのまま記述するだけでは動作しません。
+次のような感じで起動させる必要があります。
 ```
-(gdb) run -s -1 -c -5
+$ gdb a.out
+(gdb) run --foo --bar
+```
+
+または、
+```
+$ gdb --args a.out --foo --bar
+(gdb) run
+```
+
+または
+```
+$ gdb a.out
+(gdb) set args --foo --bar
+(gdb) show args              // 引数の確認(飛ばしてもOK)
+(gdb) run
 ```
 
 ### ブレークポイントを設定する
