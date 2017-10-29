@@ -2,16 +2,13 @@
 RootCAと中間CA1の２つまでを作成します。
 
 # 詳細
-
-### RootCAを作成する
-
-ディレクトリを作成します。
+RootCA用ディレクトリを作成します。
 ```
 $ mkdir rootca
 $ cd rootca/
 ```
 
-秘密鍵と公開鍵を作成します。
+RootCAの秘密鍵と公開鍵を作成します。
 ```
 $ openssl req -new -keyout rootca.key -out rootca.csr
 Generating a 2048 bit RSA private key
@@ -42,7 +39,7 @@ A challenge password []:
 An optional company name []:
 ```
 
-以上により秘密鍵と公開鍵が生成できます。
+以上によりRootCAの秘密鍵と公開鍵が生成できます。
 ```
 $ ls
 rootca.csr  rootca.key
@@ -87,16 +84,27 @@ Time Stamp signing CA : Yes (WARNING code=3)
 ```
 $ cd ..
 $ mkdir ca1
-$ cd ca1
 ```
 
+openssl設定ファイルをコピーしておきます。
 ```
 $ mkdir conf
 $ cp /etc/ssl/openssl.cnf conf/openssl.cnf
 ```
 
-次のように修正します。
+openssl.cnfの位置や内容は変わるので、参考までに今回のテストした環境を載せておきます。
 ```
+$ cat /proc/version_signature 
+Ubuntu 3.19.0-15.15-generic 3.19.3
+$ cat /proc/version
+Linux version 3.19.0-15-generic (buildd@komainu) (gcc version 4.9.2 (Ubuntu 4.9.2-10ubuntu13) ) #15-Ubuntu SMP Thu Apr 16 23:32:37 UTC 2015
+$ dpkg -l | grep -w openssl
+ii  openssl                                              1.0.1f-1ubuntu11                           amd64        Secure Sockets Layer toolkit - cryptographic utility
+```
+
+openssl.cnfファイルを今回の環境に合わせて修正します。
+```
+$ vim conf/openssl.cnf 
 $ diff /etc/ssl/openssl.cnf conf/openssl.cnf 
 42c42
 < dir		= ./demoCA		# Where everything is kept
@@ -120,8 +128,9 @@ $ diff /etc/ssl/openssl.cnf conf/openssl.cnf
 > dir		= ./rootca # TSA root directory
 ```
 
-CSRファイルを生成する。
+CA用のCSRファイルを生成する。
 ```
+$ cd ca1
 $ openssl req -new -keyout ca.key -out ca.csr
 Generating a 2048 bit RSA private key
 .................+++
@@ -151,7 +160,7 @@ A challenge password []:
 An optional company name []:
 ```
 
-以上により次のようなディレクトリ構成になっている。
+以上により作成されるファイル全体として次のようなディレクトリ構成となります。
 ```
 $ tree .
 .
@@ -168,14 +177,15 @@ $ tree .
 3 directories, 5 files
 ```
 
-予め必要なファイルを作ります。
+予め必要なディレクトリ、ファイルを作ります。index.txtとserialファイルはこの後の操作で上書きされます。
+シリアル番号は最初は01などとしておくと良いでしょう。
 ```
 $ mkdir -p rootca/newcerts
 $ touch rootca/index.txt
 $ echo 01 > rootca/serial
 ```
 
-
+ではca.crtファイルを生成します。
 ```
 $ cd ca1/
 $ openssl ca -policy policy_anything -config ../conf/openssl.cnf -out ca.crt -infiles ca.csr
@@ -240,7 +250,7 @@ $ tree ..
 4 directories, 13 files
 ```
 
-2つoldというファイルが作成されている。せっかくなのでこれを覗いてみるserialは1インクリメントされ、index.txtはRootCAに追加したCA1が含まれていることが確認できる。
+2つoldというファイルが作成されています。せっかくなのでこれを覗いてみるserialは1インクリメントされ、index.txtはRootCAに追加したCA1が含まれていることが確認できる。
 ```
 $ ls ../rootca/*.old
 ../rootca/index.txt.old  ../rootca/serial.old
@@ -250,14 +260,14 @@ $ cat ../rootca/index.txt
 V	181029002936Z		01	unknown	/C=JP/ST=SecondProvince/L=SecondCity/O=SecondCompany/OU=SecondDept/CN=second.co.jp
 ```
 
-Issuerが作成したrootcaで、Subjectが今回作成したものであることを確認する。
+Issuerが作成したRootCAで、Subjectが今回作成した中間CAのものであることを確認する。
 ```
 $ openssl x509 -in ca.crt -text | grep -e Issuer: -e Subject: 
         Issuer: C=JP, ST=FirstProvince, L=FirstCity, O=FirstCompany, OU=FirstDept, CN=first.co.jp
         Subject: C=JP, ST=SecondProvince, L=SecondCity, O=SecondCompany, OU=SecondDept, CN=second.co.jp
 ```
 
-今回作成したものが中間CAとして署名できることを確認する。
+今回作成したca.crtの情報からCAが中間CAとして署名できることを確認する。
 ```
 $ openssl x509 -in ca.crt -text | grep -i "X509v3 Basic Constraints" -A 1
             X509v3 Basic Constraints: 
@@ -288,7 +298,7 @@ Time Stamp signing : No
 Time Stamp signing CA : Yes
 ```
 
-ca.key, ca.crtが秘密鍵、公開鍵ペアであることを確認する。
+念のためにca.key, ca.crtが秘密鍵、公開鍵ペアであることを確認する。
 ```
 $ openssl rsa -in ca.key -modulus -noout | openssl md5
 Enter pass phrase for ca.key:
@@ -297,7 +307,7 @@ $ openssl x509 -in ca.crt -modulus -noout | openssl md5
 (stdin)= 0e57232d865a0413d0f15beb2c9c1fcb
 ```
 
-作成したものがサーバとして起動できるかどうかを確認しておきます。
+最後に作成したものがサーバとして起動できるかどうかを確認しておきます。
 ```
 $ openssl s_server -cert ca.crt -key ca.key -CAfile ../rootca/rootca.crt -www 
 Enter pass phrase for ca.key:
