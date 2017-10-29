@@ -47,7 +47,7 @@ An optional company name []:
 $ openssl req -new -keyout server.key -out server.csr
 ```
 
-続いて、サーバ証明書を作成する
+続いて、サーバ証明書を作成する。
 ```
 $ openssl x509 -in server.csr -days 365000 -req -signkey server.key > server.crt
 Signature ok
@@ -116,6 +116,14 @@ Certificate:
          bc:ae:46:c4
 ```
 
+作成した証明書が指定した期間360000(1000年)となっていることを確認してみる。確かに1000年になっている。
+なお、見てわかるように日付を指定しているが有効期限としては秒単位で設定されることになります。
+```
+$ openssl x509 -text -noout -in server.crt | grep -w Validity -A 2 
+        Validity
+            Not Before: Oct 28 14:09:38 2017 GMT
+            Not After : Feb 28 14:09:38 3017 GMT
+```
 
 IssuerとSubjectが一致することで自己署名であることを確認する。これで明らかに一致してることが確認できる。
 ルート証明書はこの作りとなっている。
