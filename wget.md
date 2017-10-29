@@ -134,6 +134,11 @@ but recursion is disabled -- not retrieving.
 $ wget https://www.yahoo.co.jp/ --no-check-certificate -O -
 ```
 
+### HTTPSをCA証明書を指定してアクセスする
+例えばVIP配下のサーバへの直接リクエストなどを想定した場合だとHostを次のように指定して、CA証明書も指定してアクセスします。
+```
+$ wget -S -O -  https://localhost:4433/ --header 'Host: second.co.jp' --ca-certificate=../ca1/ca.crt 
+```
 
 ### 失敗しても何度でもやりなおす
 ```

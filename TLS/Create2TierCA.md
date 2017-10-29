@@ -317,3 +317,36 @@ ACCEPT
 (snip)
 ```
 
+接続すると次のようになります。
+```
+$ openssl s_client -connect localhost:4433 
+CONNECTED(00000003)
+depth=1 C = JP, ST = FirstProvince, L = FirstCity, O = FirstCompany, OU = FirstDept, CN = first.co.jp
+verify error:num=19:self signed certificate in certificate chain
+verify return:0
+---
+Certificate chain
+ 0 s:/C=JP/ST=SecondProvince/L=SecondCity/O=SecondCompany/OU=SecondDept/CN=second.co.jp
+   i:/C=JP/ST=FirstProvince/L=FirstCity/O=FirstCompany/OU=FirstDept/CN=first.co.jp
+ 1 s:/C=JP/ST=FirstProvince/L=FirstCity/O=FirstCompany/OU=FirstDept/CN=first.co.jp
+   i:/C=JP/ST=FirstProvince/L=FirstCity/O=FirstCompany/OU=FirstDept/CN=first.co.jp
+---
+Server certificate
+(snip)
+    Start Time: 1509261939
+    Timeout   : 300 (sec)
+    Verify return code: 19 (self signed certificate in certificate chain)
+---
+```
+
+なぜか「Verify return code: 19 (self signed certificate in certificate chain)」といったエラーが出てくる。
+cafileなどをs_client時に指定してもうまくいかずで、さらなる調査が必要
+
+
+TODO: 上記を解消しておくこと
+MEMO: CA証明書の追加方法を次の手順で試してみるといいかも。/usr/lib/ssl/certsなど
+- http://dsas.blog.klab.org/archives/50484787.html
+
+# 参考URL
+- 多段の中間CA証明書作成 -証明書作成編-
+  - http://lab.hde.co.jp/2008/09/ca.html
