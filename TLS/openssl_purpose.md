@@ -137,3 +137,50 @@ Time Stamp signing CA : Yes
 - 参考
   - https://serverfault.com/questions/111625/openssl-x509-purpose-flag-any-purpose-what-is-this
 
+### ベンダーのpurposeを覗いてみる
+試しに以下からルート証明書と中間証明書を見てみることにします。
+- https://www.cybertrust.ne.jp/sureserver/support/download_ca.html
+
+- ルート証明書の場合
+```
+$ openssl x509 -in BCTRoot.txt -noout -purpose
+Certificate purposes:
+SSL client : No
+SSL client CA : Yes
+SSL server : No
+SSL server CA : Yes
+Netscape SSL server : No
+Netscape SSL server CA : Yes
+S/MIME signing : No
+S/MIME signing CA : Yes
+S/MIME encryption : No
+S/MIME encryption CA : Yes
+CRL signing : Yes
+CRL signing CA : Yes
+Any Purpose : Yes
+Any Purpose CA : Yes
+OCSP helper : Yes
+OCSP helper CA : Yes
+```
+
+- 中間証明書の場合
+```
+$ openssl x509 -in PUBCAG3.txt -noout -purpose
+Certificate purposes:
+SSL client : No
+SSL client CA : Yes
+SSL server : No
+SSL server CA : Yes
+Netscape SSL server : No
+Netscape SSL server CA : Yes
+S/MIME signing : No
+S/MIME signing CA : Yes
+S/MIME encryption : No
+S/MIME encryption CA : Yes
+CRL signing : Yes
+CRL signing CA : Yes
+Any Purpose : Yes
+Any Purpose CA : Yes
+OCSP helper : Yes
+OCSP helper CA : Yes
+```
