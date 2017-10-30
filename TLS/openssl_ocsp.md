@@ -1,9 +1,14 @@
 # 概要
 opensslのocspサブオプションについて
 
+OCSPクライアント用オプションとOCSPサーバ用オプションに分かれています。
+- https://wiki.openssl.org/index.php/Manual:Ocsp(1)
+
+Create3TierWithOCSP.mdにはサーバ証明書及びOCSPレスポンダの情報の追加方法及びそれらの確認方法についても載せています。
+
 # 詳細
 
-### OCSPレスポンス
+### OCSPレスポンスが問題ないかどうかを確認する
 - OCSPレスポンスが存在する場合
 ```
 $ echo Q | openssl s_client -connect rdsig.yahoo.co.jp:443 -status 
@@ -47,3 +52,125 @@ OCSP Response Data:
         d4:e8:fa:28
 (snip)
 ```
+- OCSPレスポンスが存在しない場合
+```
+$ openssl s_client -connect hoge.com:443 -tls1 -status 
+(snip)
+OCSP response: no response sent
+```
+
+### OCSPサーバを起動する
+次のようなコマンドでOCSPサーバを起動する事ができます。
+```
+$ sudo openssl ocsp -index index.txt -CA ca.crt -rsigner ca.crt -rkey ca.key -port 80
+Enter pass phrase for ca.key:
+Waiting for OCSP client connections...
+```
+
+### OCSPリクエストを発行する
+以下のような感じで発行します。
+```
+$ sudo openssl ocsp -issuer ../ca/ca.crt -cert server.crt -url http://ocsptest.co.jp/ -resp_text -respout resp.der -CAfile ../ca/ca.crt -header 'host' 'ocsptest.co.jp'
+OCSP Response Data:
+    OCSP Response Status: successful (0x0)
+    Response Type: Basic OCSP Response
+    Version: 1 (0x0)
+    Responder Id: C = JP, ST = SecondProvince, L = SecondCity, O = SecondCompany, OU = SecondDept, CN = second.co.jp
+    Produced At: Oct 30 13:22:41 2017 GMT
+    Responses:
+    Certificate ID:
+      Hash Algorithm: sha1
+      Issuer Name Hash: 900F39DA84A7D73294F8BD08896A41C3DF3E2D80
+      Issuer Key Hash: 69B459343542C17D459E4AB3F69B4EAF606FDBE9
+      Serial Number: 01
+    Cert Status: good
+    This Update: Oct 30 13:22:41 2017 GMT
+
+    Response Extensions:
+        OCSP Nonce: 
+            041052506DD85D8CE181AA15FD1675A4EC4D
+    Signature Algorithm: sha256WithRSAEncryption
+(snip)
+Response verify OK
+server.crt: good
+	This Update: Oct 30 13:22:41 2017 GMT
+```
+
+ポート番号を含む場合(例えば、8080と仮定)にはurlとHostヘッダの双方に含めないとならない
+```
+$ sudo openssl ocsp -issuer ../ca/ca.crt -cert server.crt -url http://ocsptest.co.jp:8080/ -resp_text -respout resp.der -CAfile ../ca/ca.crt -header 'host' 'ocsptest.co.jp:8080'
+```
+
+次のようにすればリクエストとレスポンスを両方共ファイルに記述します。
+```
+$ sudo openssl ocsp -index demoCA/index.txt -port 8888 -rsigner rcert.pem -CA demoCA/cacert.pem -text -out log.txt
+```
+
+### OCSPサーバに問い合わせるリクエスト内容を確認する
+
+OCSPへのリクエストをreq.derとして作成してみます。req.derの情報は指定された証明書情報を元に生成されています。
+```
+$ openssl ocsp -issuer issuer.pem -cert c1.pem -cert c2.pem -reqout req.der
+```
+
+上記で作成したreq.derの内容を可視化して表示します。
+```
+$ openssl ocsp -reqin req.der -text
+OCSP Request Data:
+    Version: 1 (0x0)
+    Requestor List:
+        Certificate ID:
+          Hash Algorithm: sha1
+          Issuer Name Hash: 900F39DA84A7D73294F8BD08896A41C3DF3E2D80
+          Issuer Key Hash: 69B459343542C17D459E4AB3F69B4EAF606FDBE9
+          Serial Number: 11510764318465352677
+    Request Extensions:
+        OCSP Nonce: 
+            04101987EA5DB36F0A7EDC62C0DA0CE8D091
+```
+
+サーバ証明書のシリアル番号を確認して、問い合わせを行います。
+```
+$ openssl x509 -in server.crt -text | grep -i serial
+        Serial Number: 11510764318465352677 (0x9fbe7329375e63e5)
+$ openssl ocsp -issuer server.crt -nonce -CAfile server.crt -url http://localhost:8081 -serial 115107643184653526 
+```
+
+### OCSPサーバに問い合わせたレスポンス内容を確認する
+続いて、OCSPにリクエストを出してみてresp.derとして保存してみましょう
+```
+$ openssl ocsp -issuer issuer.pem -cert c1.pem -cert c2.pem -url http://ocsp.myhost.com/ -resp_text -respout resp.der
+```
+
+OCSPからのレスポンスをテキスト形式でわかりやすく表示します
+```
+$ openssl ocsp -respin resp.der -text
+OCSP Response Data:
+    OCSP Response Status: successful (0x0)
+    Response Type: Basic OCSP Response
+    Version: 1 (0x0)
+    Responder Id: C = JP, ST = SecondProvince, L = SecondCity, O = SecondCompany, OU = SecondDept, CN = second.co.jp
+    Produced At: Oct 30 13:56:08 2017 GMT
+    Responses:
+    Certificate ID:
+      Hash Algorithm: sha1
+      Issuer Name Hash: 900F39DA84A7D73294F8BD08896A41C3DF3E2D80
+      Issuer Key Hash: 69B459343542C17D459E4AB3F69B4EAF606FDBE9
+      Serial Number: 11510764318465352677
+    Cert Status: good
+    This Update: Oct 30 13:56:08 2017 GMT
+
+    Response Extensions:
+        OCSP Nonce: 
+            04108B256853D64D9828C3512267790E354D
+    Signature Algorithm: sha256WithRSAEncryption
+         87:71:22:10:23:0c:bc:ba:4c:12:be:76:ca:20:cb:3b:90:68:
+         6f:c1:70:9e:ed:dd:30:53:57:38:aa:4f:cc:1e:26:d7:1e:d9:
+(snip)
+-----END CERTIFICATE-----
+Response verify OK
+```
+
+
+
+
