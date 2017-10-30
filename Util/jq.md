@@ -6,6 +6,17 @@
 インストール不要で、以下の画面にw3mなどでアクセスして該当のPlatformのjqをdownloadするだけで利用可能となる。
 - https://stedolan.github.io/jq/
 
+ローカルディレクトリへ配置
+```
+$ sudo curl -o /usr/local/bin/jq -L https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 && sudo chmod +x /usr/local/bin/jq
+```
+
+グローバルへ配置
+```
+$ sudo curl -o /usr/bin/jq -L https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 && sudo chmod +x /usr/bin/jq
+```
+
+
 # 使ってみる
 ドットでルートノードを表すようです。
 ```
