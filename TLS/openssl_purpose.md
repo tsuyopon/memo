@@ -137,8 +137,33 @@ Time Stamp signing CA : Yes
 - 参考
   - https://serverfault.com/questions/111625/openssl-x509-purpose-flag-any-purpose-what-is-this
 
+
+### 一般的なusr_certセクションのnsCertType設定の選択方法について
+こちらを参考にすると
+- https://qiita.com/NakashimaKeisuke_zerodaynet/items/bfc77e5fe98b587532d0
+
+次のようにするのがいいとのこと
+- CA用
+```
+[ usr_cert ]
+basicConstraints=CA:TRUE
+nsCertType = client, email
+```
+- サーバ証明書用
+```
+[ usr_cert ]
+basicConstraints=CA:FALSE
+nsCertType = server
+```
+- クライアント証明書用
+```
+[ usr_cert ]
+basicConstraints=CA:FALSE
+nsCertType = client, email, objsign
+```
+
 ### ベンダーのpurposeを覗いてみる
-試しに以下からルート証明書と中間証明書を見てみることにします。
+試しにcybertrustのベンダーからルート証明書と中間証明書を見てみることにします。
 - https://www.cybertrust.ne.jp/sureserver/support/download_ca.html
 
 - ルート証明書の場合
