@@ -252,6 +252,47 @@ $ openssl x509 -subject_hash -noout
 - http://dsas.blog.klab.org/archives/50484787.html
 
 
+### サーバ証明書で利用されているハッシュリンクで使われるハッシュの種類について
+以下の記事を参考にするとわかるがopensslの0.9.8系と1.0.0系では利用されるハッシュ値の種類は異なる。
+- 0.9.8以前
+  - MD5を元に計算
+- 1.0.0以降
+  - SHA1を元に計算
+
+opensslでハッシュ値を求めるサブオプションも1.0.0以降では次のように別れています。
+- subject_hash_old, issuer_hash_old
+  - 0.9.8以前のMD5として計算
+- subject_hash, issuer_hash
+  - 1.0.0以降のSHA1として計算
+
+0.9.8ベースで作ったハッシュリンクを 1.0.0 で使おうとして、verifyが通らずにハマることがあるようです。
+
+
+- 参考URL
+  - http://dsas.blog.klab.org/archives/51719714.html
+
+### サーバ証明書の署名アルゴリズムがsha1なのかsha2なのか知りたい
+次のようにして署名アルゴリズムを確認することができます。
+```
+$ openssl s_client -connect www.softel.co.jp:443 -showcerts < /dev/null | openssl x509 -text -in /dev/stdin | grep "Signature Algorithm"
+```
+
+sha2サーバ証明書だと次のような出力があります。
+```
+    Signature Algorithm: sha256WithRSAEncryption
+    Signature Algorithm: sha256WithRSAEncryption
+```
+
+sha1サーバ証明書だと次のような出力があります。
+```
+    Signature Algorithm: sha1WithRSAEncryption
+    Signature Algorithm: sha1WithRSAEncryption
+```
+
+なお、SHA1証明書も最近では偽装できるようになってきているので、SHA2へのサーバ証明書の移行も進んできているようです。
+- https://security.googleblog.com/2014/09/gradually-sunsetting-sha-1.html
+- https://blogs.technet.microsoft.com/pki/2015/10/19/sha1-deprecation-policy/
+
 # 雑記メモ(あとで整理)
 ### ルート証明書
 
@@ -266,6 +307,11 @@ $ ls /etc/ssl/certs/
 039c618a.0  861e0100.0								TWCA_Root_Certification_Authority.pem
 (snip)
 ```
+
+上記の.0などはハッシュ値がかぶったときには.1, .2などとして設定されるようです。
+- http://dsas.blog.klab.org/archives/51719714.html
+
+
 このディレクトリはなに?
 
 ```
