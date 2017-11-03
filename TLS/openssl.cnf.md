@@ -6,12 +6,13 @@ openssl.cnfの簡単な説明について
 デフォルト(+alt_namds)の各セクションを表すと次のようなセクションの関連となっている。
 #が付与されているのは、デフォルトのopenssl.cnf設定でアンコメントしないと設定が有効とならない箇所となっている。
 ```
-├── CA_default
-│   ├── crl_ext#
-│   ├── policy_anything#
-│   ├── policy_match
-│   └── usr_cert
-│       └── alt_names#
+├── ca
+│   └── CA_default
+│       ├── crl_ext#
+│       ├── policy_anything#
+│       ├── policy_match
+│       └── usr_cert
+│           └── alt_names#
 ├── proxy_cert_ext
 ├── req
 │   ├── req_attributes
@@ -347,3 +348,16 @@ DNS.4 = example4.com
 DNS.5 = example5.com
 DNS.6 = hoge*.com
 ```
+
+### 各項目の意味について
+各項目での意味が不明な点についてはRFC3280に記載されているのでこちらを参照すること
+- basicConstraints
+  - https://www.ipa.go.jp/security/rfc/RFC3280-04EN.html#42110
+- keyUsage
+  - https://www.ipa.go.jp/security/rfc/RFC3280-04EN.html#42103
+- subjectKeyIdentifier
+  - https://www.ipa.go.jp/security/rfc/RFC3280-04EN.html#42102
+- authorityKeyIdentifier
+  - https://www.ipa.go.jp/security/rfc/RFC3280-04EN.html#42101
+
+
