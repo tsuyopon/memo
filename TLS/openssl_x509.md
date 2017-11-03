@@ -2,6 +2,48 @@
 opensslのx509サブオプションについて
 
 # 詳細
+
+### x509サブオプションについて
+```
+-inform 入力ファイルの形式を指定する。(PEM | DER | NET)
+-outform 出力ファイルの形式を指定する。(PEM | DER | NET)
+-keyform 秘密鍵ファイルの形式を指定する。(PEM | DER)
+-CAform 認証局の証明書ファイルの形式を指定する。(PEM | DER)
+-CAKeyform 認証局の秘密鍵ファイルの形式を指定する。(PEM | DER)
+-text 証明書をテキスト形式で表示する。
+-C 証明書をCコード形式で表示する。
+-serial 証明書のシリアル番号を表示する。
+-subject_hash subject(被認証者)のハッシュ値を表示する。
+-subject_hash_old subject(被認証者)のハッシュ値を表示する(旧いスタイルで)。
+-issuer_hash issuer(発行者)のハッシュ値を表示する。
+-issuer_hash_old issuer(発行者)のハッシュ値を表示する(旧いスタイルで)。
+-subject subject(被認証者)を表示する。
+-issuer issuer(発行者)を表示する。
+-email E-mailを表示する
+-startdate 証明書が有効になる日時を表示する。
+-enddate 証明書が無効になる日時を表示する。
+-dates 証明書が有効になる日時、無効になる日時を表示する。
+-purpose 証明書のpurpose(目的)を表示する。
+-modulus RSA modulus を表示する。
+-pubkey 公開鍵を出力する。
+-fingerprint fingerprintを表示する。
+-alias 証明書についているalias(別名)を表示する。
+-setalias 証明書にalias(別名)を追加する。
+-trustout 信頼情報のついた証明書を出力する。
+-signkey 自己署名証明書の作成を行う。
+-days 証明書の作成を行う際、有効日数を指定する。
+-x509toreq リクエストファイルを出力する。
+-req リクエストファイルを入力にし、証明書を出力する。
+-CA CA証明書を指定する。(標準はPEM)
+-CAKey CAの秘密鍵を指定する(PEMでなければならない)
+-CAcreateserial CAのserialファイルがなければ作成する。
+-CAserial CAのserialファイルを指定する。
+-set_serial serial番号を使う。
+-md2, -md5, -sha1, -mdc2 使うハッシュ関数を指定する。
+-extfile X509V3拡張をファイルから読み込む。
+-extensions X509V3拡張を設定する。
+```
+
 ### サーバ証明書の中の詳細を確認する
 RFC 5280 の中には拡張として BasicConstraint/KeyUsage/ExtendedKeyUsage など定義されているのですが、これらを用いて認証局となれる (他の CSR への署名が許された) 証明書か、クライアント認証に用いて良いか、などが記述できます。
 ```
