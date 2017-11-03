@@ -4,6 +4,10 @@
 - Create2TierCA.md
 - Create3TierWithOCSP.md
 
+chrome58以降からはCommonNameではなくSAN(subjectAltName)を参照する仕組みになりました。
+- https://qiita.com/cnloni/items/a8c9ae834a7d66f60d08
+- https://www.cresco.co.jp/blog/entry/2704/
+
 # 詳細
 予め秘密鍵とCSR(公開鍵)は作成されていることを前提とします。
 ```
