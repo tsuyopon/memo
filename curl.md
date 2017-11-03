@@ -168,7 +168,7 @@ Via: http/1.1 edge1123.img.bbt.yahoo.co.jp (ApacheTrafficServer [c sSf ])
 # HTTPSに関する利用
 ### 接続方法を指定する
 ```
-$ curl --tlsv1 https://www.yahoo.co.jp/
+$ curl --tlsv1 https://www.yahoo.co.jp/         # 最新版のtlsで接続する。例えば、tlsv1.2ならtlsv1.2として接続する
 
 $ curl --tlsv1.0 -I https://www.yahoo.co.jp/
 $ curl --tlsv1.1 -I https://www.yahoo.co.jp/
@@ -214,6 +214,9 @@ $ curl --cacert /etc/pki/tls/certs/ca-bundle.crt https://www.yahoo.co.jp/
 $ export CURL_CA_BUNDLE=cacert.pem
 $ curl https://ssl.example.com/
 ```
+
+- 参考
+  - https://serverfault.com/questions/151157/ubuntu-10-04-curl-how-do-i-fix-update-the-ca-bundle?rq=1
 
 # その他
 
@@ -312,6 +315,86 @@ $ curl ifconfig.me/all.json
 次のページにアクセスするとどのようなエントリポイントで何を表示してくれるかといったことも確認することができます。
 - http://ifconfig.me/
 
+### curlコマンドの設定を取得する
+curl-configというcurl設定情報を取得するコマンドが存在する。
+```
+$ curl-config 
+Usage: curl-config [OPTION]
+
+Available values for OPTION include:
+
+  --built-shared says 'yes' if libcurl was built shared
+  --ca        ca bundle install path
+  --cc        compiler
+  --cflags    pre-processor and compiler flags
+  --checkfor [version] check for (lib)curl of the specified version
+  --configure the arguments given to configure when building curl
+  --features  newline separated list of enabled features
+  --help      display this help and exit
+  --libs      library linking information
+  --prefix    curl install prefix
+  --protocols newline separated list of enabled protocols
+  --static-libs static libcurl library linking information
+  --version   output version information
+  --vernum    output the version information as a number (hexadecimal)
+```
+
+上記設定は次のようにして取得できる。何も表示されていない場合は設定が存在していないと思われる。
+```
+$ curl-config --ca
+
+$ curl-config --cc
+cc
+$ curl-config --cflags
+
+$ curl-config --built-shared
+yes
+$ curl-config --checkfor
+(standard_in) 1: parse error
+(standard_in) 1: parse error
+/usr/bin/curl-config: line 113: test: : integer expression expected
+requested version  is newer than existing 7.43.0
+$ curl-config --configure
+--disable-static --enable-hidden-symbols --enable-threaded-resolver --with-gssapi --with-darwinssl --without-libssh2
+$ curl-config --features
+SSL
+IPv6
+UnixSockets
+libz
+AsynchDNS
+GSS-API
+SPNEGO
+Kerberos
+NTLM
+NTLM_WB
+$ curl-config --libs
+-lcurl
+$ curl-config --prefix
+/usr
+$ curl-config --static-libs
+
+$ curl-config --protocols
+DICT
+FILE
+FTP
+FTPS
+GOPHER
+HTTP
+HTTPS
+IMAP
+IMAPS
+LDAP
+LDAPS
+POP3
+POP3S
+RTSP
+SMB
+SMBS
+SMTP
+SMTPS
+TELNET
+TFTP
+```
 
 # curlコマンド
 - https://hydrocul.github.io/wiki/commands/curl.html
