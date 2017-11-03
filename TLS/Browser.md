@@ -91,9 +91,6 @@ $ open /Applications/Firefox.app/
 
 wiresharkでは上記パスを参照して暗号化されているapplication dataを解読することができるようです。
 
-- 参考
-  - http://qiita.com/Hexa/items/ce0ac23526df12a64ad0
-
 # 参考URL
 - http://qiita.com/n-i-e/items/4de24ac543b07dd5cf82
 

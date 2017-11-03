@@ -54,3 +54,7 @@ SSLCertificateChainFile conf/inca.pem  # 中間CA証明書（クロスルート�
 
 - 参考
   - https://cloudpack.media/630
+
+### 不特定多数に配布するためには専用の形式があるらしい
+サーバ証明書はcrtをHTTPSサーバに配置するが、配布には配布専用のderという形式があるのでそちらに変換したものを配布するらしい。
+- https://qiita.com/mkgask/items/8d66dcada58a485e3585
