@@ -267,6 +267,7 @@ Connection to login.yahoo.co.jp 443 port [tcp/https] succeeded!
 
 ### curlでHTTPSにアクセスする
 -kは危ない証明書でも通信してくれるオプションです。
+危ないとはCNが違う、有効期限が切れている、中間証明書がおかしいなど。
 ```
 $  curl -k -v https://login.yahoo.co.jp/config/login  > /dev/null
 * About to connect() to login.yahoo.co.jp port 443 (#0)

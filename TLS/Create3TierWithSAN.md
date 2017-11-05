@@ -4,8 +4,14 @@
 - Create2TierCA.md
 - Create3TierWithOCSP.md
 
+<<<<<<< HEAD
 Chrome58以降ではCNを評価せずにSANのみを評価対象とするようになったようです。詳しくは以下を参照のこと
 - https://tech.torico-corp.com/blog/chrome58-https-ssl-cert-san-error/
+=======
+chrome58以降からはCommonNameではなくSAN(subjectAltName)を参照する仕組みになりました。
+- https://qiita.com/cnloni/items/a8c9ae834a7d66f60d08
+- https://www.cresco.co.jp/blog/entry/2704/
+>>>>>>> e24852002fd5a31f00db9dad9ee2ca9407641924
 
 # 詳細
 予め秘密鍵とCSR(公開鍵)は作成されていることを前提とします。
