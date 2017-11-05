@@ -4,6 +4,9 @@
 - Create2TierCA.md
 - Create3TierWithOCSP.md
 
+Chrome58以降ではCNを評価せずにSANのみを評価対象とするようになったようです。詳しくは以下を参照のこと
+- https://tech.torico-corp.com/blog/chrome58-https-ssl-cert-san-error/
+
 # 詳細
 予め秘密鍵とCSR(公開鍵)は作成されていることを前提とします。
 ```
