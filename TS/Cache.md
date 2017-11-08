@@ -1,9 +1,15 @@
+# 概要
+cache方法についてまとめていきます
 
+以下のドキュメントも参照してください。
+- https://docs.trafficserver.apache.org/ja/latest/admin-guide/configuration/cache-basics.en.html
+
+# 詳細
 
 ### 全キャッシュを削除する
 停止して次を実行してから再開するとよい
 ```
-traffic_server -Cclear
+$ traffic_server -Cclear
 ```
 
 ### 特定のキャッシュをクリアする
