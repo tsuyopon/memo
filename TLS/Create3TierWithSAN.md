@@ -5,6 +5,7 @@
 - Create3TierWithOCSP.md
 
 chrome58以降からはCommonNameではなくSAN(subjectAltName)を参照する仕組みになりました。
+- https://tech.torico-corp.com/blog/chrome58-https-ssl-cert-san-error/
 - https://qiita.com/cnloni/items/a8c9ae834a7d66f60d08
 - https://www.cresco.co.jp/blog/entry/2704/
 
