@@ -650,6 +650,18 @@ listquota, setquota, delquotaなどはここで利用するようです。
 - 6. Followerは一番小さい数のguid_Xが存在するかをチェックして、いなければLeaderとなる。
 
 
+### 各ポートの役割
+設定ファイルで次のように示されている場合、
+```
+clientPort=2181
+server.1=zookeeper1:2888:3888
+server.2=zookeeper2:2888:3888
+server.3=zookeeper3:2888:3888
+```
+
+- 2181はクライアント接続用コネクション
+- 2888は他のサーバと接続するために用いられる
+- 3888はリーダー選択で用いられる
 
 # TODO
 - zkCli.shについてもっと調べる
