@@ -40,5 +40,12 @@ depthに1を指定しているのは取得する履歴の数です。git logを�
 - 参考
   - https://qiita.com/usamik26/items/7bfa61b31344206077fb
 
+### bareオプションについて
+管理用の
+git-enterprise.mdで記載
+
+### mirrorオプションについて
+git-enterprise.mdで記載
+
 # 参考URL
 - https://git-scm.com/book/ja/v1/Git-%E3%81%AE%E5%9F%BA%E6%9C%AC-Git-%E3%83%AA%E3%83%9D%E3%82%B8%E3%83%88%E3%83%AA%E3%81%AE%E5%8F%96%E5%BE%97
