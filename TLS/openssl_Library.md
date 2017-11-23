@@ -3,6 +3,71 @@ opensslライブラリについて
 
 # 詳細
 
+### ソースコードからインストールする
+至って標準的なインストール方法は以下の通り。make実行時に5〜10分ぐらいかかるかもしれない。
+```
+$ wget https://www.openssl.org/source/openssl-1.0.2m.tar.gz
+$ tar zxvf openssl-1.0.2m.tar.gz 
+$ cd openssl-1.0.2m/
+$ ./config --prefix=/opt/openssl 
+$ make
+$ sudo make install
+```
+
+```
+$ tree -d 3 /opt/openssl/ 
+3 [error opening dir]
+/opt/openssl/
+├── bin
+├── include
+│   └── openssl
+├── lib
+│   ├── engines
+│   └── pkgconfig
+└── ssl
+    ├── certs
+    ├── man
+    │   ├── man1
+    │   ├── man3
+    │   ├── man5
+    │   └── man7
+    ├── misc
+    └── private
+
+15 directories
+```
+
+### ビルドオプションを含めてソースコードからインストールする
+折角のopenssl自前ビルドなのでデバッグオプションも含めて指定したくなります。
+
+oepnsslのビルドオプションは以下の公式ドキュメントを参考のこと
+- https://wiki.openssl.org/index.php/Compilation_and_Installation
+
+```
+$ wget https://www.openssl.org/source/openssl-1.0.2m.tar.gz
+$ tar zxvf openssl-1.0.2m.tar.gz 
+$ cd openssl-1.0.2m/
+$ ./config --prefix=/opt/openssl-dbg --openssldir=/opt/openssl-dbg -d shared no-asm no-ssl2 -g3 -ggdb -gdwarf-4 -fno-inline -O0 -fno-omit-frame-pointer
+$ make
+$ sudo make install
+```
+
+configで指定しているオプションは次の通り
+```
+--prefix and --openssldir control the configuration of installed components
+-d: Debug build of the library
+share: Build a shared object in addition to the static archive
+no-asm: Disables assembly language routines (and uses C routines)
+no-ssl2: Disables SSLv2
+no-ssl3: Disables SSLv3
+-g3: Include extra debug information. Some debuggers support macro expansions when you use -g3
+-ggdb3: Use most expressive format available to produce debugging information
+-gdwarf-4: Produce debugging information in DWARF format (if that is supported). For more information, visit: debuggingwith attributedrecord formats
+-fno-inline: Do not expand any functions inline apart from those marked with "always_inline" attribute
+-O0: Reduce compilation time and make debugging produce the expected results
+-fno-omit-frame-pointer: Omitting it makes debugging impossible on some machines (Recommended by official OpenSSL)
+```
+
 ### libsslを使った場合にデフォルトで参照されるルート証明書について
 libsslを使った場合のルート証明書はどこにあるのだろうか?
 opensslからだと通常はSSL_CTX_set_cert_store()にて指定が行われているはずだが、これらがプログラム中からセットされていない場合には何が参照されるのだろうか?
