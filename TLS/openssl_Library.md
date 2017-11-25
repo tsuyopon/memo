@@ -47,7 +47,7 @@ oepnsslのビルドオプションは以下の公式ドキュメントを参考�
 $ wget https://www.openssl.org/source/openssl-1.0.2m.tar.gz
 $ tar zxvf openssl-1.0.2m.tar.gz 
 $ cd openssl-1.0.2m/
-$ ./config --prefix=/opt/openssl-dbg --openssldir=/opt/openssl-dbg -d shared no-asm no-ssl2 -g3 -ggdb -gdwarf-4 -fno-inline -O0 -fno-omit-frame-pointer
+$ ./config --prefix=/opt/openssl-dbg --openssldir=/opt/openssl-dbg -d -fPIC shared no-asm no-ssl2 -g3 -ggdb -gdwarf-4 -fno-inline -O0 -fno-omit-frame-pointer
 $ make
 $ sudo make install
 ```
