@@ -23,3 +23,16 @@ $ objdump -p a.out  | grep -i rpath
 ```
 $ gcc -Wl,aaa,bbb,ccc
 ```
+
+### 順番を気にせずにうまくリンクする
+
+関数が main() ->　foo() -> bar() のようにコールしているならば、 リンク時にも main.c -lfoo -lbar の順に並べないと、リンク解決できないようです。
+このような場合にはno-as-neededを付与すればlfooとlbarの順番を気にせずに以下のどちらでもリンク解決できるようになるようです。
+```
+$ gcc -Wl,-no-as-needed -L. -lfoo -lbar main.c
+or
+$ gcc -Wl,-no-as-needed -L. -lbar -lfoo main.c
+```
+
+- 参考
+  - http://masahir0y.blogspot.jp/2013/01/shared-object.html
