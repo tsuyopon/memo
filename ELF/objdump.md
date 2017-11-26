@@ -258,7 +258,7 @@ Contents of section .gnu.hash:
  0104 5e24cfde 54e5a235 b98df10e cebe947f  ^$..T..5........
 ```
 
-*** ファイル中のDWARFを表示する [#q9c3c878]
+### ファイル中のDWARFを表示する
 http://ja.wikipedia.org/wiki/DWARF を表示します。
 ```
 $ objdump -W hellopecl.so   | less
