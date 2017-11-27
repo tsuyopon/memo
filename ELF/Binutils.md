@@ -120,6 +120,41 @@ text    data     bss     dec     hex filename
 2268     244       4    2516     9d4 ./a.out
 ```
 
+### バイナリがどのセクションにどれくらいのサイズで配置されているのかを確認する。
+この出力結果は後でメモリを図にするのに非常に役に立つ。
+```
+$ size --format=SysV -x a.out
+layout  :
+section               size       addr
+.interp               0x1c   0x400200
+.note.ABI-tag         0x20   0x40021c
+.note.gnu.build-id    0x24   0x40023c
+.gnu.hash             0x1c   0x400260
+.dynsym              0x108   0x400280
+.dynstr               0x6d   0x400388
+.gnu.version          0x16   0x4003f6
+.gnu.version_r        0x20   0x400410
+.rela.dyn             0x18   0x400430
+.rela.plt             0xd8   0x400448
+.init                  0xe   0x400520
+.plt                  0xa0   0x400530
+.text                0x4a4   0x4005d0
+.fini                  0x9   0x400a74
+.rodata               0x25   0x400a80
+.eh_frame_hdr         0x3c   0x400aa8
+.eh_frame             0xe4   0x400ae8
+.init_array            0x8   0x600bd0
+.fini_array            0x8   0x600bd8
+.jcr                   0x8   0x600be0
+.dynamic             0x1d0   0x600be8
+.got                   0x8   0x600db8
+.got.plt              0x60   0x600dc0
+.data                 0xa0   0x600e20
+.bss                  0xa0   0x600ec0
+.comment              0x2c        0x0
+Total                0xd73
+```
+
 ## stringsコマンド
 ### バイナリファイル中の可読部分の文字列の取得を行う
 ```
