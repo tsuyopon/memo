@@ -240,4 +240,7 @@ Idx Name          Size      VMA               LMA               File off  Algn
   - https://www.akkadia.org/drepper/symbol-versioning
 - Running new applications on old glibc
   - http://lightofdawn.org/wiki/wiki.cgi/-wiki/NewAppsOnOldGlibc
+- ELF仕様書関連
+  - http://www.cs.northwestern.edu/~pdinda/icsclass/doc/elf.pdf
+  - https://www.uclibc.org/docs/psABI-x86_64.pdf
 
