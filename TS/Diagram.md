@@ -27,3 +27,6 @@
 
 - HTTP/1.xやHTTP/2などのクラスレイアウト(継承関係など)
   - https://docs.trafficserver.apache.org/en/latest/developer-guide/client-session-architecture.en.html
+
+- trafficserverのdoxygenだが3.3.0-devとかなり古め...
+  - http://people.apache.org/~amc/ats/doc/html/

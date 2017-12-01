@@ -134,6 +134,7 @@ Capacity:       32768 MBytes
 Encryption:     disabled
 ```
 
+```
 tsuyoshi:VirtualBox VMs tsuyoshi$ VBoxManage modifyhd f2882217-7967-4db0-8750-494b5b8b40ec --resize 32768
 0%...10%...20%...30%...40%...50%...60%...70%...80%...90%...100%
 tsuyoshi:VirtualBox VMs tsuyoshi$ VBoxManage showhdinfo f2882217-7967-4db0-8750-494b5b8b40ec
@@ -158,6 +159,7 @@ In use by VMs:  NewOSUbuntu (UUID: abc81f5c-d5c3-4e4b-8a70-e15861d3117b)
   - http://download.virtualbox.org/virtualbox/5.1.28/VirtualBox-5.1.28.tar.bz2
   - https://www.virtualbox.org/browser/vbox/trunk
   - checkout
+
 ```
 $ svn co http://www.virtualbox.org/svn/vbox/trunk vbox
 ```

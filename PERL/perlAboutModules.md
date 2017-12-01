@@ -1,204 +1,212 @@
-#########################################################
-Getopt::Long
-#########################################################
+# 概要
+perlに存在する各種モジュールの外観(overview)的なもの
 
-*** 基本的な使い方
-	 use Getopt::Long;
-	 
-	 $name1 = "test1";
-	 $name2 = "test2";
-	 GetOptions('name=s' => \$name1, 'name2=s' => \$name2 );
-	 print "$name1\t$name2\n";
+# 詳細
+
+## Getopt::Long
+
+### 基本的な使い方
+```
+use Getopt::Long;
+
+$name1 = "test1";
+$name2 = "test2";
+GetOptions('name=s' => \$name1, 'name2=s' => \$name2 );
+print "$name1\t$name2\n";
+```
 
 上記を引数無しで実行すると、下記結果が出力されます。
-	 (出力例)
-	 test1   test2
+```
+(出力例)
+test1   test2
+```
 
-
-
-#########################################################
-Smart::Comments
-#########################################################
-
+## Smart::Comments
 Smart::Commentsを利用するとソースコード中に下記コードを埋め込むことにより様々なでバッグ制御を行うことができます。
 
-*** 基本的な使い方
+### 基本的な使い方
+```
 	 ###
+```
 このモジュールはデバッグとしての利用のため、useを書かずに、
-	 perl -MSmart::Comments
+```
+$ perl -MSmart::Comments
+```
 として実行した方がソースがきれいになります。
 
-#########################################################
-File::Basename
-#########################################################
-
+## File::Basename
 File::Basenameは、ファイルのベース名を取りだす場合に利用するモジュールです。
 
-*** 基本的な使い方
-	use File::Basename;
-	my $name = "/usr/local/bin/perl";
-	my $basename = basename $name;
+### 基本的な使い方
+```
+use File::Basename;
+my $name = "/usr/local/bin/perl";
+my $basename = basename $name;
+```
 
 これは$basenameとしてperlが返却されます。
 
-#########################################################
-File::Basename
-#########################################################
+## File::Basename
 File::Copyは、ファイルをコピーしたり、移動したい場合に利用するモジュールです。 以下の２つの関数を提供します。
-    move()
-    copy()
+```
+move()
+copy()
+```
 
-** 基本的な使い方 [#p5c29950]
-	 use File::Copy;
-	 copy("source","destination") or die "Can't copy 'source' to 'destination': $!";
-	 move("oldname","newname") or die "Can't change name: $!";
+### 基本的な使い方
+```
+use File::Copy;
+copy("source","destination") or die "Can't copy 'source' to 'destination': $!";
+move("oldname","newname") or die "Can't change name: $!";
+```
 
-#########################################################
-Sts::Hostname
-#########################################################
+## Sts::Hostname
 Sts::Hostnameは、マシンのhostnameを知りたい場合に利用するモジュールです。
-** 基本的な使い方 [#hae53b95]
-	 use Sys::Hostname;
-	 my $host = hostname;
-	 print "This machine name = '$host'.\n";
+### 基本的な使い方
+```
+use Sys::Hostname;
+my $host = hostname;
+print "This machine name = '$host'.\n";
+```
 
-#########################################################
-Cwd
-#########################################################
+## Cwd
 Cwdは、カレントディレクトリが知りたい場合に利用するモジュールです。
-** 基本的な使い方 [#ec82232d]
-	 use Cwd;
-	 my $directory = cwd;
+###  基本的な使い方
+```
+use Cwd;
+my $directory = cwd;
+```
 
-#########################################################
-Net::Ping
-#########################################################
-** 基本的な使い方 
-	use Net::ping;
-	$timeout_sec = 10;  # タイムアウトの指定
-	$proto = 'icmp';    #icmp,tcp,udpの指定が可能
-	$ping = new Net::Ping($proto,$timeout_sec);
-	$result = $ping->('localhost');
-	if($ping){ 
-		print "localhost alive\n";
-	}
-	$ping->close;
-	undef($ping);
+## Net::Ping
+### 基本的な使い方 
+```
+use Net::ping;
+$timeout_sec = 10;  # タイムアウトの指定
+$proto = 'icmp';    #icmp,tcp,udpの指定が可能
+$ping = new Net::Ping($proto,$timeout_sec);
+$result = $ping->('localhost');
+if($ping){ 
+	print "localhost alive\n";
+}
+$ping->close;
+undef($ping);
+```
 
-
-#########################################################
-GD::Graph
-#########################################################
+## GD::Graph
 GD::Graphモジュールはデータを素早く簡単にGraphicalに表現するPerl5モジュールです。
-
 GD::Graphを利用する為には以下のパッケージが必要となります。
-	  <必要なパッケージ>        
-	  GD Graphics Library       線や多角形、円を描画するためのライブラリ
-	  PNG graphics library      PNGグラフィックスフォーマット用ライブラリ
-	  zlib compression library  zlib汎用圧縮ライブラリ
-	  Free Type                 TrueTypeフォントをレンダリングするライブラリ
-	  JPEG library              JPEGグラフィックスフォーマット用ライブラリ
-	  GD Perl Module            GDライブラリをPerlで利用可能にするモジュール
-	  GD::Text(GDTextUtil)      GDを利用してテキストを扱えるようにするモジュール
-	  GD::Graph(GDGraph)        GDを利用してグラフを扱えるようにするモジュール
-	  Jcode                     日本語文字コードを変換するモジュール
+```
+<必要なパッケージ>        
+GD Graphics Library       線や多角形、円を描画するためのライブラリ
+PNG graphics library      PNGグラフィックスフォーマット用ライブラリ
+zlib compression library  zlib汎用圧縮ライブラリ
+Free Type                 TrueTypeフォントをレンダリングするライブラリ
+JPEG library              JPEGグラフィックスフォーマット用ライブラリ
+GD Perl Module            GDライブラリをPerlで利用可能にするモジュール
+GD::Text(GDTextUtil)      GDを利用してテキストを扱えるようにするモジュール
+GD::Graph(GDGraph)        GDを利用してグラフを扱えるようにするモジュール
+Jcode                     日本語文字コードを変換するモジュール
+```
 
 GD::Graphには以下のサブクラスが存在します。
-	  GD::Graph::Colour         GD::Graphで使われる色操作ルーチン
-	  GD::Graph::FAQ            よく聞かれる質問
-	  GD::Graph::Data           GD::Graphのためのデータセットのカプセル化
-	  GD::Graph::Error          GD::Graphクラスのためのエラーハンドリング
-
+```
+GD::Graph::Colour         GD::Graphで使われる色操作ルーチン
+GD::Graph::FAQ            よく聞かれる質問
+GD::Graph::Data           GD::Graphのためのデータセットのカプセル化
+GD::Graph::Error          GD::Graphクラスのためのエラーハンドリング
+```
 
 実際に表現できるグラフは以下の通りです。
-	  GD::Graph::lines          折線グラフ
-	  GD::Graph::bars           棒グラフ
-	  GD::Graph::points         点グラフ
-	  GD::Graph::linespoints    点付き折線グラフ
-	  GD::Graph::area           面グラフ
-	  GD::Graph::mixed          上記のグラフを組み合わせたグラフ
-	  GD::Graph::pie            円グラフ
+```
+GD::Graph::lines          折線グラフ
+GD::Graph::bars           棒グラフ
+GD::Graph::points         点グラフ
+GD::Graph::linespoints    点付き折線グラフ
+GD::Graph::area           面グラフ
+GD::Graph::mixed          上記のグラフを組み合わせたグラフ
+GD::Graph::pie            円グラフ
+```
 
-
-#########################################################
-Graph::Easy
-#########################################################
-
+## Graph::Easy
 Graph Easyは、データ形式のハコ図を作成したりすることができます。
 
 以下の２つの機能を提供します。
-    (1) コマンドとしての機能(入力はコマンドラインから)
-        /usr/bin/graph-easyというコマンドがあります。
-    (2) Perlモジュールとしての機能
-        Graph::Easyとしての機能を提供します。
+- (1) コマンドとしての機能(入力はコマンドラインから)
+  - /usr/bin/graph-easyというコマンドがあります。
+- (2) Perlモジュールとしての機能
+  - Graph::Easyとしての機能を提供します。
 
 Graphvizと連携することも可能で、以下のデータを生成することができます。
 
-*** graph-easyコマンドについて
-(例1) 基本的な例 [#j0a0dddf]
-	 $ echo "[server1] -- Ethernet --> [ server2 ]" | graph-easy
-	 +---------+  Ethernet   +---------+
-	 | server1 | ----------> | server2 |
-	 +---------+             +---------+
+### graph-easyコマンドについて
+- 例1: 基本的な例
+```
+$ echo "[server1] -- Ethernet --> [ server2 ]" | graph-easy
++---------+  Ethernet   +---------+
+| server1 | ----------> | server2 |
++---------+             +---------+
+```
 
-(例2) 下矢印が含まれる場合の例 [#d979720f]
-	 $ cat data.txt
-	 [ Server1 ] == Cat5 Cable ==> [ Gateway ]
-	 [ Gateway ] == Cat5 Cable ==>  [ Server2 ] { origin: Gateway; offset: 2,0; }
-	 [ Gateway ] -- cable router-\>Gateway --> [ Special\nRouter ]
-	                                          { origin: Gateway; offset: 0,2; }
-	 $ graph-easy < data.txt
-	 +---------+  Cat5 Cable   +------------------------+  Cat5 Cable   +---------+
-	 | Server1 | ============> |        Gateway         | ============> | Server2 |
-	 +---------+               +------------------------+               +---------+
-	                             |
-	                             | cable router->Gateway
-	                             v
-	                           +------------------------+
-	                           |        Special         |
-	                           |         Router         |
-	                           +------------------------+
+- 例2: 下矢印が含まれる場合の例 [#d979720f]
+```
+$ cat data.txt
+[ Server1 ] == Cat5 Cable ==> [ Gateway ]
+[ Gateway ] == Cat5 Cable ==>  [ Server2 ] { origin: Gateway; offset: 2,0; }
+[ Gateway ] -- cable router-\>Gateway --> [ Special\nRouter ]
+                                         { origin: Gateway; offset: 0,2; }
+$ graph-easy < data.txt
++---------+  Cat5 Cable   +------------------------+  Cat5 Cable   +---------+
+| Server1 | ============> |        Gateway         | ============> | Server2 |
++---------+               +------------------------+               +---------+
+                            |
+                            | cable router->Gateway
+                            v
+                          +------------------------+
+                          |        Special         |
+                          |         Router         |
+                          +------------------------+
+```
 
-** 基本的な使い方 
-	 $ cat prog.pl
-	 #!/usr/bin/perl
-	 use strict;
-	 use warnings;
-	 use utf8;
-	 use Graph::Easy;
-	 
-	 my $graph = Graph::Easy->new();
-	 $graph->add_edge_once ('AAA', 'BBB');
-	 $graph->add_edge_once ('test', 'test2');
-	 $graph->add_edge_once ('BBB', 'test2');
-	 print $graph->as_ascii();
-	 #print $graph->as_svg();
+### 基本的な使い方 
+```
+$ cat prog.pl
+#!/usr/bin/perl
+use strict;
+use warnings;
+use utf8;
+use Graph::Easy;
+
+my $graph = Graph::Easy->new();
+$graph->add_edge_once ('AAA', 'BBB');
+$graph->add_edge_once ('test', 'test2');
+$graph->add_edge_once ('BBB', 'test2');
+print $graph->as_ascii();
+#print $graph->as_svg();
+```
 
 上記プログラムを実行すると下記の結果が得られます。
-	 $ perl prog.pl
-	 +-----+     +-----+     +-------+     +------+
-	 | AAA | --> | BBB | --> | test2 | <-- | test |
-	 +-----+     +-----+     +-------+     +------+
+```
+$ perl prog.pl
++-----+     +-----+     +-------+     +------+
+| AAA | --> | BBB | --> | test2 | <-- | test |
++-----+     +-----+     +-------+     +------+
+```
 
-
-#########################################################
-基本的なモジュールメモ
-#########################################################
-
+## 基本的なモジュールメモ
 覚えておいたほうがよさそうなモジュールメモ
-
+```
 DB_File
-	DBMファイルを作成、使用する、空にする等
+    DBMファイルを作成、使用する、空にする等
 GDBM_File
-	異なるDBMファイルに変換する
+    異なるDBMファイルに変換する
 MLDBM
-	永続的なデータを維持できるようにする
+    永続的なデータを維持できるようにする
 DBIx::Dump
-	問い合わせ結果をExcelやCSVへ保存する
+    問い合わせ結果をExcelやCSVへ保存する
 DBI
-	RDBへの問い合わせを行う
+    RDBへの問い合わせを行う
 DBD::CSV
-	CSVファイルをSQLで問い合わせる
+    CSVファイルをSQLで問い合わせる
 DBD::SQLite
 	データベースサーバ無しでSQLを使用する
 Getopt::Std
@@ -548,3 +556,4 @@ Mail::Mailer
 	メールの送信を行います
 Logfile::Apache
 	apacheサーバのログを処理する
+```

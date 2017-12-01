@@ -69,7 +69,6 @@ $ echo |  openssl s_client -connect scotthelme.co.uk:443 -showcerts | openssl x5
 (snip)
 ```
 
-
 # 参考URL
 - RFC7633
   - https://tools.ietf.org/html/rfc7633
