@@ -150,6 +150,10 @@ rsa 4096 bits 0.012362s 0.000198s     80.9   5049.4
 ```
 $ openssl speed rsa -multi 2
 ```
+- CPUを使い切ってテストする
+```
+$ openssl speed rsa -multi `grep processor /proc/cpuinfo|wc -l`
+```
 
 ### TLSサーバを立てる
 次のコマンドでTLSサーバを立てます
