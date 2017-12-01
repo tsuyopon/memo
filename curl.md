@@ -315,6 +315,58 @@ $ curl ifconfig.me/all.json
 次のページにアクセスするとどのようなエントリポイントで何を表示してくれるかといったことも確認することができます。
 - http://ifconfig.me/
 
+### curlを使ってボトルネックを調査する
+
+次のコマンドを実行してtemplate.txtを準備します。
+```
+cat <<'EOF' > template.txt
+url_effective\t\t: %{url_effective}\n
+url_effective\t\t: %{url_effective}\n
+http_code\t\t: %{http_code}\n
+http_connect\t\t: %{http_connect}\n
+time_total\t\t: %{time_total}\n
+time_namelookup\t\t: %{time_namelookup}\n
+time_connect\t\t: %{time_connect}\n
+time_appconnect\t\t: %{time_appconnect}\n
+time_pretransfer\t\t: %{time_pretransfer}\n
+time_redirect\t\t: %{time_redirect}\n
+time_starttransfer\t\t: %{time_starttransfer}\n
+size_download\t\t: %{size_download}\n
+size_upload\t\t: %{size_upload}\n
+size_header\t\t: %{size_header}\n
+size_request\t\t: %{size_request}\n
+speed_download\t\t: %{speed_download}\n
+speed_upload\t\t: %{speed_upload}
+EOF
+```
+
+コマンド実行の際にテンプレートを実行すると指定した値を表示してくれます
+```
+$ curl -o /dev/null http://www.example.com -w @template -s
+url_effective		: http://www.example.com/
+url_effective		: http://www.example.com/
+http_code		: 200
+http_connect		: 000
+time_total		: 0.404
+time_namelookup		: 0.013
+time_connect		: 0.222
+time_appconnect		: 0.000
+time_pretransfer		: 0.222
+time_redirect		: 0.000
+time_starttransfer		: 0.403
+size_download		: 1270
+size_upload		: 0
+size_header		: 322
+size_request		: 79
+speed_download		: 3146.000
+speed_upload		: 0.000
+```
+
+man curlなどとすると次のような値も指定することができます。
+```
+content_type, filename_effective, ftp_entry_path, http_code, http_connect, local_ip, local_port, num_connects, num_redirects, redirect_url, remote_ip, remote_port, size_download, size_header, size_request, size_upload, speed_download, speed_upload, ssl_verify_result, time_appconnect, time_connect, time_namelookup, time_pretransfer, time_redirect, time_starttransfer, time_total, url_effective
+```
+
 ### curlコマンドの設定を取得する
 curl-configというcurl設定情報を取得するコマンドが存在する。
 ```
