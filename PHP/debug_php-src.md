@@ -1,9 +1,15 @@
 # 概要
 php-srcを使ったgdbデバッグの方法
 
+php-srcはhttp://git.php.net.の公式PHPレポジトリのミラーです。
+
 # セットアップ
+
 ```
 $ git clone --depth 1 https://github.com/php/php-src.git
+```
+
+```
 $ cd php-src
 $ ./buildconf 
 $ ./configure --disable-all --enable-debug --prefix=/opt/php-src
@@ -41,6 +47,12 @@ define printzops
 define print_zstr
 define zbacktrace
 define lookup_root
+```
+
+代表的なものを説明
+```
+printzv	    zval構造体ポインタの中身をわかりやすく表示する。zval構造体とは、PHPで扱う値のC言語レベルでの表現。
+zbacktrace  GDBのbacktraceコマンドがC言語のコールスタックを表示するのに対して、zbackraceコマンドはPHPレベルでのコールスタックを表示する
 ```
 
 # gdbを使う
@@ -89,6 +101,9 @@ Undefined command: "zbacktrace".  Try "help".
 [0x7ffff661d030] (main) [internal function]
 ```
 
+
 # 参考URL
 - http://blog.anatoo.jp/entry/20111117/1321463886
   - こちらを参考にstrlen(zif_strlen)だとなぜかブレークポイントに引っかからなかった(要確認)
+  - zif_strlenは関数レベルの呼び出しをしない最適化が適用されるようになったらしい。strlen関数は関数呼び出しではなくZend VMの1命令に格上げになっているとのこと
+    - http://d.hatena.ne.jp/hnw/20151230
