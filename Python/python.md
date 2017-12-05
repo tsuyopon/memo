@@ -153,6 +153,44 @@ dic = dict(a=1, b=2) # キーワード引数による初期化
 $ python -c "print 'Hello'"
 ```
 
+### グローバル変数の値を使う
+
+- 参照するばあい
+```
+>>> VALUE = 2
+>>> def function1():
+...     print(VALUE)
+...
+>>> function1()
+2
+```
+- 代入する場合
+```
+>>> VALUE = 2
+>>> def function2():
+...     global VALUE
+...     VALUE = 1
+...     print(VALUE)
+...
+>>> function2()
+1
+>>> print(VALUE)
+1
+```
+
+### クロージャ
+関数ポインタのような仕組みです。
+```
+>>> def calc(x, y):
+...     def plus():
+...             print(x + y)
+...     return plus
+...
+>>> func = calc(1, 3)
+>>> func()
+4
+```
+
 ### UTF-8に統一する
 プログラムのコメントに次のような行を入れるのが一般的です。
 ```
@@ -170,14 +208,102 @@ print sys.argv
 print sys.argv[0]
 ```
 
+### キーワード引数の関数
+xやyといった変数を定義できます
+```
+>>> def plus(x=10, y=0):
+...     return x + y
+...
+>>> print(plus(y=199))
+209
+>>> print(plus(x=100, y=300))
+400
+```
+
 ### 可変長引数の関数を定義する。
 - 収まりきらなかった引数はタプルとして*付き引数に
 - キーワード引数はディクショナリとして**付き引数に格納されます。
+
+*付き引数の場合、
 ```
-def f(arg, *args, **kwargs):
-    print arg
-    print args
-    print kwargs
+>>> def plus(*args):
+...     print(args)
+...     result = 0
+...     for val in args:
+...             result += val
+...     return result
+...
+>>> result = plus(10, 20, 30, 30)
+(10, 20, 30, 30)
+>>> print(result)
+90
+```
+
+**付き引数の場合、
+```
+>>> def plus(**args):
+...     print(args)
+...     return args['a'] + args['b'] + args['c']
+...
+>>> result = plus(a=10, b=30, c=30)
+{'a': 10, 'b': 30, 'c': 30}
+>>> print(result)
+70
+```
+
+### ネストされた関数を定義する
+```
+>>> def calc(x, y):
+...     z = 10
+...     def plus(x, y):
+...             print('x=' + str(x), 'y=' + str(y))
+...             return x + y + z
+...     print('z=' + str(z))
+...     return plus(x, y)
+...
+>>> calc(1, 3)
+z=10
+x=1 y=3
+14
+```
+
+### デコレータ
+関数定義時に関数を就職して新たな関数を作成すること。
+複数の関数で共通な機能を作る時に利用される。
+```
+>>> def calc(func):
+...     def display(*args):
+...             print('start')
+...             print(func(*args))
+...             print('end')
+...     return display
+...
+>>> def plus(x, y):
+...     return x + y
+...
+>>> calc(plus)(1, 2)
+start
+3
+end
+```
+
+@シンボルを使うと次のように簡単にすることが出来ます。
+```
+>>> def calc(func):
+...     def display(*args):
+...             print('start')
+...             print(func(*args))
+...             print('end')
+...     return display
+...
+>>> @calc
+... def plus(x, y):
+...     return x + y
+...
+>>> plus(1, 2)
+start
+3
+end
 ```
 
 ### コメント
@@ -246,5 +372,36 @@ class Hoge:
     pass
 ```
 
+__がつくメソッドはprivateメソッド
+```
+def __method(self):
+```
+
+クラスメソッドとスタティックメソッドの定義について
+```
+class xxx:
+    # クラスメソッドの定義
+    @classmethod
+    def class_method(cls):
+        print('called public classmethod')
+
+    # スタティックメソッドの定義
+    @staticmethod
+    def static_method(self):
+        print('called public staticmethod')
+```
+
+### 継承
+単純な継承ならば次のように記述します。
+```
+class Derived(BaseA):
+```
+
+多重継承ならばつぎのようにカッコ内に複数記述します。
+```
+class Derived(BaseA, BaseB):
+```
+
 # 参考
 - http://d.hatena.ne.jp/dplusplus/20100126/p1
+- https://qiita.com/Tocyuki/items/25092d0d589ab52e83e4
