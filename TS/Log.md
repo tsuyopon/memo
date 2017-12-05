@@ -3,6 +3,20 @@ logについてまとめていきます。
 
 # 詳細
 
+### 各種ファイルの役割について
+- traffic.out
+  - Debugレベルのメッセージがこのファイルに出力されます。
+  - debug tagを指定するとこのファイルにログが出力されます。
+- diags.log
+  - DEBUGよりも優先度が高いログメッセージがこのファイルに出力されます。
+- error.log
+  - 運用上のエラーメッセージはここに出力されます。
+  - このメッセージはtrafficserver自体ではなく
+
+
+- 参考
+  - https://docs.trafficserver.apache.org/en/latest/admin-guide/monitoring/diagnostic-files.en.html
+
 ### squid.blog(アクセスログに相当)を確認する
 ```
 $ traffic_logcat /var/log/trafficserver/squid.blog 
@@ -20,3 +34,9 @@ Wed Oct 25 08:36:06 2017 0 127.0.0.1 ERR_CONNECT_FAIL/404 449 GET http:/// - NON
 ### イベントロギングフォーマットについて
 どのようなフィールドをログに落とすのかについては以下を参照のこと
 - https://docs.trafficserver.apache.org/ja/5.3.x/admin/event-logging-formats.en.html
+
+# 参考URL
+- Administrator’s Guide > Monitoring
+  - https://docs.trafficserver.apache.org/en/latest/admin-guide/monitoring/index.en.html
+- Administrator’s Guide > Logging
+  - https://docs.trafficserver.apache.org/en/latest/admin-guide/logging/index.en.html

@@ -2,7 +2,8 @@
 stats関連についてまとめます
 
 # 詳細
-様々な特型情報を出力する
+
+### 様々な特型情報を出力する
 ```
 $ traffic_logstats -s
                         Totals (all Origins combined)
@@ -91,3 +92,9 @@ $ traffic_logstats -j
     "miss.refresh" : { "req": "0", "req_pct": "0.00", "bytes": "0", "bytes_pct": "0.00" },
 (snip)
 ```
+
+### オリジンサーバ関連の統計情報を取得する
+- https://docs.trafficserver.apache.org/en/latest/admin-guide/monitoring/statistics/core/origin.en.html
+
+### TLS関連の統計情報を取得する
+- https://docs.trafficserver.apache.org/en/latest/admin-guide/monitoring/statistics/core/ssl-cipher.en.html
