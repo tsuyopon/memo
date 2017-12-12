@@ -67,7 +67,13 @@ mysql> SELECT COUNT(*) FROM address AS a1 INNER JOIN address AS a2 ON  a1.city_i
 |       16 |
 +----------+
 1 row in set (0.00 sec)
+```
 
-``
+### 特定のフィールドのある名称などに特定の文字列を付与する
+- https://stackoverflow.com/questions/13358923/sql-query-to-prepend-prefix-to-existing-value-in-a-field
 
+たとえば、次のようにすればtitle全てに「Mr.」を付与します。
+```
+mysql> UPDATE jos_content SET title = CONCAT('Mr. ', title) 
+```
 
