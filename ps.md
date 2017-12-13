@@ -3,13 +3,13 @@ psコマンドや/proc/<pid>/statusなどプロセス関連のコマンド
 
 - option
 ```
-a 	全ユーザのプロセスの状態を表示
-u 	ユーザ名と開始時刻を表示
-x 	制御端末を持たないデーモンなどのプロセスも合わせて表示
-ww 	表示結果を省略せずに行を折り返して全て表示
-e 	全プロセスの情報を表示
-f 	プロセスの親子関係をツリー状にして表示
-L 	スレッドを表示
+a   全ユーザのプロセスの状態を表示
+u   ユーザ名と開始時刻を表示
+x   制御端末を持たないデーモンなどのプロセスも合わせて表示
+ww  表示結果を省略せずに行を折り返して全て表示
+e   全プロセスの情報を表示
+f   プロセスの親子関係をツリー状にして表示
+L   スレッドを表示
 ```
 
 #
@@ -24,7 +24,7 @@ F S   UID   PID  PPID  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD
 
 ```
     S（State）
-	    状態。
+        状態。
     R (runnable)
         実行可能。CPU が空いていれば実行される。 
     U (uninterruptible), D (Disk),
@@ -294,4 +294,24 @@ www-data  1176  1184  0.0   27  0.6 360744  6188 ?        Sl   08:24   0:00 /usr
 www-data  1176  1185  0.0   27  0.6 360744  6188 ?        Sl   08:24   0:00 /usr/sbin/apache2 -k start
 www-data  1176  1186  0.0   27  0.6 360744  6188 ?        Sl   08:24   0:00 /usr/sbin/apache2 -k start
 www-data  1176  1187  0.0   27  0.6 360744  6188 ?        Sl   08:24   0:00 /usr/sbin/apache2 -k start
+```
+
+### プロセスツリーを表示する
+fオプションを付与するとプロセスツリーを表示します。以下の例では27195の子に28529のPIDがあることがわかります。
+```
+$ ps afx
+  PID TTY      STAT   TIME COMMAND
+(snip)
+ 1139 ?        Ss     0:00 /usr/sbin/sshd -D
+26248 ?        Ss     0:00  \_ sshd: tsuyoshi [priv]
+26252 ?        S      0:02  |   \_ sshd: tsuyoshi@pts/3
+26253 pts/3    Ss+    0:00  |       \_ -bash
+27190 ?        Ss     0:00  \_ sshd: tsuyoshi [priv]
+27194 ?        S      0:04      \_ sshd: tsuyoshi@pts/0
+27195 pts/0    Ss     0:00          \_ -bash
+28537 pts/0    R+     0:00              \_ ps afx
+ 1142 ?        Ssl    0:14 /usr/bin/python -Es /usr/sbin/tuned -l -P
+ 1242 ?        Ss     0:00 /usr/libexec/postfix/master -w
+ 1244 ?        S      0:00  \_ qmgr -l -t unix -u
+28353 ?        S      0:00  \_ pickup -l -t unix -u
 ```
