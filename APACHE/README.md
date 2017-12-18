@@ -24,14 +24,6 @@ APACHE
  * Apacheハンドラ実装の基本について説明
 
 
-# 詳細調査・ソースコード深追い
-* [Apacheのserver-status深追い](Apacheのserver-status深追い)
- * apacheの/server-statusのW, Rなどのステータスはどのような時点でのステータスなのかについて調査する
-* [Apacheコードリード・408調査等](Apacheコードリード・408調査等)
- * 408(request timeout)がどのような条件で出力されるのかについて追ってみる
-* [BucketBrigadeについて](BucketBrigadeについて)
- * TBD: 全然整備されていないのでこれから
-
 # メモ
 * libapr tutorial
  * http://dev.ariel-networks.com/apr/apr-tutorial/html/apr-tutorial.html
