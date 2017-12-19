@@ -29,6 +29,8 @@ This is TCPv4 Header Details
                             TCP Header Format
 ```
 
+### FINとRSTの違い
+- https://stackoverflow.com/questions/13049828/fin-vs-rst-in-tcp-connections
 
 # Checksum
 - http://www.erg.abdn.ac.uk/users/gorry/course/inet-pages/ip-cksum.html
