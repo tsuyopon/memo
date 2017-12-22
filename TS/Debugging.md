@@ -22,7 +22,7 @@ CONFIG proxy.config.diags.debug.tags STRING debug-tag-name
 ```
 
 debug-tag-nameには次のようなタグが入ります。これ以外にも各プラグイン用のタグなどもあるので、プラグインでつまったらソースコードを見てタグを取得しましょう。
-debug-tag-nameの箇所には「http_tproxy|dns|hostdb」、「http*」などとして複数指定することもできます。
+debug-tag-nameの箇所には「http_tproxy|dns|hostdb」、「http.*|dns.*」などとして複数指定することもできます。
 ```
 http_hdrs - traces all incoming and outgoing HTTP headers.
 http_trans - traces actions in an HTTP transaction.
@@ -54,10 +54,13 @@ TSDebug ("my-plugin", "Starting my-plugin at %d\n", the_time);
 ### (2)
 traffic_server起動時にTオプションでタグを指定する方法があります。これはコマンドライン上でちょっとした確認でデバッグログを標準出力させたい場合などに利用すると便利です。
 ```
-$ traffic_server -T"my-plugin"
+$ sudo traffic_server -T"my-plugin"
 ```
 
-Tオプションは--debug_tagsと等価です
+Tオプションは--debug_tagsと等価です。次のようにして正規表現を指定することも可能です。
+```
+$ sudo traffic_server -T http.*
+```
 
 ## デバッグ関数
 

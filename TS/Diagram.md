@@ -7,7 +7,7 @@
   - 次の状態遷移図がある
     - Simplified HTTP Transaction
     - API Hooks Corresponding to States
-	- Blacklist Plugin
+    - Blacklist Plugin
 
 - Hookトランザクションの状態遷移図
   - https://docs.trafficserver.apache.org/en/latest/developer-guide/plugins/hooks-and-transactions/index.en.html
