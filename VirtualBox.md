@@ -63,14 +63,45 @@ $ VBoxManage setextradata "FedoraTest1" "VBoxInternal/Devices/e1000/0/LUN#0/Conf
 $ ssh localhost -p 50022
 ```
 
-### ゲストOS側のapacheにアクセスする
-- http://www.karakaram.com/virtualbox-port-foawarding
-でポートフォワーディング設定を行います。
-ホストOSから8080でリクエストすると、ゲストOS側には80でリクエストされるように設定します。
+### ゲストOS側の80番ブラウザにアクセスする(centOS7)
+ブラウザからアクセスしても、ずっと接続しているような状態になっていて応答が返ってきませんでした。
+行ったことをすべて記述しているのですべてが必要かどうかは不明ですが、VirtualBoxのUIからの設定とfirewalldを停止するのはCentOS7には必ず必要と思われます。
+
+- VirtualBoxのUI上から該当のVMを選択して以下の作業を行う。
+  - Virtualboxの"設定" -> "ネットワーク"で"高度"を展開 -> 「ポートフォワーディング」 -> 名前"www"、プロトコル"TCP"、ホストポート"50080"、ゲストポート"80"
+  - (参考) http://zorinos.seesaa.net/article/450523806.html
+
+- ホストOS上から次の設定を追加しておきます(本当に必要かは不明)
+```
+$ VBoxManage setextradata "FedoraTest1" "VBoxInternal/Devices/e1000/0/LUN#0/Config/guestwww/Protocol" TCP
+$ VBoxManage setextradata "FedoraTest1" "VBoxInternal/Devices/e1000/0/LUN#0/Config/guestwww/GuestPort" 80
+$ VBoxManage setextradata "FedoraTest1" "VBoxInternal/Devices/e1000/0/LUN#0/Config/guestwww/HostPort" 50080
+```
+
+- ゲストOS側では50080が起動、ホストOS側では80が起動しているのを確認しておきます
+```
+$ netstat -an | grep -iw listen
+```
+
+- 念のためにSELinuxをoffにしておきます。offにしたらOSを再起動しておいてもいいかもしれません。(本当に必要かは不明)
+```
+# vi /etc/selinux/config
+SELINUX=disabled
+```
+
+CentOS7からはiptabblesではなくfirewalld
+```
+$ systemctl stop firewalld
+==== AUTHENTICATING FOR org.freedesktop.systemd1.manage-units ===
+Authentication is required to manage system services or units.
+Authenticating as: root
+Password: 
+==== AUTHENTICATION COMPLETE ===
+```
 
 このようにすると
 ```
-http://<hostname>:8080/
+http://<hostname>:50080/
 ```
 としてアクセスすることができるようになります。
 
