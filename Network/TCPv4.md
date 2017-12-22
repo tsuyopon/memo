@@ -29,7 +29,7 @@ This is TCPv4 Header Details
                             TCP Header Format
 ```
 
-### FINとRSTの違い
+### FIN and RST
 - https://stackoverflow.com/questions/13049828/fin-vs-rst-in-tcp-connections
 
 # Checksum
