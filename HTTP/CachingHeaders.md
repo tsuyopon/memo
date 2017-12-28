@@ -1,6 +1,6 @@
 # 概要
 キャッシュに効くヘッダについてまとめます
-- Cache-Control, Pragma, Expires, Last-Modified, ETag, Cache-Controlなどのブラウザキャッシュさせるためのレスポンスヘッダ
+- Cache-Control, Pragma, Expires, Last-Modified, ETag, Cache-Control, Varyなどのブラウザキャッシュさせるためのレスポンスヘッダ
 - ブラウザ等から確認に使われるIf-Modified-Since, If-None-Match, If-Matchヘッダについて
 
 RFC2616の「13 Caching in HTTP」を一通り目を通しておくと良いかもしれない
@@ -176,5 +176,30 @@ If-Match
 If-Modified-Since
 ```
 
+### Varyヘッダについて
+たとえば、クライアントから次のように指定された場合、キャッシュサーバは特定のヘッダの内容ごとにキャッシュを分けるといった工夫が必要です。
+```
+Accept-Encoding: gzip, deflate
+```
+
+Accept-Encodingはどのように送付されてくるかわかりません。
+キャッシュサーバは圧縮済みのコンテンツをキャッシュすべきでしょうか？ それとも圧縮していないコンテンツをキャッシュすべきでしょうか？
+これを解決する仕組みがVaryヘッダです。
+
+Varyはキャッシュサーバに対して指定したヘッダの内容ごとにキャッシュを分ける必要があることを伝えるためのものです。
+Varyヘッダによって、クライアントのAccept-Encodingヘッダの内容に応じたキャッシュデータをキャッシュサーバは返すことができます。
+```
+Vary: Accept-Encoding
+```
+
+キャッシュする側もURLは同じだがデバイス毎に分けてキャッシュしなければならないといった場合にはこの辺を正しく扱わないとまずいことになる。
+
+また、Googleなどの検索エンジンにおいても、"「User-Agent（UA、ユーザーエージェント）」の情報に基づいてPCとスマートフォンで異なるHTML（やCSS）を返す"といった場合には、重要となるとのこと
+- https://webtan.impress.co.jp/e/2013/05/17/15269
 
 
+# 参考URL
+- RFC2616 Section13: Caching in HTTP
+  - https://tools.ietf.org/html/rfc2616#section-13
+- RFC7234: Hypertext Transfer Protocol (HTTP/1.1): Caching
+  - https://tools.ietf.org/html/rfc7234
