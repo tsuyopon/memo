@@ -19,6 +19,7 @@ HTTPに関して抑えておくべき基本的な知識
 
 - SeeAlso
   - https://developer.mozilla.org/ja/docs/Web/HTTP/Basics_of_HTTP/Evolution_of_HTTP
+  - https://ja.wikipedia.org/wiki/Hypertext_Transfer_Protocol
 
 
 ### 「Transfer-Encoding: chunked」について
