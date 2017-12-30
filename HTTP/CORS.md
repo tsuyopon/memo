@@ -46,6 +46,7 @@ Access-Control-Request-Method: POST
 ```
 - Access-Control-Request-Headers
   - 実際のリクエストにここで指定されたヘッダが含まれることを通知します。例えば、「X-PINGOTHER, Content-Type」の値が含まれていればこれら２つのヘッダがリクエストに入ることを通知します。
+  - 独自のヘッダX-PINGOTHERなどを含めたい場合にはここで含める必要があります
 ```
 Access-Control-Request-Headers: X-PINGOTHER, Content-Type
 ```
@@ -86,30 +87,43 @@ Access-Control-Expose-Headers: X-My-Custom-Header, X-Another-Custom-Header
 https://qiita.com/tomoyukilabs/items/81698edd5812ff6acb34
 
 ### プリフライトリクエスト
-プリフライトリクエストとは、ブラウザがCORSに該当するときに別サーバに対して何が許可されているかを実際にリクエストする前にOPTIONSで確認する方法です。
+プリフライトリクエストとは、ブラウザがCORSに該当するときに別サーバに対して何が許可されているかを実際にリクエストする前にOPTIONSで確認する仕組みです。
+
+CORS仕様では、次の場合には必ず確認するように求められています。
+- GET, POST, HEAD以外のメソッドを利用している
+- HTTPリクエストヘッダにAccept, Accept-Language, Content-Language以外のフィールドが含まれている。または、Content-Typeフィールドにapplication/x-www-form-urlencoded, multipart/form-data, text/plain以外の内容が指定されている。
 
 - 1. サーバからクライアントにOPTIONSメソッドで次の条件でアクセスできるかどうかを確認します。
 ```
-Method: OPTIONS
+OPTIONS https://example.com/testapi.php HTTP/1.1
+Accept: */*
 Origin: http://example.com/
-Access-Control-Request-Headers: content-type
+Access-Control-Request-Headers: X-PINGOTHER, Content-Type
 Access-Control-Request-Method: POST
 ```
 - 2. サーバ側は上記リクエストを受け取ってOriginサーバが問題無いことの確認、メソッドなどが問題無いことを確認します。確認できたら次のレスポンスを応答します。
 ```
+HTTP/1.1 200 OK
 Access-Control-Allow-Origin: http://example.com/
-Access-Control-Allow-Headers: content-type
-Access-Control-Allow-Method: POST
+Access-Control-Allow-Headers: X-PINGOTHER, Content-Type
+Access-Control-Allow-Method: POST, GET, OPTIONS
+Access-Control-Max-Age: 86400
+Content-Length: 0
 ```
 - 3. クライアントからサーバ側にリクエストします。
 ```
 Method: POST
-content-type: application/json
+X-PINGOTHER: pingpong
+Content-Type: application/json
+Origin: http://example.com/
+Access-Control-Request-Method: POST
+Access-Control-Request-Headers: X-PINGOTHER, Content-Type
 {json1: param1, json2: param2, ...}
 ```
 - 4. サーバからクライアントにレスポンスが応答されます。
 ```
-content-type: application/json
+HTTP/1.1 200 OK
+Content-Type: application/json
 ```
 
 ### JSONPによる同一生成元回避方法
@@ -125,6 +139,18 @@ func1( {"id":1, "firstname":"Taro", "lastname":"Yamada"} );
 
 JSONPだと誰でも読み込むことができるのでアクセス時に認証情報をパラメータなどに付与するとよいでしょう。
 
+### SSLサイトアクセスの注意点
+IEではhttpsのサイトからhttpのサイトを呼び出すことはセキュリティ上許可されていません。
+
+### Apacheの設定
+.htaccessなどに次のような設定を配置します。
+```
+Header append Access-Control-Allow-Origin: *
+```
+
+この辺も参考のこと
+- https://qiita.com/kawaz/items/6a22c2c970c8d932a3a1
+
 # 参考URL
 - Cross-Origin Resource Sharing(W3C)
   - https://www.w3.org/TR/cors/
@@ -132,5 +158,7 @@ JSONPだと誰でも読み込むことができるのでアクセス時に認証
   - https://www.ietf.org/rfc/rfc6454.txt
 - HTTP アクセス制御 (CORS)(Mozilla)
   - https://developer.mozilla.org/ja/docs/Web/HTTP/HTTP_access_control
+  - 海外版のサイトの方はシーケンス図が含まれている
+    - https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS#Preflighted_requests
 - Using CORS
   - https://www.html5rocks.com/en/tutorials/cors/
