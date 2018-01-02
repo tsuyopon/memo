@@ -92,6 +92,16 @@ $ curl -O  http://www.example.com/top.jpg
 $ curl -o my.jpg  http://www.example.com/top.jpg
 ```
 
+### Rangeリクエストを送付したい
+大容量のファイルなどを取得する際に使われているRangeリクエストを送る場合には次のようにします。
+```
+$ curl -v -r 0-100 "http://www.example.com/test.mp4"
+```
+上記では次のヘッダを合わせて送付しています。レスポンスはRangeリクエストに対応していないとそのまま200が返ってきます。
+```
+Range: bytes=0-100
+```
+
 ### BASIC認証をさせたい場合
 ```
 $ curl --basic --user user:password -X PUT -d 'example[foo]=bar' -d 'example[jane]=doe' http://example.com/test
