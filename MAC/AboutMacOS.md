@@ -126,11 +126,30 @@ set background=dark
 let g:solarized_termcolors=256
 ```
 
-### ターミナルにタブを新規追加
+### ターミナルのタブを移動する
+```
+右移動する   Command + Shift + ]   または  Command + Shift + ➡
+左移動する   Command + Shift + [   または  Command + Shift + ⬅
+```
+
+### ターミナルのタブを新しく開く
 ```
 Command + T
 ```
-によって新規追加が行われます。
+によってタブが新しく開かれます
+
+### ターミナルのタブを閉じる
+```
+Command + W
+```
+
+### Safariショートカット
+- http://inforati.jp/apple/mac-tips-techniques/internet-hints/how-to-use-mac-safari-browser-with-keyboard-shortcut.html
+
+### ブックマークバーにあるN番目を即座に表示する
+```
+Command + N(番号)
+```
 
 ### mysql起動
 ```
