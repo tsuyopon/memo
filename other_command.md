@@ -51,3 +51,10 @@ piyo
 $ cat /etc/passwd | sort -t: -nk4 
 ```
 
+### 特定のフィールドを以降を取り出して、一部のunixtimeなどはわかりやすい時刻に変換する
+```
+$ echo "field1,123456789,field3,field4,field5" | cut -d , -f2- 
+123456789,field3,field4,field5
+$ echo "field1,123456789,field3,field4,field5" | cut -d , -f2- | awk -F',' '{print strftime("%c", $1), $0}'
+1973年11月30日 06時33分09秒 123456789,field3,field4,field5
+```
