@@ -32,5 +32,23 @@ This is TCPv4 Header Details
 ### FIN and RST
 - https://stackoverflow.com/questions/13049828/fin-vs-rst-in-tcp-connections
 
+### RSTパケットが発生するケース
+よくあるりそうなのが次のようなケース
+- Listenしていないポートに対してSYNパケットが送信された場合、RSTがSYNの送信元に返却される。
+- Accept済のソケットに対して、データを全て読み取っていない(EOFになっていない)でcloseを発行した場合に、コネクションの相手側にRSTが送られる
+
+これ以外にも存在しているようだ。
+- http://d.hatena.ne.jp/IchiRoku/20101027/1288199148
+
+### RSTを受信したときのOSの挙動について
+LinuxでWindowsで挙動が違うようです。
+- Linux
+  - packet1 -> packet2 -> RSTという順番で受信したとすると、readシステムコールはpacket1, packet2をユーザプログラムに読み込ませた後にエラーを返す
+- Windows
+  - packet1 -> packet2 -> RSTという順番で受信したとすると、packet1, packet2がバッファ上に残っていたとしてもrecv関数はユーザプログラムにpacket1, packet2を受信させることなくエラーを返す
+
+- 参考
+  - http://zi-kuwai.blog.so-net.ne.jp/2011-01-03
+
 # Checksum
 - http://www.erg.abdn.ac.uk/users/gorry/course/inet-pages/ip-cksum.html
