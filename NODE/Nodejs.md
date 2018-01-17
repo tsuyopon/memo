@@ -90,6 +90,18 @@ HTTP: server response shouldKeepAlive: true
 HTTP: outgoing message end.
 ```
 
+NODE_DEBUG環境変数には次のような値を指定することができるようです。上記ではカンマがセパレータとして指定されていますが、なんでもいいようです。
+- cluster
+- net
+- http
+- fs
+- tls
+- module
+- timers
+
+- 参考
+  - http://www.juliengilli.com/2013/05/26/Using-Node.js-NODE_DEBUG-for-fun-and-profit/
+
 ### NODE_XXX環境変数を使ってスクリプトからその値を利用できるようにする。
 基本は起動時に使います。
 xxx=yyy という変数をつけて実行すると、ランタイムからはprocess.env.xxx で yyy の値を文字列値として受け取れるようになります。
