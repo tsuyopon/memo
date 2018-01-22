@@ -24,10 +24,11 @@ traffic_managerとtraffic_serverが同一の共有メモリを参照している
 - traffic_server再起動時のコネクションキュー
 
 ### traffic_copプロセス動作概要
-traffic_serverプロセスとtraffic_managerプロセスに対してヘルスチェックを行う。heartbeatを確認する。１分間に何度か実行して、応答がない場合にはtraffic_serverプロセスとtraffic_managerプロセスをrestartする。
-- heartbeatを実行する
-- 障害時にtraffic_serverとtraffic_managerをrestartする。
-
+traffic_serverプロセスとtraffic_managerプロセスに対してヘルスチェックを行う。syntheticへのリクエストを行う事によってheartbeatを確認する。
+１分間に何度か実行して、応答がない場合にはtraffic_serverプロセスとtraffic_managerプロセスをrestartする。
 
 # TODO
 - もう少し精度を高める
+
+# SeeAlso
+- https://docs.trafficserver.apache.org/en/latest/admin-guide/introduction.en.html#traffic-server-processes

@@ -1,7 +1,6 @@
 # 概要
 trafficserverのビルドに関して
 
-
 ### ソースコードからインストールする
 今回ソースコードをからビルドしたのは次の環境です。
 ```
@@ -42,9 +41,13 @@ configure
 $ ./configure --prefix=/opt/trafficserver-7.1.x --enable-debug
 ```
 
+余談ですが、実験用プラグインを使うためには「--enable-experimental-plugins」オプションが必要なようです。
+- (参考) https://docs.trafficserver.apache.org/ja/latest/admin-guide/plugins/index.en.html
+
 あとは次のようにしてmake, make installします。
 ```
 $ make
+$ make check
 $ sudo make install
 ```
 
@@ -71,4 +74,10 @@ tcp6       0      0 :::22                   :::*                    LISTEN
 tcp6       0      0 ::1:25                  :::*                    LISTEN    
 ```
 
+公式ドキュメントも参考にするとよいでしょう。
+- https://docs.trafficserver.apache.org/en/latest/admin-guide/installation/index.en.html
+
+# SeeAlso
+- Installing TrafficServer
+  - https://docs.trafficserver.apache.org/en/latest/admin-guide/installation/index.en.html
 

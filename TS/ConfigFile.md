@@ -3,6 +3,10 @@
 
 # 詳細
 
+### trafficserver各種設定ファイルの説明へのリンク一覧
+以下のページに各種設定ファイルの説明とその詳細ページへのリンクが載せられている。
+- https://docs.trafficserver.apache.org/en/latest/admin-guide/files/index.en.html
+
 ### records.configファイルを比較したい
 次の箇所にツールが存在する
 - https://github.com/apache/trafficserver/blob/7.1.x/contrib/python/compare_records_config.py

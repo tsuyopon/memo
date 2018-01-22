@@ -43,3 +43,6 @@ map / http://127.0.0.1:8080/
 ```
 http://<hostname>/_ats_stat/cache/
 ```
+
+各種UIについては公式ドキュメントにも説明があるので参照すると良い
+- https://docs.trafficserver.apache.org/en/latest/admin-guide/storage/index.en.html#using-the-cache-inspector-utility
