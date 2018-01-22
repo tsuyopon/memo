@@ -1,7 +1,7 @@
 # 概要
 traffic_lineコマンドについて
 
-このコマンドは近いうちにdeprecatedが予定されている。
+このコマンドは近いうちにdeprecatedが予定されている。移行先はtraffic_ctlコマンドとなります。
 - https://issues.apache.org/jira/browse/TS-3368
 
 # 詳細
@@ -25,6 +25,8 @@ traffic_line: [12] Generic Fail message (ie. CoreAPI call).
 ```
 $ traffic_line -s proxy.config.alarm_email -v root@downtown.jp
 ```
+
+次の設定反映のxオプションも合わせて必要です。
 
 ### 設定を変更したものを反映する
 ```
