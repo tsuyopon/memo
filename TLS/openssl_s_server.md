@@ -1,6 +1,16 @@
 # 概要
 opensslのs_serverサブオプションについて
 
+# 詳細
+### 即座に443ポートを起動する
+次のコマンドを実行すれば即座に443のTLS待受サーバを動かすことができる。簡単なテストなどに便利です。
+```
+$ openssl genrsa -des3 -out server.key 2048                                        // ここで適当に「test」などとしてパスワードを設定
+$ openssl req -new -key server.key -out server.csr
+$ openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
+$ sudo openssl s_server -accept 443 -cert server.crt -key server.key -www -debug   // wwwだとTLSハンドシェイクをbodyに返す
+```
+
 ### 秘密鍵と公開鍵のペアが一致することを確認する
 opensslでテスト起動できないような場合、秘密鍵と公開鍵のペアが一致していない場合には次のようなエラーがでます。
 ```
