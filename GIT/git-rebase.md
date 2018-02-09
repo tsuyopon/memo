@@ -14,8 +14,8 @@ ee0ffcb added new (git-grep.md)
 9e35a8e add trivial(BGP.md)
 ```
 
-次のコマンドで最新１０件のログをまとめようとします。
-pickからsquashに修正して保存することによりログをまとめることができます。squashとした箇所はその直後のコミットにまとめられます。
+次のコマンドで最新１０件のログをまとめようとします。次のコマンドはgit logとは時刻として逆順で表示されるので注意が必要です。
+pickからsquashに修正して保存することによりログをまとめることができます。squashとした箇所はその直前のコミットにまとめられます。
 ```
 $ git rebase -i HEAD~10       // 最初から10個分のコミットをまとめる
 pick 36cfced added(Crash.md)
@@ -125,3 +125,6 @@ $ git rebase master
 // 自分の修正を元に戻す
 $ git stash pop
 ```
+
+# 参考URL
+- https://git-scm.com/book/ja/v2/Git-%E3%81%AE%E3%81%95%E3%81%BE%E3%81%96%E3%81%BE%E3%81%AA%E3%83%84%E3%83%BC%E3%83%AB-%E6%AD%B4%E5%8F%B2%E3%81%AE%E6%9B%B8%E3%81%8D%E6%8F%9B%E3%81%88
