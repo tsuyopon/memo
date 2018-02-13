@@ -227,6 +227,33 @@ $ openssl s_client -connect www.yahoo.co.jp:443 -tls1_1
 $ openssl s_client -connect www.yahoo.co.jp:443 -tls1_2
 ```
 
+### ハンドシェイクのTLSパケット情報も含めて確認する
+msgオプションを付与すると、ClientHelloやServerHello等のパケット情報を確認することができる。
+レコードレイヤーの5byteの情報などはこれで簡単に目GREPできる。
+```
+$ openssl s_client -connect shopping.yahoo.co.jp:443 -msg
+CONNECTED(00000003)
+>>> SSL 2.0 [length 0080], CLIENT-HELLO
+    01 03 01 00 57 00 00 00 20 00 00 39 00 00 38 00
+    00 35 00 00 16 00 00 13 00 00 0a 07 00 c0 00 00
+    33 00 00 32 00 00 2f 00 00 9a 00 00 99 00 00 96
+    03 00 80 00 00 05 00 00 04 01 00 80 00 00 15 00
+    00 12 00 00 09 06 00 40 00 00 14 00 00 11 00 00
+    08 00 00 06 04 00 80 00 00 03 02 00 80 00 00 ff
+    36 2a 9f bb a9 17 ad 0e ec 3f df 97 cc 36 f1 ea
+    67 ae 41 73 15 d7 10 6d 1a a8 e1 16 e5 9c 8b 0b
+<<< TLS 1.0 Handshake [length 0051], ServerHello
+    02 00 00 4d 03 01 82 9e 26 bc 02 75 e9 02 a7 53
+    86 7c 70 bc cc 1e a9 ab dd 28 f6 a6 59 37 a9 63
+    0e ca 77 bf 9d 69 20 7a 59 6c 72 cd 05 22 3e 7c
+    cd 6f a9 5e 06 49 d7 74 4d 85 55 71 86 d5 b7 5b
+    24 63 ef a3 3d 4e e7 00 2f 00 00 05 ff 01 00 01
+    00
+<<< TLS 1.0 Handshake [length 11ce], Certificate
+    0b 00 11 ca 00 11 c7 00 0d 63 30 82 0d 5f 30 82
+(snip)
+```
+
 ### 接続時に暗号を指定する
 たとえば、MD5関連の暗号だけ送るとすると、、、
 ```
