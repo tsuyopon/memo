@@ -2,6 +2,9 @@
 この辺を参考にする。
 - http://www.usupi.org/sysad/252.html
 
+サポートバージョンなどについては次のRelease Strategy資料を参考にすること
+- https://www.openssl.org/policies/releasestrat.html
+
 # 詳細
 ### バージョンを表示する
 単順なバージョンのみ表示する
