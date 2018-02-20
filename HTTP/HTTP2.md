@@ -21,6 +21,9 @@ HTTP/2の特徴
 ほとんどすべてのブラウザでHTTP/2が利用可能となっている。
 - http://caniuse.com/#feat=http2
 
+HTTP/1.1とHTTP/2との画像出力における比較サイトも参考すると良い。
+- https://http2.akamai.com/demo
+
 ### ブラウザの開発ツール
 
 - chromeの場合にはプロトコルはデフォルトで表示されていません。
