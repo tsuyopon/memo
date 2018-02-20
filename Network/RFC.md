@@ -3,7 +3,7 @@ RFCとはRequest For Commentsの略称であり、「インターネット」と
 
 # 詳細
 
-# RFC公開までの流れ
+### RFC公開までの流れ
 RFCを公開するには次の流れとなる。
 - 1. 最初に提出が必要なのがインターネットドラフト(I-Ds: Internet Drafts)であり、これは誰でも提出可能である。
 - 2. 提出するだけでインターネットを通して広く公開されます。一定の期間(6月)が経過すると削除されることになります。
@@ -59,21 +59,21 @@ Proposed Standard(PS) -> Draft Standard(DS) -> Internet Standard(STD) -> 仕様�
   - 標準化過程で破棄された文書や標準化以前に公開されていた廃れた RFC に適用される。
   - https://tools.ietf.org/html/rfc3525
 
-# UPDATE Byは何?
+### UPDATE Byは何?
 Updated Byでリンクがある場合にはそのRFCの内容を更新することを意味する
 - https://tools.ietf.org/html/rfc2460
 
-# Errata Existsは何
+### Errata Existsは何
 たとえば、次のRFCの右上に「Errata Exists」が存在する場合には 
 - https://tools.ietf.org/html/rfc2460
 
 画面上に「Errata」というリンクがあります。
 Errata Exists自体は正誤表が存在しますといった意味なのでこの表がリンク先に存在します。
 
-# Diff1とかDiff2といったリンクは何？
+### Diff1とかDiff2といったリンクは何？
 差分と思われる(**TODO**)
 
-# Obsoletesとは何?
+### Obsoletesとは何?
 たとえば、次のRFCには
 - https://tools.ietf.org/html/rfc2460
 
