@@ -3,6 +3,9 @@ TLSのcipherについて
 
 # 詳細
 
+### TLSバージョンにおけるCipher対応状況について
+- https://ja.wikipedia.org/wiki/Transport_Layer_Security#%E6%9A%97%E5%8F%B7%E3%82%B9%E3%82%A4%E3%83%BC%E3%83%88
+
 ### TLS_NULL_WITH_NULL_NULLというのはどのような意味か
 3つNULLがあるがそれぞれの位置では次のような意味を持ちます。ただ、TLS_NULL_WITH_NULL_NULLというのは定義されているだけであり、実際に使用されることはありません。
 - 1番目NULL: 鍵交換と認証はしない
@@ -231,6 +234,7 @@ RFC5246のAppendix A.6で規定されています。
 - master_secret
   - ServerRandom + ClientRandom + PremasterSecret + label("master secret")の4つの変数をPRFにかけることによって取得する
   - なお、上記で取得したmaster secretからkeyblockを作るのもServerRandom + ClientRandom + MasterSecret + label("key expansion")の４つの変数をPRFにかけて伸長して取得するので非常に似ているので注意すること
+    - 余談だが、SSL3.0ではlabelが不要ので3つの変数となる
 - client_random
   - クライアントが生成するランダム値。master_secret生成やkeyblock生成で利用される。
 - server_random

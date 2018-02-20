@@ -1,7 +1,7 @@
 # Application Layer Protocol Negotiation(ALPN)
 ALPNは次のような仕組みです。
 - TLSハンドシェイク中においてアプリケーションレイヤーに対してプロトコル選択をネゴシエーションすることができるためのTLS拡張です。
-- ALPNを用いることでClietnHelloメッセージの一部としてクライアントはサポートされるプロトコルリストを送ります。サーバ側はそのプロトコルリストの中から利用したいプロトコルを選択します。
+- ALPNを用いることでClietnHelloメッセージの一部としてクライアントはサポートされるプロトコルリストを送ります。サーバ側はそのプロトコルリストの中から利用したいプロトコルを選択してServerHelloメッセージに含めて返答します。
 - ユーザエクスペリエンスを損なわないように、サーバ、クライアント間のラウンドトリップがないようにすることができる。
 
 # ALPNができた背景
@@ -17,6 +17,10 @@ HTTP/2は平文の場合には次のように開始します。
 - 2. サーバ側ではClientHelloの中から選択された唯一のプロトコルを応答として返却する。
 
 現在ではHTTP/2を利用する場合にはTLSを使わないと受け付けない実装も多い。
+
+# ALPNで指定することができるプロトコル一覧
+IANAで定義されている。
+- https://www.iana.org/assignments/tls-extensiontype-values/tls-extensiontype-values.xhtml#alpn-protocol-ids
 
 # SeeAlso
 - https://tools.ietf.org/html/rfc7301

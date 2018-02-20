@@ -1,11 +1,20 @@
-# Overview
-SNIでは、HTTP1.1の名前ベースバーチャルホストをHTTPSに対応されるために利用する仕組みです。
+# 概要
+Server Name Indcation(SNI)では、HTTP1.1の名前ベースバーチャルホストをHTTPSに対応されるために利用する仕組みです。
+- https://www.iana.org/assignments/tls-extensiontype-values/tls-extensiontype-values.xhtml
+
 次の特徴があります。
 - ClientHelloでSNIによるservernameを指定することによって、サーバ側では適切に証明書の出し分けを行います。
   - 1枚のサーバ証明書に複数ホスト名を入れるためにX.509 v3の証明書で導入されたsubjectAltName拡張で、追加のホスト名を指定できる。
 - SNIを利用するためにはクライアント及びサーバ側双方が対応している必要があります。
 
-# Detail
+# 詳細
+
+### ブラウザ・サーバ対応状況
+なお、SNIが動作するためにはウエブサーバとブラウザ両方の対応が必要となります。
+このため、Android 3.0 (Honeycomb)以降の標準ブラウザであれば、SNIに対応しています。しかし、Android2.3のようにSNI非対応のブラウザでは対応しないといった状況が発生します。
+
+- SeeAlso
+  - https://ja.wikipedia.org/wiki/Server_Name_Indication
 
 ### SNIによる証明書の出し分けが行われていることを確認する
 
@@ -23,9 +32,18 @@ $ openssl s_client -connect help.hipchat.com:443 -servername help.hipchat.com -s
 subject=/C=US/L=San Francisco/ST=California/O=Atlassian, Inc./OU=HipChat/CN=help.hipchat.com
 ```
 
+# 詳細仕様
+詳細仕様はこちらを参考にしています。
+- https://tools.ietf.org/html/rfc6066#section-3
+
+ClientHelloではserver_name_listのリスト構造としてクライアントが送付してくる可能性がある。
+IPv4やIPv6のアドレスが指定されるのは許可されていません。ホスト名は末尾のドットが付与されないASCIIエンコーディングの文字列とします。
+
 # SeeAlso
 - RFC6066:
   - https://tools.ietf.org/html/rfc6066#section-3
 - wikipedia: Server Name Indication
   - 各種ソフトウェアの対応状況についてまとめられています
   - https://ja.wikipedia.org/wiki/Server_Name_Indication
+- 日本語訳
+  - http://www.ipa.go.jp/security/rfc/RFC6066JA.html#03
