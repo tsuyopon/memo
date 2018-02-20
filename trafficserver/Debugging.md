@@ -6,9 +6,6 @@
 - 起動時などからgdbで確認したい場合には、 traffic_serverコマンドを直接動かす。
 - 稼働中のtrafficserverを確認する場合には、traffic_serverプロセスのPIDを確認してgdb -pを利用する。
 
-## ソースコードの位置をログに表示する
-- proxy.config.diags.show_locationはソースコード上の位置をログに出力します。値が1ならばDebug()メッセージのみ(これがデフォルト)、2ならばすべてのメッセージが対象となります
-
 ## デバッグタグを指定する
 
 デバッグタグを指定するには２つの方法があります。
@@ -63,14 +60,32 @@ Tオプションは--debug_tagsと等価です。次のようにして正規表�
 $ sudo traffic_server -T http.*
 ```
 
-## デバッグ関数
-
+## コマンドラインからデバッグログを出力するように設定を上書きする
+コマンドのみでrecords.configが読み込んだ設定を上書きすることができます　。タグは適宜修正してください。
 ```
-TSDebug() prints out a formatted statement if you are running Traffic Server in debug mode.
-TSIsDebugTagSet() checks to see if a debug tag is set. If the debug tag is set, then Traffic Server prints out all debug statements associated with the tag.
-TSError() prints error messages to Traffic Server’s error log
-TSAssert() enables the use of assertion in a plugin.
-TSReleaseAssert() enables the use of assertion in a plugin.
+$ sudo traffic_line -s proxy.config.diags.debug.enabled -v 1
+$ sudo traffic_line -s proxy.config.diags.debug.tags -v http      # http.*|ssl.*  などのように正規表現で複数を記述することもできます。
+```
+
+ソースコードの行も表示するには次の設定も有効にします。
+proxy.config.diags.show_locationはソースコード上の位置をログに出力します。値が1ならばDebug()メッセージのみ(これがデフォルト)、2ならばすべてのメッセージが対象となります
+```
+$ sudo traffic_line -s proxy.config.diags.show_location -v 1
+```
+
+## コアファイルを取得する
+- records.config
+```
+CONFIG proxy.config.core_limit INT -1
+```
+- カーネルパラメータを変更する
+```
+$ sysctl -w kernel.core_pattern = /tmp/%e.core.%p
+```
+
+コアからデバッグするときには次のようにします。
+```
+$ sudo gdb traffic_server  <corefile>
 ```
 
 ## TIPS
@@ -113,9 +128,28 @@ n, Z, U, aなどでスレッド数を指定できるようです。
 (gdb) run -n 1
 ```
 
+### メモリリークを検知する
+```
+$ sudo traffic_line -s proxy.config.res_track_memory -v 1
+```
+
+### slow logを取得する
+```
+$ sudo traffic_line -s proxy.config.http.slow.log.threshold -v 100
+```
+
+### デバッグ関数
+```
+TSDebug() prints out a formatted statement if you are running Traffic Server in debug mode.
+TSIsDebugTagSet() checks to see if a debug tag is set. If the debug tag is set, then Traffic Server prints out all debug statements associated with the tag.
+TSError() prints error messages to Traffic Server’s error log
+TSAssert() enables the use of assertion in a plugin.
+TSReleaseAssert() enables the use of assertion in a plugin.
+```
+
 # 参考URL
 - trafficserver公式ドキュメント(Debugging)
   - https://trafficserver.readthedocs.io/ja/latest/developer-guide/debugging/index.en.html
 - Diagnostics&Debugging(PDF)
   - https://cwiki.apache.org/confluence/download/attachments/56066455/ATS%20Summit-%20Diagnostics%20%26%20Debugging-2.pdf?version=1&modificationDate=1447863198000&api=v2
-
+- https://docs.google.com/presentation/d/1Qokjj5VuB3HvIPEi00ZTp_mJrhrIxraZPgIs4CMyoxM/edit?pli=1#slide=id.g430e3c44f_325
