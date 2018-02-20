@@ -259,6 +259,10 @@ $ trace-cmd report > [file]
 $ kernelshark
 ```
 
+### TLSに関するwireshark操作
+TLSに関するwiresharkについては以下を参考のこと
+- https://github.com/tsuyopon/memo/blob/master/TLS/Wireshark.md
+
 # TODO
 - tsharkをつかってみる
 
