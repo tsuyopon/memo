@@ -8,6 +8,10 @@ tmuxについてまとめておきます
 
 ## 基本操作
 
+### チートシート
+以下の資料を参考のこと
+- https://qiita.com/nmrmsys/items/03f97f5eabec18a3a18b
+
 ### tmuxを使って複数サーバの同時オペレーションを行う
 
 ~/.tmux.confに以下のショートカット設定をいれておきます。
@@ -56,6 +60,17 @@ tmux attach-session -t $session
 ```
 $ tmux
 $ ./multissh.sh hoge10[0-9].piyo.com
+```
+
+### 他の人もセッションに接続できるようにする
+たとえば、作業者が
+```
+$ tmux new -s session20180221
+```
+
+他の人がそのセッションを共有したい場合には次のようにします。ここでは閲覧モードとしてrを付与しています。
+```
+$ tmux attach -t session20180221 -r
 ```
 
 - 参考記事
