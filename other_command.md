@@ -76,3 +76,16 @@ $ cat a | cut -d ^Z -f 2
 fuga
 ```
 
+次のような形式で取得することも可能です。
+```
+$ cat -v test 
+1^A2^A3^A4^A5
+1^A2^A3^A4^A5
+$ cat test | cut -f 3- -d $'\x01' | cat -v
+3^A4^A5
+3^A4^A5
+```
+
+- SeeAlso
+  - https://stackoverflow.com/questions/25243763/cut-command-with-delimiter-control-a
+
