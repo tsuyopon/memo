@@ -22,5 +22,22 @@ HTTP/2は平文の場合には次のように開始します。
 IANAで定義されている。
 - https://www.iana.org/assignments/tls-extensiontype-values/tls-extensiontype-values.xhtml#alpn-protocol-ids
 
+# TLSがALPNに対応していることを確認する
+次のopensslコマンドでALPN拡張としてHTTP/2(h2)をClientHelloから送付します。
+なお、OpenSSLはALPNをサポートしていますが、サポートしているバージョンは OpenSSL 1.0.2 以降です。
+```
+$ echo | openssl s_client -alpn h2 -connect www.yahoo.co.jp:443 
+```
+
+対応している場合には次の行が表示されます
+```
+ALPN protocol: h2
+```
+
+対応していない場合には次のようが表示されます
+```
+No ALPN negotiated
+```
+
 # SeeAlso
 - https://tools.ietf.org/html/rfc7301
