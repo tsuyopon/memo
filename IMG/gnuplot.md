@@ -9,22 +9,22 @@ wgnuplotというツールが存在する。(http://www.yama-ga.com/gnuplot/) wg
 ### グラフのスタイルについて
 ```
 lines          ライン表示
-points	  データポイント表示
-linespoints	  データとデータポイント表示
+points         データポイント表示
+linespoints    データとデータポイント表示
 impulses       インパルス表示(斜線表示)
-dots		  ドット表示
-steps	  ステップ表示
-fsteps	  ステップ表示(最初の点からステップが立ち上がる)
-histeps	  ステップ表示(点がステップの中心)
-errorbars	  誤差グラフ
-xerrorbars	  横方向の誤差グラフ
-yerrorbars	  縦方向の誤差グラフ
-xyerrorbars	  横及び縦方向の誤差グラフ
-boxes	  棒グラフ
+dots           ドット表示
+steps          ステップ表示
+fsteps         ステップ表示(最初の点からステップが立ち上がる)
+histeps        ステップ表示(点がステップの中心)
+errorbars      誤差グラフ
+xerrorbars     横方向の誤差グラフ
+yerrorbars     縦方向の誤差グラフ
+xyerrorbars    横及び縦方向の誤差グラフ
+boxes          棒グラフ
 boxerrorbars   誤差のボックス表示
-candlesticks	  変動のボックス表示
-financebars	  変動の横線表示
-vector	  ベクトル表示
+candlesticks   変動のボックス表示
+financebars    変動の横線表示
+vector         ベクトル表示
 ```
 
 ### setオプション
@@ -46,7 +46,7 @@ set data style lines いちいちwith linesが面倒な場合に使用する。
 ```
 left     左側
 right    右側
-top	     上側
+top      上側
 bottom   下側
 outside  図の右側の外
 beklow   図の下側の外
