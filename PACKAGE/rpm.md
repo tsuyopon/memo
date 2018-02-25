@@ -52,7 +52,7 @@ which return the status of the checks to Nagios. The plugins are
 located in the nagios-plugins package.
 ```
 
-### プログラムなどのファイルがどのパッケージに入っているのかを知りたい。 †
+### プログラムなどのファイルがどのパッケージに入っているのかを知りたい
 例えば、/etc/rc.d/init.d/httpdの場合には以下の様にする。
 ```
 $ rpm -qf /etc/rc.d/init.d/httpd

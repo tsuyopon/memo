@@ -26,7 +26,7 @@ $ mysqladmin processlist -uroot -p
 +----+------+-----------+----+---------+------+-------+------------------+
 ```
 
-コマンドライン版SHOW STATUS †
+コマンドライン版SHOW STATUS
 ```
 $ mysqladmin extended-status
 +--------------------------+-------+

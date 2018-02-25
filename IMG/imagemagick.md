@@ -118,14 +118,14 @@ image01〜03.gif からなる、動画GIF sample.gif を生成する
 $ convert +adjoin sample.gif image%02d.gif
 ```
 
-### 画像の表示サイズを変更したい(拡大、縮小) †
+### 画像の表示サイズを変更したい(拡大、縮小)
 ```
 $ convert   -geometry 100x75   orig1.jpg new1.jpg    <= 表示サイズを100x75にする
 $ convert   -geometry 20%x20%  orig2.jpg new2.jpg    <= 縦と横を各々20%にして保存
 $ convert   -geometry 20%      orig3.jpg new3.jpg    <= 縦、横の縮小比率が同じである方が良い
 ```
 
-### その他の画像サイズ・スケール変換処理 †
+### その他の画像サイズ・スケール変換処理
 ```
 $ convert -resize 120x120 sample.jpg sampleout.jpg
 $ convert -scale 500 sample.jpg sampleout.jpg

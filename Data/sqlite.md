@@ -134,7 +134,7 @@ tcl      TCL list elements
 
 ### .show: sqliteに関する設定を表示する。
 ```
-.showコマンドを使ってみる †
+.showコマンドを使ってみる
 sqlite> .show
      echo: off
   explain: off

@@ -2,7 +2,7 @@
 Linuxなどで利用されるグラフ描画ツールgnuplotについて
 
 # 詳細
-### LinuxでなくWindowsでもgnuplotを使用したい。 †
+### LinuxでなくWindowsでもgnuplotを使用したい
 wgnuplotというツールが存在する。(http://www.yama-ga.com/gnuplot/) wgnuplotはデフォルトでフォントが非常に小さいので、次のようにしてフォント変更する。 
 ターミナル上で右クリック→Choose Fontを選択→サイズを変更
 
