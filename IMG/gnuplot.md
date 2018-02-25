@@ -201,6 +201,6 @@ set key below          グラフ外の下
 ```
 X軸を反転   set xrange [min_value:max_value] reverse
 Y軸を反転   set yrange [min_value:max_value] reverse
-反転解除    set xrange [min_value:max_value] noreverse 
+反転解除    set xrange [min_value:max_value] noreverse
             set yrange [min_value:max_value] noreverse
 ```
