@@ -517,3 +517,6 @@ RSAセキュリティにより考案された公開鍵暗号標準のグルー�
 * https://www.jp.websecurity.symantec.com/welcome/pdf/wp_sslandroot-certificate.pdf
 
 
+# RFC
+- RFC768: Deprecating Secure Sockets Layer Version 3.0
+  - https://tools.ietf.org/html/rfc7568
