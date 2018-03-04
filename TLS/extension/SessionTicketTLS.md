@@ -146,7 +146,7 @@ TLSv1.2 Record Layer: Handshake Protocol: New Session Ticket
 ```
 
 # SeeAlso
--  RFC5077: Transport Layer Security (TLS) Session Resumption without Server-Side State
+- RFC5077: Transport Layer Security (TLS) Session Resumption without Server-Side State
   - https://www.ietf.org/rfc/rfc5077.txt
 - サーバ側のSSL Session Cache状況を確認する「rfc5077」というツールが便利
   - https://github.com/vincentbernat/rfc5077
