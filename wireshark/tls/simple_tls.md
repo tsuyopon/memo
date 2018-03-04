@@ -960,3 +960,10 @@ Secure Sockets Layer
         Length: 26
         Alert Message: Encrypted Alert
 ```
+
+
+TCPやDNSなども含めてすべてのパケットの詳細を表示するにはただ-Vオプションを付与すれば良いです。
+あまりに表示される情報が多すぎるのでこの後間引く必要があると思いますが、、、
+```
+$ tshark -V
+```
