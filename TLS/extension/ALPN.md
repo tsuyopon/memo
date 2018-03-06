@@ -27,7 +27,11 @@ IANAで定義されている。
 次のopensslコマンドでALPN拡張としてHTTP/2(h2)をClientHelloから送付します。
 なお、OpenSSLはALPNをサポートしていますが、サポートしているバージョンは OpenSSL 1.0.2 以降です。
 ```
+// 1つ指定する場合
 $ echo | openssl s_client -alpn h2 -connect www.yahoo.co.jp:443 
+
+// 複数指定する場合
+$ echo | openssl s_client -alpn h2,http/1.1 -connect www.yahoo.co.jp:443 
 ```
 
 対応している場合には次の行が表示されます
