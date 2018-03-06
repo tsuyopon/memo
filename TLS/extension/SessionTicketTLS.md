@@ -145,6 +145,95 @@ TLSv1.2 Record Layer: Handshake Protocol: New Session Ticket
             Session Ticket: 656467652e656467652e6174735f73734f397a7d1a6f66a7...
 ```
 
+## セッションチケット拡張の確認方法
+
+### セッションチケットを発行しているかどうかの確認を行う
+次のようにアクセスして「TLS Session ticket」という項目が存在するかどうかを確認します。あればセッションチケット拡張に対応しています
+```
+$ echo Q | openssl s_client -connect www.yahoo.co.jp:443 -tls1 -debug -msg
+
+(snip)
+
+---
+New, TLSv1/SSLv3, Cipher is AES128-SHA
+Server public key is 2048 bit
+Secure Renegotiation IS supported
+Compression: NONE
+Expansion: NONE
+SSL-Session:
+    Protocol  : TLSv1
+    Cipher    : AES128-SHA
+    Session-ID: 0FA970B68760F080A2CD369F1CA78BD3FDCF759E6DC7A1F0E9E6792667DF67DE
+    Session-ID-ctx: 
+    Master-Key: 1F60378AA1EEB3F301EE51F50DFD5571517EA8E563FD14909507370C46EF881C5588F86BB6FB264E854C52E3776FCC99
+    Key-Arg   : None
+    TLS session ticket lifetime hint: 7200 (seconds)
+    TLS session ticket:
+    0000 - 65 64 67 65 2e 65 64 67-65 2e 61 74 73 5f 73 73   edge.edge.ats_ss
+    0010 - 8c a8 5c 7d ef c5 0b e6-5d ac 85 55 79 e3 14 7b   ..\}....]..Uy..{
+    0020 - 83 bb c3 73 82 86 21 53-27 19 94 81 42 29 a1 e1   ...s..!S'...B)..
+    0030 - b4 dc 5c ee 0e 7c d7 30-22 88 74 d4 8e 55 25 56   ..\..|.0".t..U%V
+    0040 - 55 74 41 f5 a5 4c 53 48-fc e8 0e 56 f8 a1 76 ce   UtA..LSH...V..v.
+    0050 - 07 1f 61 ef 0a f6 fb a1-09 39 dd 6f 07 99 94 40   ..a......9.o....
+    0060 - 34 d2 be f5 73 b7 e4 53-a9 1f 95 e1 e3 88 12 c5   t...s..S........
+    0070 - fd 05 33 74 1a 71 55 b2-10 f7 f5 1d 21 90 0d 34   ..3t.qU.....!..4
+    0080 - b6 91 c7 58 cc 28 34 4d-58 8f 2e f4 29 01 4c df   ...X.(4MX...).L.
+    0090 - 5a 45 3f 99 68 3a d4 24-1b d7 36 f0 bf 75 0e bc   ZE?.h:.$..6..u..
+    00a0 - 92 17 79 74 66 7b ba db-1e 42 7a 42 88 b7 9d 2b   ..ytf{...BzB....
+    00b0 - cf b9 cd f6 05 e0 e7 6a-b9 53 ze ae b5 87 91 41   .......j.S.....A
+
+    Start Time: 1520376475
+    Timeout   : 7200 (sec)
+    Verify return code: 0 (ok)
+---
+```
+
+対応していないような場合に次のように「TLS Session ticket」の項目が表示されません。
+```
+---
+New, TLSv1/SSLv3, Cipher is DHE-RSA-AES128-SHA
+Server public key is 2048 bit
+Secure Renegotiation IS supported
+Compression: NONE
+Expansion: NONE
+SSL-Session:
+    Protocol  : TLSv1
+    Cipher    : DHE-RSA-AES128-SHA
+    Session-ID: 04D17FA33850584DE617AC11763211EA4EDF85F303BBBF527C8BEABE856BBA1A
+    Session-ID-ctx: 
+    Master-Key: B1BB85AC8B91A9BEC9567D36A6003F854BC9489D69BCCD32604F3D19922D698317A323853F98FC786D6D63551D5696D2
+    Key-Arg   : None
+    Start Time: 1520376709
+    Timeout   : 7200 (sec)
+    Verify return code: 0 (ok)
+---
+```
+
+### セッションチケットを利用してハンドシェイクが省略されているかどうかを確認する
+sess_outでセッションチケットを保存して、sess_inでセッションチケットを使ってハンドシェイクを行う
+```
+// 1回目
+$ openssl s_client -connect example.com:443 -sess_out /tmp/ssl_s
+
+// 2回目
+$ openssl s_client -connect example.com:443 -sess_in /tmp/ssl_s
+```
+
+1回目の出力が次のようにNewで始まるとチケットが発行されている
+```
+New, TLSv1/SSLv3, Cipher is ECDHE-RSA-AES128-GCM-SHA256
+```
+
+2回目の出力が次のようにReusedで始まると省略ハンドシェイクとなる。２回目もNewだとセッションチケットの利用に失敗していることになります。
+また、２回目の接続で証明書などで表示される大量の出力がなければ省略ハンドシェイクとなっていることを確認することができます。
+```
+Reused, TLSv1/SSLv3, Cipher is ECDHE-RSA-AES128-GCM-SHA256
+```
+
+- 参考
+  - https://serverfault.com/questions/345891/how-should-i-check-if-ssl-session-resumption-is-working-or-not
+ 
+
 # SeeAlso
 - RFC5077: Transport Layer Security (TLS) Session Resumption without Server-Side State
   - https://www.ietf.org/rfc/rfc5077.txt
