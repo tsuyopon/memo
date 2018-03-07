@@ -173,5 +173,27 @@ http://takuya-1st.hatenablog.jp/entry/20111224/1324750111
 - brew audit すべてのformulaeのコードとスタイルの問題を検査する。
 - brew cleanup foo インストールしたすべてもしくは特定のformulaeの古いバージョンをcellarから削除する。すべての場合はbrew cleanupを実行する。
 
+### curlでhttp2を利用したい
+Mac付属のcurlだとhttp2に対応していません。
+http2もともにinstallして再コンパイルする。時間はちょっとかかるかもしれない
+```
+$ brew reinstall curl --  --with-nghttp2
+```
+
+上記だけだと使えないので以下のコマンドを実行する。
+```
+$ brew link curl --force
+$ hash -r
+```
+
+以上でhttp2が利用できるようになりました。
+```
+$ curl --http2 -I https://http2bin.org/get
+```
+
+- SeeAlso
+  - http://harashun11.hatenablog.com/entry/2016/06/15/191959
+  - https://simonecarletti.com/blog/2016/01/http2-curl-macosx/
+
 # 参考URL
 - http://yonchu.hatenablog.com/entry/20110226/1298723822
