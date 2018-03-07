@@ -171,6 +171,10 @@ struct {
 - ECDHE_RSA:   DHE_RSA と同じですが、DH 鍵交換の部分に楕円曲線暗号が使われます。
 - ECDHE_ECDSA: DHE_DSS と同じですが、DH 鍵交換と署名部分に楕円曲線暗号が使われます。
 
+### RC4の廃止について
+次のRFCで規定されています
+- https://tools.ietf.org/html/rfc7465
+
 ### セキュリティパラメータについて
 RFC5246のAppendix A.6で規定されています。
 - https://tools.ietf.org/html/rfc5246#appendix-A.6
