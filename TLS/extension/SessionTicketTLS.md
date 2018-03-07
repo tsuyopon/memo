@@ -240,6 +240,11 @@ Reused, TLSv1/SSLv3, Cipher is ECDHE-RSA-AES128-GCM-SHA256
 - 参考
   - https://serverfault.com/questions/345891/how-should-i-check-if-ssl-session-resumption-is-working-or-not
  
+### セッションチケット拡張を無効にして接続確認する
+no_ticketとかを利用することでセッションチケット拡張を無効にして古典的なSessionIDでの確認を行うことができる。
+```
+$ echo Q |  openssl s_client -connect rakuten.co.jp:443 -reconnect -no_ticket | grep -ie New -ie Reuse
+```
 
 # SeeAlso
 - RFC5077: Transport Layer Security (TLS) Session Resumption without Server-Side State
