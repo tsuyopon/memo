@@ -50,11 +50,15 @@ SSLCertificateKeyFile /path/to/ecc.key
 また、新しめのopensslではs_clientでSignature Algorithms extensionextension を指定することができます。
 これを使用して、証明書出し分けられている事を確認することが可能です。
 ```
-// RSA証明書を表示する
+// RSA証明書を表示するために「RSA+SHA256」をClientHelloに含める
 $ openssl s_client  -connect localhost:443 -sigalgs RSA+SHA256
 
-// ECC証明書を表示させる
+// ECC証明書を表示させるために「ECDSA+SHA256」をClientHelloに含める
 $ openssl s_client  -connect localhost:443 -sigalgs ECDSA+SHA256 
+
+// 複数指定することも可能です。
+$ openssl s_client  -connect localhost:443 -sigalgs RSA+SHA256:ECDSA+SHA256
+
 ```
 
 ### SHA-1証明書の危殆化について
@@ -66,6 +70,43 @@ GoogleやMicrosoftが将来的にはSHA-1を使用した署名の証明書を安
 
 このアナウンスを受けて認証局はSHA-2への移行を勧めている。
 しかし、SHA-2を利用するためにはTLS1.2以上でSignature Algorithm拡張を扱うことができるクライアントである必要があります。
+
+### データ構造サンプル
+- ClientHelloに添付されるサンプル
+```
+Extension: signature_algorithms
+    Type: signature_algorithms (0x000d)
+    Length: 20
+    Signature Hash Algorithms Length: 18
+    Signature Hash Algorithms (9 algorithms)
+        Signature Hash Algorithm: 0x0403
+            Signature Hash Algorithm Hash: SHA256 (4)
+            Signature Hash Algorithm Signature: ECDSA (3)
+        Signature Hash Algorithm: 0x0804
+            Signature Hash Algorithm Hash: Unknown (8)
+            Signature Hash Algorithm Signature: Unknown (4)
+        Signature Hash Algorithm: 0x0401
+            Signature Hash Algorithm Hash: SHA256 (4)
+            Signature Hash Algorithm Signature: RSA (1)
+        Signature Hash Algorithm: 0x0503
+            Signature Hash Algorithm Hash: SHA384 (5)
+            Signature Hash Algorithm Signature: ECDSA (3)
+        Signature Hash Algorithm: 0x0805
+            Signature Hash Algorithm Hash: Unknown (8)
+            Signature Hash Algorithm Signature: Unknown (5)
+        Signature Hash Algorithm: 0x0501
+            Signature Hash Algorithm Hash: SHA384 (5)
+            Signature Hash Algorithm Signature: RSA (1)
+        Signature Hash Algorithm: 0x0806
+            Signature Hash Algorithm Hash: Unknown (8)
+            Signature Hash Algorithm Signature: Unknown (6)
+        Signature Hash Algorithm: 0x0601
+            Signature Hash Algorithm Hash: SHA512 (6)
+            Signature Hash Algorithm Signature: RSA (1)
+        Signature Hash Algorithm: 0x0201
+            Signature Hash Algorithm Hash: SHA1 (2)
+            Signature Hash Algorithm Signature: RSA (1)
+```
 
 # SeeAlso
 - RFC5246(secition 7.4.1.4.1)

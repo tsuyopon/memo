@@ -210,13 +210,20 @@ SSL-Session:
 ```
 
 ### セッションチケットを利用してハンドシェイクが省略されているかどうかを確認する
-sess_outでセッションチケットを保存して、sess_inでセッションチケットを使ってハンドシェイクを行う
+もっとも簡単な方法はreconnectオプションで何度か接続を試みるので新規接続(New)かセッション再利用(Reuse)かの出力を確認できる。
+```
+$ openssl s_client -reconnect -host www.yahoo.co.jp -port 443
+```
+
+### セッションチケットを利用してハンドシェイクが省略されているかどうかを確認する(1回目と2回目の接続先サーバが異なるような場合)
+sess_outでセッションチケットを保存して、sess_inでセッションチケットを使ってハンドシェイクを行うことができます。
+以下の例では1回目はexample1.com、2回目はexample2.comに対して接続を行っています。
 ```
 // 1回目
-$ openssl s_client -connect example.com:443 -sess_out /tmp/ssl_s
+$ openssl s_client -connect example1.com:443 -sess_out /tmp/ssl_s
 
 // 2回目
-$ openssl s_client -connect example.com:443 -sess_in /tmp/ssl_s
+$ openssl s_client -connect example2.com:443 -sess_in /tmp/ssl_s
 ```
 
 1回目の出力が次のようにNewで始まるとチケットが発行されている

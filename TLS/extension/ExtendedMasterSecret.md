@@ -11,7 +11,7 @@
 
 
 # 詳細
-# データ構造サンプル
+### データ構造サンプル
 - ClientHelloのサンプル
 ```
 Extension: Extended Master Secret
@@ -24,6 +24,11 @@ Extension: Extended Master Secret
     Type: Extended Master Secret (0x0017)
     Length: 0
 ```
+
+### opensslコマンド
+- extended master secretを無効にしてアクセスする方法
+  - opensslコマンドで拡張master secretを無効にする方法は現時点で存在しない
+  - https://stackoverflow.com/questions/46943850/send-openssl-client-hello-with-extended-master-secret-disabled
 
 # TODO
 - 攻撃に対してどのように有効なのかを全く理解していないので、ちゃんと理解する必要がある

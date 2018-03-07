@@ -32,6 +32,19 @@ $ openssl s_client -connect help.hipchat.com:443 -servername help.hipchat.com -s
 subject=/C=US/L=San Francisco/ST=California/O=Atlassian, Inc./OU=HipChat/CN=help.hipchat.com
 ```
 
+### データ構造サンプル
+- ClientHello
+```
+Extension: server_name
+    Type: server_name (0x0000)
+    Length: 21
+    Server Name Indication extension
+        Server Name list length: 19
+        Server Name Type: host_name (0)
+        Server Name length: 16
+        Server Name: www.google.co.jp
+```
+
 # 詳細仕様
 詳細仕様はこちらを参考にしています。
 - https://tools.ietf.org/html/rfc6066#section-3

@@ -8,6 +8,16 @@ TLS1.2ではさらなるCipherSuitesやTLS拡張をサポートしてきたの�
 # 利用例
 - TLSCiphertext.lengthの長さが256から511バイトのClientHelloを受信した場合にハングアップしてしまうことが知られています。このような場合には少なくとも512バイトのデータを送る必要があります。
 
+
+### データ構造サンプル
+- ClientHello
+```
+Extension: Padding
+    Type: Padding (0x0015)
+    Length: 84
+    Padding Data: 000000000000000000000000000000000000000000000000...
+```
+
 # SeeAlso
 - RFC7685: A Transport Layer Security (TLS) ClientHello Padding Extension
   - https://tools.ietf.org/html/rfc7685
