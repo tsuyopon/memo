@@ -1,175 +1,192 @@
-
-*** Apacheハンドラとは
-http://httpd.apache.org/docs/2.0/ja/handler.html
-
-###########################################################################
-apxsコマンド
-###########################################################################
-
-* 概要 [#f4d83754]
-apxsは、APache eXtenSionの略称です。
-apxsコマンドを利用して以下の処理を行うことができます。
-
+# apxsコマンド
+apxsは、APache eXtenSionの略称です。apxsコマンドを利用して以下の処理を行うことができます。
 - モジュールのコンパイルとロード
 - モジュール作成の際のスケルトン生成
 
-* 詳細 [#vfdd438b]
-*** apxsを利用した動的モジュール(DSO:Dynamic Shared Object)の管理 [#u2c2444e]
+##  詳細
+### apxsを利用した動的モジュール(DSO:Dynamic Shared Object)の管理
 - apxsでモジュールをコンパイルするには-cを付加する
-	 #apxs -c mod_foo.c
+```
+#apxs -c mod_foo.c
+```
 - apxsでコンパイルと同時にインストールする場合には-iを付加する
-	 #apxs -ic mod_foo.c
+```
+#apxs -ic mod_foo.c
+```
 - DSOモジュールの格納場所は以下の様にする亊により表示される
-	 #apxs -q LIBEXECDIR
+```
+#apxs -q LIBEXECDIR
+```
 - 設定ファイル(httpd.conf)へのLoadModuleディレクティブの追加は以下の様にする
-	 #apxs -a mod_foo.c
+```
+#apxs -a mod_foo.c
+```
 
-
-
-*** apxsを利用してモジュールの作成を行う [#r6caaf6b]
+### apxsを利用してモジュールの作成を行う
 以下の様にしてapxsコマンドを利用すれば簡単に雛形を作成することができます。
-	 $ /usr/sbin/apxs -n test -g
-	 Creating [DIR]  test
-	 Creating [FILE] test/Makefile
-	 Creating [FILE] test/modules.mk
-	 Creating [FILE] test/mod_test.c
-	 Creating [FILE] test/.deps
+```
+$ /usr/sbin/apxs -n test -g
+Creating [DIR]  test
+Creating [FILE] test/Makefile
+Creating [FILE] test/modules.mk
+Creating [FILE] test/mod_test.c
+Creating [FILE] test/.deps
+```
 
 続いて、スケルトン生成直後にコンパイルを行います。
-	 $ cd test
-	 $ make
-	 apxs -c    mod_test.c
-	 gcc -DLINUX=22 -DEAPI -DTARGET="apache" -DHAVE_SET_DUMPABLE -DDB_DBM_HSEARCH=1 -DDEV_RANDOM=/dev/random -DUSE_HSREGEX -O1  -g -Wall -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -fPIC -DSHARED_MODULE -I/usr/include/apache-1.3  -c mod_test.c
-	 gcc -shared -o mod_test.so mod_test.o
+```
+$ cd test
+$ make
+apxs -c    mod_test.c
+gcc -DLINUX=22 -DEAPI -DTARGET="apache" -DHAVE_SET_DUMPABLE -DDB_DBM_HSEARCH=1 -DDEV_RANDOM=/dev/random -DUSE_HSREGEX -O1  -g -Wall -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -fPIC -DSHARED_MODULE -I/usr/include/apache-1.3  -c mod_test.c
+gcc -shared -o mod_test.so mod_test.o
+```
 
 makeコマンドによりコンパイルが完了したらインストールを行います。make installを実行します。
-	 $ sudo make install
-	 make[1]: ディレクトリ `/home/tsuyoshi/work/apacheapi/test' に入ります
-	 /usr/lib/apr-1/build/libtool --silent --mode=install cp mod_test.la /usr/lib/httpd/modules/
-	 make[1]: ディレクトリ `/home/tsuyoshi/work/apacheapi/test' から出ます
-	 /usr/lib/apr-1/build/libtool --silent --mode=install cp mod_test.la /usr/lib/httpd/modules/
+```
+$ sudo make install
+make[1]: ディレクトリ `/home/tsuyoshi/work/apacheapi/test' に入ります
+/usr/lib/apr-1/build/libtool --silent --mode=install cp mod_test.la /usr/lib/httpd/modules/
+make[1]: ディレクトリ `/home/tsuyoshi/work/apacheapi/test' から出ます
+/usr/lib/apr-1/build/libtool --silent --mode=install cp mod_test.la /usr/lib/httpd/modules/
+```
 
 「make install」により、LoadModuleがhttpd.confに記述されていますので確認します。
-	 $ cat /etc/httpd/conf/httpd.conf | grep -i mod_test
-	 LoadModule test_module        /usr/lib/httpd/modules/mod_test.so
+```
+$ cat /etc/httpd/conf/httpd.conf | grep -i mod_test
+LoadModule test_module        /usr/lib/httpd/modules/mod_test.so
+```
 
 続いて、mod_testハンドラを読み込むように下記設定を加えます。
-	 $ sudo vim /etc/httpd/conf/httpd.conf
-	 <Location "/test/">
-	    SetHandler test
-	 </Location>
+```
+$ sudo vim /etc/httpd/conf/httpd.conf
+<Location "/test/">
+   SetHandler test
+</Location>
+```
 
 apacheの設定を変更したので再起動しておきます。
-	 $ sudo /usr/sbin/apachectl restart
+```
+$ sudo /usr/sbin/apachectl restart
+```
 
 以上により、下記ページにアクセスすると「The sample page from mod_test.c 」という文言が表示されるようになれれば成功です。
-	 http://<IP or Domain>/test/
+```
+http://<IP or Domain>/test/
+```
 
-* 参考URL
+## 参考URL
 - DSAS開発者の部屋 apache module 開発事始め 
--- http://dsas.blog.klab.org/archives/50574774.html
+  - http://dsas.blog.klab.org/archives/50574774.html
 - apacheモジュール作成のまとめ
--- http://d.hatena.ne.jp/yoshifumi1975/20080429/p1
+  - http://d.hatena.ne.jp/yoshifumi1975/20080429/p1
 
 
-###########################################################################
-Apache 1.3系ハンドラ作成
-###########################################################################
+# Apache 1.3系ハンドラ作成
 Apache1.3系では、handler関数を実装し、module定義用の構造体にその関数を登録します。
 
-*** main処理部分
+## 詳細
+### main処理部分
 リクエスト処理メインフローは以下の関数で定められます
- static void process_request_internal(request_rec *r);
+```
+static void process_request_internal(request_rec *r);
+```
 
 
- *** request_rec構造体について
+### request_rec構造体について
 request_recは構造体で、moduleやhandlerが処理を行う上で、以下の理由から利用されます。
 - 現在のリクエスト情報を保持する
 - リクエストを処理するために必要な情報を保持する
 - レスポンス情報を保持する構造体でリクエスト毎に生成される。
 
 
-*** 参考URL
+## 参考URL
 - Apache 1.3 API notes(English&Japanese)
--- http://httpd.apache.org/docs/1.3/misc/API.html
--- http://japache.infoscience.co.jp/japanese_1_3/manual/misc/API.html
+  - http://httpd.apache.org/docs/1.3/misc/API.html
+  - http://japache.infoscience.co.jp/japanese_1_3/manual/misc/API.html
 - Apache Web server 1.3 API Dictionary
--- http://httpd.apache.org/dev/apidoc/index.html
+  - http://httpd.apache.org/dev/apidoc/index.html
 
 
-###########################################################################
-Apache 2系ハンドラ作成
-###########################################################################
+# Apache 2系ハンドラ作成
 
-*** HelloWorldを作成する。
+## 詳細
+### HelloWorldを作成する
 Apacheハンドラ(2.x系)の処理の流れについてHelloworld的なサンプルを作成してまとめます。
 下記コマンドで生成されたハンドラmod_test.cをサンプルプログラムとして処理の流れを整理していきます。
-	 $ /usr/sbin/apxs -n test -g
+```
+$ /usr/sbin/apxs -n test -g
+```
 
-**** mod_test.cの内容
-	 #include "http_config.h"
-	 #include "http_protocol.h"
-	 #include "ap_config.h"
-	 
-	 /* The sample content handler */
-	 static int test_handler(request_rec *r)
-	 {
-	     if (strcmp(r->handler, "test")) {
-	         return DECLINED;
-	     }
-	     r->content_type = "text/html";
-	 
-	     if (!r->header_only)
-	         ap_rputs("The sample page from mod_test.c\n", r);
-	     return OK;
-	 }
-	 
-	 static void test_register_hooks(apr_pool_t *p)
-	 {
-	     ap_hook_handler(test_handler, NULL, NULL, APR_HOOK_MIDDLE);
-	 }
-	 
-	 /* Dispatch list for API hooks */
-	 module AP_MODULE_DECLARE_DATA test_module = {
-	     STANDARD20_MODULE_STUFF,
-	     NULL,                  /* create per-dir    config structures */
-	     NULL,                  /* merge  per-dir    config structures */
-	     NULL,                  /* create per-server config structures */
-	     NULL,                  /* merge  per-server config structures */
-	     NULL,                  /* table of config file commands       */
-	     test_register_hooks  /* register hooks                      */
-	 };
+###  mod_test.cの内容
+```
+#include "http_config.h"
+#include "http_protocol.h"
+#include "ap_config.h"
 
-**** 処理概要
+/* The sample content handler */
+static int test_handler(request_rec *r)
+{
+    if (strcmp(r->handler, "test")) {
+        return DECLINED;
+    }
+    r->content_type = "text/html";
+
+    if (!r->header_only)
+        ap_rputs("The sample page from mod_test.c\n", r);
+    return OK;
+}
+
+static void test_register_hooks(apr_pool_t *p)
+{
+    ap_hook_handler(test_handler, NULL, NULL, APR_HOOK_MIDDLE);
+}
+
+/* Dispatch list for API hooks */
+module AP_MODULE_DECLARE_DATA test_module = {
+    STANDARD20_MODULE_STUFF,
+    NULL,                  /* create per-dir    config structures */
+    NULL,                  /* merge  per-dir    config structures */
+    NULL,                  /* create per-server config structures */
+    NULL,                  /* merge  per-server config structures */
+    NULL,                  /* table of config file commands       */
+    test_register_hooks  /* register hooks                      */
+};
+```
+
+### 処理概要
 - 1. モジュール宣言AP_MODULE_DECLARE_DATAに登録されているハンドラ情報を読み込みます。
--- この中でtest_register_hooks()というメソッド名が登録されています。この関数がフック関数を呼び出します。
+  - この中でtest_register_hooks()というメソッド名が登録されています。この関数がフック関数を呼び出します。
 - 2. test_register_hooks()を呼び出します。ap_hook_handler()関数では引数として、test_handler()を呼び出すことが明記されています。
--- この呼び出し関数にはフック関数が記述されます。COLOR(red): 尚、フック関数というのはメソッド名に応じて呼び出し時のタイミングが異なるメソッドです。以下にフック関数の種類を示します。
--- (参考) http://httpd.apache.org/docs/2.2/ja/developer/modules.html
+  - この呼び出し関数にはフック関数が記述されます。COLOR(red): 尚、フック関数というのはメソッド名に応じて呼び出し時のタイミングが異なるメソッドです。以下にフック関数の種類を示します。
+  - (参考) http://httpd.apache.org/docs/2.2/ja/developer/modules.html
 - 3. test_handler()が呼び出されます。
--- ここでは、各タイミングで実施すべき処理を記述します。以下にメソッドの処理詳細について記します。
---- 以下はリクエストに含まれる「test」という要素をチェックし、このフック関数で処理すべきかどうかをチェックします。
+  - ここでは、各タイミングで実施すべき処理を記述します。以下にメソッドの処理詳細について記します。
+    - 以下はリクエストに含まれる「test」という要素をチェックし、このフック関数で処理すべきかどうかをチェックします。
+```
      if (strcmp(r->handler, "test")) {
          return DECLINED;
      }
---- 以下はレスポンス内容として指定するMIMEタイプを指定しています。
+```
+    - 以下はレスポンス内容として指定するMIMEタイプを指定しています。
+```
      r->content_type = "text/html";
---- 以下はヘッダのみ(「HEAD」リクエスト)の場合にはリクエストを応答しないことを意味しています。
+```
+    - 以下はヘッダのみ(「HEAD」リクエスト)の場合にはリクエストを応答しないことを意味しています。
+```
      if (!r->header_only)
          ap_rputs("The sample page from mod_test.c\n", r);
+```
 
-**** 参考URL
+## 参考URL
 - モジュールの Apache 1.3 から Apache 2.0 への移植
--- http://httpd.apache.org/docs/2.2/ja/developer/modules.html
+  - http://httpd.apache.org/docs/2.2/ja/developer/modules.html
 - Apache Moduleをつくる - モジュール宣言とフック関数
--- http://blog.livedoor.jp/matssaku/archives/50421540.html
+  - http://blog.livedoor.jp/matssaku/archives/50421540.html
 
 
-###########################################################################
-apache1.3系とapache2.0系のAPI比較
-###########################################################################
-apache1.3系とapache2.0系のAPI比較です。
-
+# apache1.3系とapache2.0系のAPI比較
+```
 	 AP13                       AP20
 	 =====================================================
 	 ap_array_pstrcat           apr_array_pstrcat
@@ -273,21 +290,9 @@ apache1.3系とapache2.0系のAPI比較です。
 	 table_entry                apr_table_entry_t
 	 uri_components             apr_uri_t
 	 pool                       apr_pool_t
+```
 
-
-(参考)
 -  Sleepless geek in Seattle
--- http://d.hatena.ne.jp/yoshifumi1975/20080429/p1
+  - http://d.hatena.ne.jp/yoshifumi1975/20080429/p1
 
 
-###########################################################################
-そのほか
-###########################################################################
-
-*** log出力方法
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, r->server, "url=%s", url);
-
-
-*** 英語ドキュメント
-結構参考になりそう
-	http://httpd.apache.org/docs/trunk/developer/modguide.html

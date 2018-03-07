@@ -1,18 +1,21 @@
+# 概要
+Analogはapacheのアクセスログを解析してくれるソフトウェアです
 
-# analogのインストール(RedHat9の例) 
+# 詳細
+### analogのインストール(RedHat9の例) 
 Analogはアクセスlog集計ソフトウェアで視覚的に教えてくれます。
 以下ではソースからのインストールを説明します。
 ```
-#cd /usr/local/src
-http://www.analog.cx/donload.htmlのサイトから自分にあった物を取ってくる。
-#wget http://www.iddl.vt.edu/~jackie/analog/analog-6.0-1.src.rpm
-#rpmbuild --rebuild --target i686 analog-6.0-1.src.rpm
-#cd /usr/src/redhat/RPMS/i686
-#rpm -ivh analog-6.0-1.i686.rpm
-#mkdir -p /usr/local/analog6/report
-#cp -r /usr/local/analog6.0/images /usr/local/analog6.0/report
-#vi /etc/analog.cfg (<=analog.cfgの設定については後ほど説明)
-#vi /etc/httpd.conf
+$ cd /usr/local/src
+$ ttp://www.analog.cx/donload.htmlのサイトから自分にあった物を取ってくる。
+$ wget http://www.iddl.vt.edu/~jackie/analog/analog-6.0-1.src.rpm
+$ rpmbuild --rebuild --target i686 analog-6.0-1.src.rpm
+$ cd /usr/src/redhat/RPMS/i686
+$ rpm -ivh analog-6.0-1.i686.rpm
+$ mkdir -p /usr/local/analog6/report
+$ cp -r /usr/local/analog6.0/images /usr/local/analog6.0/report
+$ vi /etc/analog.cfg (<=analog.cfgの設定については後ほど説明)
+$ vi /etc/httpd.conf
 ```
 
 以下の行を追加する。
@@ -42,31 +45,31 @@ Directory /usr/local/analog6.0/report>
 一般的に次のような警告が出るが[L]、[R]の警告は重要ではないらしいのであまり
 気にしないほうが良い。
 ```
- analog: analog version 6.0/Unix
- analog: Warning R: Turning off empty Search Word Report
-        (For help on all errors and warnings, see docs/errors.html)
-        ----------------------------------------------------------------------------
-        この時の警告の種類を以下に示す。
-        C：不正な設定が行なわれた
-        D：疑わしい設定が行なわれた
-        E：ERRFILE コマンドが記述された
-        F：ファイルが存在しないか壊れている
-        G：corrupt lines in support files
-        L：ログファイルに明らかな問題がある。
-        M：ログファイルに多分問題がある。
-        R：空のレポートの出力を止める。
-        -----------------------------------------------------------------------------
+analog: analog version 6.0/Unix
+analog: Warning R: Turning off empty Search Word Report
+       (For help on all errors and warnings, see docs/errors.html)
+       ----------------------------------------------------------------------------
+       この時の警告の種類を以下に示す。
+       C：不正な設定が行なわれた
+       D：疑わしい設定が行なわれた
+       E：ERRFILE コマンドが記述された
+       F：ファイルが存在しないか壊れている
+       G：corrupt lines in support files
+       L：ログファイルに明らかな問題がある。
+       M：ログファイルに多分問題がある。
+       R：空のレポートの出力を止める。
+       -----------------------------------------------------------------------------
 ```
 
 最後に定期的にanalogが起動するようにcron.dailyディレクトリにshファイルを置く。
 ```
-#vi analog.pl
+$ vi analog.pl
 -----------------------------------------------------------------------------
 #!/bin/sh
        /usr/bin/analog
 -----------------------------------------------------------------------------
-#chmod u+x analog.pl
-#mv analog.pl /etc/cron.daily
+$ chmod u+x analog.pl
+$ mv analog.pl /etc/cron.daily
 ```
 
 ### /etc/analog.cfgの設定について
@@ -104,7 +107,6 @@ u  USER         ユーザレポート
 J  FAILUSER     不成功ユーザレポート
 c  STATUS       状態コードレポート
 ```
-
 
 次のようなanalog.cfgを作成すれば良いだろう。
 ```
@@ -296,4 +298,3 @@ TYPEOUTPUTALIAS .js      ".js  [JavaScript code]"
   - http://www.analog.cx/
 - Apache ログ解析 Analog の導入
   - http://www.miloweb.net/analog.html
-
