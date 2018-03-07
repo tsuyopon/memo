@@ -147,6 +147,14 @@ ee0ffcb 2017-09-04 09:05:41 +0900 added new (git-grep.md)
 6412ac4 2017-09-01 08:41:21 +0900 new added(rpm_spec.md)
 ```
 
+以下はハッシュ値とメールアドレスを表示する例です
+```
+$ git log --no-merges --pretty=format:"%H %ae" | head -3
+43461d8bf19ecc7d51313efa9fa866be16f040f8 tsuyoppy@r2.dion.ne.jp
+3a67edcd7945b7932e2a884957a4a68cc8a5fbab tsuyoppy@r2.dion.ne.jp
+fccd03b90c2342a77ea373f6ddc2fe1639daf9b5 tsuyoppy@r2.dion.ne.jp
+```
+
 ### 単純なメッセージのみを表示する
 ```
 $ git shortlog
