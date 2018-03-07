@@ -147,6 +147,9 @@ X-Cache-Generation: -1
 X-Transaction-ID: 295b9260-abb3-445e-ab44-30c220c5a080-69
 ```
 
+# TODO
+- ドキュメント上には存在しないが、「X-Debug: log-headers」というのも存在するらしいので確認してみるとよさそう
+
 # SeeAlso
 - https://docs.trafficserver.apache.org/ja/6.2.x/admin-guide/plugins/xdebug.en.html
 - ソースコード
