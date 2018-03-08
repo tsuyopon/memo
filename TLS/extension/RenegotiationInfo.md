@@ -1,17 +1,98 @@
-# 概要・背景
+# 概要
 RFC5746はrenegtiaion_infoのTLS拡張に関するものです。
-これは、2009年にTLSv1, SSL3のハンドシェイク過程において脆弱性(CVE-2009-3555)が発見されたのをきっかけとしてできたRFCで、2010年2月にリリースされました。
+これは、2009年にTLSv1, SSL3のハンドシェイク過程において脆弱性(CVE-2009-3555)が発見されたのをきっかけとしてできたRFCで、TLS1.2から2年後の2010年2月にリリースされました。
 この脆弱性はHTTP, IMAP, SMTPをはじめとする多くのTLS/SSLに依存するプロトコルに影響を与えます。
+この脆弱性を防ぐ対応としてrenegotion_info拡張(RFC5746)が提案されるようになりました。
+
+この仕様は再ネゴシエーションの新しい仕組みであると同時に、バージョン及び拡張に対するintorelanceが開発者によって解消されることを期待しています。
+
+SSLv3, TLS 1.0, TLS 1.1などの仕様ではClientHelloに拡張を含んでしまうとハンドシェイクエラーを引き起こしてしまう可能性があります。そこで、RFC5746の3.3節ではTLS_EMPTY_RENEGOTIATION_INFO_SCSVによる第２のメカニズムを提供しています(RFC7507でも規定)。
+
+# この拡張が意味すること
+この拡張がないと攻撃者はクライアントの接続を乗っ取ることができます。
+以下はRFC5746に記載された図ですが、簡単にその問題点の概略を説明します。
+- あらかじめAttackerとServerでの初期ハンドシェイクを行います。
+- Attackerはその時の秘密鍵情報を保存しておきます。
+- Clientがハンドシェイクをしようとした際に、Attackerは先ほどまでServerとやりとりしていたHandshakeに必要な情報を返却します。
+- ClientはServerと安全に通信していると思い込んでいますが、Attackerによってその通信が見えてしまいます。
+```
+Client                        Attacker                        Server
+------                        -------                         ------
+                                  <----------- Handshake ---------->
+                                  <======= Initial Traffic ========>
+<--------------------------  Handshake ============================>
+<======================== Client Traffic ==========================>
+```
 
 # 詳細
-### 利用方法
-クライアント側は次のいずれかをとります
-- (1) 初期ハンドシェイクのClientHello中にrenegotiation_infoフィールドまたは使用可能な暗号アルゴリズムとしてTLS_EMPTY_RENEGOTIATION_INFO_SCSV(Signaling Cipher Suite Value (SCSV))の追加
-  - TLS_EMPTY_RENEGOTIATION_INFO_SCSV暗号スイートは、レガシーなサーバとの接続のためにダウングレードして再接続を行っていることを意味します。
-- (2) 初期ハンドシェイクのClientHello中にrenegotiation_infoを追加する
+## 仕様詳細
+主に3.2節から3.7節について説明する
+- https://tools.ietf.org/html/rfc5746#section-3.2
 
-サーバ側は次のチェックを行います
-- クライアントはサーバから返却されたServerHelloメッセージ中にrenegotiation_infoがあるかどうか、またはcipher_suites中にTLS_EMPTY_RENEGOTIATION_INFO_SCSVが存在するかどうかをチェックします。 (TODO: この一文本当にあってる?)
+この拡張を実現するにあたって、クライアントとサーバはTLSコネクション状態ごとに次の３つのフラグを持つ必要があります。
+- secure_renegotiation: このコネクションでセキュアな再ネゴシエーションが利用されるかどうかを示すフラグ
+- client_verify_data: 前回のハンドシェイクでクライアントによってFinishedメッセージから送付されたデータ。現行のTLSバージョンやCipherではこの値は12byteで、SSL3では36byteの値となります。
+- server_verify_data: 前回のハンドシェイクでサーバによってFinishedメッセージから送付されたデータ
+
+ここではクライアントとサーバの次の４つのフェーズについてのRFC仕様を説明します
+- クライアントの初回ハンドシェイクの挙動(3.4節)
+- クライアントのセキュア再ネゴシエーションの挙動(3.5節)
+- サーバの初回ハンドシェイクの挙動(3.6節)
+- サーバのセキュア再ネゴシエーションの挙動(3.7節)
+
+### クライアントの初回ハンドシェイクの挙動
+- ClientHelloでenegotiation_info拡張とTLS_EMPTY_RENEGOTIATION_INFO_SCSVを同時に載せることは推奨されていません。
+- クライアントがServerHelloを受け取ったら、クライアントはrenegotiation_info拡張が含まれているかどうかをチェックしなければならない。
+  - 拡張が存在しなければ、secure_renegotiation=falseをセットする。
+  - 拡張が存在すれば、secure_renegotiation=trueをセットする。そして、クライアントはrenegotiated_connectionフィールドが0かどうかをチェックしなければならない、もし0じゃなかったらhandshake_failureアラートを送付してハンドシェイクをabortしなければならない。
+
+
+### クライアントのセキュア再ネゴシエーションの挙動
+secure_renegotiation=trueとなっている場合にのみ次の処理を行います。
+
+- クライアントはClientHelloのenegotiation_info中に保存されたclient_verify_dataを含めなければならない。SCSVを含めてはならない。
+- ServerHelloを受信したら、クライアントはrenegotiation_info拡張が存在するかどうかを検証しなければならない。もしなかったら、クライアントはハンドシェイクをabortしなければならない。
+- クライアントはrenegotiated_connectionフィールドが保存されたclient_verify_dataとserver_verify_dataの値が保存されたものと一致するかどうかを検証しなければならない。
+- ハンドシェイクが完了したら、クライアントは新しいclient_verify_dataとserver_verify_dataの値を保存しておく必要がある。
+
+
+### サーバの初回ハンドシェイクの挙動
+- サーバはClientHello中にrenegotiation_infoが含まれているかどうかをチェックしなければならない。
+  - 拡張が存在しなければ、secure_renegotiation=falseをセットする。
+  - 拡張が存在すれば、secure_renegotiation=trueをセットする。そして、サーバはrenegotiated_connectionフィールドが0かどうかをチェックしなければならない、もし0じゃなかったらhandshake_failureアラートを送付してハンドシェイクをabortしなければならない。
+- TLS_EMPTY_RENEGOTIATION_INFO_SCSV SCSVもrenegotiation_info拡張も含まれていなければ、secure_renegotiation=falseをセットする。この場合だと、いくつかのサーバはハンドシェイクを終了するかもしれない。
+  - secure_renegotiation=trueとセットされたのであれば、サーバはrenegotiation_infoをServerHelloに含めなければならない
+- ハンドシェイクが完了したら、サーバはclient_verify_dataとserver_verify_data valuesを将来の利用のために保存する必要がある。
+
+### サーバのセキュア再ネゴシエーションの挙動
+secure_renegotiation=trueとなっている場合にのみ次の処理を行います。
+- ClientHelloを受信したら、サーバはTLS_EMPTY_RENEGOTIATION_INFO_SCSVを含んでいないことを検証する。もし含まれていたら、サーバはハンドシェイクをアボートしなければならない。
+- サーバはrenegotiation_info拡張を検証しなければならない。もしなかったら、ハンドシェイクをabortしなければならない (???)
+- サーバはrenegotiated_connectionの値が保存されたclient_verify_dataの値と一致するかどうかを検証しなければならない。もし一致しなかったら、サーバはハンドシェイクをabortしなければならない。
+- サーバはServerHelloのrenegotiation_infoに保存されたclient_verify_dataとserver_verify_dataを含めなければならない
+- ハンドシェイクが完了したら、サーバは新しいclient_verify_dataとserver_verify_dataの値を保存しておく必要がある。
+
+## TLS_FALLBACK_SCSVについて
+ClientHello.cipher_suitesに次を含むことによって、レガシーなサーバとの接続のためにダウングレードして再接続を行っていることを意味します。これはCipherではありませんのでWorkAroundとなります。
+```
+TLS_FALLBACK_SCSV          {0x56, 0x00}
+```
+
+サーバ側はTLS_FALLBACK_SCSVが含まれていた場合、自身がサポートするTLS最高のバージョンがクライアントから指定されたTLSバージョンで指定できないことがわかると、inappropriate_fallback fatalアラートを返却します。
+サーバはTLS_FALLBACK_SCSVが含まれていない場合や、クライアントから指定されたバージョンがサーバがサポートする最高バージョンよりも高い場合には通常のハンドシェイクを行います。
+
+## データ
+### データ書式
+```
+struct {
+    opaque renegotiated_connection<0..255>;
+} RenegotiationInfo;
+```
+
+renegotiated_connectionの仕様については次の通りです。
+- 接続に対する初回ハンドシェイクだとrenegotiated_connectionはClientHello及びServerHello共に長さ0となります。
+- 再ネゴシエーションするClientHelloだと、client_verify_dataが入ります。
+- 再ネゴシエーションするServerHelloだと、client_verify_dataとserver_verify_dataの結合されたデータを含みます
 
 
 ### データ構造サンプル
@@ -32,6 +113,7 @@ Extension: renegotiation_info
         Renegotiation info extension length: 0
 ```
 
+## openssl
 ### opensslコマンドでTLS_EMPTY_RENEGOTIATION_INFO_SCSVを追加する
 fallback_scsvオプションを付与するとClientHelloのCipher Suites中にTLS_EMPTY_RENEGOTIATION_INFO_SCSVが追加されます。
 ```
@@ -46,15 +128,18 @@ CONNECTED(00000003)
 95616:error:1409E0E5:SSL routines:SSL3_WRITE_BYTES:ssl handshake failure:/SourceCache/OpenSSL098/OpenSSL098-52.40.1/src/ssl/s3_pkt.c:566:
 ```
 
-# MEMO
-- https://rms-digicert.ne.jp/howto/basis/ssl-renego.html
-
 # TODO
-- データ構造サンプルにはTLS_EMPTY_RENEGOTIATION_INFO_SCSVが存在していないので追加すること
+- RFCの読み込みがまだ足りない
 - renegotiation_infoはどのような時に付与されるの? ときどきwiresharkで表示されるのはなぜか?
 - opensslコマンドでrenegotiation_infoを含める方法について調査する
 - CVE-2009-3555をちゃんと理解すること
+- データ構造サンプルにはTLS_EMPTY_RENEGOTIATION_INFO_SCSVが存在していないので追加すること
+
+# 参考URL
+- https://rms-digicert.ne.jp/howto/basis/ssl-renego.html
 
 # SeeAlso
 - RFC5746: Transport Layer Security (TLS) Renegotiation Indication Extension
   - https://tools.ietf.org/html/rfc5746
+- RFC7507: TLS Fallback Signaling Cipher Suite Value (SCSV) for Preventing Protocol Downgrade Attacks
+  - https://tools.ietf.org/html/rfc7507
