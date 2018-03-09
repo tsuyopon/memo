@@ -1,6 +1,6 @@
 # 概要
 RFC5746はrenegtiaion_infoのTLS拡張に関するものです。
-これは、2009年にTLSv1, SSL3のハンドシェイク過程において脆弱性(CVE-2009-3555)が発見されたのをきっかけとしてできたRFCで、TLS1.2から2年後の2010年2月にリリースされました。
+これは、2009年にTLSv1, SSL3のハンドシェイク過程において「TLS再ネゴシエーション時の中間者攻撃」の脆弱性(CVE-2009-3555)が発見されたのをきっかけとしてできたRFCで、TLS1.2から2年後の2010年2月にリリースされました。
 この脆弱性はHTTP, IMAP, SMTPをはじめとする多くのTLS/SSLに依存するプロトコルに影響を与えます。
 この脆弱性を防ぐ対応としてrenegotion_info拡張(RFC5746)が提案されるようになりました。
 
@@ -8,8 +8,15 @@ RFC5746はrenegtiaion_infoのTLS拡張に関するものです。
 
 SSLv3, TLS 1.0, TLS 1.1などの仕様ではClientHelloに拡張を含んでしまうとハンドシェイクエラーを引き起こしてしまう可能性があります。そこで、RFC5746の3.3節ではTLS_EMPTY_RENEGOTIATION_INFO_SCSVによる第２のメカニズムを提供しています(RFC7507でも規定)。
 
-# この拡張が意味すること
-この拡張がないと攻撃者はクライアントの接続を乗っ取ることができます。
+# この拡張ができた背景とそれが解決するもの
+TLS1.2よりまでは後方互換性に関する明確な記述は存在しなかった。
+そのために、プロトコルバージョンが大きいと未知であると判断したり、好ましくなければハンドシェイクを拒否したりする実装が発生する。
+また、TLS1.2に対応した最初のブラウザIEはデフォルトでTLS1.1とTLS1.2を両方とも無効にした状態でローンチされました。
+この盲点をついたのがCVE-2009-3555です。
+
+この脆弱性のためにこのTLS1.2以降の拡張としてrenegtiaion_info拡張が策定され、TLS1.2未満のためにTLS_EMPTY_RENEGOTIATION_INFO_SCSVによるメカニズムを提供することでダウングレード攻撃を防ぐことを意図している。
+
+この拡張がないと攻撃者はクライアントの接続を乗っ取ることができます。クライアントからは攻撃が見えず、サーバでは通常の接続とみなされてしまいます。
 以下はRFC5746に記載された図ですが、簡単にその問題点の概略を説明します。
 - あらかじめAttackerとServerでの初期ハンドシェイクを行います。
 - Attackerはその時の秘密鍵情報を保存しておきます。
@@ -29,7 +36,7 @@ Client                        Attacker                        Server
 主に3.2節から3.7節について説明する
 - https://tools.ietf.org/html/rfc5746#section-3.2
 
-この拡張を実現するにあたって、クライアントとサーバはTLSコネクション状態ごとに次の３つのフラグを持つ必要があります。
+この拡張を実現するにあたって、クライアントとサーバはTLSコネクション状態ごとに次の３つのフラグをConnectionState(RFC5246#section6.1)に追加すると規定しています。
 - secure_renegotiation: このコネクションでセキュアな再ネゴシエーションが利用されるかどうかを示すフラグ
 - client_verify_data: 前回のハンドシェイクでクライアントによってFinishedメッセージから送付されたデータ。現行のTLSバージョンやCipherではこの値は12byteで、SSL3では36byteの値となります。
 - server_verify_data: 前回のハンドシェイクでサーバによってFinishedメッセージから送付されたデータ
@@ -72,6 +79,10 @@ secure_renegotiation=trueとなっている場合にのみ次の処理を行い�
 - サーバはServerHelloのrenegotiation_infoに保存されたclient_verify_dataとserver_verify_dataを含めなければならない
 - ハンドシェイクが完了したら、サーバは新しいclient_verify_dataとserver_verify_dataの値を保存しておく必要がある。
 
+次の２つについてもRFC5246での繰り返しになりますが規定されています。
+- この仕様を実装するTLSサーバは、クライアントから知らない拡張がきても無視しなければならない。
+- また、サポートするバージョンよりも大きなバージョン番号がきたとしても受け入れなければならない。そしてサーバとクライアントで共通の最も高いバージョンでネゴシエーションします。
+
 ## TLS_FALLBACK_SCSVについて
 ClientHello.cipher_suitesに次を含むことによって、レガシーなサーバとの接続のためにダウングレードして再接続を行っていることを意味します。これはCipherではありませんのでWorkAroundとなります。
 ```
@@ -82,7 +93,8 @@ TLS_FALLBACK_SCSV          {0x56, 0x00}
 サーバはTLS_FALLBACK_SCSVが含まれていない場合や、クライアントから指定されたバージョンがサーバがサポートする最高バージョンよりも高い場合には通常のハンドシェイクを行います。
 
 ## データ
-### データ書式
+
+### データ書式(rfc5746#section-3.2)
 ```
 struct {
     opaque renegotiated_connection<0..255>;
@@ -129,8 +141,9 @@ CONNECTED(00000003)
 ```
 
 # TODO
+- パケットをキャプチャーしても0以外(再ネゴシエーション)が入っていることをみたことがないが、本当に使われている?
+- session_idを指定したときとのロジックでの共通点は何か?
 - RFCの読み込みがまだ足りない
-- renegotiation_infoはどのような時に付与されるの? ときどきwiresharkで表示されるのはなぜか?
 - opensslコマンドでrenegotiation_infoを含める方法について調査する
 - CVE-2009-3555をちゃんと理解すること
 - データ構造サンプルにはTLS_EMPTY_RENEGOTIATION_INFO_SCSVが存在していないので追加すること
@@ -143,3 +156,5 @@ CONNECTED(00000003)
   - https://tools.ietf.org/html/rfc5746
 - RFC7507: TLS Fallback Signaling Cipher Suite Value (SCSV) for Preventing Protocol Downgrade Attacks
   - https://tools.ietf.org/html/rfc7507
+- 「TLS再ネゴシエーション時の中間者攻撃」の脆弱性(CVE-2009-3555)
+  - http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-3555
