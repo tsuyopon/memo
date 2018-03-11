@@ -20,9 +20,11 @@ JavaScriptだと主要なライブラリは以下の通り、star数を見ると
 
 ### サンプル
 - すぐに利用できそうなサンプル
-  - 落としてきてnpm insltallしたら、app.js, index.htmlのサーバ名とポート番号を変更して node app.jsする。
+  - 落としてきてnpm installしたら、app.js, index.htmlのサーバ名とポート番号を変更して node app.jsする。
   - ブラウザ側でアクセスするだけ
   - https://github.com/Lushe/WebSocket-Chat-Sample.git 
+- techblogのsocket.ioを利用したサンプル
+  - https://techblog.yahoo.co.jp/javascript/nodejs/online_game_architecture_by_socketio/
 
 # 参考URL
 - WebSocket / WebRTCの技術紹介
