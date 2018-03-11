@@ -1,119 +1,227 @@
+# 概要
+Apacheのコマンドラインについてまとめていくことにする。
+バージョンは2.4.23を対象としています。
 
+```
+$ ls /usr/local/apache2.4.23/bin/
+ab            apxs          dbmmanage     htcacheclean  htdigest      httpd         logresolve    
+apachectl     checkgid      fcgistarter   htdbm         htpasswd      httxt2dbm     rotatelogs
+```
 
-*** ヘルプを表示する
-基本的なオプションは、下記コマンドで確認することができます。
- $ /usr/sbin/httpd -h
- Usage: /usr/sbin/httpd [-D name] [-d directory] [-f file]
-       [-C "directive"] [-c "directive"]
-       [-k start|restart|graceful|graceful-stop|stop]
-       [-v] [-V] [-h] [-l] [-L] [-t] [-T] [-S]
- 
- Options:
- -D name            : define a name for use in <IfDefine name> directives
- -d directory       : specify an alternate initial ServerRoot
- -f file            : specify an alternate ServerConfigFile
- -C "directive"     : process directive before reading config files
- -c "directive"     : process directive after reading config files
- -e level           : show startup errors of level (see LogLevel)
- -E file            : log startup errors to file
- -v                 : show version number
- -V                 : show compile settings
- -h                 : list available command line options (this page)
- -l                 : list compiled in modules
- -L                 : list available configuration directives
- -t -D DUMP_VHOSTS  : show parsed settings (currently only vhost settings)
- -S                 : a synonym for -t -D DUMP_VHOSTS
- -t -D DUMP_MODULES : show all loaded modules
- -M                 : a synonym for -t -D DUMP_MODULES
- -t                 : run syntax check for config files
- -T                 : start without DocumentRoot(s) check
+# コマンド
 
+## httpd
 
-*** バージョンを確認する
- $ /usr/sbin/httpd -v
- Server version: Apache/2.2.17 (Unix)
- Server built:   Dec 17 2010 11:58:24
+### ヘルプ
+```
+$ /usr/sbin/httpd -h
+Usage: /usr/sbin/httpd [-D name] [-d directory] [-f file]
+                       [-C "directive"] [-c "directive"]
+                       [-k start|restart|graceful|graceful-stop|stop]
+                       [-v] [-V] [-h] [-l] [-L] [-t] [-T] [-S] [-X]
+Options:
+  -D name            : define a name for use in <IfDefine name> directives
+  -d directory       : specify an alternate initial ServerRoot
+  -f file            : specify an alternate ServerConfigFile
+  -C "directive"     : process directive before reading config files
+  -c "directive"     : process directive after reading config files
+  -e level           : show startup errors of level (see LogLevel)
+  -E file            : log startup errors to file
+  -v                 : show version number
+  -V                 : show compile settings
+  -h                 : list available command line options (this page)
+  -l                 : list compiled in modules
+  -L                 : list available configuration directives
+  -t -D DUMP_VHOSTS  : show parsed vhost settings
+  -t -D DUMP_RUN_CFG : show parsed run settings
+  -S                 : a synonym for -t -D DUMP_VHOSTS -D DUMP_RUN_CFG
+  -t -D DUMP_MODULES : show all loaded modules 
+  -M                 : a synonym for -t -D DUMP_MODULES
+  -t                 : run syntax check for config files
+  -T                 : start without DocumentRoot(s) check
+  -X                 : debug mode (only one worker, do not detach)
 
-*** コンパイル設定を確認する
- $ /usr/sbin/httpd -V
- Server version: Apache/2.2.17 (Unix)
- Server built:   Dec 17 2010 11:58:24
- Server's Module Magic Number: 20051115:25
- Server loaded:  APR 1.3.12, APR-Util 1.3.9
- Compiled using: APR 1.3.12, APR-Util 1.3.9
- Architecture:   32-bit
- Server MPM:     Prefork
-   threaded:     no
-     forked:     yes (variable process count)
- Server compiled with....
-  -D APACHE_MPM_DIR="server/mpm/prefork"
-  -D APR_HAS_SENDFILE
-  -D APR_HAS_MMAP
-  -D APR_HAVE_IPV6 (IPv4-mapped addresses enabled)
-  -D APR_USE_SYSVSEM_SERIALIZE
-  -D APR_USE_PTHREAD_SERIALIZE
-  -D SINGLE_LISTEN_UNSERIALIZED_ACCEPT
-  -D APR_HAS_OTHER_CHILD
-  -D AP_HAVE_RELIABLE_PIPED_LOGS
-  -D DYNAMIC_MODULE_LIMIT=128
-  -D HTTPD_ROOT="/etc/httpd"
-  -D SUEXEC_BIN="/usr/sbin/suexec"
-  -D DEFAULT_PIDLOG="logs/httpd.pid"
-  -D DEFAULT_SCOREBOARD="logs/apache_runtime_status"
-  -D DEFAULT_LOCKFILE="logs/accept.lock"
-  -D DEFAULT_ERRORLOG="logs/error_log"
-  -D AP_TYPES_CONFIG_FILE="conf/mime.types"
-  -D SERVER_CONFIG_FILE="conf/httpd.conf"
+```
 
-*** 設定ファイルを読み込みsyntaxをチェックする
- $ sudo /usr/sbin/httpd -t
- Syntax OK
+### 設定ファイルのsyntax checkを行う
+```
+$ /usr/local/apache2.4.23/bin/httpd -t
+Syntax OK
+```
 
-*** バーチャルホスト情報を表示する
- $ sudo /usr/sbin/httpd -S
- VirtualHost configuration:
- wildcard NameVirtualHosts and _default_ servers:
- _default_:443          localhost.localdomain (/etc/httpd/conf.d/ssl.conf:75)
- Syntax OK
+### バージョンとビルド時刻を表示する
+```
+$ /usr/local/apache2.4.23/bin/httpd -v
+Server version: Apache/2.4.23 (Unix)
+Server built:   Sep 23 2016 11:25:51
+```
 
-*** モジュールを表示する
- $ sudo /usr/sbin/httpd -M
- Loaded Modules:
-  core_module (static)
-  mpm_prefork_module (static)
-  http_module (static)
-  so_module (static)
-  auth_basic_module (shared)
- auth_digest_module (shared)
-
-利用しているモードは次のようにして確認できます。
-  $ /usr/local/apache2.4.23/bin/httpd -M | grep -ie prefork -ie event -ie worker
-   mpm_prefork_module (static)
-
-*** 組み込みされたモジュールのソースコード名を確認する
- $ /usr/sbin/httpd -l
- Compiled in modules:
+### 組み込まれたモジュールを確認する。
+```
+$ /usr/local/apache2.4.23/bin/httpd -l
+Compiled in modules:
   core.c
-  prefork.c
-  http_core.c
   mod_so.c
+  http_core.c
+  prefork.c
+```
 
+### 読み込まれるモジュールを表示する
+-lオプションとは異なりstaticの他にDSOとしてのライブラリも表示する。  
+モジュール名を表示している
+```
+$ /usr/local/apache2.4.23/bin/httpd -M
+Loaded Modules:
+ core_module (static)
+ so_module (static)
+ http_module (static)
+ mpm_prefork_module (static)
+ authn_file_module (shared)
+ authn_core_module (shared)
+ authz_host_module (shared)
+ authz_groupfile_module (shared)
+ authz_user_module (shared)
+ authz_core_module (shared)
+ access_compat_module (shared)
+ auth_basic_module (shared)
+ reqtimeout_module (shared)
+ filter_module (shared)
+ mime_module (shared)
+ log_config_module (shared)
+ env_module (shared)
+ headers_module (shared)
+ setenvif_module (shared)
+ version_module (shared)
+ unixd_module (shared)
+ status_module (shared)
+ autoindex_module (shared)
+ dir_module (shared)
+ alias_module (shared)
+```
 
-*** 利用可能なディレクティブ情報を表示する
- $ /usr/sbin/httpd -L
- <Directory (core.c)
-        Container for directives affecting resources located in the specified directories
-        Allowed in *.conf only outside <Directory>, <Files> or <Location>
- <Location (core.c)
-        Container for directives affecting resources accessed through the specified URL paths
-        Allowed in *.conf only outside <Directory>, <Files> or <Location>
- <VirtualHost (core.c)
-        Container to map directives to a particular virtual host, takes one or more host addresses
-        Allowed in *.conf only outside <Directory>, <Files> or <Location>
- <Files (core.c)
-        Container for directives affecting files matching specified patterns
-        Allowed in *.conf anywhere and in .htaccess
-        when AllowOverride isn't None
- (以下省略)
+### 利用可能な設定ディレクティブを表示する
+```
+$ /usr/local/apache2.4.23/bin/httpd -L | head -20
+<Directory (core.c)
+	Container for directives affecting resources located in the specified directories
+	Allowed in *.conf only outside <Directory>, <Files>, <Location>, or <If>
+<Location (core.c)
+	Container for directives affecting resources accessed through the specified URL paths
+	Allowed in *.conf only outside <Directory>, <Files>, <Location>, or <If>
+<VirtualHost (core.c)
+	Container to map directives to a particular virtual host, takes one or more host addresses
+	Allowed in *.conf only outside <Directory>, <Files>, <Location>, or <If>
+<Files (core.c)
+	Container for directives affecting files matching specified patterns
+	Allowed in *.conf anywhere and in .htaccess
+	when AllowOverride isn't None
+<Limit (core.c)
+	Container for authentication directives when accessed using specified HTTP methods
+	Allowed in *.conf only inside <Directory>, <Files>, <Location>, or <If> and in .htaccess
+	when AllowOverride includes AuthConfig or Limit
+<LimitExcept (core.c)
+	Container for authentication directives to be applied when any HTTP method other than those specified is used to access the resource
+	Allowed in *.conf only inside <Directory>, <Files>, <Location>, or <If> and in .htaccess
+```
 
+### 主要設定を確認する(バーチャルホスト情報を表示する)
+-Sオプションでたしか設定されているVirtualHostの一覧も出力することができたはず...(参考: http://mathtti.hatenablog.com/entry/20110911/p1)
+```
+$ /usr/local/apache2.4.23/bin/httpd -S
+VirtualHost configuration:
+ServerRoot: "/usr/local/apache2.4.23"
+Main DocumentRoot: "/usr/local/apache2.4.23/htdocs"
+Main ErrorLog: "/usr/local/apache2.4.23/logs/error_log"
+Mutex default: dir="/usr/local/apache2.4.23/logs/" mechanism=default 
+Mutex mpm-accept: using_defaults
+PidFile: "/usr/local/apache2.4.23/logs/httpd.pid"
+Define: DUMP_VHOSTS
+Define: DUMP_RUN_CFG
+User: name="daemon" id=2 not_used
+Group: name="daemon" id=2 not_used
+```
 
+### コンパイル設定を確認する
+```
+$ sudo /usr/local/apache2.4.23/bin/httpd -V
+Server version: Apache/2.4.23 (Unix)
+Server built:   Sep 23 2016 11:25:51
+Server's Module Magic Number: 20120211:61
+Server loaded:  APR 1.5.2, APR-UTIL 1.5.4
+Compiled using: APR 1.4.6, APR-UTIL 1.4.1
+Architecture:   64-bit
+Server MPM:     prefork
+  threaded:     no
+    forked:     yes (variable process count)
+Server compiled with....
+ -D APR_HAS_SENDFILE
+ -D APR_HAS_MMAP
+ -D APR_HAVE_IPV6 (IPv4-mapped addresses enabled)
+ -D APR_USE_SYSVSEM_SERIALIZE
+ -D APR_USE_PTHREAD_SERIALIZE
+ -D SINGLE_LISTEN_UNSERIALIZED_ACCEPT
+ -D APR_HAS_OTHER_CHILD
+ -D AP_HAVE_RELIABLE_PIPED_LOGS
+ -D DYNAMIC_MODULE_LIMIT=256
+ -D HTTPD_ROOT="/usr/local/apache2.4.23"
+ -D SUEXEC_BIN="/usr/local/apache2.4.23/bin/suexec"
+ -D DEFAULT_PIDLOG="logs/httpd.pid"
+ -D DEFAULT_SCOREBOARD="logs/apache_runtime_status"
+ -D DEFAULT_ERRORLOG="logs/error_log"
+ -D AP_TYPES_CONFIG_FILE="conf/mime.types"
+ -D SERVER_CONFIG_FILE="conf/httpd.conf"
+```
+
+### 読み込まれたincludeファイルなどを全て表示する
+以下の例は1つしかないので微妙だがincludeで読み込まれたファイルを全て表示するようだ
+```
+$ sudo /usr/local/apache2.4.23/bin/httpd --t -D DUMP_INCLUDES
+Included configuration files:
+  (*) /usr/local/apache2.4.23/conf/httpd.conf
+```
+
+### 起動時にログレベルを指定する
+例えば、apachectl経由でなく、以下のようにしてhttpdを直接起動してみると次のようにdebugログれbるの出力を吐きます。
+```
+$ sudo /usr/local/apache2.4.23/bin/httpd -e debug
+[Mon Nov 28 00:29:14.465008 2016] [so:debug] [pid 2619] mod_so.c(266): AH01575: loaded module authn_file_module from /usr/local/apache2.4.23/modules/mod_authn_file.so
+[Mon Nov 28 00:29:14.466256 2016] [so:debug] [pid 2619] mod_so.c(266): AH01575: loaded module authn_core_module from /usr/local/apache2.4.23/modules/mod_authn_core.so
+[Mon Nov 28 00:29:14.466953 2016] [so:debug] [pid 2619] mod_so.c(266): AH01575: loaded module authz_host_module from /usr/local/apache2.4.23/modules/mod_authz_host.so
+[Mon Nov 28 00:29:14.467686 2016] [so:debug] [pid 2619] mod_so.c(266): AH01575: loaded module authz_groupfile_module from /usr/local/apache2.4.23/modules/mod_authz_groupfile.so
+[Mon Nov 28 00:29:14.468227 2016] [so:debug] [pid 2619] mod_so.c(266): AH01575: loaded module authz_user_module from /usr/local/apache2.4.23/modules/mod_authz_user.so
+[Mon Nov 28 00:29:14.468962 2016] [so:debug] [pid 2619] mod_so.c(266): AH01575: loaded module authz_core_module from /usr/local/apache2.4.23/modules/mod_authz_core.so
+[Mon Nov 28 00:29:14.469714 2016] [so:debug] [pid 2619] mod_so.c(266): AH01575: loaded module access_compat_module from /usr/local/apache2.4.23/modules/mod_access_compat.so
+[Mon Nov 28 00:29:14.470336 2016] [so:debug] [pid 2619] mod_so.c(266): AH01575: loaded module auth_basic_module from /usr/local/apache2.4.23/modules/mod_auth_basic.so
+[Mon Nov 28 00:29:14.471347 2016] [so:debug] [pid 2619] mod_so.c(266): AH01575: loaded module reqtimeout_module from /usr/local/apache2.4.23/modules/mod_reqtimeout.so
+[Mon Nov 28 00:29:14.472101 2016] [so:debug] [pid 2619] mod_so.c(266): AH01575: loaded module filter_module from /usr/local/apache2.4.23/modules/mod_filter.so
+[Mon Nov 28 00:29:14.472758 2016] [so:debug] [pid 2619] mod_so.c(266): AH01575: loaded module mime_module from /usr/local/apache2.4.23/modules/mod_mime.so
+[Mon Nov 28 00:29:14.474076 2016] [so:debug] [pid 2619] mod_so.c(266): AH01575: loaded module log_config_module from /usr/local/apache2.4.23/modules/mod_log_config.so
+[Mon Nov 28 00:29:14.474729 2016] [so:debug] [pid 2619] mod_so.c(266): AH01575: loaded module env_module from /usr/local/apache2.4.23/modules/mod_env.so
+[Mon Nov 28 00:29:14.475238 2016] [so:debug] [pid 2619] mod_so.c(266): AH01575: loaded module headers_module from /usr/local/apache2.4.23/modules/mod_headers.so
+[Mon Nov 28 00:29:14.477259 2016] [so:debug] [pid 2619] mod_so.c(266): AH01575: loaded module setenvif_module from /usr/local/apache2.4.23/modules/mod_setenvif.so
+[Mon Nov 28 00:29:14.477850 2016] [so:debug] [pid 2619] mod_so.c(266): AH01575: loaded module version_module from /usr/local/apache2.4.23/modules/mod_version.so
+[Mon Nov 28 00:29:14.478907 2016] [so:debug] [pid 2619] mod_so.c(266): AH01575: loaded module unixd_module from /usr/local/apache2.4.23/modules/mod_unixd.so
+[Mon Nov 28 00:29:14.479422 2016] [so:debug] [pid 2619] mod_so.c(266): AH01575: loaded module status_module from /usr/local/apache2.4.23/modules/mod_status.so
+[Mon Nov 28 00:29:14.479944 2016] [so:debug] [pid 2619] mod_so.c(266): AH01575: loaded module autoindex_module from /usr/local/apache2.4.23/modules/mod_autoindex.so
+[Mon Nov 28 00:29:14.480333 2016] [so:debug] [pid 2619] mod_so.c(266): AH01575: loaded module dir_module from /usr/local/apache2.4.23/modules/mod_dir.so
+[Mon Nov 28 00:29:14.480579 2016] [so:debug] [pid 2619] mod_so.c(266): AH01575: loaded module alias_module from /usr/local/apache2.4.23/modules/mod_alias.so
+```
+
+### デバッグ用
+gdbなどをする場合におなじみの1プロセス、1worker用のオプションです。
+```
+$ sudo /usr/local/apache2.4.23/bin/httpd -X
+```
+
+### その他のオプション
+実際に試していないのでヘルプに出てくる文言を載せる程度にとどめる。
+```
+  -D name            : define a name for use in <IfDefine name> directives
+  -d directory       : specify an alternate initial ServerRoot
+  -f file            : specify an alternate ServerConfigFile
+  -C "directive"     : process directive before reading config files
+  -c "directive"     : process directive after reading config files
+  -e level           : show startup errors of level (see LogLevel)
+  -E file            : log startup errors to file
+  -T                 : start without DocumentRoot(s) check
+```

@@ -40,6 +40,10 @@ HDDから1MB読み出し                          20,000,000ns
   - http://postd.cc/thinking-about-performance/
 
 
+### 様々な地域からの速度を計測する(Global latency testing tool)
+以下のurlパラメータに指定すると様々な場所から測定することが可能となる。
+- https://latency.apex.sh/?url=https%3A%2F%2Fwww.yahoo.co.jp
+
 # 参考URL
 - 全盛期のJeff Dean伝説
   - http://qiita.com/umegaya/items/ef69461d6f4967d5c623

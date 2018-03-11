@@ -57,6 +57,13 @@ $ git branch -D testbranch
 $ git merge mergeOrigBranch
 ```
 
+### 現在いるブランチを表示する
+たとえば、master_derivedというブランチを作成して、そのブランチの中にいるのであれば次のコマンドでそのブランチを取得できる。
+```
+$ git rev-parse --abbrev-ref HEAD
+master_derived
+```
+
 ### TODO
 - http://qiita.com/chihiro/items/e178e45a7fd5a2fb4599
   - 以下のコマンドをまとめたい

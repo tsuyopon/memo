@@ -227,6 +227,33 @@ $ openssl s_client -connect www.yahoo.co.jp:443 -tls1_1
 $ openssl s_client -connect www.yahoo.co.jp:443 -tls1_2
 ```
 
+### ハンドシェイクのTLSパケット情報も含めて確認する
+msgオプションを付与すると、ClientHelloやServerHello等のパケット情報を確認することができる。
+レコードレイヤーの5byteの情報などはこれで簡単に目GREPできる。
+```
+$ openssl s_client -connect shopping.yahoo.co.jp:443 -msg
+CONNECTED(00000003)
+>>> SSL 2.0 [length 0080], CLIENT-HELLO
+    01 03 01 00 57 00 00 00 20 00 00 39 00 00 38 00
+    00 35 00 00 16 00 00 13 00 00 0a 07 00 c0 00 00
+    33 00 00 32 00 00 2f 00 00 9a 00 00 99 00 00 96
+    03 00 80 00 00 05 00 00 04 01 00 80 00 00 15 00
+    00 12 00 00 09 06 00 40 00 00 14 00 00 11 00 00
+    08 00 00 06 04 00 80 00 00 03 02 00 80 00 00 ff
+    36 2a 9f bb a9 17 ad 0e ec 3f df 97 cc 36 f1 ea
+    67 ae 41 73 15 d7 10 6d 1a a8 e1 16 e5 9c 8b 0b
+<<< TLS 1.0 Handshake [length 0051], ServerHello
+    02 00 00 4d 03 01 82 9e 26 bc 02 75 e9 02 a7 53
+    86 7c 70 bc cc 1e a9 ab dd 28 f6 a6 59 37 a9 63
+    0e ca 77 bf 9d 69 20 7a 59 6c 72 cd 05 22 3e 7c
+    cd 6f a9 5e 06 49 d7 74 4d 85 55 71 86 d5 b7 5b
+    24 63 ef a3 3d 4e e7 00 2f 00 00 05 ff 01 00 01
+    00
+<<< TLS 1.0 Handshake [length 11ce], Certificate
+    0b 00 11 ca 00 11 c7 00 0d 63 30 82 0d 5f 30 82
+(snip)
+```
+
 ### 接続時に暗号を指定する
 たとえば、MD5関連の暗号だけ送るとすると、、、
 ```
@@ -320,9 +347,23 @@ DONE
   - https://tech.nosuz.jp/2015/12/enable-ocsp-stapling/
 
 ### SNIの証明書を確認する
-servernameオプションを付与しないとSNIのような場合に、接続した際の正しい証明書のレスポンスが返ってこない事があるようです。
-詳しくは以下で確認すること
-- https://qiita.com/greymd/items/5d2fc55430105620a550
+SNIという１つのIPアドレスで複数のSSL証明書を扱う技術を確認するためにはservernameを利用します。
+これが指定されないと、サーバ側はデフォルトのSSL証明書を返します。
+
+- servernameが指定されない場合
+```
+$ openssl s_client -connect help.hipchat.com:443 -showcerts < /dev/null 2>&1 | grep subject
+subject=/OU=GT20300774/OU=See www.rapidssl.com/resources/cps (c)15/OU=Domain Control Validated - RapidSSL(R)/CN=*.uservoice.com
+```
+
+- servernameが指定される場合(SNIとしてドメインが指定された場合)
+```
+$ openssl s_client -connect help.hipchat.com:443 -servername help.hipchat.com -showcerts < /dev/null 2>&1 | grep subject
+subject=/C=US/L=San Francisco/ST=California/O=Atlassian, Inc./OU=HipChat/CN=help.hipchat.com
+```
+
+- SeeAlso
+  - https://qiita.com/greymd/items/5d2fc55430105620a550
 
 ### 有効期限情報を表示する
 ```
@@ -330,4 +371,105 @@ $ echo | openssl s_client -connect www.yahoo.co.jp:443 2> /dev/null |openssl x50
 notBefore=Oct 16 11:04:19 2017 GMT
 notAfter=Nov 15 14:59:00 2018 GMT
 ```
+
+### セッションがreuseできるかどうかを確認する方法
+reconnectオプションで1回目は新規接続、2回目以降はsessionを再利用するといった使い方を確認することができます。
+```
+$ openssl s_client -reconnect -host www.yahoo.co.jp -port 443 |grep -e "\(Reuse\|New\)" 
+depth=1 /C=JP/O=Cybertrust Japan Co., Ltd./CN=Cybertrust Japan Public CA G3
+verify error:num=20:unable to get local issuer certificate
+verify return:0
+New, TLSv1/SSLv3, Cipher is AES128-SHA
+depth=1 /C=JP/O=Cybertrust Japan Co., Ltd./CN=Cybertrust Japan Public CA G3
+verify error:num=20:unable to get local issuer certificate
+verify return:0
+New, TLSv1/SSLv3, Cipher is AES128-SHA
+Reused, TLSv1/SSLv3, Cipher is AES128-SHA
+Reused, TLSv1/SSLv3, Cipher is AES128-SHA
+Reused, TLSv1/SSLv3, Cipher is AES128-SHA
+Reused, TLSv1/SSLv3, Cipher is AES128-SHA
+```
+
+上記だけだと新規接続と再接続時のパラメータの違いを見逃してしまうので出力を記載しておきます。
+以下では新規接続(New)が1回、再接続(Reused)が1回呼び出されるところのみを表示しています。Protocol, Cipher, Session-ID, Master-Keyなどが何も変わっていないことが確認できます。
+```
+$ openssl s_client -reconnect -host www.yahoo.co.jp -port 443 
+(snip)
+---
+SSL handshake has read 5239 bytes and written 415 bytes
+---
+New, TLSv1/SSLv3, Cipher is ECDHE-RSA-AES128-GCM-SHA256
+Server public key is 2048 bit
+Secure Renegotiation IS supported
+Compression: NONE
+Expansion: NONE
+No ALPN negotiated
+SSL-Session:
+    Protocol  : TLSv1.2
+    Cipher    : ECDHE-RSA-AES128-GCM-SHA256
+    Session-ID: B21ED0649C2A821C9DD6AC9CC18F3ECF2F4AB1891BB4B5BE8AFEB44B39197E9D
+    Session-ID-ctx: 
+    Master-Key: E9D9697901AC45A5A41F69D890AC1C47279BF056160BA67916B09B53EAF84B961830089E5678D9EED2D185F991E06072
+    Key-Arg   : None
+    Krb5 Principal: None
+    PSK identity: None
+    PSK identity hint: None
+    TLS session ticket lifetime hint: 7200 (seconds)
+    TLS session ticket:
+    0000 - 65 64 67 65 2e 65 64 67-65 2e 61 74 73 5f 73 73   edge.edge.ats_ss
+    0010 - 39 e8 02 69 42 52 d6 2d-87 7c b8 da 5c db 85 7b   9..iBR.-.|..\..{
+    0020 - e4 6b 73 b0 98 03 18 d4-3a 79 36 98 63 84 1b 72   .ks.....:y6.c..r
+    0030 - d7 ee 18 b2 83 49 c9 c7-f7 6c a8 c0 03 ba 7c 6a   .....I...l....|j
+    0040 - a2 7b 27 42 a7 30 e6 74-18 34 39 01 12 38 73 2c   .{'B.0.t.49..8s,
+    0050 - 6b dd 14 99 1a 87 86 7c-99 cf 4a ca d1 cb 9a 1c   k......|..J.....
+    0060 - 2e 94 98 de e3 9e 55 2f-16 b9 f8 68 00 17 e6 fb   ......U/...h....
+    0070 - 31 7b 02 0d 64 03 92 85-3d 23 a0 29 bb 37 e8 a6   1{..d...=#.).7..
+    0080 - b7 40 75 53 47 0b 87 4d-c6 f0 bf 2f 84 c1 8d 9b   .@uSG..M.../....
+    0090 - bf c8 97 e3 11 c5 c0 53-66 77 6d 92 47 fe ec 08   .......Sfwm.G...
+    00a0 - 1b 79 fb e7 d4 cc cd 75-7b 07 b8 22 cc da f7 eb   .y.....u{.."....
+    00b0 - 47 65 52 f0 38 c6 45 9c-b3 51 25 43 67 66 92 58   GeR.8.E..Q%Cgf.X
+
+    Start Time: 1516424835
+    Timeout   : 300 (sec)
+    Verify return code: 9 (certificate is not yet valid)
+---
+drop connection and then reconnect
+CONNECTED(00000003)
+---
+Reused, TLSv1/SSLv3, Cipher is ECDHE-RSA-AES128-GCM-SHA256
+Secure Renegotiation IS supported
+Compression: NONE
+Expansion: NONE
+No ALPN negotiated
+SSL-Session:
+    Protocol  : TLSv1.2
+    Cipher    : ECDHE-RSA-AES128-GCM-SHA256
+    Session-ID: B21ED0649C2A821C9DD6AC9CC18F3ECF2F4AB1891BB4B5BE8AFEB44B39197E9D
+    Session-ID-ctx: 
+    Master-Key: E9D9697901AC45A5A41F69D890AC1C47279BF056160BA67916B09B53EAF84B961830089E5678D9EED2D185F991E06072
+    Key-Arg   : None
+    Krb5 Principal: None
+    PSK identity: None
+    PSK identity hint: None
+    TLS session ticket lifetime hint: 7200 (seconds)
+    TLS session ticket:
+    0000 - 65 64 67 65 2e 65 64 67-65 2e 61 74 73 5f 73 73   edge.edge.ats_ss
+    0010 - 39 e8 02 69 42 52 d6 2d-87 7c b8 da 5c db 85 7b   9..iBR.-.|..\..{
+    0020 - e4 6b 73 b0 98 03 18 d4-3a 79 36 98 63 84 1b 72   .ks.....:y6.c..r
+    0030 - d7 ee 18 b2 83 49 c9 c7-f7 6c a8 c0 03 ba 7c 6a   .....I...l....|j
+    0040 - a2 7b 27 42 a7 30 e6 74-18 34 39 01 12 38 73 2c   .{'B.0.t.49..8s,
+    0050 - 6b dd 14 99 1a 87 86 7c-99 cf 4a ca d1 cb 9a 1c   k......|..J.....
+    0060 - 2e 94 98 de e3 9e 55 2f-16 b9 f8 68 00 17 e6 fb   ......U/...h....
+    0070 - 31 7b 02 0d 64 03 92 85-3d 23 a0 29 bb 37 e8 a6   1{..d...=#.).7..
+    0080 - b7 40 75 53 47 0b 87 4d-c6 f0 bf 2f 84 c1 8d 9b   .@uSG..M.../....
+    0090 - bf c8 97 e3 11 c5 c0 53-66 77 6d 92 47 fe ec 08   .......Sfwm.G...
+    00a0 - 1b 79 fb e7 d4 cc cd 75-7b 07 b8 22 cc da f7 eb   .y.....u{.."....
+    00b0 - 47 65 52 f0 38 c6 45 9c-b3 51 25 43 67 66 92 58   GeR.8.E..Q%Cgf.X
+
+    Start Time: 1516424835
+    Timeout   : 300 (sec)
+    Verify return code: 9 (certificate is not yet valid)
+(残り4回ほどreusedが続くので省略)
+```
+
 

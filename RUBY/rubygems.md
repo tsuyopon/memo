@@ -6,6 +6,16 @@ gemとはrubyで使われるライブラリを指す。
 
 # 詳細
 
+### RubyGemsのパスを指定する(GEM_HOME, GEM_PATH環境変数)
+GEM_HOMEはgemの「インストール先ディレクトリ」の設定です。
+```
+GEM_HOME=/var/lib/gems/1.8/               # RubyGemsのパスを指定する
+```
+
+GEM_PATHはgemの「探索対象ディレクトリ」の設定です。
+```
+GEM_PATH=$PWD/local-gems:$GEM_PATH
+```
 
 ### remoteからgemパッケージを検索する
 searchだとremoteからパッケージを検索します。ちなみにlistだとlocalからパッケージを検索する。
@@ -396,6 +406,36 @@ For help on a particular command, use 'gem help COMMAND'.
 
 Commands may be abbreviated, so long as they are unambiguous.
 e.g. 'gem i rake' is short for 'gem install rake'.
+```
+
+少し古いバージョンかもだが以下に説明があるので載せておく
+```
+gem build             gemspecからgemをつくる
+gem cert              サインの必要な証明のRubyGemsを管理する 
+gem check             インストールされたgemをチェックする
+gem cleanup           ローカルリポジトリの中にインストールされたgemの古いバージョンを除去する
+gem contents          インストールされたgemのコンテンツを表示する
+gem dependency        インストールしたgemの依存を示す
+gem environment       RubyGemsの環境に関する情報を表示する
+gem fetch             gemをダウンロードし、現在のディレクトリに置く 
+gem generate_index    gemのサーバーディレクトリ向けのインデックスファイルを生成する
+gem help              'gem'コマンドにヘルプを与える
+gem install           ローカルリポジトリにgemをインストールする
+gem list              一続きで始まる名前のgemを表示する
+gem lock              gemのロックダウンリストを生成する
+gem mirror            gemの倉庫を写す
+gem outdated          アップデートが必要な全てのgemを表示する
+gem pristine          gemの隠し場所にあるファイルからインストールしたgemを初期状態へ戻す
+gem query             特定の標準に合うgemを質問する
+gem rdoc              プリインストールされたgemのRDocを生成する
+gem search            一続きを含む名前の全てのgemを表示する
+gem server            Documentation and gem repository HTTP server
+gem sources           gemを検索するために使われているRubyGemsのソースとキャッシュファイルを管理する
+gem specification     (yamlで)gemの詳細を表示する
+gem uninstall         ローカルリポジトリからgemをアンインストールする
+gem unpack            現在のディレクトリにインストールされたgemを解凍する
+gem update            ローカルリポジトリで指定されたgem(あるいはインストール済の全てのgem)をアップデートする
+gem which             ライブラリの場所を探す
 ```
 
 # 参考URL

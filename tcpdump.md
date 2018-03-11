@@ -205,6 +205,14 @@ $ tcpdump greater 128
 # tcpdump 'ip[6] & 128 != 0'
 ```
 
+### 80番ポートの送受信で利用されるHTTP IPv4全てのパケットを表示する
+以下の例ではSYN, FIN, ACKなどのパケットが除外されることになります。
+```
+$ sudo tcpdump -i any 'tcp port 80 and (((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12]&0xf0)>>2)) != 0)'
+10:44:27.999829 IP localhost.44980 > localhost.webcache: Flags [P.], seq 72352275:72352357, ack 463199513, win 342, options [nop,nop,TS val 353883924 ecr 353883924], length 82: HTTP: GET /test HTTP/1.1
+10:44:28.000446 IP localhost.webcache > localhost.44980: Flags [P.], seq 1:363, ack 82, win 342, options [nop,nop,TS val 353883924 ecr 353883924], length 362: HTTP: HTTP/1.1 404 Not Found
+```
+
 ### mysqlへのクエリリクエストを知りたい
 こんな感じのリクエストを発行すれば良い。前者は簡易にSELECTだけ知りたいような場合。後者は文字列で抽出している。
 ```

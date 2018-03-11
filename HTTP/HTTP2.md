@@ -21,6 +21,28 @@ HTTP/2の特徴
 ほとんどすべてのブラウザでHTTP/2が利用可能となっている。
 - http://caniuse.com/#feat=http2
 
+HTTP/1.1とHTTP/2との画像出力における比較サイトも参考すると良い。
+- https://http2.akamai.com/demo
+
+# 詳細
+
+### TLSがALPNに対応していることを確認する
+TLSがALPN拡張に対応していないと初期接続としてHTTP/2を確立できません。
+次のopensslコマンドで確認することができます。なお、OpenSSLはALPNをサポートしていますが、サポートしているバージョンは OpenSSL 1.0.2 以降です。
+```
+$ echo | openssl s_client -alpn h2 -connect www.yahoo.co.jp:443 
+```
+
+対応している場合には次の行が表示されます
+```
+ALPN protocol: h2
+```
+
+対応していない場合には次のようが表示されます
+```
+No ALPN negotiated
+```
+
 ### ブラウザの開発ツール
 
 - chromeの場合にはプロトコルはデフォルトで表示されていません。

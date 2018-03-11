@@ -196,6 +196,18 @@ $ networksetup -listnetworkserviceorder
 $ sudo networksetup -setv6off Wi-Fi
 ```
 
+### lddが使えない
+MACではlddが使えない。そのためにotoolコマンドを利用します。
+```
+$ which curl
+/usr/bin/curl
+$ otool -L /usr/bin/curl
+/usr/bin/curl:
+	/usr/lib/libcurl.4.dylib (compatibility version 7.0.0, current version 8.0.0)
+	/usr/lib/libz.1.dylib (compatibility version 1.0.0, current version 1.2.5)
+	/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1213.0.0)
+```
+
 # トラブルシューティング
 
 ### SierraにアップデートするとSSH接続で秘密鍵のパスを覚えてくれない
@@ -207,6 +219,7 @@ Host *
 	UseKeychain yes
 	AddKeysToAgent yes
 ```
+
 
 - 参考
   - https://qiita.com/takumikkusu/items/3b18e475de02a91b37e8

@@ -1,4 +1,3 @@
-
 # 概要
 rubyに関するメモ
 とりあえず読むときに困らないように
@@ -371,6 +370,21 @@ def self.piyo
   yield
 end
 ```
+
+### mapと&を指定した省略記法
+配列の情報に対してメソッドを適用したい場合には次のようにします。
+```
+a = ["APPLE", "ORANGE", "GRAPE"]
+p a.map { |v| v.downcase }
+```
+
+例えば、上記の２行目は「&:メソッド」とすることで次のような省略記法が可能です。
+```
+a = ["APPLE", "ORANGE", "GRAPE"]
+p a.map(&:downcase)    # ["apple", "orange", "grape"]
+```
+
+
 
 
 ### インスタンスメソッド(def xxx)とクラスメソッド(def self.xxx)について
