@@ -1,3 +1,14 @@
+### 秘密鍵と公開鍵のペアが一致することを確認する
+crtと対のkeyなのかは次のハッシュ値が一致しているかどうかでも確認することができます。
+次のように一致していれば問題無いことが確認できます。
+```
+$ openssl rsa -in mid_server.key -modulus -noout | openssl md5
+Enter pass phrase for server.key:
+(stdin)= c83dfb14665389f18d3c2b019bc8575b
+$ openssl x509 -in mid_server.crt -modulus -noout | openssl md5
+(stdin)= c83dfb14665389f18d3c2b019bc8575b
+```
+
 ### 秘密鍵ファイルを確認する
 ```
 $ openssl rsa -in server.key -noout -text 

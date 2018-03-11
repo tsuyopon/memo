@@ -11,6 +11,11 @@ $ openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
 $ sudo openssl s_server -accept 443 -cert server.crt -key server.key -www -debug   // wwwだとTLSハンドシェイクをbodyに返す
 ```
 
+apacheの起動時などで秘密鍵を取り除いておきたい場合には次のコマンドでパスフレーズを取り除いておくこと
+```
+$ openssl rsa -in server.key -out noserver.key
+```
+
 ### 秘密鍵と公開鍵のペアが一致することを確認する
 opensslでテスト起動できないような場合、秘密鍵と公開鍵のペアが一致していない場合には次のようなエラーがでます。
 ```
@@ -91,7 +96,6 @@ ACCEPT
 <<< TLS 1.2 Alert [length 0002], warning close_notify
     01 00
 ACCEPT
-
 ```
 
 debugオプションを付与するとパケット情報もダンプしてくれるようになります。
@@ -107,7 +111,6 @@ read from 0x1c6aa50 [0x1c7014e] (284 bytes => 284 (0x11C))
 0000 - 4a fd 40 ae 50 b2 2e 64-fa d1 9f fb 46 8d e9 f5   J.@.P..d....F...
 0010 - 25 f2 59 c9 39 8e 0d 98-59 32 7c 00 cc 9c 2f 7a   %.Y.9...Y2|.../z
 ```
-
 
 ### お手軽にHTTPSサーバを立てて証明書確認を行う
 opensslコマンドにはお手軽にHTTPSサーバを立てる機能が存在します。次のような感じで指定します。
@@ -131,6 +134,7 @@ $ openssl s_client -connect localhost:10433
 
 - 参考
   - https://bacchi.me/linux/openssl-tips/
+
 ### s_serverのwwwオプションとWWWオプションの違いについて
 wwwだと、アクセス時にレスポンスとして証明書の情報などを出力します。
 WWWだとコマンドを実行した関連とディレクトリをDocumentRootとして適当なファイルをURLで指定させることができます。

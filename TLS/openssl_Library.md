@@ -90,6 +90,17 @@ tsuyoshi@tsuyoshi:~:$ strings /lib/x86_64-linux-gnu/libcrypto.so.1.0.0  | grep -
 OPENSSLDIR: "/usr/lib/ssl"
 ```
 
+OPENSSLDIRについてはopenssl versionコマンドにaオプションを渡すことでもその内容を確認することができます。
+```
+$ openssl version -a
+OpenSSL 0.9.8zg 14 July 2015
+built on: Jul 16 2015
+platform: darwin64-x86_64-llvm
+options:  bn(64,64) md2(int) rc4(ptr,char) des(idx,cisc,16,int) blowfish(idx) 
+compiler: -arch x86_64 -fmessage-length=0 -pipe -Wno-trigraphs -fpascal-strings -fasm-blocks -O3 -D_REENTRANT -DDSO_DLFCN -DHAVE_DLFCN_H -DL_ENDIAN -DMD32_REG_T=int -DOPENSSL_NO_IDEA -DOPENSSL_PIC -DOPENSSL_THREADS -DZLIB -mmacosx-version-min=10.6
+OPENSSLDIR: "/usr/lib/ssl"
+```
+
 上記のパスから参照されるルート証明書は以下のパスとなることがわかります。
 ```
 $ ls /usr/lib/ssl/certs
