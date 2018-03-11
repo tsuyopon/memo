@@ -4,6 +4,23 @@ mysqlのパッチファイルの作り方に関するTIPSなど
 
 # 詳細
 
+### 安全にパッチの適用を行う
+START TRANSACTIONを最初に実行して、最後にROLLBACKを実行することによって実行前に確認を行うことができます。
+```
+USE mydatabase
+
+START TRANSACTION;
+
+SELECT * FROM XXXX;
+UPDATE mydatabase.XXXX SET hoge=1;
+SELECT * FROM XXXX;
+
+ROLLBACK;
+
+-- 問題なければROLLBACKをコメントにして、次のCOMMITを有効にする
+-- COMMIT;
+```
+
 ### パッチファイル書式
 DBに対して操作する場合には、あらかじめ何が起こるのかわからないのでロールバック可能なようにmysqldumpコマンドを取得しておくのが一般的である。  
 これはパッチファイルには含めなくても良い
