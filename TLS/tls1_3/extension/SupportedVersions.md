@@ -28,18 +28,25 @@ struct {
 } SupportedVersions;
 ```
 
-### サンプルデータ(draft 18)
-tsharkで取得したサンプルデータは以下の通り
+### サンプルデータ(draft 23)
+- ClientHello
 ```
 Extension: supported_versions (len=11)
     Type: supported_versions (43)
     Length: 11
     Supported Versions length: 10
-    Supported Version: Unknown (0x6a6a)
-    Supported Version: TLS 1.3 (draft 18) (0x7f12)
+    Supported Version: Unknown (0x1a1a)
+    Supported Version: TLS 1.3 (draft 23) (0x7f17)
     Supported Version: TLS 1.2 (0x0303)
     Supported Version: TLS 1.1 (0x0302)
     Supported Version: TLS 1.0 (0x0301)
+```
+- ServerHello
+```
+Extension: supported_versions (len=2)
+    Type: supported_versions (43)
+    Length: 2
+    Supported Version: TLS 1.3 (draft 23) (0x7f17)
 ```
 
 # SeeAlso
