@@ -48,7 +48,10 @@ No ALPN negotiated
 - chromeの場合にはプロトコルはデフォルトで表示されていません。
   - 「デベロッパーツール」の「Network」タブでプロトコルを確認できるがデフォルトでは表示されていない。
   - 「Network」タブでヘッダーカラムを右クリックして表示項目で「Protocol」やHTTP2で利用される「Priority」などを表示するようにしておくと良い。
+  - 次のURLにアクセスすることで接続数なども確認することができます。IDをクリックするとさらに詳細なデータの双方向のやりとりを確認することができます。
+    - chrome://net-internals/#http2
 - Firefoxで確認する場合には特に設定不要で確認できます。
+
 
 
 - 参考URL
@@ -113,11 +116,9 @@ $ SSLKEYLOGFILE=~/Desktop/tls_key.log "/Applications/Google Chrome.app/Contents/
 - Chrome Developer ToolsにProtocolを表示
 
 
-# 参考
-- RFC7540: Hypertext Transfer Protocol Version 2 (HTTP/2)
-  - https://tools.ietf.org/html/rfc7540
-- RFC7541: HPACK: Header Compression for HTTP/2
-  - https://tools.ietf.org/html/rfc7541
+# 参考URL
+- HTTP/2
+  - https://http2.github.io/
 - HTTP2 Advent Calendar 2014
   - http://qiita.com/advent-calendar/2014/http2
 - HTTP2 Advent Calendar 2015
@@ -126,3 +127,10 @@ $ SSLKEYLOGFILE=~/Desktop/tls_key.log "/Applications/Google Chrome.app/Contents/
   - http://qiita.com/advent-calendar/2016/http2
 - HTTP1.1とHTTP/2の速さを比較するデモサイト
   - http://http2vs1.cybertrust.ne.jp/
+
+# 参考
+- RFC7540: Hypertext Transfer Protocol Version 2 (HTTP/2)
+  - https://tools.ietf.org/html/rfc7540
+- RFC7541: HPACK: Header Compression for HTTP/2
+  - https://tools.ietf.org/html/rfc7541
+
