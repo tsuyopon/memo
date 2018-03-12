@@ -158,4 +158,15 @@ $ git log
 $ git diff <hash1>  <hash2>
 ```
 
+# TIPS
 
+### git diffで行末に^Mが表示される
+改行コードがCRLFだと^Mと表示されるようです。対策としては改行コードをLFにすれいいようです。
+次のようにします。
+```
+[core]
+    whitespace = cr-at-eol
+```
+
+- SeeAlso
+  - http://amano41.hatenablog.jp/entry/git-diff-treats-cr-at-eol-as-error
