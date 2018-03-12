@@ -45,6 +45,12 @@ $ git diff --stat
 $ git diff --name-only branch1 branch2
 ```
 
+### 特定のディレクトリのファイル名の差分のみを抽出したい場合
+path/to/dir配下の差分の名前のみを抽出したい場合には次のようにします。
+```
+$ git diff <hash1> <hash2> --name-only --relative=path/to/dir
+```
+
 ### 1ファイルの変更点だけを見たい
 ```
 $ git diff -- <filename>
