@@ -5,11 +5,20 @@ TLS1.3についての概要
 - https://tools.ietf.org/html/draft-ietf-tls-tls13-26
 
 # 詳細
+
+### Wiresharkで最新のパケット構造
+nightly buildを使うのが一番
+- https://www.wireshark.org/download/automated/
+
 ### ブラウザからTLS1.3を利用する
-利用するためには設定を変更する必要があります。
+利用するためには最新のdraftに対応させるためにnightly buildをインストールして、その後設定を変更する必要があります。
 - chrome
+  - nightly bildをインストールする
+    - https://www.google.com/chrome/browser/canary.html
   - chromeでは「chrome://flags」にアクセスして、TLS1.3設定を有効にして再起動します。
 - firefox
+  - nightly bildをインストールする
+    - https://nightly.mozilla.org/
   - 「about:config」にアクセス、「security.tls.version.max」をTLS1.3を表す4に変更する
 
 - SeeAlso

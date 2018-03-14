@@ -28,7 +28,7 @@ struct {
 } SupportedVersions;
 ```
 
-### サンプルデータ
+### サンプルデータ(draft 18)
 tsharkで取得したサンプルデータは以下の通り
 ```
 Extension: supported_versions (len=11)
