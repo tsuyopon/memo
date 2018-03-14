@@ -27,6 +27,34 @@ AES_256_CBC: 共通鍵暗号方式(暗号モードと鍵長) chacha20とかは�
 SHA: MACに使うためのハッシュアルゴリズム
 ```
 
+### 暗号スイートの解釈の注意点
+以下の資料を参考にすると
+- http://www.mew.org/~kazu/material/2018-tls13.pdf
+
+TLS1.2では最後の解釈は「MAC」の場合と「擬似乱数」の場合がある。
+```
+TLS_RSA_WITH_AES_128_CBC_SHA
+
+鍵交換: RSA
+サーバ認証: RSA
+共通鍵暗号: AES_128_CBC
+MAC: SHA
+```
+
+```
+TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+
+鍵交換: ECDHE
+サーバ認証: RSA
+AEAD: ATS_128_GCM
+擬似乱数: SHA256
+```
+
+TLS1.3では「鍵交換」と「サーバ認証」が削除された。この場合、TLS1.2でTLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256だったのが次のようになります。
+```
+TLS_AES_128_GCM_SHA256
+```
+
 ### 鍵交換と認証が一緒の場合
 たとえば、鍵交換と認証がそれぞれRSAを利用するのであれば、
 ```
