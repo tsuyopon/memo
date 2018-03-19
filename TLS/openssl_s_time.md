@@ -3,6 +3,24 @@
 
 # 詳細
 
+### openssl s_timeコマンドの出力結果の意味について
+たとえば、下記の出力と仮定する。
+```
+8102 connections in 12.65s; 640.47 connections/user sec, bytes read 0
+8102 connections in 31 real seconds, 0 bytes read per connection
+```
+
+- 12.65はCPUとしてのuser時間の合計値で、8102回のTLS接続が完了したので1秒あたり640.47connection/usersとなる。
+- システム全体(system+user)としては31秒(1秒は丸め時間)かかったことになる
+
+- 参考
+  - https://mta.openssl.org/pipermail/openssl-users/2016-June/003951.html
+
+### wwwオプションを指定した場合と指定しない場合などで顕著に差が出る場合
+HTTPのユーザー時間にかかっている可能性がある
+- 参考
+  - https://groups.google.com/forum/#!topic/mailing.openssl.users/KIbj7n89cJ4
+
 ### テストを実施する
 - 新規ハンドシェイク、再ハンドシェイク双方でテストを実施する
   - 後で登場するnewやreuseオプションを付与しない場合には、新規接続と再ハンドシェイク両方のテストを実施する
