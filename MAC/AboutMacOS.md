@@ -1,3 +1,18 @@
+# OSバージョンの取得とCPU情報取得
+- OSバージョン
+  - https://developer.apple.com/legacy/library/documentation/Darwin/Reference/ManPages/man1/sw_vers.1.html
+```
+$ sw_vers
+ProductName:    Mac OS X
+ProductVersion: 10.9.3
+BuildVersion:   13D65
+```
+
+- CPU情報
+```
+$ sysctl -n machdep.cpu.brand_string
+machdep.cpu.brand_string: Intel(R) Core(TM) i5-5287U CPU @ 2.90GHz
+```
 
 # Apple周りのソースコード
 - https://opensource.apple.com/
