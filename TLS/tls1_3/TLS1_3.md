@@ -8,6 +8,8 @@ TLS1.3についての概要
 - 全般
   - CBCモードが廃止され、AEAD(AES-GCM, ChaCha20-Poly1305など)
     - CBCモードを狙ったBEAST攻撃、Lucky Thirteen攻撃などが頻発したことが背景にある。
+  - CipherSuites
+    - 共通鍵暗号(AES/CHACHA20)とそのメッセージ認証形式(GCM-SHA384等)を指定することになります。サーバ証明書の確認や鍵交換方式は暗号スイートに含まれません。
 - ClientHello
   - TLS1.2と互換性がある
   - サーババージョンはSupported Version拡張(必須)にその役割を移動し、固定で0x0303(TLS1.2)
@@ -51,6 +53,21 @@ $ /opt/openssl-1.1.1/bin/openssl s_client -connect localhost:443 --tls1_3
 - https://enabled.tls13.com
 - https://www.tls13.facebook.com
 - https://tls13.crypto.mozilla.org
+
+### CipherSuiteの指定について
+TLS1.3ではCipherSuiteの指定で共通鍵交換と証明書検証を含まないようになりました。
+
+- TLS1.2
+```
+RSA_WITH_AES_128_CBC_SHA
+ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+```
+- TLS1.3
+```
+共通鍵交換: secp256r1
+証明書検証: rsa_pkcs1_sha256
+暗号化: AES_128_GCM_SHA256
+```
 
 # 参考資料
 - TLS 1.3 の標準化動向(IIJ: 山本和彦さん)
