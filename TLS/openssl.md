@@ -114,6 +114,24 @@ usage: s_client args
  -legacy_renegotiation - enable use of legacy renegotiation (dangerous)
 ```
 
+### AESに対応したCPU命令を出力するかどうかglibcを確認する
+glibcで利用されるgasのバージョンでIntelの暗号化処理機能が制限されています。gasバージョンは次のようにして確認できます。
+```
+$ gcc -Wa,-v -c -o /dev/null -x assembler /dev/null
+GNU assembler version 2.25.1 (x86_64-redhat-linux) using BFD version version 2.25.1-31.base.el7 
+```
+
+gasのバージョンでの違いは次の通りです。
+- 2.22以上ならAVX2を利用する
+- 2.21〜2.20ならAVXを利用する
+- 2.20未満ならAVXサポートはなし
+
+cpuinfoで対応しているかどうかは次のようにして確認することができます。openssl speedのオプションで-evpを付与するとAESありとして速度を測ってくれます。
+```
+$ grep -m1 -o aes /proc/cpuinfo 
+aes
+```
+
 ### opensslのバージョンポリシーについて
 - https://stackoverflow.com/questions/42189880/how-to-determine-the-latest-openssl-version
 - https://www.openssl.org/blog/blog/2014/12/23/the-new-release-strategy/
