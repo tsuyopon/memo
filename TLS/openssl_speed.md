@@ -4,11 +4,19 @@ opensslでのベンチマーク測定方法について
 # 詳細
 ### ベンチマークについて
 opensslにはspeedというオプションが存在する。これによりベンチマークを測定できる。  
+
 以下は代表的なものだけ
 ```
 $ openssl speed -evp aes-128-gcm
+$ openssl speed -evp aes-128-cbc
 $ openssl speed rsa2048
 $ openssl speed ecdhp256
+```
+
+evpというオプションはAES-NI(EVP_Decrypt, EVP_Encrypt)に対応した結果として測定するということを意味する(もちろんCPU、コンパイルしたgasの対応も必要)。このオプションを付与しない場合にはAES-NIは利用されない。
+```
+$ openssl speed -evp aes-128-gcm   // AES-NI対応
+$ openssl speed aes-128-gcm        // AES-NI非対応
 ```
 
 - たとえばRSAに関してテストコマンドを実行すると様々なオプションでテストを実行してくれます。
