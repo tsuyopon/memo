@@ -52,6 +52,24 @@ $ echo Q | /opt/openssl-1.1.1/bin/openssl s_client -connect localhost:443 -ciphe
 Server Temp Key: ECDH, P-256, 256 bits
 ```
 
+### セッション再利用を行う
+まずはチケットを保存して、そのチケットを利用する。Newが出れば新規接続
+```
+$ echo Q | /opt/openssl-1.1.1/bin/openssl s_client -connect 127.0.0.1:443 -sess_out ticket | grep -ie reused -ie new
+(snip)
+New, TLSv1.3, Cipher is TLS13-AES-256-GCM-SHA384
+```
+
+Reusedが出力されれば再利用となります。
+```
+$ echo Q | /opt/openssl-1.1.1/bin/openssl s_client -connect 127.0.0.1:443 -sess_in ticket | grep -ie reused -ie new
+DONE
+Reused, TLSv1.3, Cipher is TLS13-AES-256-GCM-SHA384
+```
+
+試しにcipherやgroupなどを以前とは異なるものに変更するとReusedとならずにNewとなります。
+
+
 ### 0-RTTをコマンドライン
 
 最初にセッション情報を保存します。
