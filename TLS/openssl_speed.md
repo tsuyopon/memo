@@ -7,8 +7,10 @@ opensslにはspeedというオプションが存在する。これによりベ�
 
 以下は代表的なものだけ
 ```
+$ openssl speed -evp aes-256-gcm
 $ openssl speed -evp aes-128-gcm
 $ openssl speed -evp aes-128-cbc
+$ openssl speed -evp chacha20-poly1305
 $ openssl speed rsa2048
 $ openssl speed ecdhp256
 ```
