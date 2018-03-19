@@ -9,6 +9,39 @@ pとgの値は有限群と呼びNamed Groupに含まれます。楕円曲線の�
 - https://qiita.com/sylph01/items/3bf7bc2d42da4e0efb37
 
 # 詳細
+
+### 仕様
+クライアントはサーバからのグループ選択を要求するために追加のラウンドトリップを犠牲にしても、空のclient_sharesベクタ(データ書式参照)を送付してくるかもしれない(HelloRetryRequestを要求するために)。
+
+
+### データ書式
+```
+struct {
+    NamedGroup group;
+    opaque key_exchange<1..2^16-1>;
+} KeyShareEntry;
+```
+- group: 交換される鍵のグループ
+- key_exchange: 鍵交換情報。このフィールドの内容は特定のグループや特定の定義によって決定される。
+  - Finite Field Diffie-Hellmanパラメータ: https://tools.ietf.org/html/draft-ietf-tls-tls13-27#section-4.2.8.1
+```
+
+```
+  - Elliptic Curve Diffie-Hellmanパラメータ: https://tools.ietf.org/html/draft-ietf-tls-tls13-27#section-4.2.8.2
+```
+      struct {
+          uint8 legacy_form = 4;
+          opaque X[coordinate_length];
+          opaque Y[coordinate_length];
+      } UncompressedPointRepresentation;
+```
+
+```
+struct {
+    KeyShareEntry client_shares<0..2^16-1>;
+} KeyShareClientHello;
+```
+
 ### データ構造サンプル(draft 23)
 ClientHelloとその応答となるServerHlloのサンプル。同じ応答でのパケットだがClientHello, ServerHelloそれぞれKeyExchangeの値が異なる。
 - ClientHello
