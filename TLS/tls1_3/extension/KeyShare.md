@@ -24,16 +24,14 @@ struct {
 - group: 交換される鍵のグループ
 - key_exchange: 鍵交換情報。このフィールドの内容は特定のグループや特定の定義によって決定される。
   - Finite Field Diffie-Hellmanパラメータ: https://tools.ietf.org/html/draft-ietf-tls-tls13-27#section-4.2.8.1
-```
-
-```
   - Elliptic Curve Diffie-Hellmanパラメータ: https://tools.ietf.org/html/draft-ietf-tls-tls13-27#section-4.2.8.2
+    - secp256r1, secp384r1, secp521r1の場合では次のような構造体にシリアライズされる
 ```
-      struct {
-          uint8 legacy_form = 4;
-          opaque X[coordinate_length];
-          opaque Y[coordinate_length];
-      } UncompressedPointRepresentation;
+struct {
+    uint8 legacy_form = 4;
+    opaque X[coordinate_length];
+    opaque Y[coordinate_length];
+} UncompressedPointRepresentation;
 ```
 
 ```
