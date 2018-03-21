@@ -69,6 +69,8 @@ ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
 暗号化: AES_128_GCM_SHA256
 ```
 
+TLS1.3では共通鍵交換はKeyShare拡張、サーバ認証はSignatureAlgorithms拡張となりました。
+
 # 参考資料
 - TLS 1.3 の標準化動向(IIJ: 山本和彦さん)
   - draftの歴史などについて。なぜ仕様が変わっていったのかを垣間見れて面白い

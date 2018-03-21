@@ -227,6 +227,15 @@ $ openssl s_client -connect www.yahoo.co.jp:443 -tls1_1
 $ openssl s_client -connect www.yahoo.co.jp:443 -tls1_2
 ```
 
+### TLS接続をして、そのままHTTPを要求してみる
+以下の例ではTLS接続したあとに「GET / HTTP/1.1 + (改行2回)」をいれることでHTTPからコンテンツを取得しています。
+```
+$ openssl s_client -connect localhost:443 -debug
+(snip)
+GET / HTTP/1.1
+
+```
+
 ### ハンドシェイクのTLSパケット情報も含めて確認する
 msgオプションを付与すると、ClientHelloやServerHello等のパケット情報を確認することができる。
 レコードレイヤーの5byteの情報などはこれで簡単に目GREPできる。
