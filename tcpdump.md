@@ -23,6 +23,96 @@ tcpdumpコマンドについて
 オプションについてはこの辺も参考のこと
 - https://danielmiessler.com/study/tcpdump/#gs.SOxLWhY
 
+### tcpdumpの基本的な出力の確認方法について
+
+3way handshakeでは次の流れで応答される
+- 1: SYN=1, ACK=0
+- 2: SYN=1, ACK=1
+- 3: SYN=0, ACK=1
+
+Flagsの後にある意味は次の通り
+- S: SYN
+  - 接続要求を表す
+- P: PUSH
+  - 受信したデータをすみやかに上位アプリケーションに引き渡すように要求するためのフラグである。
+  - 通常の通信では受信したデータはバッファ領域などに貯めておき、一定の時間や量に達したら上位のプロトコルなどに渡すようになっているが、PSHフラグが1にセットされたパケットはすぐにデータを渡さなくてはならない
+- F: FIN
+  - TCP接続を終了させるためにセットされる
+- R: RST
+  - TCP接続を中断または拒否したい場合にセットされる
+- U: URG
+  - 実際に利用されているアプリケーションはほとんど存在しない
+- W: ECN CWR
+- E: ECN-Echo
+- .: 上記いずれのビットも立っていない場合(ACK)
+  - ACKはAcknowledgeで「承認」を意味する
+たとえば、[S]としてSYN、[S.]としてSYN+ACK、[.]としてACKが返却されていることを確認することができます。
+
+TCPヘッダの中にはOptionsという項目が可変長で存在しますtcpdumpではoptions [〜]の中にパケット解析した結果が入ってきます。
+- mss(Maximum Segment Size)
+  - MSSとは、TCPが格納するユーザデータで「受信可能なセグメントサイズの最大値」です。EthernetだとMTUが1500byteの場合には、そこからヘッダ40byteを差し引いた1460byteがMSSとなります。
+- wscale
+  - ウィンドウスケール
+- TS val
+  - TCPタイムスタンプを表す。パケットが送付された順番を決定する役割を併せ持つ
+  - https://unix.stackexchange.com/questions/233830/what-does-ts-val-mean-in-tcpdumps-output
+- TS ecr
+  - ECR(Echo reply) は、ACK時は、元のパケットのTSvalをTSecrに複写する。
+  - https://tools.ietf.org/html/rfc7323
+- nop
+  - パディング
+- sackOK
+  - Selective Acknowledgmentが有効であることを表している。これは3way handshakeの段階で示されます。
+  - 「一部のデータだけ正しく受け取った」ということを意味を持つ信号であり、通信に失敗したデータだけの再送信を要求する際に使用される。
+
+オプションについてはIANAで規定されている
+- https://www.iana.org/assignments/tcp-parameters/tcp-parameters.xhtml
+
+lengthについては上位層に渡すデータがあればサイズが存在するようになります。これはFlagsに通常「P」が付与されるようです。
+
+以下はtcpdumpで443を検知している際に次のコマンドを実行した際のtcpdump出力結果です。
+```
+$ echo Q | openssl s_client -connect <IP>:443
+```
+
+```
+$ sudo tcpdump -i lo port 443
+11:23:51.053250 IP localhost.localdomain.45332 > localhost.localdomain.https: Flags [S], seq 2625778895, win 43690, options [mss 65495,sackOK,TS val 70728129 ecr 0,nop,wscale 7], length 0
+06:56:43.089509 IP localhost.localdomain.https > localhost.localdomain.45332: Flags [S.], seq 1340900893, ack 2625778896, win 43690, options [mss 65495,sackOK,TS val 70728129 ecr 70728129,nop,wscale 7], length 0
+11:23:51.053293 IP localhost.localdomain.45332 > localhost.localdomain.https: Flags [.], ack 1, win 342, options [nop,nop,TS val 70728129 ecr 70728129], length 0
+11:23:51.054754 IP localhost.localdomain.45332 > localhost.localdomain.https: Flags [P.], seq 1:290, ack 1, win 342, options [nop,nop,TS val 70728132 ecr 70728129], length 289
+11:23:51.055049 IP localhost.localdomain.https > localhost.localdomain.45332: Flags [.], ack 290, win 350, options [nop,nop,TS val 70728133 ecr 70728132], length 0
+11:23:51.057300 IP localhost.localdomain.https > localhost.localdomain.45332: Flags [P.], seq 1:1201, ack 290, win 350, options [nop,nop,TS val 70728134 ecr 70728132], length 1200
+11:23:51.058701 IP localhost.localdomain.45332 > localhost.localdomain.https: Flags [.], ack 1201, win 1365, options [nop,nop,TS val 70728137 ecr 70728134], length 0
+11:23:51.060400 IP localhost.localdomain.45332 > localhost.localdomain.https: Flags [P.], seq 290:416, ack 1201, win 1365, options [nop,nop,TS val 70728138 ecr 70728134], length 126
+11:23:51.061267 IP localhost.localdomain.https > localhost.localdomain.45332: Flags [P.], seq 1201:1427, ack 416, win 350, options [nop,nop,TS val 70728139 ecr 70728138], length 226
+11:23:51.062307 IP localhost.localdomain.45332 > localhost.localdomain.https: Flags [P.], seq 416:447, ack 1427, win 1384, options [nop,nop,TS val 70728140 ecr 70728139], length 31
+11:23:51.062337 IP localhost.localdomain.45332 > localhost.localdomain.https: Flags [F.], seq 447, ack 1427, win 1384, options [nop,nop,TS val 70728140 ecr 70728139], length 0
+11:23:51.064926 IP localhost.localdomain.https > localhost.localdomain.45332: Flags [F.], seq 1427, ack 448, win 350, options [nop,nop,TS val 70728143 ecr 70728140], length 0
+11:23:51.064956 IP localhost.localdomain.45332 > localhost.localdomain.https: Flags [.], ack 1428, win 1384, options [nop,nop,TS val 70728143 ecr 70728143], length 0
+```
+
+### 対象となるデバイスリストを確認する
+```
+$ sudo tcpdump -D
+1.enp0s3
+2.nflog (Linux netfilter log (NFLOG) interface)
+3.nfqueue (Linux netfilter queue (NFQUEUE) interface)
+4.usbmon1 (USB bus number 1)
+5.any (Pseudo-device that captures on all interfaces)
+6.lo [Loopback]
+```
+
+### 通信の内容をASCIIで表示したい場合(よく使う!!!)
+HTTPリクエストやレスポンスのヘッダ及びボディを綺麗に出力してみることができます。
+```
+$ sudo tcpdump -i eth0 -A port 80
+```
+
+通常は上記で十分だが、メモリダンプ(X)とさらにパケットデータを表示したい(s0)場合には次のようにします。デバッグ用途などで使うレベルでしょう。
+```
+$ sudo tcpdump -i eth0 -A port 80 -s0 -X
+```
 
 ### etho0の80番ポートを除く
 ```
@@ -51,18 +141,6 @@ $ tcpdump -i eth0 -G 3600 -w test.pcap
 ローテーションさせるときに自動的に圧縮させるようにするにはzオプションを指定すると良い。
 ```
 $ tcpdump -i eth0 -G 3600 -w test.pcap -z gzip
-```
-
-
-### 通信の内容をASCIIで表示したい場合(よく使う!!!)
-HTTPリクエストやレスポンスのヘッダ及びボディを綺麗に出力してみることができます。
-```
-$ sudo tcpdump -i eth0 -A port 80
-```
-
-通常は上記で十分だが、メモリダンプ(X)とさらにパケットデータを表示したい(s0)場合には次のようにします。デバッグ用途などで使うレベルでしょう。
-```
-$ sudo tcpdump -i eth0 -A port 80 -s0 -X
 ```
 
 ### wireshirkで覗いてみる
