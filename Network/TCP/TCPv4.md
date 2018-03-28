@@ -29,6 +29,9 @@ This is TCPv4 Header Details
                             TCP Header Format
 ```
 
+Optionsでは様々な拡張が定義されていて、常に32bit（4bytes）幅になるようにしてTCPヘッダ中に埋め込まれるようになります(TCPヘッダは32bit単位で可変長になっているため)。
+- https://www.iana.org/assignments/tcp-parameters/tcp-parameters.xhtml
+
 ### FIN and RST
 - https://stackoverflow.com/questions/13049828/fin-vs-rst-in-tcp-connections
 
