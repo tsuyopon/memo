@@ -263,6 +263,27 @@ $ kernelshark
 TLSに関するwiresharkについては以下を参考のこと
 - https://github.com/tsuyopon/memo/blob/master/TLS/Wireshark.md
 
+
+### Wireshark上に[TCP segment of a reassembled PDU]と表示される場合の意味
+Wireshark画面上に次のような出力が表示される場合、
+```
+[TCP segment of a reassembled PDU]
+```
+
+これはTCPセグメンテーションの結果となります。
+
+
+### 黒塗り行となる場合
+たくさんの場合があります。
+- TCP Retransmission
+- TCP Dup ACK
+- TCP Fast Retransmission
+- TCP Out-Of-Order
+- TCP ACKed unseen segment
+- TCP Previous segment not captured
+
+(TODO): 意味を記述する
+
 # TODO
 - tsharkをつかってみる
 
