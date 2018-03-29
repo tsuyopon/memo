@@ -32,6 +32,14 @@ This is TCPv4 Header Details
 Optionsでは様々な拡張が定義されていて、常に32bit（4bytes）幅になるようにしてTCPヘッダ中に埋め込まれるようになります(TCPヘッダは32bit単位で可変長になっているため)。
 - https://www.iana.org/assignments/tcp-parameters/tcp-parameters.xhtml
 
+### 状態遷移図
+英語版のWikipediaには状態遷移図があるので参照すること
+- https://en.wikipedia.org/wiki/Transmission_Control_Protocol
+- https://en.wikipedia.org/wiki/Transmission_Control_Protocol#/media/File:Tcp_state_diagram_fixed_new.svg
+
+上記状態遷移図は以下の論文からのコピー
+- http://www.medianet.kent.edu/techreports/TR2005-07-22-tcp-EFSM.pdf
+
 ### FIN and RST
 - https://stackoverflow.com/questions/13049828/fin-vs-rst-in-tcp-connections
 
