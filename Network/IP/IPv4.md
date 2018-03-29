@@ -1,9 +1,9 @@
-# Overview 
-This markdown is about IPv4 Header Details
+# 概要
+IPv4について
 
-# IPv4 Packet Structure
+# 詳細
 
-## IPv4
+## IPv4データフォーマット
 
 - Refer from: https://tools.ietf.org/html/rfc791#section-3.1
 ```
@@ -27,15 +27,16 @@ This markdown is about IPv4 Header Details
 ```
 
 - Version(4bit)
-  - if we use ipv4, this fields always set to the value 4.
+  - IPv4の場合には常に4が格納されます
 - IHL(Ip Header Length)(4bit)
-  - This number indicates the number of 32-bit words. Minimum number of this field is 5 which indicates...
-  - 5 * 32 = 160bits = 20bytes
-  - Maximum Length is number 15. 15 * 32 = 480bits = 60bytes.
+  - IPヘッダの流され32bit単位で表される。この値によりデータの開始位置を知ることができる。最小値は5で表され、データ開始位置はのように計算される。
+    - 5 * 32 = 160bits = 20bytes
+  - 最大値は15となる。この場合データ開始位置は次の通り
+    - 15 * 32 = 480bits = 60bytes.
 - Type of Service!(8bit)
-  - For QoS processing. But this field is not used at all now.
+  - サービス種別(TOS)を表す。現在このフィールドは使われていないらしい。
 - Total Length(16bit)
-  - all packet length that includes IP Header Length.
+  - IPヘッダを含むパケットの全長をオクテット単位で表したもの。最大は65,535オクテット
 - Identification(16bit)
   - It is used as packet identifier.
   - If packet divided into some packets, we can ackowledge the original packet.
@@ -44,18 +45,18 @@ This markdown is about IPv4 Header Details
   - 1: forbid divide(1), allow divide(0)
   - 2: continue fragment(1), last fragment(0)
 - Fragment Offset(13bit)
-  - This flagment is used by to reconstruct fragmented-datagram.
+  - ルータなどがパケットを断片化した際に、その位置を8オクテット単位で格納する。断片化したパケットの復元に用いられる。
+  - Identification, FlagsとこのFragment Offsetの３つの値からフラグメントを行うことができます。
 - Time to Live(8bit)
-  - This number indicates how many routers can we pass. ie. Max Hop Count.
-  - This fields used by traceroute command.
+  - ルーターはパケットを転送するたびにこの値を1つ減らします。パケットがネットワーク上で無限に巡回する問題を防ぐ効果があります。
 - Protocol(8bit)
-  - Protocol number
+  - TCPなどの上位プロトコルを表す番号が設定されます。たとえば、ICMP、TCP、UDP、IPv6、EIGRP、OSPFなどです。
 - Header Checksum(16bit)
-  - This is flags to check 
+  - IPヘッダの誤り検査に用いられる。転送毎に生存時間の値が変わるため、ルータはチェックサムも転送毎に再計算する必要がある。
 - Source Addrress(32bit)
-  - send source address
+  - パケットの送信元IPアドレス
 - Destination Addrress(32bit)
-  - recv source address
+  - パケットの送信先IPアドレス
 - Options(variable length)
   - It is added as optional function. There are a lot of Options not only below.
     - Security
@@ -63,7 +64,7 @@ This markdown is about IPv4 Header Details
     - Record Route
     - Internet Timestamp
 - Padding
-  - "Options" must set each 32bit unit and variable length. If we lack of each 32bit unit, we add zero padding to the packet.
+  - Optionsが可変長のために32bit単位とするために必要であれば0をパディングとしてパケットに追加する。
 
 
 Type Of Services(8bit) is re-designed to this. But, still not used at all.
@@ -76,10 +77,27 @@ These three parameters(Identification, Flagment Offset, Flags) are used as packe
 - check sequence using Identification, Flags, Flagment Offset 
 - Check caliculating Header Checksum 
 
+### Flags(3bit)について
+実際に利用されているのは3bit中の2bitのみである。
+次のような情報として利用される。
+- MF(More Fragment)ビット
+  - フラグメントがさらに続くかどうかを表すビットである。
+  - 1つのIPパケットを複数に分割した場合に、最後のパケットではこのビットを0にして、それ以外のパケットではこのビットを1にすることで、後続のパケットが存在するかどうかを伝えることができる。
+- DF(Donot Fragment)ビット
+  - ICMPを利用した経路MTU探索でMTUを算出する場合に用いられるフラグである。
+  - このビットが有効なパケットはフラグメントしてはならない仕組みとなっています。断片化されたパケットの再構築(Reassembly)は宛先である装置が行う。
+
 ## How to culculate IPv4 Checksum?
 Try it later!
 - http://qiita.com/h-sh/items/9e16b55adec787b82f52
 - http://www.erg.abdn.ac.uk/users/gorry/course/inet-pages/ip-cksum.html
+
+### ヘッダチェックサムの計算方法
+
+- 1. ヘッダの一連を ヘッダの一連を16bit単位に分割する。
+- 2. 1の補数演算を用いてワードを合計する。
+- 3. 桁上げをすべて加算して最後の結果の桁上げをすべて加算して最後の結果の1の補数を取る。
+- 4. 受信ホストで同様の計算を行い、チェックサムと照らし合わせて破損がないことを確認する。
 
 ### I want to know more about "Options" fileds.
 See 
