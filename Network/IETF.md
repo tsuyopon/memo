@@ -5,6 +5,11 @@ IETFについてまとめておくことにする
 
 # 詳細
 
+### IETFに参加する場合
+
+- 登録日程などに注意する
+  - https://datatracker.ietf.org/meeting/important-dates/
+
 ### IETFエリアについて
 2018/02現在としては次のとおりである。
 - GEN: General(統括的技術分野)
@@ -80,6 +85,21 @@ IESGが作成するRFCの取り扱い方法に関する決定を下す。つま�
       - http://ietf99.conf.meetecho.com/index.php/
 - jabber
   - アカウントが必要らしい
+
+### RFCやドラフトの探し方
+- RFC効率的な探し方
+  - http://www6.ietf.org/
+  - から「RFC Pages」のタブをクリックして、その後「RFC Search Page」のリンクから次のリンクに飛ぶ
+  - キーワードを入れるだけでそれに該当するRFCを表示してくれます。
+    - https://www.rfc-editor.org/search/rfc_search.php		
+- RFCドラフトの効率的な探し方
+  - http://www6.ietf.org/
+  - から「Internet-Drafts」の「Search」リンクをクリックする
+  - 次の箇所からキーワードを入れるだけで該当するRFCのドラフトを表示してくれます。
+    - https://datatracker.ietf.org/doc/
+- 表示されるI-D Existsとは何のこと?
+  - datatracker周りの規則についてはこの辺にまとめられている。
+    - https://tools.ietf.org/html/rfc6174
 
 ### 参考
 - 公式サイト
