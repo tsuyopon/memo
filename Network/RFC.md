@@ -82,6 +82,18 @@ Errata Exists自体は正誤表が存在しますといった意味なのでこ�
 
 RFCには、一連のRFC番号が付けられているが、新しい版が発行されると、古い番号のRFCはObsolete（廃止）またはUpdate（更新）される。Obsoleteされている場合は、新しい方のRFCだけを参照しなければならない。Updateの場合は両方のRFCを参照する必要がある。
 
+### RFCやドラフトの探し方
+- RFC効率的な探し方
+  - http://www6.ietf.org/
+  - から「RFC Pages」のタブをクリックして、その後「RFC Search Page」のリンクから次のリンクに飛ぶ
+  - キーワードを入れるだけでそれに該当するRFCを表示してくれます。
+    - https://www.rfc-editor.org/search/rfc_search.php
+- RFCドラフトの効率的な探し方
+  - http://www6.ietf.org/
+  - から「Internet-Drafts」の「Search」リンクをクリックする
+  - 次の箇所からキーワードを入れるだけで該当するRFCのドラフトを表示してくれます。
+    - https://datatracker.ietf.org/doc/
+
 # 参考URL
 - JPNIC
   - https://www.nic.ad.jp/ja/newsletter/No24/090.html
