@@ -941,6 +941,51 @@ $ gdb -tui
 
 次にサンプルを示します。  
 
+1byteずつの表示
+```
+(gdb) x/20b argv              // 指定の引数から20byte分表示
+0x7fff5fbffae0:	0x10	0xfc	0xbf	0x5f	0xff	0x7f	0x00	0x00
+0x7fff5fbffae8:	0x00	0x00	0x00	0x00	0x00	0x00	0x00	0x00
+0x7fff5fbffaf0:	0x3d	0xfc	0xbf	0x5f
+(gdb) x/20b 0x7fff5fbffae8    // アドレスも可能(20byte分表示)
+0x7fff5fbffae8:	0x00	0x00	0x00	0x00	0x00	0x00	0x00	0x00
+0x7fff5fbffaf0:	0x3d	0xfc	0xbf	0x5f	0xff	0x7f	0x00	0x00
+0x7fff5fbffaf8:	0x59	0xfc	0xbf	0x5f
+```
+
+2byte(半ワード)ずつの表示
+```
+(gdb) x/20h argv
+0x7fff5fbffae0:	0xfc10	0x5fbf	0x7fff	0x0000	0x0000	0x0000	0x0000	0x0000
+0x7fff5fbffaf0:	0xfc3d	0x5fbf	0x7fff	0x0000	0xfc59	0x5fbf	0x7fff	0x0000
+0x7fff5fbffb00:	0xfc69	0x5fbf	0x7fff	0x0000
+```
+
+4byte(ワード)ずつの表示
+```
+(gdb) x/20w argv
+0x7fff5fbffae0:	0x5fbffc10	0x00007fff	0x00000000	0x00000000
+0x7fff5fbffaf0:	0x5fbffc3d	0x00007fff	0x5fbffc59	0x00007fff
+0x7fff5fbffb00:	0x5fbffc69	0x00007fff	0x5fbffc7d	0x00007fff
+0x7fff5fbffb10:	0x5fbffcb6	0x00007fff	0x5fbffd02	0x00007fff
+0x7fff5fbffb20:	0x5fbffd1b	0x00007fff	0x5fbffd50	0x00007fff
+```
+
+8byte(巨大ワード)ずつの表示
+```
+(gdb) x/20g argv
+0x7fff5fbffae0:	0x00007fff5fbffc10	0x0000000000000000
+0x7fff5fbffaf0:	0x00007fff5fbffc3d	0x00007fff5fbffc59
+0x7fff5fbffb00:	0x00007fff5fbffc69	0x00007fff5fbffc7d
+0x7fff5fbffb10:	0x00007fff5fbffcb6	0x00007fff5fbffd02
+0x7fff5fbffb20:	0x00007fff5fbffd1b	0x00007fff5fbffd50
+0x7fff5fbffb30:	0x00007fff5fbffd5e	0x00007fff5fbffda0
+0x7fff5fbffb40:	0x00007fff5fbffdc6	0x00007fff5fbffdd2
+0x7fff5fbffb50:	0x00007fff5fbffe69	0x00007fff5fbffe94
+0x7fff5fbffb60:	0x0000000100104ae0	0x00007fff5fbffeb3
+0x7fff5fbffb70:	0x00007fff5fbffebc	0x00007fff5fbffecf
+```
+
 16進数の表示
 ```
 (gdb) x/20x argv    // hex
@@ -971,7 +1016,7 @@ $ gdb -tui
 0x7fffffffe3f8:	-6496	32767	-6477	32767
 ```
 
-unsigned decimalの表示
+10進数(符号なし)
 ```
 (gdb) x/20u argv   // unsigned decimal
 0x7fffffffe3b8:	4294960612	32767	0	0
@@ -990,7 +1035,6 @@ unsigned decimalの表示
 0x7fffffffe3e8:	11111111111111111110011001110101	00000000000000000111111111111111	11111111111111111110011010000011	00000000000000000111111111111111
 0x7fffffffe3f8:	11111111111111111110011010100000	00000000000000000111111111111111	11111111111111111110011010110011	00000000000000000111111111111111
 ```
-
 
 floatの表示
 ```
@@ -1074,6 +1118,91 @@ stringを表示
 0x7fffffffe3e8:	 "u\346\377\377\377\177"
 0x7fffffffe3ef:	 ""
 ```
+
+### 上記の複合
+1byteずつ8進数で出力といったことも可能ですbとoを指定します。
+```
+(gdb) x/20bo argv
+0x7fff5fbffae0:	020	0374	0277	0137	0377	0177	0	0
+0x7fff5fbffae8:	0	0	0	0	0	0	0	0
+0x7fff5fbffaf0:	075	0374	0277	0137
+```
+
+たとえば、1byteずつ2進数で出力だとbとtを指定します。
+```
+(gdb) x/10bt bytes.b1
+0x7fff5fbffaa8:	01111000	01010110	00110100	00010010	00000000	00000000	00000000	00000000
+0x7fff5fbffab0:	11100000	11111010
+```
+
+### 簡易変数($_と$__)について
+$_には調査した対象の表示した最後のアドレスが入ります。$__には$_の値が入ります。
+
+以下の２つの例を見ると理解できるでしょう。
+
+```
+(gdb) x/9b bytes.b1
+0x7fff5fbffaa8:	0x78	0x56	0x34	0x12	0x00	0x00	0x00	0x00
+0x7fff5fbffab0:	0xe0
+(gdb) p/x $_           // 最後のアドレスをさしていることに注意
+$35 = 0x7fff5fbffab0
+(gdb) p/x $__          // $_のアドレスの値である
+$36 = 0xe0
+```
+
+表示数を変えてみると$_や$__が変化することも確認しておく
+```
+(gdb) x/10b bytes.b1
+0x7fff5fbffaa8:	0x78	0x56	0x34	0x12	0x00	0x00	0x00	0x00
+0x7fff5fbffab0:	0xe0	0xfa
+(gdb) p/x $_ 
+$37 = 0x7fff5fbffab1
+(gdb) p/x $__
+$38 = 0xfa
+```
+
+### ビッグエンディアンとリトルエンディアンの表記について
+gdbでは次のコマンドでどのエンディアンモードで表示しているかを確認できます。
+```
+(gdb) show endian
+```
+
+ビッグエンディアンやリトルエンディアンの挙動を確認したい場合には次のコマンドで切り替えることができます。
+```
+(gdb) set endian big
+(gdb) set endian little
+```
+
+では、ビッグエンディアンモードとリトルエンディアンモードで共用体(network/endian/endian.c)のgdbでのダンプ結果を見てみます。
+1byteずつでは違いはありませんが、2byteや4byteで明らかな違いが表示されていることが確認できます。
+
+- ビッグエンディアンでのモードで出力した場合
+```
+(gdb) set endian big
+The target is assumed to be big endian
+(gdb) show endian
+The target is assumed to be big endian
+(gdb) x/w bytes.b1
+0x7fff5fbffaa8:	0x78563412
+(gdb) x/2h bytes.b1
+0x7fff5fbffaa8:	0x7856	0x3412
+(gdb) x/4b bytes.b1
+0x7fff5fbffaa8:	0x78	0x56	0x34	0x12
+```
+- リトルエンディアンのモードで出力した場合
+```
+(gdb) set endian little
+The target is assumed to be little endian
+(gdb) show endian
+The target is assumed to be little endian
+(gdb) x/w bytes.b1
+0x7fff5fbffaa8:	0x12345678
+(gdb) x/2h bytes.b1
+0x7fff5fbffaa8:	0x5678	0x1234
+(gdb) x/4b bytes.b1
+0x7fff5fbffaa8:	0x78	0x56	0x34	0x12
+```
+
 
 ### 正規表現でブレークポイントを設定する
 
