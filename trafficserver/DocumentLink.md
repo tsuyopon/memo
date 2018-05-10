@@ -6,6 +6,14 @@
   - https://cwiki.apache.org/confluence/display/TS/Apache+Traffic+Server
 
 以下各種ドキュメントリンク
+
+- Doxygen
+  - trafficserver-7.1.2
+    - https://fossies.org/dox/trafficserver-7.1.2/
+  - trafficserver-3.3.0-dev
+    - http://people.apache.org/~amc/ats/doc/html/
+  - atscppapi-1.0.9
+    - http://linkedin.github.io/atscppapi/docs/html/index.html
 - DesignDocs
   - 設計資料
   - https://cwiki.apache.org/confluence/display/TS/DesignDocs
