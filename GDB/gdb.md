@@ -255,6 +255,16 @@ type = char [4097]
 (gdb) shell ls
 ```
 
+一時的にシェルに戻ることも可能である。shellコマンドを打ってシェルに制御を移してからexitするとgdb制御に戻る　
+```
+0x00002b82b5c0b1ad in nanosleep () from /lib64/libc.so.6
+(gdb) shell
+[root@localhost tsuyoshi]# ls
+hoge fuga
+[root@localhost tsuyoshi]# exit
+(gdb) 
+```
+
 ### print書式
 ```
 (gdb) p 変数            // (例): p str
@@ -840,37 +850,6 @@ gs             0x0	0
 (gdb) print $rax
 $1 = 140737488347680
 ```
-
-## マルチスレッドのデバッグ
-全スレッドの表示
-```
-(gdb) info threads
-  3 Thread 0x7ffff75d2710 (LWP 4688)  thread3 (d=0x0) at three-threads.c:9
-* 2 Thread 0x7ffff7fd3710 (LWP 4687)  thread2 (d=0x0) at three-threads.c:23
-  1 Thread 0x7ffff7fd5720 (LWP 4620)  main () at three-threads.c:34
-```
-
-スレッド番号の切り替え
-```
-(gdb) thread <num>
-```
-
-スレッドの全てのバックトレースを表示する
-```
-(gdb) thread apply all bt
-or
-(gdb) t a a bt
-```
-
-特定のスレッドに対してブレークポイントを設定する
-```
-(gdb) b xxxfunc thread <num>
-or
-(gdb) b xxxfunc thread <num>  if a > b
-```
-
-- 参考
- - https://sourceware.org/gdb/current/onlinedocs/gdb/Threads.html
 
 ## .gdbinit
 以下はサンプル
