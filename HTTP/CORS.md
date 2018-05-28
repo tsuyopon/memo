@@ -5,9 +5,24 @@ Cross-Origin Resource Sharing（CORS）は、HTML5 世代の仕様です。w3c�
 クロスドメイン制約に対する異なるオリジンへのアクセスを許可するにはCORSを使用します。
 クロスオリジンドメイン制約とは、Ajaxリクエスト(XMLHttpRequest)などでコンテンツが生成されたドメインとは別のドメインにアクセスした場合にはエラーとなる仕組みです。
 
+同一生成ドメイン以外にアクセスした場合には、セキュリティ的に受け入れられるかどうかを表すルールについて記載されてものです。
+
 例えば、ブラウザで表示される次のエラーはクロスドメイン制約に対するものです。
 ```
 クロスオリジン要求をブロックしました: 同一生成元ポリシーにより、http://example.co.jp/test.html にあるリモートリソースの読み込みは拒否されます (理由: CORS ヘッダー ‘Access-Control-Allow-Origin’ が足りない)。
+```
+
+通常は別のドメインにAjaxリクエストをした際に異なるドメインであれば必ずOriginというヘッダを合わせて付与されます。
+```
+GET /sample HTTP/1.1
+Origin: http://origin-test.com
+```
+
+その後、レスポンスにはどのオリジンが許可されているかを表すAccess-Control-Allow-Originヘッダが含まれています。
+これをチェックしてブラウザ側は利用して問題無いかどうかの判定を行います。
+```
+HTTP/1.1 200 OK
+Access-Control-Allow-Origin: http://origin-test.com
 ```
 
 # 詳細
