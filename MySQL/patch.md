@@ -1,7 +1,6 @@
 # 概要
 mysqlのパッチファイルの作り方に関するTIPSなど
 
-
 # 詳細
 
 ### 安全にパッチの適用を行う
@@ -31,7 +30,8 @@ mysqldump -umyuser -h localhost --set-gtid-purged=OFF --single-transaction -p my
 上記オプションで指定されるgtidについてはMySQL5.6移行で追加された機能とのこと
 - http://d.hatena.ne.jp/hiroi10/20130308/1362765495
 
-xxxx.sqlといった名前で次のようなものを準備する。コメントはハイフン2つの後にスペースが必要
+xxxx.sqlといった名前で次のようなものを準備する。コメントはハイフン2つの後にスペースが必要です。
+「\!」はsystemコマンドに相当して、mysqlシェル上でコマンドを実行することができます。
 ```
 USE mydatabase
 
@@ -76,4 +76,56 @@ SELECT ROW_COUNT();
 ```
 
 なお、ROW_COUNT()はあくまでも適用結果なので、SELECTで表示されたレコード件数は知ることはできない。SELECTの場合には-1などがクエリ結果として帰って来る模様。
+
+
+### 値を一時変数に格納したい場合
+次のように「@xxx:=」を使うと良い。ただし、一時変数はmysql接続が切れると初期化されるので
+```
+mysql> SELECT @id:=city_id FROM city WHERE city LIKE "Kabul";
++--------------+
+| @id:=city_id |
++--------------+
+|          251 |
++--------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT @id;
++------+
+| @id  |
++------+
+|  251 |
++------+
+1 row in set (0.00 sec)
+
+mysql> SELECT * FROM city WHERE city_id=@id;
++---------+-------+------------+---------------------+
+| city_id | city  | country_id | last_update         |
++---------+-------+------------+---------------------+
+|     251 | Kabul |          1 | 2006-02-15 04:45:25 |
++---------+-------+------------+---------------------+
+1 row in set (0.00 sec)
+```
+
+なお、複数のレコードが取得できる場合には最後の値が格納されるので注意が必要です。うまい方法ないのかな?
+```
+mysql> SELECT @id:=city_id FROM city WHERE city LIKE "Kam%";
++--------------+
+| @id:=city_id |
++--------------+
+|          256 |
+|          257 |
+|          258 |
+|          259 |
++--------------+
+4 rows in set (0.00 sec)
+
+mysql> SELECT @id;
++------+
+| @id  |
++------+
+|  259 |
++------+
+1 row in set (0.00 sec)	
+```
+
 
