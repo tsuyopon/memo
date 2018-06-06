@@ -6,7 +6,6 @@ IETFについてまとめておくことにする
 # 詳細
 
 ### IETFに参加する場合
-
 - 登録日程などに注意する
   - https://datatracker.ietf.org/meeting/important-dates/
 
@@ -29,7 +28,6 @@ IESGが作成するRFCの取り扱い方法に関する決定を下す。つま�
   - https://www.ietf.org/topics/areas/
 
 ### 各エリアの詳細について
-
 - ARTエリアの主なWG
   - appsawg: 他のWGに入らない話題
   - httpbis: HTTP/2
@@ -91,19 +89,50 @@ IESGが作成するRFCの取り扱い方法に関する決定を下す。つま�
   - http://www6.ietf.org/
   - から「RFC Pages」のタブをクリックして、その後「RFC Search Page」のリンクから次のリンクに飛ぶ
   - キーワードを入れるだけでそれに該当するRFCを表示してくれます。
-    - https://www.rfc-editor.org/search/rfc_search.php		
+    - https://www.rfc-editor.org/search/rfc_search.php
 - RFCドラフトの効率的な探し方
   - http://www6.ietf.org/
   - から「Internet-Drafts」の「Search」リンクをクリックする
   - 次の箇所からキーワードを入れるだけで該当するRFCのドラフトを表示してくれます。
     - https://datatracker.ietf.org/doc/
+- WGから探す場合
+  - https://datatracker.ietf.org/wg/
+  - 上記で表示され各種WGのリンクを辿ることでActiveなDraftやRFCを辿ることができる。
 - 表示されるI-D Existsとは何のこと?
   - datatracker周りの規則についてはこの辺にまとめられている。
     - https://tools.ietf.org/html/rfc6174
+  - 流れについてはこの辺のスライド(p8)が状態遷移をわかりやすく説明してくれているので参考にすること
+    - https://www.slideshare.net/tanupoo/isocjp-ietfstudy20150701sakane-50034092
+  - 参考slide
+    - https://www.isoc.jp/wiki.cgi?page=PreIETF93&action=ATTACH&file=isocjp%2Dietf%2Dstudy%2D20150701%5Fhayashi%5Fnishizuka%2Epdf
 
-### 参考
+# 必要メモ
+- IETF参加登録
+  - https://www.ietf.org/how/meetings/register/
+  - IETFへの参加登録は「Acknowledge & Continue to Meeting Registration」などのリンクから行う。
+  - 必要情報を入力後に、クレジットカードで支払いを済ませるので手元に準備しておくことになります。
+
+# IETF102メモ
+- httpbis
+  - https://datatracker.ietf.org/wg/httpbis/documents/
+- tls
+  - https://datatracker.ietf.org/wg/tls/documents/
+- doh
+  - https://datatracker.ietf.org/wg/doh/documents/
+    - https://datatracker.ietf.org/doc/draft-ietf-doh-dns-over-https/
+- oauth
+  - https://datatracker.ietf.org/wg/oauth/documents/
+    - https://datatracker.ietf.org/doc/draft-ietf-oauth-discovery/
+    - https://datatracker.ietf.org/doc/draft-ietf-oauth-jwsreq/
+    - https://datatracker.ietf.org/doc/draft-ietf-oauth-device-flow/
+    - https://datatracker.ietf.org/doc/draft-ietf-oauth-token-exchange/
+- quic
+  - https://datatracker.ietf.org/wg/quic/documents/
+- ace
+  - https://datatracker.ietf.org/wg/ace/documents/
+
+# 参考URL
 - 公式サイト
   - https://www.ietf.org/
 - RFC Editor
   - https://www.rfc-editor.org/
-
