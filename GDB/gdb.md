@@ -90,7 +90,7 @@ $ gdb a.out
 
 条件付きのbreakポイントも設定できる。
 ```
-(gdb) b 19 if i == j           // 19行目でiとjが等しかったらbreakする
+(gdb) b xxx.cpp:19 if i == j           // xxx.cppの19行目でiとjが等しかったらbreakする
 ```
 
 上記は以下と等価です。
@@ -103,6 +103,15 @@ breakポイントに到達しても何回か飛ばしたい場合
 ```
 (gdb) break 19                 // 19行目にbreakポイントを設定する
 (gdb) ignore <Bnum> <num>      // <Bnum>はinfo bで表示される番号。<num>は無視する回数を表します。
+```
+
+### 条件付きbreakpointの例
+
+```
+(gdb) cond 1 strcmp(message,"earthquake") == 0
+(gdb) cond 2 *p == 'r'
+(gdb) cond 3 num < 0.75
+(gdb) cond 4 i == 99
 ```
 
 ### 現在の位置から10行分だけ先にすすんだところをブレークポイントとする
