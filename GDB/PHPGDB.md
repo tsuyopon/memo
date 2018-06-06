@@ -1,8 +1,42 @@
 # 概要
 PHPのGDBデバッグ方法についてまとめておくページ
-phpでデバッグするためには./configureのオプションに「--enable-debug」が指定される必要があります。
+phpでgdbデバッグするためには./configureのオプションに「--enable-debug」が指定される必要があります。
+
+この辺の資料が素晴らしいクオリティで提供されているので読んでおくとよさそうです。
+- https://net-newbie.com/phpext/b-gdb.html
 
 # 詳細
+
+### ブレークポイントを設定する
+関数名でbreakpointを設定する方法がよくまだわかっていないので、ファイル名と行番号を指定することでbreakpointを設定することができます。
+```
+(gdb) b xxxxx.c:80
+```
+
+ネットからの情報によるとzif_をprefixに付与することでその関数に設定できるとのことです。(未確認)
+```
+(gdb) b zif_var_dump
+Breakpoint 1 at 0x8429a4: file /usr/src/php/ext/standard/var.c, line 205.
+```
+
+例えば、次の様な感じでbreakポイントを設定して、直接runコマンドで呼び出す様なapache moduleを経由しない場合には次のようにデバッグできそうです。
+```
+(gdb) break zif_print_r
+Breakpoint 1 at 0x8130d2e: file /home/dqneo/src/php-5.4.14/ext/standard/basic_functions.c, line 5495.
+
+(gdb) run -r '$x = 123; print_r($x);'
+Starting program: /home/dqneo/src/php-5.4.14/sapi/cli/php -r '$x = 123; print_r($x);'
+[Thread debugging using libthread_db enabled]
+[New Thread 0xb75436c0 (LWP 21957)]
+[Switching to Thread 0xb75436c0 (LWP 21957)]
+
+Breakpoint 1, zif_print_r (ht=1, return_value=0xb751ef48, return_value_ptr=0x0, this_ptr=0x0, return_value_used=0) at /home/dqneo/src/php-5.4.14/ext/standard/basic_functions.c:5495
+5495            zend_bool do_return = 0;
+```
+
+- 参考URL
+  - http://dqn.sakusakutto.jp/2013/04/php_gdb_zval_zvalue_value.html
+
 ### PHPコマンドラインでのデバッグ
 ```
 $ gdb
@@ -150,9 +184,11 @@ print_ht   --- HashTableの中身を見る。
 
 
 # 参考URL
+- phpext 
+  - https://net-newbie.com/phpext/b-gdb.html
 - PHP公式ドキュメントによるgdbの使い方(ためになる)
- - https://bugs.php.net/bugs-generating-backtrace.php
+  - https://bugs.php.net/bugs-generating-backtrace.php
 - Debugging PHP segfault backtraces with `gdb`
- - http://www.robertames.com/blog.cgi/entries/debugging-php-segfault-backtraces-with-gdb.html
+  - http://www.robertames.com/blog.cgi/entries/debugging-php-segfault-backtraces-with-gdb.html
 - How to set breakpoints in a php script using gdb
- - http://stackoverflow.com/questions/30664274/how-to-set-breakpoints-in-a-php-script-using-gdb
+  - http://stackoverflow.com/questions/30664274/how-to-set-breakpoints-in-a-php-script-using-gdb
