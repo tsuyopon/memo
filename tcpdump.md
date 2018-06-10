@@ -297,18 +297,18 @@ $ sudo tcpdump -i any 'tcp port 80 and (((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12
 # tcpdump -l -i eth0 -A -n -s 0 dst port 3306 | grep SELECT
 ```
 や
+
+呼ばれたリクエストが知りたい場合。次のようにすると簡易なSQL文がわかるが、見ての通りゴミデータまで含まれてしまう。ただし、prepared statementなどは?として扱われるのでまた別の方法が必要
 ```
-#!/bin/bash
-tcpdump -i eth0 -s 0 -l -w - dst port 3306 | strings | perl -e '
-while(<>) { chomp; next if /^[^ ]+[ ]*$/;
-    if(/^(SELECT|UPDATE|DELETE|INSERT|SET|COMMIT|ROLLBACK|CREATE|DROP|ALTER|CALL)/i)
-    {
-        if (defined $q) { print "$q\n"; }
-        $q=$_;
-    } else {
-        $_ =~ s/^[ \t]+//; $q.=" $_";
-    }
-}'
+$ sudo tcpdump -i lo -s 0 -l -w - dst port 3306 | awk '{if(match($0, /SELECT|UPDATE|DELETE|INSERT|SET|COMMIT|ROLLBACK|CREATE|DROP|ALTER|CALL/, _)){ print $0; } }'
+tcpdump: listening on lo, link-type EN10MB (Ethernet), capture size 262144 bytes
+/d/ZSELECT * FROM citym=[?TB4)?@@??
+                                   ?}r?@i?)?g?(
+/t?/dSELECT DATABASE()q=[^?B4)?@@??
+                                   ?}r?Vi?i?g?(
+/{/t?SELECT * FROM cityr=[??B4)?@@??
+                                    ?}r?i????(
+/?i/{SHOW CREATE PROCEDURES~=[;B4)?@@???
 ```
 
 - http://keyamb.hatenablog.com/entry/20120725/1343198298
