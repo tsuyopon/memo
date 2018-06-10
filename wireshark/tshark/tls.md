@@ -7,9 +7,8 @@
 $ openssl s_client -connect localhost:4433
 ```
 
-
 # 詳細
-TLS主要パケットのみ表示する場合
+### TLS主要パケットのみ表示する場合
 ```
 $ sudo tshark  -i lo -d tcp.port==4433,ssl -Y ssl
 Capturing on 'Loopback'
@@ -21,7 +20,7 @@ Capturing on 'Loopback'
  15 0.084265851    127.0.0.1 -> 127.0.0.1    TLSv1.2 97 Encrypted Alert
 ```
 
-TCPなどを含めてTLS主要パケットのみを表示する場合
+### TCPなどを含めてTLS主要パケットのみを表示する場合
 ```
 $ sudo tshark  -i lo -d tcp.port==4433,ssl 
 Capturing on 'Loopback'
@@ -962,8 +961,3 @@ Secure Sockets Layer
 ```
 
 
-TCPやDNSなども含めてすべてのパケットの詳細を表示するにはただ-Vオプションを付与すれば良いです。
-あまりに表示される情報が多すぎるのでこの後間引く必要があると思いますが、、、
-```
-$ tshark -V
-```
