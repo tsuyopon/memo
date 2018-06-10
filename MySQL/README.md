@@ -21,3 +21,5 @@ MySQLについて
   - http://dev.mysql.com/doc/index-other.html
 - シミュレータがある。
   - https://www.w3schools.com/sql/sql_union.asp
+- TIPSリンク
+  - http://souptonuts.sourceforge.net/readme_mysql.htm
