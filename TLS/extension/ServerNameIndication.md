@@ -7,6 +7,8 @@ Server Name Indcation(SNI)では、HTTP1.1の名前ベースバーチャルホ�
   - 1枚のサーバ証明書に複数ホスト名を入れるためにX.509 v3の証明書で導入されたsubjectAltName拡張で、追加のホスト名を指定できる。
 - SNIを利用するためにはクライアント及びサーバ側双方が対応している必要があります。
 
+ただし、近年SNIで指定されたホスト名とHTTPのHOSTヘッダで指定されたホスト名は独立しているのでお互い異なるものを指定することが可能であり、これを「Virtual Host Confusion」や「Virtual Server Confusion」と呼びます。たとえば、SNIをsni.co.jpにして、HOSTをorigin.co.jpにすると、レスポンスはorigin.co.jpで返される。
+
 # 詳細
 
 ### ブラウザ・サーバ対応状況

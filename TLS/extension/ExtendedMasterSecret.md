@@ -5,10 +5,21 @@
 
 # 背景
 通常master_secretはClientHello.Random, ServerHello.Random, pre_master_secret, labelから算出されます。
-この拡張が有効となる場合には、ハンドシェイクのClientHelloからClientKeyExchangeまでの平文をハッシュとして、それとpre_master_secretを元にしてmaster secretを生成します。
+この拡張が有効となる場合には、ハンドシェイクのClientHelloからClientKeyExchangeまでの平文をハッシュとして、それとpre_master_secretを元にしてmaster secretを生成します。つまり、セッションハッシュが使われることになります。
 
 この算出方法の違いが意味することとしては、Triple Handshakeに対する驚異への対策となるようです。(詳細はSeeAlsoを参考のこと)
 
+拡張が存在しない場合だとmaster_secretをMan In The Middleで同じにすることができます。
+この拡張を利用することで、SNIの値が中間者を介した場合にも異なってくるので、トリプルハンドシェイクへの対策となります。
+
+- TLS1.2で規定されるmaster_secret(RFC5246)
+```
+master_secret = PRF(pre_master_secret, "master secret", ClientHello.random + ServerHello.random) [0..47];
+```
+- 拡張master_secret(RFC7627)
+```
+master_secret = PRF(pre_master_secret, "extended master secret", session_hash)
+```
 
 # 詳細
 ### データ構造サンプル
