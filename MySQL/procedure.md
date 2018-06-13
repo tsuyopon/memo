@@ -5,21 +5,27 @@ mysqlのプロンプト上で次を実行してみる(先頭の"mysql>"はコピ
 DELIMITER //
 CREATE PROCEDURE procedure_sqrt(IN input INT)
 BEGIN
-    SELECT SQRT(input);
+    DECLARE counter INT DEFAULT 2;
+    SELECT SQRT(counter), input;
 END;
 //
-DELIMITER;
+DELIMITER ;
 ```
 
-次を実行する
+実行してみると次ようになります。
 ```
-mysql> CALL procedure_sqrt(2) //
-+--------------------+
-| SQRT(input)        |
-+--------------------+
-| 1.4142135623730951 |
-+--------------------+
+mysql> CALL procedure_sqrt(10);
++--------------------+-------+
+| SQRT(counter)      | input |
++--------------------+-------+
+| 1.4142135623730951 |    10 |
++--------------------+-------+
 1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> DROP PROCEDURE procedure_sqrt;
+Query OK, 0 rows affected (0.00 sec)
 ```
 
 ### 変数宣言する
