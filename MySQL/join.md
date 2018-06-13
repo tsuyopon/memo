@@ -137,7 +137,7 @@ mysql> SELECT * FROM city LEFT JOIN country USING(country_id) LIMIT 3;
 
 ### あるテーブルを２度参照させるようなSQL文を書く
 たとえば、次のようなAとBというテーブルが存在して
-````
+```
 A
 
 <myid>   <name>
