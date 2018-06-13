@@ -1,6 +1,7 @@
 # 概要
 queryについてまとめる
 
+# 詳細
 ### IFなどを試して見る
 次のようにして簡単に試すことができる。
 ```
@@ -25,6 +26,36 @@ mysql> SELECT * FROM country ORDER BY country_id DESC LIMIT 0, 3;
 |        107 | Yemen      | 2006-02-15 04:44:00 |
 +------------+------------+---------------------+
 3 rows in set (0.01 sec)
+```
+
+### 最大値を持つレコードでdistinctする
+次のテーブルがあったとして(idは重複している)
+```
+mysql> SELECT * FROM table1;
++------+--------+
+|   id | num    |
++---------------+
+|  101 | 1      |
+|  101 | 2      |
+|  102 | 5      |
+|  102 | 3      |
+|  102 | 1      |
+|  103 | 3      |
+|  103 | 7      |
+|  103 | 5      |
++---------------+
+```
+
+重複する各種idで最大のnumを取得するSQL文は次のようになります。
+```
+mysql> SELECT DISTINCT id, MAX( num ) FROM table1 GROUP BY id;
++------+----------+
+|   id | MAX(num) |
++-----------------+
+|  101 | 2        |
+|  102 | 5        |
+|  103 | 7        |
++-----------------+
 ```
 
 ### ある列で並べて、さらに別の列で並べる
@@ -161,11 +192,103 @@ mysql> SELECT name, SID, CASE
 2 rows in set (0.00 sec)
 ```
 
-# 更新系
+## 件数取得
+FOUND_ROWS()を実行すると取得したレコード件数を取得できます。
+```
+mysql> SELECT * FROM actor LIMIT 3;
++----------+------------+-----------+---------------------+
+| actor_id | first_name | last_name | last_update         |
++----------+------------+-----------+---------------------+
+|        1 | PENELOPE   | GUINESS   | 2006-02-15 04:34:33 |
+|        2 | NICK       | WAHLBERG  | 2006-02-15 04:34:33 |
+|        3 | ED         | CHASE     | 2006-02-15 04:34:33 |
++----------+------------+-----------+---------------------+
+3 rows in set (0.00 sec)
+
+mysql> SELECT FOUND_ROWS();
++--------------+
+| FOUND_ROWS() |
++--------------+
+|            3 |
++--------------+
+1 row in set (0.00 sec)
+```
+
+OFFSETを使うと直感に反した件数が帰ってきます。
+```
+mysql> SELECT * FROM actor LIMIT 3 OFFSET 100;
++----------+------------+-----------+---------------------+
+| actor_id | first_name | last_name | last_update         |
++----------+------------+-----------+---------------------+
+|      101 | SUSAN      | DAVIS     | 2006-02-15 04:34:33 |
+|      102 | WALTER     | TORN      | 2006-02-15 04:34:33 |
+|      103 | MATTHEW    | LEIGH     | 2006-02-15 04:34:33 |
++----------+------------+-----------+---------------------+
+3 rows in set (0.00 sec)
+
+mysql> SELECT FOUND_ROWS();
++--------------+
+| FOUND_ROWS() |
++--------------+
+|          103 |
++--------------+
+1 row in set (0.00 sec)
+```
+
+テーブルの全体件数を取得したい場合にはSQL_CALC_FOUND_ROWSを指定するとFOUND_ROWS()で取得することができます。
+```
+mysql> SELECT SQL_CALC_FOUND_ROWS * FROM actor LIMIT 3 OFFSET 100;
++----------+------------+-----------+---------------------+
+| actor_id | first_name | last_name | last_update         |
++----------+------------+-----------+---------------------+
+|      101 | SUSAN      | DAVIS     | 2006-02-15 04:34:33 |
+|      102 | WALTER     | TORN      | 2006-02-15 04:34:33 |
+|      103 | MATTHEW    | LEIGH     | 2006-02-15 04:34:33 |
++----------+------------+-----------+---------------------+
+3 rows in set (0.00 sec)
+
+mysql> SELECT FOUND_ROWS();
++--------------+
+| FOUND_ROWS() |
++--------------+
+|          200 |
++--------------+
+1 row in set (0.00 sec)
+```
+
+## 更新系
 
 ### 古いテーブルのレコードを新しいテーブルにコピーする
 ```
 mysql> SELECT * INTO oldtable FROM newtable;
+```
+
+### 変数に取得した値を格納する
+例えば次のようなレコードが存在していて特定のactor_idのフィールドを取得する場合、
+```
+mysql> select * from actor LIMIT 3;
++----------+------------+-----------+---------------------+
+| actor_id | first_name | last_name | last_update         |
++----------+------------+-----------+---------------------+
+|        1 | PENELOPE   | GUINESS   | 2006-02-15 04:34:33 |
+|        2 | NICK       | WAHLBERG  | 2006-02-15 04:34:33 |
+|        3 | ED         | CHASE     | 2006-02-15 04:34:33 |
++----------+------------+-----------+---------------------+
+3 rows in set (0.00 sec)
+```
+
+次の様な感じで変数に格納できます。なお、条件で複数レコードに合致した場合にはエラーとなります。
+```
+mysql> SELECT first_name, last_name INTO @first_value, @last_value FROM actor WHERE actor_id = 3;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> SELECT @first_value, @last_value;
++--------------+-------------+
+| @first_value | @last_value |
++--------------+-------------+
+| ED           | CHASE       |
++--------------+-------------+
+1 row in set (0.00 sec)
 ```
 
 # 参考URL 
