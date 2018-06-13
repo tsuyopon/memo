@@ -214,6 +214,98 @@ collation_connection: utf8_general_ci
 3 rows in set (0.01 sec)
 ```
 
+### トリガー一覧
+```
+mysql> SHOW TRIGGERS \G
+*************************** 1. row ***************************
+             Trigger: customer_create_date
+               Event: INSERT
+               Table: customer
+           Statement: SET NEW.create_date = NOW()
+              Timing: BEFORE
+             Created: NULL
+            sql_mode: STRICT_TRANS_TABLES,STRICT_ALL_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,TRADITIONAL,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION
+             Definer: root@localhost
+character_set_client: utf8
+collation_connection: utf8_general_ci
+  Database Collation: latin1_swedish_ci
+*************************** 2. row ***************************
+             Trigger: ins_film
+               Event: INSERT
+               Table: film
+           Statement: BEGIN
+    INSERT INTO film_text (film_id, title, description)
+        VALUES (new.film_id, new.title, new.description);
+  END
+              Timing: AFTER
+             Created: NULL
+            sql_mode: STRICT_TRANS_TABLES,STRICT_ALL_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,TRADITIONAL,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION
+             Definer: root@localhost
+character_set_client: utf8
+collation_connection: utf8_general_ci
+  Database Collation: latin1_swedish_ci
+*************************** 3. row ***************************
+             Trigger: upd_film
+               Event: UPDATE
+               Table: film
+           Statement: BEGIN
+    IF (old.title != new.title) OR (old.description != new.description) OR (old.film_id != new.film_id)
+    THEN
+        UPDATE film_text
+            SET title=new.title,
+                description=new.description,
+                film_id=new.film_id
+        WHERE film_id=old.film_id;
+    END IF;
+  END
+              Timing: AFTER
+             Created: NULL
+            sql_mode: STRICT_TRANS_TABLES,STRICT_ALL_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,TRADITIONAL,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION
+             Definer: root@localhost
+character_set_client: utf8
+collation_connection: utf8_general_ci
+  Database Collation: latin1_swedish_ci
+*************************** 4. row ***************************
+             Trigger: del_film
+               Event: DELETE
+               Table: film
+           Statement: BEGIN
+    DELETE FROM film_text WHERE film_id = old.film_id;
+  END
+              Timing: AFTER
+             Created: NULL
+            sql_mode: STRICT_TRANS_TABLES,STRICT_ALL_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,TRADITIONAL,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION
+             Definer: root@localhost
+character_set_client: utf8
+collation_connection: utf8_general_ci
+  Database Collation: latin1_swedish_ci
+*************************** 5. row ***************************
+             Trigger: payment_date
+               Event: INSERT
+               Table: payment
+           Statement: SET NEW.payment_date = NOW()
+              Timing: BEFORE
+             Created: NULL
+            sql_mode: STRICT_TRANS_TABLES,STRICT_ALL_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,TRADITIONAL,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION
+             Definer: root@localhost
+character_set_client: utf8
+collation_connection: utf8_general_ci
+  Database Collation: latin1_swedish_ci
+*************************** 6. row ***************************
+             Trigger: rental_date
+               Event: INSERT
+               Table: rental
+           Statement: SET NEW.rental_date = NOW()
+              Timing: BEFORE
+             Created: NULL
+            sql_mode: STRICT_TRANS_TABLES,STRICT_ALL_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,TRADITIONAL,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION
+             Definer: root@localhost
+character_set_client: utf8
+collation_connection: utf8_general_ci
+  Database Collation: latin1_swedish_ci
+6 rows in set (0.00 sec)
+```
+
 
 # 参考URL
 - MySQL公式ドキュメント(Sakila Sample Database)
