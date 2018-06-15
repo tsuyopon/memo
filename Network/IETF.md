@@ -37,6 +37,7 @@ IESGが作成するRFCの取り扱い方法に関する決定を下す。つま�
   - rtcweb: WebRTC
   - netvc: コーデック
   - webpush: 通知
+  - cdni: CDN Interconnection
 
 ### IETFへ初めて参加する場合
 次の資料を見ておくのが良い
@@ -71,6 +72,15 @@ IESGが作成するRFCの取り扱い方法に関する決定を下す。つま�
 
 たとえば、IETF101でのMeeting Agendaは以下(URLを見る限りでは時間がたてば最新のIETFに変わる)
 - https://datatracker.ietf.org/meeting/agenda/
+
+前回のアジェンダ
+- https://datatracker.ietf.org/meeting/101/agenda
+- https://datatracker.ietf.org/meeting/100/agenda
+
+若干UI表示が違うがこちらも見ると良い
+- https://tools.ietf.org/agenda/102/
+- https://tools.ietf.org/agenda/101/
+- https://tools.ietf.org/agenda/100/
 
 ### IETFに向けてのツール
 - datatracker
