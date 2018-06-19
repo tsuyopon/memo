@@ -44,6 +44,18 @@ Threads: 1  Questions: 794  Slow queries: 0  Opens: 834  Flush tables: 1  Open t
 --------------
 ```
 
+### 設定値を表示する
+@@autocommitとするとその設定値が表示できる。
+```
+mysql> SELECT @@autocommit;
++--------------+
+| @@autocommit |
++--------------+
+|            1 |
++--------------+
+1 row in set (0.00 sec)
+```
+
 ### 数値・整数型, 数値・浮動小数点型, 日付・時刻型
 - http://mysql.javarou.com/dat/000831.html
 

@@ -3,6 +3,13 @@ INSERT分、UPDATE文やDELETE文について
 
 # 詳細
 
+### 特定の取得したフィールドをインクリメントする
+次のような感じで簡単にインクリメントすることができる。
+```
+UPDATE mytable SET logins = logins + 1 WHERE id = 12
+```
+- https://stackoverflow.com/questions/2762851/increment-a-database-field-by-1
+
 ### 古いテーブルのレコードを新しいテーブルにコピーする
 ```
 mysql> SELECT * INTO oldtable FROM newtable;
