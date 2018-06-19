@@ -135,6 +135,41 @@ mysql> SELECT * FROM city LEFT JOIN country USING(country_id) LIMIT 3;
 3 rows in set (0.00 sec)
 ```
 
+### 同一テーブルをINNER JOIN, LEFT JOINする場合の違い
+
+以下を参考にする
+- http://www.zentut.com/sql-tutorial/sql-self-join/
+
+```
+employees data
+
+- INNER JOIN
+  - employeeテーブル上に名前のリストがある。そのテーブルの従業員にレポートすべき上司が存在していて、従業員とその上司を出力する場合
+```
+SELECT 
+    concat(e.firstname, e.lastname) employee,
+    concat(m.firstname, m.lastname) manager
+FROM
+    employees e
+INNER JOIN
+    employees m ON m.employeeid = e.reportsto;
+```
+
+
+- LEFT JOIN
+  - たとえば、従業員の中にはレポートすべき上司が存在しない(その項目がNULL)偉い従業員も存在する。INNER JOINではそのような人は表示されないが、その場合も合わせて表示したい場合にはLEFT JOINを使うのが適切である
+```
+SELECT 
+    concat(e.firstname, e.lastname) employee,
+    concat(m.firstname, m.lastname) manager
+FROM
+    employees e
+LEFT JOIN
+    employees m ON m.employeeid = e.reportsto
+ORDER BY manager;
+```
+
+
 ### あるテーブルを２度参照させるようなSQL文を書く
 たとえば、次のようなAとBというテーブルが存在して
 ```

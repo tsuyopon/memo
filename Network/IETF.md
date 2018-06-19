@@ -125,21 +125,33 @@ IESGが作成するRFCの取り扱い方法に関する決定を下す。つま�
 # IETF102メモ
 - httpbis
   - https://datatracker.ietf.org/wg/httpbis/documents/
+  - https://tools.ietf.org/wg/httpbis/
 - tls
   - https://datatracker.ietf.org/wg/tls/documents/
+  - https://tools.ietf.org/wg/tls/
 - doh
   - https://datatracker.ietf.org/wg/doh/documents/
     - https://datatracker.ietf.org/doc/draft-ietf-doh-dns-over-https/
+  - https://tools.ietf.org/wg/doh/
 - oauth
   - https://datatracker.ietf.org/wg/oauth/documents/
     - https://datatracker.ietf.org/doc/draft-ietf-oauth-discovery/
     - https://datatracker.ietf.org/doc/draft-ietf-oauth-jwsreq/
     - https://datatracker.ietf.org/doc/draft-ietf-oauth-device-flow/
     - https://datatracker.ietf.org/doc/draft-ietf-oauth-token-exchange/
+  - https://tools.ietf.org/wg/oauth/
 - quic
   - https://datatracker.ietf.org/wg/quic/documents/
+  - https://tools.ietf.org/wg/quic/
 - ace
   - https://datatracker.ietf.org/wg/ace/documents/
+  - https://tools.ietf.org/wg/ace/
+
+
+# 前回のアジェンダ
+- https://tools.ietf.org/agenda/101/
+- https://tools.ietf.org/agenda/100/
+
 
 # 参考URL
 - 公式サイト
