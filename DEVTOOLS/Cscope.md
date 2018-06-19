@@ -2,6 +2,9 @@
 cscopeはC, C++, JAVA, PHP4のソースコードを読んでいく際のタグジャンプなどに非常に役立つツールです。  
 上記以外の言語の場合にはctags, globalなどの別のツールの方が適しているかもしれません。自分はPHPはGLOBALで、perl, Javascript, python, rubyなどはctagsを使っています。
 
+迷った場合のドキュメントとしてはこちらを参照すると良いでしょう。
+- http://vimdoc.sourceforge.net/htmldoc/if_cscop.html
+
 # 内容
 
 ## セットアップ
@@ -168,6 +171,25 @@ $ cscope -R -b
 $ CSCOPE_DB=/foo/cscope.out; export CSCOPE_DB   
 ```
 
+## cscopeデータベース、tagsデータベースの優先について
+```
+:set csto=0          // 先にcscopeデータベースが検索され、見つからなければtagsが読まれる。デフォルトはこれ。
+:set csto=1          // cscopeデータベースの前にtagsが検索される
+```
+
+## cscopeプログラムの場所を設定する
+自身でコンパイルしたcscopeを使いたい場合などに設定します。
+```
+:set csprg=/usr/local/bin/cscope
+```
+
+## vimで現在使われているcscope.outを表示する。
+vimで「:cs show」と入力すると次の情報を画面下部に表示する。
+```
+ # pid    データベース名                      prepend パス
+ 0 3522   /home/tsuyoshi/trafficserver_tsuyopon/cscope.out  <none>
+```
+
 ## cscopeをインタラクティブモードで開く
 cscopeを引数なしで実行すると次の画面が開きます。
 ```
@@ -185,6 +207,27 @@ Find assignments to this symbol: <- (10)
 ```
 
 cscopeのインテラクティブモードを中止する場合には「Ctrl-d」を押下します。(重要なので覚えておく)
+
+
+vim上から「:cs」と入力すると次のようにfindのヘルプを表示してくれます。上記の英語は下記と照らし合わせると良いでしょう。
+```
+cscopeコマンド:                                                                                                                                    
+add  : 新データベースを追加           (使用法: add file|dir [pre-path] [flags])
+find : パターンのクエリーを追加       (使用法: find c|d|e|f|g|i|s|t name)
+       c: この関数を呼んでいる関数を探す
+       d: この関数から呼んでいる関数を探す
+       e: このegrepパターンを探す
+       f: このファイルを探す
+       g: この定義を探す
+       i: このファイルを#includeしているファイルを探す
+       s: このCシンボルを探す
+       t: このテキスト文字列を探す
+help : このメッセージを表示する       (使用法: help)
+kill : 接続を終了する                 (使用法: kill #)
+reset: 全ての接続を再初期化する       (使用法: reset)
+show : 接続を表示する                 (使用法: show)
+```
+
 
 いろいろ使ってみる事にします。
 trafficserverのソースコードを使って試してみる。
