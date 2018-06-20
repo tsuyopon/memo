@@ -51,6 +51,26 @@ Ctrl + O    移動前の位置に戻る
 Ctrl + I    Ctrl+Oを実行して移動前の位置に戻った後に、再度戻る
 ```
 
+定義元も合わせてvimの水平タブで表示するには次のキーバインドを実行します。
+```
+Ctrl + W, Ctrl + ]      定義元を水平タブで合わせて開く
+```
+
+なお、標準ではありませんが、次を.vimrcに追加することによって
+```
+map <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
+map <C-^> :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
+```
+
+次のキーバインドが利用できるようになります。
+```
+Ctrl + \         新しいタブで定義を開く
+Ctrl + ^         定義元を垂直タブで合わせて開く
+```
+
+- 参考
+  - https://stackoverflow.com/questions/563616/vim-and-ctags-tips-and-tricks?rq=1
+
 ### vimのコマンド
 ```
 :tselect 	現在のタグの一覧を表示
@@ -64,7 +84,7 @@ Ctrl + I    Ctrl+Oを実行して移動前の位置に戻った後に、再度�
 :ptag       [タグ名] 	[タグ名]の定義をプレビューウィンドウで開く。
 ```
 
-### vimでtagsファイルを登録しておきたい場合。
+### vimでtagsファイルを登録しておきたい場合
 $HOME/.vimrcに次のような行を追加することでvimを開いた時にどのtagsファイルを使うのかを指定することができます。
 ```
 set tags+=$HOME/tags
@@ -245,3 +265,5 @@ $ ctags --languages=PHP,JavaScript
   - http://hp.vector.co.jp/authors/VA025040/ctags/
 - Manpage of ctags
   - http://hp.vector.co.jp/authors/VA025040/ctags/ctags_j.html
+- Stack Overflow: Vim and Ctags tips and tricks [closed]
+  - https://stackoverflow.com/questions/563616/vim-and-ctags-tips-and-tricks?rq=1
