@@ -91,6 +91,7 @@ mysql> DROP TRIGGER IF EXISTS trigger_test;
 ```
 
 ### 古い情報と新しい情報を参照する(NEW.xxx, OLD.xxx)
+
 たとえば、UPDATEのトリガーを設定する際に古いカラム情報(更新前の値)と新しい登録カラム情報(更新後の値)をそれぞれで参照したい場合がある。
 
 次のサンプルはそのままコピペで使えるUPDATEのトリガーサンプルです。
@@ -140,9 +141,13 @@ mysql> SELECT * FROM address;
 1 row in set (0.00 sec)``
 ```
 
-
 - https://www.dbonline.jp/mysql/trigger/index3.html
 
 ### sakilaデータベースのtriggerについて
 こちらを参考のこと
 - https://dev.mysql.com/doc/sakila/en/sakila-structure-triggers.html
+
+
+# 参考
+- triggerに関するFAQ
+  - https://dev.mysql.com/doc/refman/5.6/ja/faqs-triggers.html
