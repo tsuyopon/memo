@@ -26,6 +26,26 @@ HTTP/1.1とHTTP/2との画像出力における比較サイトも参考すると
 
 # 仕様
 
+### リクエスト仕様
+HTTP1.1ではリクエスト時に次の３つの状態にわかれていました
+- リクエスト(GET / HTTP/1.1など)
+- リクエストヘッダ
+- Body
+
+HTTP/2ではバイナリプロトコルとなり次の２つになります。
+- HEADERS frame
+- DATA frame
+
+
+### HTTP/2におけるコネクションとストリーム
+次の仕様を覚えておくこと
+- コネクションの中にストリームがある
+- ストリームはサーバ・クライアントの双方向でやりとりされている
+- ストリームは複数同時に存在しても良い
+- ストリームには番号が付与されていて、これをストリームIDと呼ぶ
+  - クライアントからスタートしたら奇数、サーバからだと偶数となります。
+  - ストリームID 0番は特別な番号で全体の制御に利用します。
+
 ### HTTP/2で開始するFRAMEフォーマット
 次の9バイトで始まる
 ```
@@ -40,22 +60,88 @@ HTTP/1.1とHTTP/2との画像出力における比較サイトも参考すると
     +---------------------------------------------------------------+
 ```
 
-- Length: 2^14 (16,384) よりも大きな値は送ってはならない
-- Type: frameのフォーマットやセマンティクスを決定する。知らないタイプは無視しなければならない
-- Flags: frame typeに特化したboolean flagsのための予約フィールド
+- Length: ペイロードの長さを表します。2^14 (16,384) よりも大きな値は送ってはならない
+- Type: フレームタイプであることを表します。frameのフォーマット(HEADERS, DATA)やセマンティクスを決定する。知らないタイプは無視しなければならない
+- Flags: Type(フレームタイプ)ごとに決められた付加情報です。END_STREAM、END_HEADERSフラグなどが重要です。
 - R: Reservedを表す1bitの領域
-- Stream Identifier: 
+- Stream Identifier: 31ビットのストリームID
   - https://tools.ietf.org/html/rfc7540#section-5.1.1
 
+フレームの種類についてはこちらを参照のこと
+- https://tools.ietf.org/html/rfc7540#section-11.2
+```
+   +---------------+------+--------------+
+   | Frame Type    | Code | Section      |
+   +---------------+------+--------------+
+   | DATA          | 0x0  | Section 6.1  |
+   | HEADERS       | 0x1  | Section 6.2  |
+   | PRIORITY      | 0x2  | Section 6.3  |
+   | RST_STREAM    | 0x3  | Section 6.4  |
+   | SETTINGS      | 0x4  | Section 6.5  |
+   | PUSH_PROMISE  | 0x5  | Section 6.6  |
+   | PING          | 0x6  | Section 6.7  |
+   | GOAWAY        | 0x7  | Section 6.8  |
+   | WINDOW_UPDATE | 0x8  | Section 6.9  |
+   | CONTINUATION  | 0x9  | Section 6.10 |
+   +---------------+------+--------------+
+```
+- IANAに上記以外も規定されているので確認すると良い
+  - https://www.iana.org/assignments/http2-parameters/http2-parameters.xhtml
 
-### Stream Identifierについて
+フレームタイプによってデータペイロードの構造が変わってきます。上記に仕様が記載されている各セクションがリスト表示されているので参考のこと。また、これらについてはHTTP2FramePacket.mdでまとめています。
+
+
+### ストリームやストリームIDについて
 - クライアント主導のストリームは奇数番号を使わなければならない
 - サーバ主導のストリームは偶数番号を使わなければならない
-- 0x00はコネクション制御メッセージを表す。この値は新規ストリーム確立時に使われてはならない。
-
-
-###
+- ストリームIDが0(0x00)は全体制御を行うコネクション制御メッセージを表す。この値は新規ストリーム確立時に使われてはならない。
+- SETTINGSフレームのMAX_CONCURRENT_STREAMSよりも多くのストリームは同時に作ってはならない
 - ストリームはどちらからでも切断することが可能である
+- 番号を使い果たしたら、新シコネクションを作成する
+
+
+以下の図は次の仕様書からの引用
+- https://tools.ietf.org/html/rfc7540#section-6.1
+```
+                                +--------+
+                        send PP |        | recv PP
+                       ,--------|  idle  |--------.
+                      /         |        |         \
+                     v          +--------+          v
+              +----------+          |           +----------+
+              |          |          | send H /  |          |
+       ,------| reserved |          | recv H    | reserved |------.
+       |      | (local)  |          |           | (remote) |      |
+       |      +----------+          v           +----------+      |
+       |          |             +--------+             |          |
+       |          |     recv ES |        | send ES     |          |
+       |   send H |     ,-------|  open  |-------.     | recv H   |
+       |          |    /        |        |        \    |          |
+       |          v   v         +--------+         v   v          |
+       |      +----------+          |           +----------+      |
+       |      |   half   |          |           |   half   |      |
+       |      |  closed  |          | send R /  |  closed  |      |
+       |      | (remote) |          | recv R    | (local)  |      |
+       |      +----------+          |           +----------+      |
+       |           |                |                 |           |
+       |           | send ES /      |       recv ES / |           |
+       |           | send R /       v        send R / |           |
+       |           | recv R     +--------+   recv R   |           |
+       | send R /  `----------->|        |<-----------'  send R / |
+       | recv R                 | closed |               recv R   |
+       `----------------------->|        |<----------------------'
+                                +--------+
+
+          send:   endpoint sends this frame
+          recv:   endpoint receives this frame
+
+          H:  HEADERS frame (with implied CONTINUATIONs)
+          PP: PUSH_PROMISE frame (with implied CONTINUATIONs)
+          ES: END_STREAM flag
+          R:  RST_STREAM frame
+
+                          Figure 2: Stream States
+```
 
 
 # TIPS
