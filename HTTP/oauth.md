@@ -12,6 +12,13 @@ qiitaのよさそうなまとめ記事
 - http://qiita.com/TakahikoKawasaki/items/200951e5b5929f840a1f
   - 各種フローが図解入りですごい参考になりそう
 
+
+
+# OAuth2.0について
+RFC6749:The OAuth 2.0 Authorization Frameworkを読み解いて見ていきます。
+
+
+
 # 参考
 - OAuth1.0
   -  The OAuth 1.0 Protocol
