@@ -18,13 +18,13 @@ QUIC(Quick UDP Internet Connections)はTCPの代わりにUDP上でTLSを使う�
   - さらなる詳細はこの辺をみることでやりとりしている通信内容までを確認することができます。
     - chrome://net-internals/#events&q=type:QUIC_SESSION%20is:active
 
-Chromeなどがインストールされていればコマンドラインから次のように実行するとQUICで接続します。たとえば、対応していないサイトwww.yahoo.co.jpに接続しようとするとQUICで接続できないエラー識別子が表示されます。
+Chromeなどがインストールされていればコマンドラインから次のように実行するとブラウザが起動してQUICで接続します。たとえば、対応していないサイトwww.yahoo.co.jpに接続しようとするとQUICで接続できないエラー識別子が表示されます。
 ```
-$ /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome   --user-data-dir=/tmp/chrome-profile   --no-proxy-server   --enable-quic   --origin-to-force-quic-on=www.youtube.com:443   --host-resolver-rules='MAP www.youtube.com:443'   https://www.youtube.com
-[48731:28163:0616/031048.563677:ERROR:host_mapping_rules.cc(107)] Failed parsing rule: MAP www.youtube.com:443
-[48731:28163:0616/031048.568965:ERROR:host_mapping_rules.cc(107)] Failed parsing rule: MAP www.youtube.com:443
+$ /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome   --user-data-dir=/tmp/chrome-profile   --no-proxy-server   --enable-quic   --origin-to-force-quic-on=www.youtube.com:443  https://www.youtube.com
 ```
-- 参考: https://stackoverflow.com/questions/37251357/how-to-send-data-over-quic
+- 参考: 
+  - https://github.com/mholt/caddy/wiki/QUIC
+  - https://stackoverflow.com/questions/37251357/how-to-send-data-over-quic
 
 ### 実装
 Google提供によるもの
