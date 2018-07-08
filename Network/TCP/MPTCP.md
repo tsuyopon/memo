@@ -1,5 +1,5 @@
 # 概要
-Multiple TCPとは、複数のインタフェースを用いることによってTCPコネクションを貼ることができるTCP拡張です。
+Multiple TCPとは、複数のインタフェースを用いることによってTCPコネクションを貼ることができるTCP拡張です。MPTCP自体はRFC6824で規定されています。
 たとえば、スマートフォンの場合だと、LTEとWi-Fiといった２つのインタフェースを用いてコネクションを貼り、両方の経路を併用してデータ通信を行います。それにより利用者側からは１つのコネクションのように見せる仕組みです。
 iOSに搭載されているSiriではこのMPTCPの仕組みを利用しています。
 
@@ -18,17 +18,20 @@ TCPオプションを用いてネゴシエーションを行う。MP_CAPABLEと�
 
 # 対応状況
 クライアントとサーバが双方で対応していれば使うことができます。
-- iphone(iOS11)で利用可能
+- iphone(iOS7以降)で利用可能
   - http://blog.multipath-tcp.org/blog/html/2017/07/05/mptcp_experiments_on_ios_11_beta.html
 - Linux
   - 以下が1であれば有効らしい
 ```
 $ sysctl net.mptcp.mptcp_enabled
 ```
+  - 参考: https://www.multipath-tcp.org/
+- Android(Galaxy S6, S6 edge, S7などのSamsung製スマホ)
 
 # 仕様詳細
 
-MP_CAPABLEというオプションはTCPオプション30として規定されています。
+### MPTCPパケット構造
+MPTCPはTCP拡張番号30として規定されています。
 - https://www.iana.org/assignments/tcp-parameters/tcp-parameters.xhtml
 
 RFC6824にも次の記載があります。
@@ -41,8 +44,8 @@ RFC6824にも次の記載があります。
         Table 1: TCP Option Kind Numbers
 ```
 
-SYN + MP_CAPABLEを送信します。
-TCP拡張は最初の1バイトが種別、その次の1バイトが長さ、その後は種別ごとに異なることが多いですがMPTCPでは4bitのサブタイプ、サブタイプごとの可変長データで構成されています。
+TCP拡張は最初の1バイトが種別、その次の1バイトが長さ、その後は種別ごとに異なることが多いです。
+今回のMPTCPではその後に4bitのサブタイプ、サブタイプごとの可変長データでパケット構造が構成されています。
 ```
  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +---------------+---------------+-------+-----------------------+
@@ -73,9 +76,34 @@ TCP拡張は最初の1バイトが種別、その次の1バイトが長さ、そ
             Table 2: MPTCP Option Subtypes
 ```
 
+### SubtypeがMP_CAPABLEの場合のパケット構造について
+SubtypeがMP_CAPABLE(0x0)のときのMPTCP Option Formatは次のようなパケット構造になります。
+```
+                     1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++---------------+---------------+-------+-------+---------------+
+|     Kind      |    Length     |Subtype|Version|A|B|C|D|E|F|G|H|
++---------------+---------------+-------+-------+---------------+
+|                   Option Sender's Key (64 bits)               |
+|                                                               |
+|                                                               |
++---------------------------------------------------------------+
+|                  Option Receiver's Key (64 bits)              |
+|                     (if option Length == 20)                  |
+|                                                               |
++---------------------------------------------------------------+
+        Figure 4: Multipath Capable (MP_CAPABLE) Option
+```
+
 # 問題点
 - 複数経路があるとロードバランサによりIPが異なると判定されて別々のオリジンに飛ばされないか?
 
 # 参考URL
 - RFC6824:TCP Extensions for Multipath Operation with Multiple Addresses
   - https://tools.ietf.org/html/rfc6824
+- Linux KenerlのMPTCP実装
+  - https://github.com/multipath-tcp/mptcp
+- MultiPath TCP - Linux Kernel implementation
+  - http://multipath-tcp.org/
+- PDFスライドでわかりやすい
+  - http://ew2017.european-wireless.org/wp-uploads/2017/05/keynotes-Raiciu-EW2017.pdf
