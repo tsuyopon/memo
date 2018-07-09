@@ -137,3 +137,8 @@ TLSとDTLSとの違いについての差分が規定されています。たと�
   - https://tools.ietf.org/html/rfc4347
 - RFC6347: Datagram Transport Layer Security Version 1.2
   - https://tools.ietf.org/html/rfc6347
+
+
+# 参考リンク
+- RFC 4347 (DTLS) について調べてみた
+  - https://mdgw.hateblo.jp/entry/20080217/1203273902
