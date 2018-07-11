@@ -54,3 +54,5 @@ example1.jp.    IN  CAA 0 iodef "mailto:xxxxxx@example1.jp"
 # 参考URL
 - DNS Certification Authority Authorization (CAA) Resource Record
   - https://tools.ietf.org/html/rfc6844
+- CAA利用に関する具体的な図については以下のサイトを確認するとよさそうです。
+  - https://http2.try-and-test.net/dns_caa.html
