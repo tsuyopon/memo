@@ -14,11 +14,18 @@ deprecateとしたい意図としては、以下のような技術的な問題�
 
 
 # 解決方法
+TLS1.0とTLS1.1を廃止する
 
+# 詳細
+
+### 使用とサポート
+次の結果によるとTLSv1.2 (98.9%)、TLS1.0(0.8%)、さらに小さいのがTLS1.1
+- Alexa Top 1 Million Analysis - February 2018
+  - https://scotthelme.co.uk/alexa-top-1-million-analysis-february-2018/
+
+多くのウェブサイトがPCI council deadlineのためにTLSv1.1とTLSv1.0をdeprecatedしました。
+2018年6月にはTLS1.1のサポートも打ち切られるようになります。
 
 # 参考URL
 - https://tools.ietf.org/html/draft-moriarty-tls-oldversions-diediedie-00
 
-
-# TODO
-- introductionしか読めていないのであとで読む
