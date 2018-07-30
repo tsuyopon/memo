@@ -12,6 +12,8 @@ Alt-Svcにsniパラメータを設けます。
 ```
 h2="innocence.org:443";ma=2635200;persist=true;sni=innocence.org
 ```
+上記のクエリ例だと
+- 次の30日間において(ma)、どんなネットワーク上でも(persist)、innocence.org:443でソケットを開き(h2=xxx)、sniとしてinnocence.orgを使う(sni)、HTTP2を使う(h2)
 
 上記の代替へと処理を行う際には、クライアントはTLSハンドシェイク中においてSNI拡張にホスト名を指定しなければなりません。
 もし、ホスト名がから文字列である場合には、クライアントはTLSハンドシェイクからSNI拡張を省略(付与しない)すべきです。
@@ -19,7 +21,6 @@ h2="innocence.org:443";ma=2635200;persist=true;sni=innocence.org
 - SNI拡張で指定されたホスト名
 - 代替として発行されたオリジンのホスト名
 - 代替へと接続するために使われたホスト名
-
 
 # サンプル
 

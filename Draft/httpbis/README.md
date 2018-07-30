@@ -2,7 +2,15 @@
 次にある資料の概要を把握する
 - https://tools.ietf.org/wg/httpbis/
 
+
+- agenda
+  - https://datatracker.ietf.org/meeting/102/materials/agenda-102-httpbis-00
+
 # 詳細
+
+### 個人ドキュメント
+- draft-bishop-httpbis-sni-altsvc
+  - 
 
 ### Active
 - draft-ietf-httpbis-bcp56bis
@@ -28,6 +36,8 @@
 - draft-ietf-httpbis-variants
   - HTTPのための2番目のキャッシュキーの代替手段を提供する。これには、「Variants」、「Variant-Key」レスポンスヘッダを規定する。
   - この仕様の目的はHTTPの先を見据えたコンテンツの取得に関してキャッシュフレンドリーにするためのものである。
+- draft-ietf-httpbis-rfc6265bis: Cookies: HTTP State Management Mechanism
+  -
 
 ### IESG Processing
 - draft-ietf-httpbis-replay
