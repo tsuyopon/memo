@@ -5,10 +5,9 @@
 # 解決したい課題
 - コミューニケーション間の機密性と認証はTLSでインターネットをセキュアにするための最初のゴールですが、TLSではホスト名と証明書は暗号化されずに送付されてきます。
 
-
 # 解決方法
-
-Alt-Svcにsniパラメータを設けます。
+Alt-Svcにsniパラメータを設けます。このHTTPヘッダを受取った後にヘッダで指定された該当のホストに対して接続の切り替えを行います。
+なお、この仕様はsni接続先の切り替えを行いますのでSecondary Certificateとのコンビネーションで動きます。
 ```
 h2="innocence.org:443";ma=2635200;persist=true;sni=innocence.org
 ```
@@ -16,13 +15,15 @@ h2="innocence.org:443";ma=2635200;persist=true;sni=innocence.org
 - 次の30日間において(ma)、どんなネットワーク上でも(persist)、innocence.org:443でソケットを開き(h2=xxx)、sniとしてinnocence.orgを使う(sni)、HTTP2を使う(h2)
 
 上記の代替へと処理を行う際には、クライアントはTLSハンドシェイク中においてSNI拡張にホスト名を指定しなければなりません。
-もし、ホスト名がから文字列である場合には、クライアントはTLSハンドシェイクからSNI拡張を省略(付与しない)すべきです。
-この場合、サーバは次のいずれか１つを満たす妥当な証明書を応答しなければならない
+もし、ホスト名が空文字列である場合には、クライアントはTLSハンドシェイクからSNI拡張を省略(付与しない)すべきです。
+この場合、サーバは次のいずれか１つを満たす妥当な証明書を応答しなければなりません。
 - SNI拡張で指定されたホスト名
 - 代替として発行されたオリジンのホスト名
 - 代替へと接続するために使われたホスト名
 
 # サンプル
+section3ではいくつかのサンプルが規定されていますので、そちらについて添付します。
+- https://tools.ietf.org/html/draft-bishop-httpbis-sni-altsvc-02#section-3
 
 ### 通常の利用
 https://sensitive.example.com/privateにアクセスして次のAltSvcを受け取った場合
@@ -74,6 +75,9 @@ h2=":443";ma=2635200;persist=true;sni=other.example
 - 3. クライアントはTLSハンドシェイクにおいて、sniに指定された「other.example」をSNI拡張に指定します。
 - 4. TLSサーバはこのホスト名に対する証明書は持っていませんが、証明書としては「sensitive.example.com」のものを応答します。
 - 5. クライアントは正しくsensitive.example.comの証明書を検証できます。
+
+# セキュリティについて
+現状このAlt-Svcを利用するためには最低1度はOriginと接続する必要があるが、これはDNS over HTTPS(DoH)を使うことにより緩和される予定ではある。
 
 
 # 参考URL
