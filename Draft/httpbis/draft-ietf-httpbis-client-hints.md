@@ -19,27 +19,36 @@ HTTP Client Hintsについて
 - Save-Data
 - Content-DPR
 
-以下では例を見ていくとする。
+以下では例を見ていくことにします。
 
-クライアントからは次のようなデバイス特化に関するヘッダがサーバ側に付与される。
-これはDPR(Device Pixel Rate)が2.0で、要求されたリソース幅が160CSS px(320/2.0)、そしてviewportの幅が320であることを意味する。
+まずはクライアントがリクエストを行ってサーバ側から次の応答が帰ります。Accept-CHというヘッダでクライアントからサーバに送ってきてほしいヘッダ情報を指定します。
 ```
-DPR: 2.0
-Width: 320
-Viewport-Width: 320
-```
-
-サーバ側はDPRとして次の値を選択したということを次のヘッダでクライアントに返答する。以下の例では1.0を返却している。
-```
-Content-DPR: 1.0
-```
-
-また、サーバ側は次のようなヘッダをクライアント側に返却するかもしれない。
-以下はAccept-CHヘッダで受け入れたヘッダ情報を記述して、その有効時間についてはAccept-CH-Lifetimeで明示している。
-```
-Accept-CH: DPR, Width
-Accept-CH: Viewport-Width
+GET /index.html
+...
+HTTP/1.1 200 OK
+Accept-CH: DPR, Viewport-Width, Width, Downlink, Save-Data
 Accept-CH-Lifetime: 86400
+```
+
+クライアントがAccept-CHに対応している場合には、次回リクエストからは先程のAccept-CHで指定したヘッダが付与されてきます。
+これはDPR(Device Pixel Rate)が2.0で、要求されたリソース幅が300CSS px(600/2.0)、そしてviewportの幅が320であることを意味します。
+```
+GET /ilovebroccoli.jpg
+
+DPR: 2.0
+Width: 600
+Viewport-Width: 320
+Save-Data: on
+```
+
+サーバ側はDPRとして次の値を選択したということをContent-DPRヘッダでクライアントに返答する。
+```
+200 OK
+Content-Type: image/jpeg
+...
+Content-DPR: 0.5
+Vary: DPR
+Cache-Control: private, no-transform
 ```
 
 TODO: Save-Dataヘッダの例について記載する。
