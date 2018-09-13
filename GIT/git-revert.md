@@ -16,6 +16,15 @@ $ git revert HEAD
 $ git revert <commit_id>
 ```
 
+### 特定のPRをrevertする方法
+特定のPRをrevertする方法はありませんので、最新のcommitから順番に古いcommit値を指定して順番で以下のコマンドを打ちます。
+なお、PRにmasterから取り込んだ場合、そのコミット値が記載されていますが、これはgit revertで指定しなくても大丈夫です。
+```
+$ git revert <commit_id>
+```
+
+もし、このコミットよりもあとで更新処理などが入っている場合にはrevert処理はそれより前のコミットも遡及してrevertしない限りエラーとはできません。
+
 ### 過去２つのcommitを打ち消す場合
 ```
 $ git revert HEAD~2
