@@ -46,3 +46,31 @@ SIGPIPE       No	Yes	Yes		Broken pipe
 Continuing.
 ```
 
+### 他のプロセスからの
+traffic_serverをデバッグする際にtraffic_copやtraffic_managerプロセスが邪魔となります。
+それは次のような操作を行っているからです。
+- 他のプロセスからヘルスチェックのためにリクエストされるエントリポイント、
+- 応答しなくなったプロセスを再起動する
+
+gdbを開始する前に次の操作を行っておきましょう。
+```
+$ sudo kill -STOP `pidof /opt/trafficserver-7.1.x/bin/traffic_manager` `pidof /opt/trafficserver-7.1.x/bin/traffic_cop`
+```
+
+終わったらプロセスを再開します。
+```
+$ sudo kill -CONT `pidof /opt/trafficserver-7.1.x/bin/traffic_manager` `pidof /opt/trafficserver-7.1.x/bin/traffic_cop`
+```
+
+### directoryもまるごと指定する。
+手元にソースコードがある場合には、次のようにしてデバッグすると便利です。
+以下はtrafficserverディレクトリ直下で実行していることを想定したコマンドです。(パスは適宜変更してください)
+```
+$ sudo gdb `find iocore proxy -type d -printf '-d %p '`  -p `pidof /opt/trafficserver-7.1.x/bin/traffic_server`
+```
+
+上記でgdbが起動したら次のコマンドを実行することで、シングルキーモードでソースコードを表示しながらデバッグをするとかなりはかどります。
+```
+Ctrl +x, u
+```
+
