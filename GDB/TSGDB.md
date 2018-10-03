@@ -74,3 +74,8 @@ $ sudo gdb `find iocore proxy -type d -printf '-d %p '`  -p `pidof /opt/traffics
 Ctrl +x, u
 ```
 
+TUIモードからもとに戻すには次のコマンドを実行します。
+```
+Ctrl + x,  Ctrl + a
+```
+
