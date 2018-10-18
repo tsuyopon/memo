@@ -881,6 +881,11 @@ set charset UTF-8
 set print demangle on
 ```
 
+### gdbinitを再読込する
+```
+(gdb) source /home/tsuyoshi/.gdbinit
+```
+
 ## その他
 ### フレーム関連の処理
 ```
@@ -903,6 +908,25 @@ $ gdb -tui
 
 テキストユーザーインターフェース仕様については以下のURLが参考になります。
 - [http://www.geocities.jp/harddiskdive/gdb/gdb_290.html]
+
+### TUIシングルキーモード
+上記のCtrl-X, Aだと「c + 改行」を押下しなければなりませんが、
+Ctrl-X + S だとsingle key  modeとなり、 directoryで既存のソースコードの位置を指定してあげることでデバッグ処理が本当にはかどります。
+
+- コマンドライン参考
+  - https://sourceware.org/gdb/onlinedocs/gdb/TUI-Single-Key-Mode.html#TUI-Single-Key-Mode
+
+### 効率的なデバッグ: gdb起動時にdirectoryとpid指定を楽する
+
+ソースコード対象はdirectoryコマンドで":"区切りでディレクトリ毎に指定しなければならなかった
+```
+(gdb) directory iocore:iocore/aio:iocore/cache:iocore/dns:iocore/eventsystem:iocore/eventsystem:iocore/hostdb:iocore/hostdb/include:iocore/net:iocore/utils:iocore/cluster
+```
+
+起動時にディレクトリをdオプションで指定することで
+```
+sudo gdb `find iocore -type d -printf '-d %p '`  -p `pidof /opt/trafficserver-7.1.x/bin/traffic_server`
+```
 
 ### 実行ログを取得する
 ロギングするファイルを指定します。以下設定をせずにset logging onするとカレントディレクトリのgdb.txtに吐かれます。
