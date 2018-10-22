@@ -5,6 +5,21 @@ iOSに搭載されているSiriではこのMPTCPの仕組みを利用してい�
 
 802.3adリンクアグリゲーション(Bonding)に対して、MPTCPは複数のインターフェイスに対して1つのTCPコネクションでバランスし、とても高いスループットを出すことができることで注目されています。
 
+MultiPathTCPの特徴・利点は次のとおりです。
+- 複数のpathを利用することでスループットを増加させる
+- 1つの経路が利用できなくなっても、他の経路を利用することができる。
+- コネクションを終了することなく、IPアドレスの追加と削除が可能である。
+- MPTCP自体はアプリケーション層とTCP層の間に位置します。
+- 輻輳制御も独自で行っている
+- インタフェースを識別できるようにsubflowと呼ばれる識別子を定義している
+
+# 疑問点: なぜ複数のTCPコネクション接続じゃだめなのか?
+
+次の問題点が生じる
+- 現行のアプリケーションの書き換えが必要となる
+- 通常のTCP利用よりもかなりアグレッシブになりうる
+- アプリケーションがどれだけの量をどのパスに送らなければならないとった、洗練されたデータ転送が難しい
+
 # 仕様
 TCPオプションを用いてネゴシエーションを行う。MP_CAPABLEというオプションが使われる。
 
@@ -30,7 +45,49 @@ $ sysctl net.mptcp.mptcp_enabled
 
 # 仕様詳細
 
-### MPTCPパケット構造
+## 利用方法
+2台のmachine1とmachine2が存在していて、各々がI/Fを持っていて次のような略称を付与します。後で説明に使います。
+```
+[machine 1]
+MA1 = First interface on machine 1
+MA2 = Second Interface on machine 1
+
+[machine 2]
+MB1 = First interface on machine 2
+MB2 = Second interface on machine 2
+```
+
+### 基本的な利用フロー
+MPTCPによる3wayハンドシェイクは次の内容で行う。これでMPTCPを使うことが双方で合意できたことになる。
+- 1. Send SYN With MP_CAPABLE Flags         (MA1 -> MB1)
+- 2. Reply SYN+ACK With MP_CAPABLE Flags    (MB1 -> MA1)
+- 3. Reply ACK With MP_CAPABLE Flags        (MA1 -> MB1)
+
+続いて、今度はmachine1とmachine2でSecond Interfaceが存在するのでこの経路を追加する。
+- 4. Send SYN With MP_JOIN Flags            (MA2 -> MB2)
+- 5. Reply SYN+ACK With MP_JOIN Flags       (MB2 -> MA2)
+- 6. Reply ACK With MP_JOIN Flags With HMAC (MA2 -> MB2)
+- 7. Reply ACK                              (MB2 -> MA2)
+
+
+### 相手側に自身が持つ別のI/Fを伝えておく方法
+MPTCPによる3wayハンドシェイクは次の内容で行う。これでMPTCPを使うことが双方で合意できたことになる。(ここまでは先程と同じです)
+- 1. Send SYN With MP_CAPABLE Flags        (MA1 -> MB1)
+- 2. Reply SYN+ACK With MP_CAPABLE Flags   (MB1 -> MA1)
+- 3. Reply ACK With MP_CAPABLE Flags       (MA1 -> MB1)
+
+machine1からmachine2にMA2が存在することを通知しておく
+- 4. Send SYN With ADD_ADDR(MA2) Flags     (MA1 -> MB1)
+
+必要になった時点でMB2から次のようにMP_JOINされる。
+- 5. Send SYN With MP_JOIN Flags           (MB2 -> MA2)
+- 6. Reply SYN+ACK With MP_JOIN With HMAC  (MA2 -> MB2)
+- 7. Reply ACK With MP_JOIN With HMAC      (MB2 -> MA2)
+- 8. Reply ACK                             (MA2 -> MB2)
+
+終了前にADD_ADDRしたアドレスを削除します。この場合REMOVE_ADDRが使われますがここでは割愛します。
+
+## MPTCPパケット構造
 MPTCPはTCP拡張番号30として規定されています。
 - https://www.iana.org/assignments/tcp-parameters/tcp-parameters.xhtml
 
@@ -76,7 +133,7 @@ TCP拡張は最初の1バイトが種別、その次の1バイトが長さ、そ
             Table 2: MPTCP Option Subtypes
 ```
 
-### SubtypeがMP_CAPABLEの場合のパケット構造について
+### SubtypeがMP_CAPABLEの場合のパケット構造
 SubtypeがMP_CAPABLE(0x0)のときのMPTCP Option Formatは次のようなパケット構造になります。
 ```
                      1                   2                   3
@@ -95,6 +152,30 @@ SubtypeがMP_CAPABLE(0x0)のときのMPTCP Option Formatは次のようなパケ
         Figure 4: Multipath Capable (MP_CAPABLE) Option
 ```
 
+- See: https://tools.ietf.org/html/rfc6824#section-3.1
+
+### SubtypeがMP_JOINの場合のパケット構造
+```
+                           1                   2                   3
+       0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+      +---------------+---------------+-------+-----+-+---------------+
+      |     Kind      |  Length = 12  |Subtype|     |B|   Address ID  |
+      +---------------+---------------+-------+-----+-+---------------+
+      |                   Receiver's Token (32 bits)                  |
+      +---------------------------------------------------------------+
+      |                Sender's Random Number (32 bits)               |
+      +---------------------------------------------------------------+
+```
+- Bフラグ
+  - このコネクションがバックアップ回線かどうかを指定する
+- Address ID
+  - ADD_ADDRで通知されたAddressIDである
+- Token
+  - コネクションを識別するために使われるトークン
+- Random Number
+  - シーケンスナンバーはリプレイ攻撃のために付与されている
+
+
 # 問題点
 - 複数経路があるとロードバランサによりIPが異なると判定されて別々のオリジンに飛ばされないか?
 
@@ -107,3 +188,5 @@ SubtypeがMP_CAPABLE(0x0)のときのMPTCP Option Formatは次のようなパケ
   - http://multipath-tcp.org/
 - PDFスライドでわかりやすい
   - http://ew2017.european-wireless.org/wp-uploads/2017/05/keynotes-Raiciu-EW2017.pdf
+- Multipath TCPの紹介と最近の動向(PDF)
+  - https://www.isoc.jp/materials/20131220/20131220_mptcp.pdf

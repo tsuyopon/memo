@@ -15,3 +15,6 @@
 - https://youglish.com/
   - 単語やイディオムを入力するとyoutube上から様々なシーンを再生してくれるすぐれサイト
 
+### ポッドキャスト
+- 6 minutes Englishのscript
+  - http://www.bbc.co.uk/learningenglish/english/features/6-minute-english

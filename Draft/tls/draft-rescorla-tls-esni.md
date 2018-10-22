@@ -4,8 +4,7 @@
 TLS1.3では大抵のハンドシェイクを暗号化しますが、経路上に存在するアタッカーには次の情報を提供することになります。
 - DNSクエリは平文
 - サーバIPアドレスが見える。サーバはドメインベースのバーチャルホストを使っていないことが推測されることになる。
-- SNI(RFC6066)が見えるClientHelloメッセージが平文で流れる。
-
+- SNI(RFC6066)が含まれるClientHelloメッセージが平文で流れる。
 
 # 解決方法
 
@@ -50,7 +49,9 @@ encrypted_server_name拡張はプロバイダーの公開鍵の元で暗号化�
 
 
 # 仕様詳細
-SNI Encryption keysは、下記に述べるESNIKeys鍵構造を使うことによってDNSで発行することができる。
+
+- ESNIをサポートするプロバイダーはserver_name拡張をencrypted_server_name拡張に置き換えます。
+- ESNI暗号鍵は次のESNIKeys構造体を用いることによってDNSに発行してもらうことができます。
 ```
        // Copied from TLS 1.3
        struct {
@@ -68,6 +69,14 @@ SNI Encryption keysは、下記に述べるESNIKeys鍵構造を使うことに�
            Extension extensions<0..2^16-1>;
        } ESNIKeys;
 ```
+- もしクライアントがexample.comへリクエストしたら、DNSのTXTレコードは次のようになるかもしれない。
+```
+   _esni.example.com. 60S IN TXT "..." "..."
+```
+- クライアントはESNIが可能なドメインに対してDNSクエリを発行することでこれらのレコード情報を入手する。
+- クライアントはリソースレコードのTTLに基づいて特有のドメインのESNIKeysをキャッシュするかもしれない。not_afterの値によってキャッシュすべきではない。
+
+
 
 
 ### encrypted_server_name拡張

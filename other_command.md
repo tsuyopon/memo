@@ -89,3 +89,12 @@ $ cat test | cut -f 3- -d $'\x01' | cat -v
 - SeeAlso
   - https://stackoverflow.com/questions/25243763/cut-command-with-delimiter-control-a
 
+### 適当にN文字を生成する
+以下の例では適当に100文字を生成した際の例です
+```
+$ cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 100 | head -1
+aoqFRhJkNAi5ZBKXM9JSL7EyLhL7o4xxKELuS60CYAEky6UWX9A2g2xtINKlayAMgsRcsmrxVeufFuhOiJRJN67e7wE7poCfQpHf
+```
+
+- 参考
+  - https://qiita.com/Vit-Symty/items/5be5326c9db9de755184

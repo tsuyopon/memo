@@ -5,7 +5,34 @@ Note: External Pre-Shared KeyはTLS1.2でのPre-Shared-Keyを意味する
 将来的には量子コンピュータによってDHやECDHなどの暗号も簡単に解けてしまう問題が出てくる。
 将来的な脅威にも対応できるように外部PSKを用いた証明書認証について定義しておく必要がある。
 
+現在では鍵入力スケジュールは次のようになっている。見てわかるように初期ハンドシェイクにおいてのKey Schedule Secret INputsは1種類しか提供していない。
+
+- 初期ハンドシェイク
+```
+[Authentication]               [Key Schedule Secret Inputs]
+Signature and Certificate      (EC)DHE
+```
+
+- 後続ハンドシェイク
+```
+[Authentication]               [Key Schedule Secret Inputs]
+Resumption PSK                 Resumption PSK + (EC)DHE
+Resumption PSK                 (EC)DHE
+```
+
+もしも、今後脅威となる敵がハンドシェイク情報やCipherSuitesを保存していて、量子コンピュータによる解析が出てくると(EC)DHEが脅威となり得る。
+
 # 解決方法
+
+解決方法としてはショートスパン及びロングスパンで考えられる。
+- ショートスパン
+  - TLS1.3鍵スケジュールへの入力値として強い外部PSKを与えること
+- ロングスパン
+  - 量子耐性がある公開鍵暗号アルゴリズム(NISTのコンペティション)
+
+このドキュメントではショートスパンとしての方法を提供する。
+
+
 証明書と外部PSKのコンビネーションによるサーバ認証を許容する方法をTLS1.3拡張(tls_cert_with_extern_psk)として規定する。
 
 クライアント側とサーバ側の処理は次のとおりです。
@@ -19,7 +46,7 @@ Note: External Pre-Shared KeyはTLS1.2でのPre-Shared-Keyを意味する
   - tls_cert_with_extern_pskネゴシエーションが成功するということは、選択された外部PSKや(EC)DHEで共有する秘密値の両方を包括するTLS1.3鍵スケジューリングの処理を要求します。その結果として、Early Secret, Handshake Secret, Master Secretの値についてはすべて選択された外部PSKに依存します。
 
 
-この拡張における特徴は次の通りです。
+この拡張における特徴について述べる
 - 特徴
   - サーバ認証やクライアントの追加認証は、証明書内の公開鍵で検証できるかどうかといった署名生成の能力に依存します。
     - なお、認証プロセスは選択されたPSKによって変わることはありません。
@@ -43,6 +70,8 @@ TLS1.3ではPSKが使われた場合にCertificateRequestメッセージを送�
 
 # 参考URL
 - https://tools.ietf.org/html/draft-housley-tls-tls13-cert-with-extern-psk-00
+- IETF102スライド
+  - https://datatracker.ietf.org/meeting/102/materials/slides-102-tls-certificate-based-authentication-with-external-psk-00
 
 # TODO
 - ちゃんと読めていない

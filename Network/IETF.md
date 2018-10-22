@@ -152,6 +152,17 @@ IESGが作成するRFCの取り扱い方法に関する決定を下す。つま�
 - https://tools.ietf.org/agenda/101/
 - https://tools.ietf.org/agenda/100/
 
+# 前回のスライドなど
+- https://datatracker.ietf.org/meeting/101/proceedings
+- https://datatracker.ietf.org/meeting/100/proceedings
+- https://datatracker.ietf.org/meeting/99/proceedings
+
+# 過去の資料など
+- https://datatracker.ietf.org/meeting/99/agenda.html
+- https://datatracker.ietf.org/meeting/100/agenda.html
+- https://datatracker.ietf.org/meeting/101/agenda.html
+
+「show meeting materials」を押下すると過去のスライドなどを閲覧することができます。
 
 # 参考URL
 - 公式サイト
