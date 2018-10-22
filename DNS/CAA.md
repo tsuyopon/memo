@@ -1,8 +1,14 @@
 # DNS Certification Authority Authorization (CAA)
-CAAは意図しない認証局からの証明書の誤発行を防ごうといった趣旨です。
+CAAは意図しない認証局からの証明書の誤発行を防ごうといった趣旨です。RFC6844で規定されています。
 簡単に言うと所有しているドメイン・サブドメインが指定した認証局以外で勝手に別の認証局から発行されることを防ぐための仕組みです。
 
-DANE(TLSAレコード)とCAAの違いが非常にわかりにいですが、RFC6844に次のような記述があるようです。
+CA/ブラウザフォーラムがCA（認証局）に、2017年9月8日からのCAAレコードチェックを義務付けました。
+ドメイン所有者がDNSのCAA設定にどのドメインで発行してほしいかを指定することができます。
+このCAAレコードが設定されていない場合にはどの証明書でも発行できることになります。
+
+
+# CAAとTLSAレコード(DANE)の違い
+CAAとDANE(TLSAレコード)の違いが非常にわかりにいですが、RFC6844に次のような記述があるようです。
 ```
 Like the TLSA record defined in DNS-Based Authentication of Named Entities (DANE) [RFC6698], CAA records are used as a part of a mechanism for checking PKIX certificate data. The distinction between the two specifications is that CAA records specify an authorization control to be performed by a certificate issuer before	issue of a certificate and TLSA records specify a verification control to be performed by a relying party after the certificate is issued.
 
@@ -24,16 +30,17 @@ DANEの場合にはウェブブラウザへの実装が必要になりますが�
 
 ### CAA書式
 以下はサンプルです。1つのFQDNに対して複数のCAAレコードを指定することが可能です。
+MITMでCAAが書き換えられると困るので、DNSSECに対応していることが事実上前提となっているようです。
 ```
 example1.jp.    IN  CAA 0 issue "letsencrypt.org"
 example1.jp.    IN  CAA 0 issuewild ";"
 example1.jp.    IN  CAA 0 iodef "mailto:xxxxxx@example1.jp"
 ```
 
-上記サンプルでも登場するように次の３つのパターンがあります。
-- issue: 発行を許可するCA認証局のドメインを指定します。
+上記サンプルでにある３つのパターンの意味は次の通りです。
+- issue:     発行を許可するCA認証局のドメインを指定します。
 - issuewild: ワイルドカード証明書の発行を拒否する場合には「;」を設定します。
-- iodef: 認証局は発行が許可できなかった無効リクエストに関する情報をここで設定したアドレスに通知します。 URLを指定することもできるようです。
+- iodef:     認証局は発行が許可できなかった無効リクエストに関する情報をここで設定したアドレスに通知します。 URLを指定することもできるようです。
 
 また、CAAの後に存在する0はflagを表します。
 
@@ -56,3 +63,5 @@ example1.jp.    IN  CAA 0 iodef "mailto:xxxxxx@example1.jp"
   - https://tools.ietf.org/html/rfc6844
 - CAA利用に関する具体的な図については以下のサイトを確認するとよさそうです。
   - https://http2.try-and-test.net/dns_caa.html
+- CAAが適切にチェックされているかを確認できる
+  - https://caatest.co.uk/
