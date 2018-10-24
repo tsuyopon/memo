@@ -3,6 +3,9 @@
 
 # 詳細
 
+- http://people.apache.org/~amc/ats/doc/html/classHttpTunnel.html
+  - Class Reference
+
 - https://docs.trafficserver.apache.org/en/latest/developer-guide/plugins/introduction.en.html
   - 次の状態遷移図がある
     - Simplified HTTP Transaction

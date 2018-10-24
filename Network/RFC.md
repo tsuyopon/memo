@@ -94,6 +94,9 @@ RFCには、一連のRFC番号が付けられているが、新しい版が発�
   - 次の箇所からキーワードを入れるだけで該当するRFCのドラフトを表示してくれます。
     - https://datatracker.ietf.org/doc/
 
+### ibooksからみたい
+- https://tools.ietf.org/ebook/
+
 # 参考URL
 - JPNIC
   - https://www.nic.ad.jp/ja/newsletter/No24/090.html

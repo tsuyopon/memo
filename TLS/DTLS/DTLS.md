@@ -29,7 +29,29 @@ TLSとDTLSとの違いについての差分が規定されています。たと�
 
 # 詳細
 
+### TLSとのレコードレイヤーの違い
+DTLSPlaintext構造体にepoch, sequence_numberといった新しいフィールドが定義されます。
+```
+      struct {
+           ContentType type;
+           ProtocolVersion version;
+           uint16 epoch;                                    // New field
+           uint48 sequence_number;                          // New field
+           uint16 length;
+           opaque fragment[DTLSPlaintext.length];
+         } DTLSPlaintext;
+```
+- epoch: Cipherの状態が変化した際にインクリメントされる(?)
+- sequence_number: このレコードのためのシーケンスナンバー
+
 ### フルハンドシェイク
+以下を見るとわかりますが、HelloVerifyRequestというメッセージが新しく規定されています。
+```
+   struct {
+     ProtocolVersion server_version;
+     opaque cookie<0..2^8-1>;
+   } HelloVerifyRequest;
+```
 
 ```
    Client                                          Server

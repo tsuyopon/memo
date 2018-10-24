@@ -1,5 +1,6 @@
 # 概要
-HTTP/2経由でDNSクエリの発行及びレスポンスの取得を行うことについてまとめた仕様である。
+HTTPS経由によるDNSクエリの発行及びレスポンスの取得を行うことについてまとめた仕様である。
+この仕様はHTTP/2のみに規定されていて、DNS Queries over HTTPS(DoH)でRFC8484として規定される。
 
 # 解決したい課題
 - DNSのメッセージは平文であるために、HTTPS接続などを行っても接続先は第三者に明らかになってしまう問題がある。
@@ -7,12 +8,12 @@ HTTP/2経由でDNSクエリの発行及びレスポンスの取得を行うこ�
 
 # 解決方法
 - HTTP/2でDNSメッセージを運ぶ
-  - このHTTPSで応答を返すDNSサーバのことをこのドラフトではDNSサーバではなくDoHサーバと呼ぶことにする。
+  - このHTTPSで応答を返すDNSサーバのことをこのドラフトではDNSサーバではなくDoH(DNS over HTTPS)サーバと呼ぶことにする。
 
 # 詳細
 
 ### 要求仕様
-- DoHサーバはGETとPOSTを実装しなければならない
+- DoHサーバはGETとPOSTを実装しなければならない(MUST)
 - GETを使った実装の方がHTTPキャッシュフレンドリな実装となる。
 - DNSサーバとDNSクライアントは相互運用性のために「application/dns-message」をサポートしなければならない
 
@@ -77,4 +78,4 @@ TTLがcache-controlから128秒であり、192.0.2.1のレスポンスを返却�
 - ENDS0拡張って何?
 
 # 参考URL
-- https://tools.ietf.org/html/draft-ietf-doh-dns-over-https-12
+- https://tools.ietf.org/html/rfc8484

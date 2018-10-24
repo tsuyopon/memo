@@ -29,9 +29,15 @@ Public-Key-Pins:
 - report-uriは、ピンの検証に失敗した場合に報告されるURLを示す。
 
 
+report-uriを解析するためのテストサイトとして次のサイトがある
+- https://report-uri.com/
+- 利用方法に関する参考資料: https://rms-digicert.ne.jp/howto/basis/Scott_Helme_io.html
+
 # 参考URL
 - RFC7469: Public Key Pinning Extension for HTTP
   - https://tools.ietf.org/html/rfc7469
 - mozilla: HTTP Public Key Pinning (HPKP)
   - https://developer.mozilla.org/ja/docs/Web/Security/Public_Key_Pinning
+- 「Public Key Pinning Extension for HTTP（HPKP）」で証明書の不正利用を防止する
+  - https://rms-digicert.ne.jp/howto/basis/pinning.html
 
