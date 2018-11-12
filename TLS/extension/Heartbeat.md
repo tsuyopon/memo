@@ -96,7 +96,23 @@ openssl-1.0.1g以降ではHeartbleedの脆弱性対応されていて、デフ�
 ```
 
 ## opensslによるheartbeat確認方法
-TBD
+- HeartBeat未対応のサーバの場合
+```
+$ openssl s_client -connect xxx.co.jp:443 
+(snip)
+B               // "B"を入力してエンターを押下
+HEARTBEATING
+140188478379936:error:1413B16D:SSL routines:tls1_heartbeat:peer does not accept heartbeats:t1_lib.c:4039:
+```
+
+- HeartBeat対応のサーバの場合
+```
+$ openssl s_client -connect xxx.co.jp:443 
+(snip)
+B               // "B"を入力してエンターを押下
+HEARTBEATING
+read R BLOCK
+```
 
 # 参考URL
 - Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS) Heartbeat Extension
