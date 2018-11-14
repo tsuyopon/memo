@@ -31,7 +31,8 @@ record_size_limitとmax_fragment_lengthの２つが両方ともClientHelloに表
 
 
 # 参考URL
-- https://datatracker.ietf.org/doc/rfc8449/
+- Record Size Limit Extension for TLS
+  - https://datatracker.ietf.org/doc/rfc8449/
 - https://tools.ietf.org/html/draft-ietf-tls-record-limit-03
 - ASnoKaze blog
   - https://asnokaze.hatenablog.com/entry/2017/09/04/233741
