@@ -80,6 +80,12 @@ End                   Fn + ↓
 MAC公式ページでショートカット一覧を紹介しています。
 - http://support.apple.com/kb/HT1343?viewlocale=ja_JP&locale=ja_JP
 
+### ひらがな、カタカナ、全角半角英数への変換方法
+- ひらがな: Ctrl + j
+- カタカナ: Ctrl + k
+- 全角英数: Ctrl + l
+- 半角英数: Ctrl + ;
+
 ### Control KeyとCaps Lockキーの入れ替え
 - システム環境変数を開く
 - キーボードを開く
