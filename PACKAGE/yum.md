@@ -255,7 +255,8 @@ $ less /var/log/yum.log
 ```
 
 ### インストール履歴を確認する
-履歴一覧は次のコマンドで表示できる。sudoが必要なのに注意すること。
+履歴一覧は次のコマンドで表示できる。いつインストールやアップデートが行われたかも確認することができる。
+コマンド実行にはsudoが必要なのに注意すること。
 ```
 $ sudo yum history
 Loaded plugins: auto-update-debuginfo, fastestmirror, langpacks, presto, refresh-packagekit
@@ -284,7 +285,8 @@ ID     | Command line             | Date and time    | Action(s)      | Altered
 history list
 ```
 
-そしてhistory infoで番号をその後に指定すると該当の処理を確認することができます。
+そしてhistory infoで上記で取得した履歴(ID)をその後に指定すると、その時にインストールしたパッケージの詳細を確認することができます。
+boolst141の他にも関連した依存パッケージがインストールされていることが確認できます。
 ```
 $ sudo yum history info 114
 Loaded plugins: auto-update-debuginfo, fastestmirror, langpacks, presto, refresh-packagekit
@@ -335,6 +337,20 @@ ID     | Action(s)      | Package
      6 | Update         |         5.9p1-27.fc17.x86_64                         
      1 | Dep-Install    | openssh-5.9p1-22.fc17.x86_64                         
 history packages-list
+```
+
+たとえば名前で部分一致を指定したい場合には次のようなことも可能です。
+```
+$ sudo yum history package-list *ssh*
+Loaded plugins: fastestmirror
+Repodata is over 2 weeks old. Install yum-cron? Or run: yum makecache fast
+ID     | Action(s)      | Package                                              
+-------------------------------------------------------------------------------
+     1 | Dep-Install    | libssh2-1.4.3-10.el7_2.1.x86_64                      
+     1 | Dep-Install    | openssh-7.4p1-11.el7.x86_64                          
+     1 | Install        | openssh-clients-7.4p1-11.el7.x86_64                  
+     1 | Install        | openssh-server-7.4p1-11.el7.x86_64                   
+history package-list
 ```
 
 特定のパッケージの情報を確認したい場合には次のようにします。
