@@ -92,4 +92,10 @@ $ openssl s_client -connect nghttp2.org:13443 -sess_out session.dat -sess_in ses
 - 参考
   - https://nghttp2.org/blog/2017/03/20/tlsv1-3-endpoint-is-now-online/
 
+### openssl-1.1.1でearly_dataに対応する
+nginxでearly_dataに対応させるための修正は次を参考のこと
+- http://hg.nginx.org/nginx/rev/548a63b354a2
+
+early_dataに関するAPI群は以下のリファレンスを山椒のこと
+- https://www.openssl.org/docs/man1.1.1/man3/SSL_read_early_data.html
 
