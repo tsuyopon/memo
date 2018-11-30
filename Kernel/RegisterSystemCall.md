@@ -1,6 +1,4 @@
-
 ソースコードは、ロングサポート版のlinux-2.6.32.65にて調査を行い、32bitのx86 CPUと仮定して調査します。
-
 
 # 目的
 システムコールについてどのような仕組みで実装されているのかについて調査します。
@@ -10,14 +8,12 @@
 - int 0x80が呼び出された際にシステムコールが呼ばれます。
 - 例えば、printfなどのコールが呼ばれるとwriteが呼ばれます。
 
-
-
 # 概要
 そもそもシステムコールとは、カーネル内部の機能を普通のユーザー空間にあるプロセスからでも利用できるための仕組みです。  
 レジスタに決まった値をセットしてint 0x80という命令を実行すると割り込みが発生します。  
 
 
-例えば、printfなどを呼び出すときにはwriteというシステムコールが利用されます。  
+例えば、printfなどを呼び出すときにはglibcを経由して最終的にwriteというシステムコールが利用されます。  
 このようなシステムコール命令を発行する際には、レジスタにシステムコール番号と引数を指定してint 0x80命令を実行します(最近のx86だとsysenterという命令で入ることができてこちらの方が推奨されているらしいですが今回はint 0x80で進めます。)
 システムコールが失敗した場合にはエラーコードがグローバル変数errnoに格納されます。
 
@@ -46,18 +42,18 @@ _start:
     int  $0x80
 ```
 
-レジスタへの値は何を意味しているかというと下記設定を行った後にint 0x80命令を発行していることを表します。
+上記で利用しているレジスタへの値は何を意味しているかというと次のような意味をもちます。
 - EAX: システムコール番号
 - EBX: 出力先ファイルディスクリプタ(標準出力は1となる)
 - ECX: 出力データのアドレス
 - EDX: 出力データのサイズ
 
-これを頭に入れて進んでいきましょう。
+レジスタの設定を行った後にint 0x80命令を発行していることを表します。これを頭に入れて進んでいきましょう。
 
 
 # 詳細
 
-## ブート時のIDT登録の流れを理解する。
+### ブート時のIDT登録の流れを理解する
 システムコール一覧が定義されているファイルはsys_call_tableです。
 ```
 ./arch/x86/kernel/syscall_table_32.S 
@@ -97,7 +93,7 @@ long sys_call_table[NR_syscalls];
 {
     long n = システム・コールの番号
     long f = sys_call_table[n];
-    (*f)( 引数0, 引数1, 引数2 ); // 関数と思って呼ぶ
+    (*f)( 引数0, 引数1, 引数2 );         // 関数と思って呼ぶ
 }
 ```
 
@@ -147,6 +143,8 @@ arch/x86/include/asm/desc.h
 369 }
 ```
 
+上記でBUG_ON、_set_gate、__KERNEL_CSの実体を見てみます。
+
 GATE_TRAPはenumで0xFと定義されています。
 __KERNEL_CSは以下のように定義されています。
 ```
@@ -154,7 +152,7 @@ __KERNEL_CSは以下のように定義されています。
 149 #define GDT_ENTRY_KERNEL_CS 2
 ```
 
-BUG_ONはgrepすると以下の２行設定がある。CONFIG_BUGが定義されているかどうかでわかれるようだ(詳細不明)
+BUG_ONはgrepすると以下の２行設定がある。CONFIG_BUGが定義されているかどうかでわかれるようだ。
 これはLinuxカーネルにおいて引数に与えられた式が真にならバグとして扱われる。つまりassertのようなものらしい。
 ```
 include/asm-generic/bug.h
@@ -214,8 +212,8 @@ arch/x86/include/asm/desc.h
  73 #endif
 ```
 
-
 write_idt_entryはマクロとして定義されていて、gateをidtテーブルに記録する。
+gate変数はidt_tableとして指定されてきたポインタである。
 ```
 arch/x86/include/asm/desc.h
 101 #define write_idt_entry(dt, entry, g)       \
@@ -228,201 +226,28 @@ arch/x86/include/asm/desc.h
 119 }
 ```
 
+その後、trap_init()の最後の方の処理として次のcpu_initが実行されていますが、その中でload_idtという関数が呼ばれています。
+実はここで
+```
+1198 void __cpuinit cpu_init(void)
+1199 {
+...
+
+1216     load_idt(&idt_descr);
+```
+
+load_idtを見ていくとlidt命令が実行されていることが確認できます。
+```
+ 86 #define load_idt(dtr) native_load_idt(dtr)
+....
+222 static inline void native_load_idt(const struct desc_ptr *dtr)
+223 {
+224     asm volatile("lidt %0"::"m" (*dtr));
+225 }
+```
+
 以上でIDTの登録は完了となる。
 
-
-## システムコール関数の詳細を追ってみる
-
-TODO: システムコール番号1番のsys_restart_syscallは追えなかったので２番のexitからにする。
-
-### システムコール番号２番：exitを覗いてみる
-続いて、上記syscall_callという関数をどのように呼び出すのかをみていく
-実体についてはasmlinkageという文言でgrepをかけると定義しているヘッダファイルを見つけられるらしい。
-
-sys_exitの場合だと以下のようになる。
-```
-$ grep -rinH sys_exit * | grep -i asmlinkage
-./include/linux/syscalls.h:420:asmlinkage long sys_exit(int error_code);
-./include/linux/syscalls.h:421:asmlinkage long sys_exit_group(int error_code);
-```
-
-exitの場合はわかりにくいが、以下が実体である。
-```
-kernel/exit.c
-1053 SYSCALL_DEFINE1(exit, int, error_code)
-1054 {
-1055     do_exit((error_code&0xff)<<8);
-1056 }
-```
-
-do_exit関数は同ファイルで定義されているが、ここではSYSCALL_DEFINE1という定義が不明なので追っていくことにする。
-```
-include/linux/syscalls.h
-261 #define SYSCALL_DEFINE1(name, ...) SYSCALL_DEFINEx(1, _##name, __VA_ARGS__)
-```
-
-hを見ると以下のように定義されている。ftraceはおそらくトレース用だろうということでelse側を見ていけばよい。
-```
-include/linux/syscalls.h
-282 #ifdef CONFIG_FTRACE_SYSCALLS
-283 #define SYSCALL_DEFINEx(x, sname, ...)              \
-284     static const char *types_##sname[] = {          \
-285         __SC_STR_TDECL##x(__VA_ARGS__)          \
-286     };                          \
-287     static const char *args_##sname[] = {           \
-288         __SC_STR_ADECL##x(__VA_ARGS__)          \
-289     };                          \
-290     SYSCALL_METADATA(sname, x);             \
-291     __SYSCALL_DEFINEx(x, sname, __VA_ARGS__)
-292 #else
-293 #define SYSCALL_DEFINEx(x, sname, ...)              \
-294     __SYSCALL_DEFINEx(x, sname, __VA_ARGS__)
-295 #endif
-```
-
-
-__SYSCALL_DEFINExは以下のように定義されていて、CONFIG_HAVE_SYSCALL_WRAPPERSによって分岐されるようだ。
-```
-include/linux/syscalls.h
-297 #ifdef CONFIG_HAVE_SYSCALL_WRAPPERS
-298 
-299 #define SYSCALL_DEFINE(name) static inline long SYSC_##name
-300 
-301 #define __SYSCALL_DEFINEx(x, name, ...)                 \
-302     asmlinkage long sys##name(__SC_DECL##x(__VA_ARGS__));       \
-303     static inline long SYSC##name(__SC_DECL##x(__VA_ARGS__));   \
-304     asmlinkage long SyS##name(__SC_LONG##x(__VA_ARGS__))        \
-305     {                               \
-306         __SC_TEST##x(__VA_ARGS__);              \
-307         return (long) SYSC##name(__SC_CAST##x(__VA_ARGS__));    \
-308     }                               \
-309     SYSCALL_ALIAS(sys##name, SyS##name);                \
-310     static inline long SYSC##name(__SC_DECL##x(__VA_ARGS__))
-311 
-312 #else /* CONFIG_HAVE_SYSCALL_WRAPPERS */
-313 
-314 #define SYSCALL_DEFINE(name) asmlinkage long sys_##name
-315 #define __SYSCALL_DEFINEx(x, name, ...)                 \
-316     asmlinkage long sys##name(__SC_DECL##x(__VA_ARGS__))
-317 
-318 #endif /* CONFIG_HAVE_SYSCALL_WRAPPERS */
-```
-
-なお、SYSCALL_DEFINE1〜SYSCALL_DEFINE5まで存在していてこの数字はシステムコールの引数の数を表しているようだ。　
-
-CONFIG_HAVE_SYSCALL_WRAPPERSがある場合には、ない場合と比較していくつか定義が増えているようだ(検索してみたけど不明。読むしかなさそう。)  
-とりあえずは、両方とも以下の実体は定義しているので以下と考えて進めていくいことにする。
-```
-asmlinkage long sys##name(__SC_DECL##x(__VA_ARGS__));
-```
-
-引数に値を入れると以下のようになる。
-```
-asmlinkage long sysexit(__SC_DECL1(int, error_code));
-```
-
-__SC_DECL1は以下で定義されている。
-```
-include/linux/syscalls.h
-72 #define __SC_DECL1(t1, a1)  t1 a1
-```
-
-よって、先ほどの関数定義は以下のように展開されることになる。
-```
-asmlinkage long sysexit(int, error_code);
-```
-
-
-### システムコール番号３番：ptregs_forkを覗いてみる
-続いて、syscall_tableの３番目に定義されたptregs_forkを覗いてみる。
-```
-$ grep -rinH ptregs_fork .
-./arch/um/sys-i386/sys_call_table.S:12:#define ptregs_fork sys_fork
-./arch/x86/kernel/syscall_table_32.S:4:	.long ptregs_fork
-```
-
-ptregs_forkはsys_forkとdefineされている。sys_fork定義は以下の通り
-```
-/arch/x86/kernel/process.c
-217 int sys_fork(struct pt_regs *regs)
-218 {
-219     return do_fork(SIGCHLD, regs->sp, regs, 0, NULL, NULL);
-220 }
-```
-
-なお、sys_forkが呼び出すdo_forkはkernel/fork.cに定義されている。
-
-
-### システムコール番号４〜６番：sys_read, sys_write, sys_openを覗いてみる
-
-定義は以下に記述されている。
-```
-include/linux/syscalls.h
-586 asmlinkage long sys_open(const char __user *filename,
-587                 int flags, int mode);
-...
-631 asmlinkage long sys_read(unsigned int fd, char __user *buf, size_t count);
-...
-636 asmlinkage long sys_write(unsigned int fd, const char __user *buf,
-637               size_t count);
-```
-
-sys_readやsys_writeについては、fs/read_write.cは以下で定義されている。  
-SYSCALL_DEFINE3というdefineが利用されているという規則を知っていないと見つけにくいかもしれない。
-```
-fs/read_write.c
-372 SYSCALL_DEFINE3(read, unsigned int, fd, char __user *, buf, size_t, count)
-373 {
-374     struct file *file;
-375     ssize_t ret = -EBADF;
-376     int fput_needed;
-377 
-378     file = fget_light(fd, &fput_needed);
-379     if (file) {
-380         loff_t pos = file_pos_read(file);
-381         ret = vfs_read(file, buf, count, &pos);
-382         file_pos_write(file, pos);
-383         fput_light(file, fput_needed);
-384     }
-385 
-386     return ret;
-387 }
-388 
-389 SYSCALL_DEFINE3(write, unsigned int, fd, const char __user *, buf,
-390         size_t, count)
-391 {
-392     struct file *file;
-393     ssize_t ret = -EBADF;
-394     int fput_needed;
-395 
-396     file = fget_light(fd, &fput_needed);
-397     if (file) {
-398         loff_t pos = file_pos_read(file);
-399         ret = vfs_write(file, buf, count, &pos);
-400         file_pos_write(file, pos);
-401         fput_light(file, fput_needed);
-402     }
-403 
-404     return ret;
-405 }
-```
-
-sys_openについてはfs/open.cに以下のように定義されています。
-```
-fs/open.c
-1053 SYSCALL_DEFINE3(open, const char __user *, filename, int, flags, int, mode)
-1054 {
-1055     long ret;
-1056 
-1057     if (force_o_largefile())
-1058         flags |= O_LARGEFILE;
-1059 
-1060     ret = do_sys_open(AT_FDCWD, filename, flags, mode);
-1061     /* avoid REGPARM breakage on x86: */
-1062     asmlinkage_protect(3, ret, filename, flags, mode);
-1063     return ret;
-1064 }
-```
 
 # 参考URL
 - システムコールの仕組み
@@ -444,3 +269,5 @@ fs/open.c
 - システムコールとカーネルの関数
  - 表形式になっているので眺めてみるだけでもいいかも
  - http://www.mztn.org/lxasm/syscalltb.html
+- Linux Internals
+  - http://www.alfonsoesparza.buap.mx/sites/default/files/linux-insides.pdf
