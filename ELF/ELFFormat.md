@@ -243,4 +243,7 @@ Idx Name          Size      VMA               LMA               File off  Algn
 - ELF仕様書関連
   - http://www.cs.northwestern.edu/~pdinda/icsclass/doc/elf.pdf
   - https://www.uclibc.org/docs/psABI-x86_64.pdf
-
+- The ELF Virus Writing HOWTO
+  - http://www.linuxsecurity.com/resource_files/documentation/virus-writing-HOWTO/_html/index.html
+- Linuxシステムコール徹底ガイド
+  - https://postd.cc/the-definitive-guide-to-linux-system-calls/#kernelvsyscall-internals
