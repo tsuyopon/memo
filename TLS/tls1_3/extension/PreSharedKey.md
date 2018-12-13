@@ -58,9 +58,9 @@ Extension: pre_shared_key (len=2)
 # SeeAlso
 - RFC4279: Pre-Shared Key Ciphersuites for Transport Layer Security (TLS)
   - https://tools.ietf.org/html/rfc4279
-- RFC draft: The Transport Layer Security (TLS) Protocol Version 1.3 draft-ietf-tls-tls13-26 (section-2.2, section-4.2.11)
-  - https://tools.ietf.org/html/draft-ietf-tls-tls13-26#section-2.2
-  - https://tools.ietf.org/html/draft-ietf-tls-tls13-26#section-4.2.11
+- RFC8446: The Transport Layer Security (TLS) Protocol Version 1.3
+  - https://tools.ietf.org/html/rfc8446#section-2.2
+  - https://tools.ietf.org/html/rfc8446#section-4.2.11
 
 # TODO
 - 上記のSeeAlso以外にもPSKで関連するRFCがいくつか存在しているので概要を確認したい

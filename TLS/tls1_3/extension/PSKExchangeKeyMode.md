@@ -47,5 +47,5 @@ Extension: psk_key_exchange_modes (len=2)
   - http://d.hatena.ne.jp/kazu-yamamoto/20161213/1481681466
 
 # SeeAlso
-- https://tools.ietf.org/html/draft-ietf-tls-tls13-27#section-4.2.9
+- https://tools.ietf.org/html/rfc8446#section-4.2.9
 

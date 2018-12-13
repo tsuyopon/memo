@@ -1,8 +1,9 @@
 # 概要
-KeyShare拡張はTLS1.3のRFC中で定義されています。
-- https://tools.ietf.org/html/draft-ietf-tls-tls13-26#section-4.2.8
+KeyShare拡張はTLS1.3のRFC8446中で定義されています。
+- https://tools.ietf.org/html/rfc8446#section-4.2.8
 
-例えば、DHEの場合には、KeyShareの中に「K = g^x mod p」のK値が含まれる。これはClientHello及びServerHello双方に含まれることになります。
+例えば、DHEの場合には、KeyShareの中に「K = g^x mod p」のKの公開鍵の値が含まれる。
+これはクライアントで生成した公開鍵がClientHelloに、サーバで生成した公開鍵がServerHelloに含まれることになります。
 pとgの値は有限群と呼びNamed Groupに含まれます。楕円曲線のパラメータはNamedCurveとして仕様上で決められている公開されている値です。
 
 詳しくは以下を参考のこと
@@ -23,8 +24,8 @@ struct {
 ```
 - group: 交換される鍵のグループ
 - key_exchange: 鍵交換情報。このフィールドの内容は特定のグループや特定の定義によって決定される。
-  - Finite Field Diffie-Hellmanパラメータ: https://tools.ietf.org/html/draft-ietf-tls-tls13-27#section-4.2.8.1
-  - Elliptic Curve Diffie-Hellmanパラメータ: https://tools.ietf.org/html/draft-ietf-tls-tls13-27#section-4.2.8.2
+  - Finite Field Diffie-Hellmanパラメータ: https://tools.ietf.org/html/rfc8446#section-4.2.8.1
+  - Elliptic Curve Diffie-Hellmanパラメータ: https://tools.ietf.org/html/rfc8446#section-4.2.8.2
     - secp256r1, secp384r1, secp521r1の場合では次のような構造体にシリアライズされる
 ```
 struct {
@@ -41,7 +42,7 @@ struct {
 ```
 
 ### データ構造サンプル(draft 23)
-ClientHelloとその応答となるServerHlloのサンプル。同じ応答でのパケットだがClientHello, ServerHelloそれぞれKeyExchangeの値が異なる。
+ClientHelloとその応答となるServerHlloのサンプル。同じ応答でのパケットだがClientHello, ServerHelloそれぞれKeyExchangeの値が公開鍵であるために異なる。
 - ClientHello
 ```
 Extension: key_share (len=43)
@@ -72,4 +73,4 @@ Extension: key_share (len=36)
 
 
 # SeeAlso
-- https://tools.ietf.org/html/draft-ietf-tls-tls13-26#section-4.2.8
+- https://tools.ietf.org/html/rfc8446#section-4.2.8

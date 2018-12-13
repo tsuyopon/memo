@@ -1,11 +1,12 @@
 # 概要
-SupportedVersionsはTLS拡張でTLS1.3のdraft中で規定されているものです。
-- https://tools.ietf.org/html/draft-ietf-tls-tls13-26#section-4.2.1
+SupportedVersionsはTLS拡張でTLS1.3のRFC8446中で規定されているものです。
+- https://tools.ietf.org/html/rfc8446#section-4.2.1
 
 まだ、IANAから正式に割り当ては行われていません。
 TLS1.3以降はバージョン番号をTLS拡張の中に隠蔽します。それによりミドルボックスによる意図せぬフィルタリングの弊害を避けることを目的としています。
 
-この拡張はTLS1.3としてサポートしているTLSバージョンのリストをTLSサーバに伝えるものです。この拡張が付与されない場合にはTLS1.3未満として扱うことになります。
+この拡張はTLS1.3としてサポートしているTLSバージョンのリストをTLSサーバに伝えるものであり、TLS1.3以降では必須の拡張です(MUST)。
+この拡張が付与されない場合にはTLS1.3未満として扱うことになります。
 
 # 詳細
 
@@ -52,5 +53,5 @@ Extension: supported_versions (len=2)
 ```
 
 # SeeAlso
-- The Transport Layer Security (TLS) Protocol Version 1.3 (draft-ietf-tls-tls13-26)
-  - https://tools.ietf.org/html/draft-ietf-tls-tls13-26#section-4.2.1
+- The Transport Layer Security (TLS) Protocol Version 1.3
+  - https://tools.ietf.org/html/rfc8446#section-4.2.1
