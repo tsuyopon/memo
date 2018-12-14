@@ -1,5 +1,5 @@
 # 概要
-ethtoolについてできることなどをまとめておく
+ethtoolではデバイスドライバを経由してNICに対して設定変更などを行うことができるようだ。
 TSOやGSOなどの設定もできるようだ
 
 # 詳細
@@ -10,29 +10,29 @@ ethtoolにインターフェース識別子(eth0など)を引数として指定�
 ```
 $ sudo ethtool p2p1
 Settings for p2p1:
-	Supported ports: [ TP ]
-	Supported link modes:   10baseT/Half 10baseT/Full 
-	                        100baseT/Half 100baseT/Full 
-	                        1000baseT/Full 
-	Supported pause frame use: No
-	Supports auto-negotiation: Yes
-	Advertised link modes:  10baseT/Half 10baseT/Full 
-	                        100baseT/Half 100baseT/Full 
-	                        1000baseT/Full 
-	Advertised pause frame use: No
-	Advertised auto-negotiation: Yes
-	Speed: 1000Mb/s
-	Duplex: Full
-	Port: Twisted Pair
-	PHYAD: 0
-	Transceiver: internal
-	Auto-negotiation: on
-	MDI-X: Unknown
-	Supports Wake-on: umbg
-	Wake-on: d                                   // 
-	Current message level: 0x00000007 (7)
-			       drv probe link
-	Link detected: yes                           // 物理的に接続されているかどうか
+    Supported ports: [ TP ]
+    Supported link modes:   10baseT/Half 10baseT/Full 
+                            100baseT/Half 100baseT/Full 
+                            1000baseT/Full 
+    Supported pause frame use: No
+    Supports auto-negotiation: Yes
+    Advertised link modes:  10baseT/Half 10baseT/Full 
+                            100baseT/Half 100baseT/Full 
+                            1000baseT/Full 
+    Advertised pause frame use: No
+    Advertised auto-negotiation: Yes
+    Speed: 1000Mb/s
+    Duplex: Full
+    Port: Twisted Pair
+    PHYAD: 0
+    Transceiver: internal
+    Auto-negotiation: on
+    MDI-X: Unknown
+    Supports Wake-on: umbg
+    Wake-on: d                                   // 
+    Current message level: 0x00000007 (7)
+                   drv probe link
+    Link detected: yes                           // 物理的に接続されているかどうか
 ```
 
 ### ドライバに関する情報を表示する
@@ -48,6 +48,42 @@ supports-test: yes
 supports-eeprom-access: yes
 supports-register-dump: yes
 supports-priv-flags: no
+```
+
+### キューサイズの確認
+NICハードウェアの中にも受信キュー(rx queue)と送信キュー(tx queue)が存在します(**ハードウェアの中の話です**)。
+
+このキューの値をいくつまで設定できるのか、現在いくつの値かを確認することができるのがgオプションです。
+```
+$ ethtool -g enp0s3
+Ring parameters for enp0s3:
+Pre-set maximums:
+RX:     4096
+RX Mini:    0
+RX Jumbo:   0
+TX:     4096
+Current hardware settings:
+RX:     256
+RX Mini:    0
+RX Jumbo:   0
+TX:     256
+```
+
+設定値を変更するにはGオプションを使います。
+```
+$ sudo ethtool -G enp0s3 rx 512
+$ ethtool -g enp0s3
+Ring parameters for enp0s3:
+Pre-set maximums:
+RX:     4096
+RX Mini:    0
+RX Jumbo:   0
+TX:     4096
+Current hardware settings:
+RX:     512
+RX Mini:    0
+RX Jumbo:   0
+TX:     256
 ```
 
 ### イーサネットのデバッグレベルを変更する
@@ -261,131 +297,131 @@ M88 PHY CONTROL REGISTER:                0x00000868
 $ ethtool -h
 ethtool version 3.2
 Usage:
-        ethtool DEVNAME	Display standard information about device
-        ethtool -s|--change DEVNAME	Change generic options
-		[ speed %d ]
-		[ duplex half|full ]
-		[ port tp|aui|bnc|mii|fibre ]
-		[ autoneg on|off ]
-		[ advertise %x ]
-		[ phyad %d ]
-		[ xcvr internal|external ]
-		[ wol p|u|m|b|a|g|s|d... ]
-		[ sopass %x:%x:%x:%x:%x:%x ]
-		[ msglvl %d | msglvl type on|off ... ]
-        ethtool -a|--show-pause DEVNAME	Show pause options
-        ethtool -A|--pause DEVNAME	Set pause options
-		[ autoneg on|off ]
-		[ rx on|off ]
-		[ tx on|off ]
-        ethtool -c|--show-coalesce DEVNAME	Show coalesce options
-        ethtool -C|--coalesce DEVNAME	Set coalesce options
-		[adaptive-rx on|off]
-		[adaptive-tx on|off]
-		[rx-usecs N]
-		[rx-frames N]
-		[rx-usecs-irq N]
-		[rx-frames-irq N]
-		[tx-usecs N]
-		[tx-frames N]
-		[tx-usecs-irq N]
-		[tx-frames-irq N]
-		[stats-block-usecs N]
-		[pkt-rate-low N]
-		[rx-usecs-low N]
-		[rx-frames-low N]
-		[tx-usecs-low N]
-		[tx-frames-low N]
-		[pkt-rate-high N]
-		[rx-usecs-high N]
-		[rx-frames-high N]
-		[tx-usecs-high N]
-		[tx-frames-high N]
-		[sample-interval N]
-        ethtool -g|--show-ring DEVNAME	Query RX/TX ring parameters
-        ethtool -G|--set-ring DEVNAME	Set RX/TX ring parameters
-		[ rx N ]
-		[ rx-mini N ]
-		[ rx-jumbo N ]
-		[ tx N ]
-        ethtool -k|--show-offload DEVNAME	Get protocol offload information
-        ethtool -K|--offload DEVNAME	Set protocol offload
-		[ rx on|off ]
-		[ tx on|off ]
-		[ sg on|off ]
-		[ tso on|off ]
-		[ ufo on|off ]
-		[ gso on|off ]
-		[ gro on|off ]
-		[ lro on|off ]
-		[ rxvlan on|off ]
-		[ txvlan on|off ]
-		[ ntuple on|off ]
-		[ rxhash on|off ]
-        ethtool -i|--driver DEVNAME	Show driver information
-        ethtool -d|--register-dump DEVNAME	Do a register dump
-		[ raw on|off ]
-		[ file FILENAME ]
-        ethtool -e|--eeprom-dump DEVNAME	Do a EEPROM dump
-		[ raw on|off ]
-		[ offset N ]
-		[ length N ]
-        ethtool -E|--change-eeprom DEVNAME	Change bytes in device EEPROM
-		[ magic N ]
-		[ offset N ]
-		[ length N ]
-		[ value N ]
-        ethtool -r|--negotiate DEVNAME	Restart N-WAY negotiation
-        ethtool -p|--identify DEVNAME	Show visible port identification (e.g. blinking)
+        ethtool DEVNAME Display standard information about device
+        ethtool -s|--change DEVNAME Change generic options
+        [ speed %d ]
+        [ duplex half|full ]
+        [ port tp|aui|bnc|mii|fibre ]
+        [ autoneg on|off ]
+        [ advertise %x ]
+        [ phyad %d ]
+        [ xcvr internal|external ]
+        [ wol p|u|m|b|a|g|s|d... ]
+        [ sopass %x:%x:%x:%x:%x:%x ]
+        [ msglvl %d | msglvl type on|off ... ]
+        ethtool -a|--show-pause DEVNAME Show pause options
+        ethtool -A|--pause DEVNAME  Set pause options
+        [ autoneg on|off ]
+        [ rx on|off ]
+        [ tx on|off ]
+        ethtool -c|--show-coalesce DEVNAME  Show coalesce options
+        ethtool -C|--coalesce DEVNAME   Set coalesce options
+        [adaptive-rx on|off]
+        [adaptive-tx on|off]
+        [rx-usecs N]
+        [rx-frames N]
+        [rx-usecs-irq N]
+        [rx-frames-irq N]
+        [tx-usecs N]
+        [tx-frames N]
+        [tx-usecs-irq N]
+        [tx-frames-irq N]
+        [stats-block-usecs N]
+        [pkt-rate-low N]
+        [rx-usecs-low N]
+        [rx-frames-low N]
+        [tx-usecs-low N]
+        [tx-frames-low N]
+        [pkt-rate-high N]
+        [rx-usecs-high N]
+        [rx-frames-high N]
+        [tx-usecs-high N]
+        [tx-frames-high N]
+        [sample-interval N]
+        ethtool -g|--show-ring DEVNAME  Query RX/TX ring parameters
+        ethtool -G|--set-ring DEVNAME   Set RX/TX ring parameters
+        [ rx N ]
+        [ rx-mini N ]
+        [ rx-jumbo N ]
+        [ tx N ]
+        ethtool -k|--show-offload DEVNAME   Get protocol offload information
+        ethtool -K|--offload DEVNAME    Set protocol offload
+        [ rx on|off ]
+        [ tx on|off ]
+        [ sg on|off ]
+        [ tso on|off ]
+        [ ufo on|off ]
+        [ gso on|off ]
+        [ gro on|off ]
+        [ lro on|off ]
+        [ rxvlan on|off ]
+        [ txvlan on|off ]
+        [ ntuple on|off ]
+        [ rxhash on|off ]
+        ethtool -i|--driver DEVNAME Show driver information
+        ethtool -d|--register-dump DEVNAME  Do a register dump
+        [ raw on|off ]
+        [ file FILENAME ]
+        ethtool -e|--eeprom-dump DEVNAME    Do a EEPROM dump
+        [ raw on|off ]
+        [ offset N ]
+        [ length N ]
+        ethtool -E|--change-eeprom DEVNAME  Change bytes in device EEPROM
+        [ magic N ]
+        [ offset N ]
+        [ length N ]
+        [ value N ]
+        ethtool -r|--negotiate DEVNAME  Restart N-WAY negotiation
+        ethtool -p|--identify DEVNAME   Show visible port identification (e.g. blinking)
                [ TIME-IN-SECONDS ]
-        ethtool -t|--test DEVNAME	Execute adapter self test
+        ethtool -t|--test DEVNAME   Execute adapter self test
                [ online | offline | external_lb ]
-        ethtool -S|--statistics DEVNAME	Show adapter statistics
-        ethtool -n|--show-nfc DEVNAME	Show Rx network flow classification options
-		[ rx-flow-hash tcp4|udp4|ah4|esp4|sctp4|tcp6|udp6|ah6|esp6|sctp6 ]
-        ethtool -f|--flash DEVNAME	Flash firmware image from the specified file to a region on the device
+        ethtool -S|--statistics DEVNAME Show adapter statistics
+        ethtool -n|--show-nfc DEVNAME   Show Rx network flow classification options
+        [ rx-flow-hash tcp4|udp4|ah4|esp4|sctp4|tcp6|udp6|ah6|esp6|sctp6 ]
+        ethtool -f|--flash DEVNAME  Flash firmware image from the specified file to a region on the device
                FILENAME [ REGION-NUMBER-TO-FLASH ]
-        ethtool -N|--config-nfc DEVNAME	Configure Rx network flow classification options
-		[ rx-flow-hash tcp4|udp4|ah4|esp4|sctp4|tcp6|udp6|ah6|esp6|sctp6 m|v|t|s|d|f|n|r... ]
-        ethtool -x|--show-rxfh-indir DEVNAME	Show Rx flow hash indirection
-        ethtool -X|--set-rxfh-indir DEVNAME	Set Rx flow hash indirection
-		equal N | weight W0 W1 ...
-        ethtool -U|--config-ntuple DEVNAME	Configure Rx ntuple filters and actions
-		[ delete %d ] |
-		[ flow-type ether|ip4|tcp4|udp4|sctp4|ah4|esp4
-			[ src %x:%x:%x:%x:%x:%x [m %x:%x:%x:%x:%x:%x] ]
-			[ dst %x:%x:%x:%x:%x:%x [m %x:%x:%x:%x:%x:%x] ]
-			[ proto %d [m %x] ]
-			[ src-ip %d.%d.%d.%d [m %d.%d.%d.%d] ]
-			[ dst-ip %d.%d.%d.%d [m %d.%d.%d.%d] ]
-			[ tos %d [m %x] ]
-			[ l4proto %d [m %x] ]
-			[ src-port %d [m %x] ]
-			[ dst-port %d [m %x] ]
-			[ spi %d [m %x] ]
-			[ vlan-etype %x [m %x] ]
-			[ vlan %x [m %x] ]
-			[ user-def %x [m %x] ]
-			[ action %d ]
-			[ loc %d]]
-        ethtool -u|--show-ntuple DEVNAME	Get Rx ntuple filters and actions
-		[ rule %d ]
-        ethtool -P|--show-permaddr DEVNAME	Show permanent hardware address
-        ethtool -w|--get-dump DEVNAME	Get dump flag, data
-		[ data FILENAME ]
-        ethtool -W|--set-dump DEVNAME	Set dump flag of the device
-		N
-        ethtool -l|--show-channels DEVNAME	Query Channels
-        ethtool -L|--set-channels DEVNAME	Set Channels
+        ethtool -N|--config-nfc DEVNAME Configure Rx network flow classification options
+        [ rx-flow-hash tcp4|udp4|ah4|esp4|sctp4|tcp6|udp6|ah6|esp6|sctp6 m|v|t|s|d|f|n|r... ]
+        ethtool -x|--show-rxfh-indir DEVNAME    Show Rx flow hash indirection
+        ethtool -X|--set-rxfh-indir DEVNAME Set Rx flow hash indirection
+        equal N | weight W0 W1 ...
+        ethtool -U|--config-ntuple DEVNAME  Configure Rx ntuple filters and actions
+        [ delete %d ] |
+        [ flow-type ether|ip4|tcp4|udp4|sctp4|ah4|esp4
+            [ src %x:%x:%x:%x:%x:%x [m %x:%x:%x:%x:%x:%x] ]
+            [ dst %x:%x:%x:%x:%x:%x [m %x:%x:%x:%x:%x:%x] ]
+            [ proto %d [m %x] ]
+            [ src-ip %d.%d.%d.%d [m %d.%d.%d.%d] ]
+            [ dst-ip %d.%d.%d.%d [m %d.%d.%d.%d] ]
+            [ tos %d [m %x] ]
+            [ l4proto %d [m %x] ]
+            [ src-port %d [m %x] ]
+            [ dst-port %d [m %x] ]
+            [ spi %d [m %x] ]
+            [ vlan-etype %x [m %x] ]
+            [ vlan %x [m %x] ]
+            [ user-def %x [m %x] ]
+            [ action %d ]
+            [ loc %d]]
+        ethtool -u|--show-ntuple DEVNAME    Get Rx ntuple filters and actions
+        [ rule %d ]
+        ethtool -P|--show-permaddr DEVNAME  Show permanent hardware address
+        ethtool -w|--get-dump DEVNAME   Get dump flag, data
+        [ data FILENAME ]
+        ethtool -W|--set-dump DEVNAME   Set dump flag of the device
+        N
+        ethtool -l|--show-channels DEVNAME  Query Channels
+        ethtool -L|--set-channels DEVNAME   Set Channels
                [ rx N ]
                [ tx N ]
                [ other N ]
                [ combined N ]
-        ethtool --show-priv-flags DEVNAME	Query private flags
-        ethtool --set-priv-flags DEVNAME	Set private flags
-		FLAG on|off ...
-        ethtool -h|--help 		Show this help
-        ethtool --version 		Show version number
+        ethtool --show-priv-flags DEVNAME   Query private flags
+        ethtool --set-priv-flags DEVNAME    Set private flags
+        FLAG on|off ...
+        ethtool -h|--help       Show this help
+        ethtool --version       Show version number
 ```
 
 # TODO
