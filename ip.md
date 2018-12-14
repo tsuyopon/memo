@@ -41,8 +41,8 @@ $ ip addr show
 $ ip link show 
 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default 
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
-	2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP mode DEFAULT group default qlen 1000
-	    link/ether 08:00:27:9c:51:c6 brd ff:ff:ff:ff:ff:ff
+    2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP mode DEFAULT group default qlen 1000
+        link/ether 08:00:27:9c:51:c6 brd ff:ff:ff:ff:ff:ff
 ```
 
 ### 固定IPを設定する
@@ -91,39 +91,39 @@ $ ip -s link
 ### マルチキャストアドレスの情報を表示する
 ```
 $ ip maddr
-1:	lo
-	inet  224.0.0.1
-	inet6 ff02::1
-	inet6 ff01::1
-2:	eth0
-	link  01:00:5e:00:00:01
-	link  33:33:00:00:00:01
-	link  33:33:ff:9c:51:c6
-	link  01:00:5e:00:00:fb
-	link  33:33:00:00:00:fb
-	inet  224.0.0.251
-	inet  224.0.0.1
-	inet6 ff02::fb
-	inet6 ff02::1:ff9c:51c6
-	inet6 ff02::1
-	inet6 ff01::1
+1:  lo
+    inet  224.0.0.1
+    inet6 ff02::1
+    inet6 ff01::1
+2:  eth0
+    link  01:00:5e:00:00:01
+    link  33:33:00:00:00:01
+    link  33:33:ff:9c:51:c6
+    link  01:00:5e:00:00:fb
+    link  33:33:00:00:00:fb
+    inet  224.0.0.251
+    inet  224.0.0.1
+    inet6 ff02::fb
+    inet6 ff02::1:ff9c:51c6
+    inet6 ff02::1
+    inet6 ff01::1
 ```
 
 特定のデバイスだけ表示させたい場合
 ```
 $ ip maddr show dev eth0
-2:	eth0
-	link  01:00:5e:00:00:01
-	link  33:33:00:00:00:01
-	link  33:33:ff:9c:51:c6
-	link  01:00:5e:00:00:fb
-	link  33:33:00:00:00:fb
-	inet  224.0.0.251
-	inet  224.0.0.1
-	inet6 ff02::fb
-	inet6 ff02::1:ff9c:51c6
-	inet6 ff02::1
-	inet6 ff01::1
+2:  eth0
+    link  01:00:5e:00:00:01
+    link  33:33:00:00:00:01
+    link  33:33:ff:9c:51:c6
+    link  01:00:5e:00:00:fb
+    link  33:33:00:00:00:fb
+    inet  224.0.0.251
+    inet  224.0.0.1
+    inet6 ff02::fb
+    inet6 ff02::1:ff9c:51c6
+    inet6 ff02::1
+    inet6 ff01::1
 ```
 
 ### 特定のアドレスへのルートを表示する
