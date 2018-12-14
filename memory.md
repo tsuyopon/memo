@@ -397,7 +397,56 @@ $ sudo cat /proc/`pidof layout`/maps
 7fffccfff000-7fffcd000000 r-xp 00000000 00:00 0                          [vdso]
 ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  [vsyscall]
 ```
+- 第3カラムがファイルオフセットを表す。
+- 第4カラムがファイルがあるブロックデバイスのmajor番号とminor番号
+- 第5カラムがinode番号
+- 第6カラムがマップしているファイルの名前を表す。
 
+
+### 共有メモリの割り当て状況を確認する
+
+Rssが占有している物理メモリ、Pssが共有しているプロセス数で割った占有している物理メモリの量を表します。
+出力量は非常に多いので本当に一部の結果のみを表示しています。
+```
+$ sudo cat /proc/`pidof /opt/trafficserver-7.1.x/bin/traffic_server`/smaps
+00400000-008f5000 r-xp 00000000 fd:00 10442729                           /opt/trafficserver-7.1.x/bin/traffic_server
+Size:               5076 kB
+Rss:                2844 kB
+Pss:                2844 kB
+Shared_Clean:          0 kB
+Shared_Dirty:          0 kB
+Private_Clean:      2844 kB
+Private_Dirty:         0 kB
+Referenced:         2844 kB
+Anonymous:             0 kB
+AnonHugePages:         0 kB
+Swap:                  0 kB
+KernelPageSize:        4 kB
+MMUPageSize:           4 kB
+Locked:                0 kB
+VmFlags: rd ex mr mw me dw sd 
+00af4000-00afd000 r--p 004f4000 fd:00 10442729                           /opt/trafficserver-7.1.x/bin/traffic_server
+Size:                 36 kB
+Rss:                  36 kB
+Pss:                  36 kB
+Shared_Clean:          0 kB
+Shared_Dirty:          0 kB
+Private_Clean:        32 kB
+Private_Dirty:         4 kB
+Referenced:           36 kB
+Anonymous:             4 kB
+AnonHugePages:         0 kB
+Swap:                  0 kB
+KernelPageSize:        4 kB
+MMUPageSize:           4 kB
+Locked:                0 kB
+VmFlags: rd mr mw me dw ac sd 
+00afd000-00b05000 rw-p 004fd000 fd:00 10442729                           /opt/trafficserver-7.1.x/bin/traffic_server
+Size:                 32 kB
+Rss:                  28 kB
+Pss:                  28 kB
+...
+```
 
 # 参考URL
 - http://enakai00.hatenablog.com/entry/20110906/1315315488
