@@ -166,7 +166,6 @@ $ target# ethtool -K eth0 sg on
 ### 統計情報を出力する
 ```
 $ sudo ethtool -S p2p1
-[sudo] password for tsuyoshi: 
 NIC statistics:
      rx_packets: 607365
      tx_packets: 446627
@@ -214,6 +213,16 @@ NIC statistics:
      tx_smbus: 0
      rx_smbus: 0
      dropped_smbus: 0
+```
+
+### ARPを送ってみて統計情報を確認する
+```
+$ ethtool -S enp0s3 | grep tx_broad
+     tx_broadcast: 10
+$ arping -I enp0s3 10.0.2.2
+ARPING 10.0.2.2 from 10.0.2.15 enp0s3
+$ ethtool -S enp0s3 | grep tx_broad
+     tx_broadcast: 11
 ```
 
 ### Register情報を出力する
