@@ -14,7 +14,6 @@ $ ulimit -c unlimited    // 無制限に変更
 gcoreコマンドにプロセスIDを指定すれば生成することができる
 ```
 $ sudo gcore 2567
-[sudo] password for tsuyoshi: 
 [Thread debugging using libthread_db enabled]
 Using host libthread_db library "/lib64/libthread_db.so.1".
 0x00007f3325b03e47 in accept4 () from /lib64/libc.so.6

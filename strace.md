@@ -65,7 +65,62 @@ BuildTools  Documents  MEMO.sh	  NODE	 Public    UNIX_V6  buildroot  git	key    
 $ sudo strace -c -p <pid>
 ```
 
--pと-cオプションを入れ替えると自分は使えなかったので注意が必要かもしれません。
+**-pと-cオプションを入れ替えると自分は使えなかったので注意が必要かもしれません。**
+
+### スレッドや子プロセスも含めて統計情報を表示したい
+デフォルトだと親プロセスの処理時間しかいれてくれません。
+```
+$ sudo strace -c -p `pidof /opt/trafficserver-7.1.x/bin/traffic_server`
+strace: Process 7995 attached
+^Cstrace: Process 7995 detached
+% time     seconds  usecs/call     calls    errors syscall
+------ ----------- ----------- --------- --------- ----------------
+100.00    0.004260        4260         1           restart_syscall
+  0.00    0.000000           0         1           rt_sigaction
+  0.00    0.000000           0         2           rt_sigprocmask
+------ ----------- ----------- --------- --------- ----------------
+100.00    0.004260                     4           total
+```
+
+他のスレッドも含めて処理時間を確認したい場合にはfオプションを付与します。
+特定のスレッドに着目したい場合には、該当のプロセス番号を指定します。
+```
+$ sudo strace -c -p `pidof /opt/trafficserver-7.1.x/bin/traffic_server` -f
+strace: Process 7995 attached with 18 threads
+strace: Process 7995 detached
+strace: Process 7996 detached
+strace: Process 7999 detached
+strace: Process 8000 detached
+strace: Process 8001 detached
+strace: Process 8002 detached
+strace: Process 8003 detached
+strace: Process 8004 detached
+strace: Process 8005 detached
+strace: Process 8006 detached
+strace: Process 8007 detached
+strace: Process 8008 detached
+strace: Process 8009 detached
+strace: Process 8010 detached
+strace: Process 8011 detached
+strace: Process 8012 detached
+strace: Process 8013 detached
+strace: Process 8014 detached
+% time     seconds  usecs/call     calls    errors syscall
+------ ----------- ----------- --------- --------- ----------------
+ 71.85    0.259630          39      6577      2375 futex
+ 19.37    0.069987        1555        45           epoll_wait
+  4.27    0.015425        5142         3           select
+  4.14    0.014965       14965         1           nanosleep
+  0.32    0.001166         106        11        10 restart_syscall
+  0.03    0.000100          13         8           write
+  0.01    0.000054           5        10           read
+  0.00    0.000005           1         4           rt_sigprocmask
+  0.00    0.000003           2         2           rt_sigaction
+------ ----------- ----------- --------- --------- ----------------
+100.00    0.361335                  6661      2385 total
+$ sudo strace -c -p 8014
+```
+
 
 ### 表示される文字数を増やす
 デフォルトだと引数が32文字しか表示されないので、もっとたくさんを表示させるには次のようにする
