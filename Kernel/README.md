@@ -20,3 +20,11 @@ Linux Kernelについて
 ```
 「メジャー・バージョン」． 「マイナー・バージョン」． 「リビジョン」． 「パッチ番号」 
 ```
+
+# 参考
+- Linux Inside
+  - https://0xax.gitbooks.io/linux-insides/
+- The Linux Kernel (JF Project)
+  - http://archive.linux.or.jp/JF/JFdocs/The-Linux-Kernel.html
+- オペレーティングシステム II(2012年)
+  - http://www.coins.tsukuba.ac.jp/~yas/coins/os2-2012/
