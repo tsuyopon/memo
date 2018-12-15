@@ -21,10 +21,33 @@ Linux Kernelについて
 「メジャー・バージョン」． 「マイナー・バージョン」． 「リビジョン」． 「パッチ番号」 
 ```
 
-# 参考
+# 主要コード
+- 正規github
+  - https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/
+- 上記ミラーサイト
+  - https://github.com/torvalds/linux/tree/master
+
+# 複数バージョンに渡ってソースコードを参照するツール
+- bootlin(Linux Cross Referenece)
+  - https://elixir.bootlin.com/linux/latest/source
+
+# Kernel解析参考サイト
 - Linux Inside
   - https://0xax.gitbooks.io/linux-insides/
 - The Linux Kernel (JF Project)
   - http://archive.linux.or.jp/JF/JFdocs/The-Linux-Kernel.html
 - オペレーティングシステム II(2012年)
   - http://www.coins.tsukuba.ac.jp/~yas/coins/os2-2012/
+
+
+# ニュースサイト・情報サイト
+- The Linux Kernel Archives
+  - https://www.kernel.org/
+- Linux Kenrel Mailing List (LKML)
+  - https://lkml.org/
+- Linux Kernel Newbies
+  - バージョン毎の更新情報のまとめなど
+  - http://kernelnewbies.org/
+    - たとえば2.6.35だと:  https://kernelnewbies.org/Linux_2_6_35
+- Linux Weekly News
+  - https://lwn.net/
