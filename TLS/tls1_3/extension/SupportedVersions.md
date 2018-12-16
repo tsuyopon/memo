@@ -31,15 +31,15 @@ struct {
 } SupportedVersions;
 ```
 
-### サンプルデータ(draft 23)
+### サンプルデータ
 - ClientHello
 ```
 Extension: supported_versions (len=11)
     Type: supported_versions (43)
     Length: 11
     Supported Versions length: 10
-    Supported Version: Unknown (0x1a1a)
-    Supported Version: TLS 1.3 (draft 23) (0x7f17)
+    Supported Version: Unknown (0xeaea)
+    Supported Version: TLS 1.3 (0x0304)
     Supported Version: TLS 1.2 (0x0303)
     Supported Version: TLS 1.1 (0x0302)
     Supported Version: TLS 1.0 (0x0301)
@@ -49,7 +49,7 @@ Extension: supported_versions (len=11)
 Extension: supported_versions (len=2)
     Type: supported_versions (43)
     Length: 2
-    Supported Version: TLS 1.3 (draft 23) (0x7f17)
+    Supported Version: TLS 1.3 (0x0304)
 ```
 
 # SeeAlso
