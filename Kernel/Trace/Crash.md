@@ -372,6 +372,26 @@ struct task_struct {
 	(snip)
 ```
 
+なお、どのように割り当てされるのかはoオプションで確認することができます。
+```
+crash> struct -o task_struct
+struct task_struct {
+     [0] volatile long int state;
+     [8] void *stack;
+    [16] atomic_t usage;
+    [20] unsigned int flags;
+    [24] unsigned int ptrace;
+    [32] struct llist_node wake_entry;
+    [40] int on_cpu;
+    [44] int on_rq;
+    [48] int prio;
+    [52] int static_prio;
+    [56] int normal_prio;
+    [60] unsigned int rt_priority;
+    [64] const struct sched_class *sched_class;
+...
+```
+
 ### IRQ情報を確認する。
 ```
 crash> irq
@@ -527,6 +547,12 @@ crash> net
 ffff88001d413000  lo     127.0.0.1
 ffff88001d6b6000  p2p1   10.0.2.15
 ffff88001b7ce000  p7p1   192.168.56.1
+```
+
+数値からIPアドレスに変換する
+```
+crash> net -n 1041236234
+10.1.16.62
 ```
 
 ARPキャッシュテーブルを表示する
@@ -1257,6 +1283,13 @@ CPU 0 RUNQUEUE: ffff88003fc13580
      [no tasks queued]
 ```
 
+そのCPUで最終実行されたタイムスタンプを表示するにはtオプションを付与します。
+```
+crash> runq -t
+ CPU 0: 1016980844734
+        1016981513482  PID: 1145   TASK: ffff880036c91720  COMMAND: "crash"
+```
+
 ### grepを使う
 実はパイプ経由で普通に使えます
 ```
@@ -1598,8 +1631,66 @@ jiffies = $13 = 4300994932
 jiffies = $14 = 4300995940
 ```
 
+### 逆アセンブルを表示する方法
+
+```
+crash> dis do_IRQ
+0xffffffff815f55a0 <do_IRQ>:    push   %rbp
+0xffffffff815f55a1 <do_IRQ+1>:  mov    %rsp,%rbp
+0xffffffff815f55a4 <do_IRQ+4>:  sub    $0x20,%rsp
+0xffffffff815f55a8 <do_IRQ+8>:  mov    %rbx,-0x20(%rbp)
+0xffffffff815f55ac <do_IRQ+12>: mov    %r12,-0x18(%rbp)
+0xffffffff815f55b0 <do_IRQ+16>: mov    %r13,-0x10(%rbp)
+0xffffffff815f55b4 <do_IRQ+20>: mov    %r14,-0x8(%rbp)
+0xffffffff815f55b8 <do_IRQ+24>: data32 data32 data32 xchg %ax,%ax
+...
+```
+
+ソースコードとアセンブリの対応付けを確認する。
+```
+crash> dis -l do_IRQ
+/usr/src/debug/kernel-3.3.fc17/linux-3.3.4-5.fc17.x86_64/arch/x86/kernel/irq.c: 182
+0xffffffff815f55a0 <do_IRQ>:    push   %rbp
+0xffffffff815f55a1 <do_IRQ+1>:  mov    %rsp,%rbp
+0xffffffff815f55a4 <do_IRQ+4>:  sub    $0x20,%rsp
+0xffffffff815f55a8 <do_IRQ+8>:  mov    %rbx,-0x20(%rbp)
+0xffffffff815f55ac <do_IRQ+12>: mov    %r12,-0x18(%rbp)
+0xffffffff815f55b0 <do_IRQ+16>: mov    %r13,-0x10(%rbp)
+0xffffffff815f55b4 <do_IRQ+20>: mov    %r14,-0x8(%rbp)
+0xffffffff815f55b8 <do_IRQ+24>: data32 data32 data32 xchg %ax,%ax
+/usr/src/debug/kernel-3.3.fc17/linux-3.3.4-5.fc17.x86_64/arch/x86/kernel/irq.c: 186
+0xffffffff815f55bd <do_IRQ+29>: mov    0x78(%rdi),%r12d
+/usr/src/debug/kernel-3.3.fc17/linux-3.3.4-5.fc17.x86_64/arch/x86/kernel/irq.c: 182
+0xffffffff815f55c1 <do_IRQ+33>: mov    %rdi,%rbx
+/usr/src/debug/kernel-3.3.fc17/linux-3.3.4-5.fc17.x86_64/arch/x86/include/asm/irq_regs.h: 18
+0xffffffff815f55c4 <do_IRQ+36>: mov    %gs:0xbf10,%r14
+/usr/src/debug/kernel-3.3.fc17/linux-3.3.4-5.fc17.x86_64/arch/x86/kernel/irq.c: 186
+0xffffffff815f55cd <do_IRQ+45>: not    %r12d
+/usr/src/debug/kernel-3.3.fc17/linux-3.3.4-5.fc17.x86_64/arch/x86/include/asm/irq_regs.h: 26
+0xffffffff815f55d0 <do_IRQ+48>: mov    %rdi,%gs:0xbf10
+/usr/src/debug/kernel-3.3.fc17/linux-3.3.4-5.fc17.x86_64/arch/x86/kernel/irq.c: 189
+0xffffffff815f55d9 <do_IRQ+57>: callq  0xffffffff8105df20 <irq_enter>
+/usr/src/debug/kernel-3.3.fc17/linux-3.3.4-5.fc17.x86_64/arch/x86/kernel/irq.c: 190
+0xffffffff815f55de <do_IRQ+62>: callq  0xffffffff81012110 <exit_idle>
+/usr/src/debug/kernel-3.3.fc17/linux-3.3.4-5.fc17.x86_64/arch/x86/kernel/irq.c: 192
+0xffffffff815f55e3 <do_IRQ+67>: mov    %r12d,%eax
+/usr/src/debug/kernel-3.3.fc17/linux-3.3.4-5.fc17.x86_64/arch/x86/kernel/irq.c: 194
+```
+
+ソースコードを確認する
+```
+crash> dis -s do_fork
+```
+
+なお、次の環境ではsオプションは存在しなかった
+```
+crash version: 6.1.0-1.fc17   gdb version: 7.3.1
+```
+
+
 # 参考URL
 - 公式github
   - https://github.com/crash-utility/crash
 - ドキュメントとして存在しているのは次のドキュメントぐらい?
   - http://people.redhat.com/anderson/crash_whitepaper/
+
