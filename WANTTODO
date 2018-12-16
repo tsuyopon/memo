@@ -1,4 +1,17 @@
-# やりたいこと(2017)
+# まとめたいこと(2018)
+- npm audit, npm dedupe
+  - https://qiita.com/hibikikudo/items/0af352acac85fce28ec2
+  - http://tweeeety.hateblo.jp/entry/2018/06/15/191121
+- cpuspeed
+  - http://d.hatena.ne.jp/ichikaway/20090217/1234877844
+- /proc/[pid]/stat まとめ
+  - http://d.hatena.ne.jp/hiroppon/20130509/1368061417
+- Webパフォーマンス虎の巻
+  - https://qiita.com/usagi-f/items/10f35969f08dd01fa635	
+- HTTP/3 explained
+  - https://daniel.haxx.se/http3-explained/	
+
+# まとめたいこと(2017)
 - 7/4 OAuthやOpenID Connectについてもうちょっと深堀したい
   - userinfo APIたたいてみてる
   - authorization code確認
