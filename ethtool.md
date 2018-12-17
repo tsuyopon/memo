@@ -135,6 +135,7 @@ $ ethtool -s eth0 wol g
 ```
 
 ### Offloadパラメータの出力と変更
+いくつか例を示す。
 ```
 $ sudo ethtool -k p2p1
 Offload parameters for p2p1:
@@ -150,6 +151,62 @@ rx-vlan-offload: on
 tx-vlan-offload: on
 ntuple-filters: off
 receive-hashing: off
+```
+
+個人MACの場合の例
+```
+$ ethtool -k enp0s3
+Features for enp0s3:
+rx-checksumming: off
+tx-checksumming: on
+	tx-checksum-ipv4: off [fixed]
+	tx-checksum-ip-generic: on
+	tx-checksum-ipv6: off [fixed]
+	tx-checksum-fcoe-crc: off [fixed]
+	tx-checksum-sctp: off [fixed]
+scatter-gather: on
+	tx-scatter-gather: on
+	tx-scatter-gather-fraglist: off [fixed]
+tcp-segmentation-offload: on
+	tx-tcp-segmentation: on
+	tx-tcp-ecn-segmentation: off [fixed]
+	tx-tcp6-segmentation: off [fixed]
+	tx-tcp-mangleid-segmentation: off
+udp-fragmentation-offload: off [fixed]
+generic-segmentation-offload: on
+generic-receive-offload: on
+large-receive-offload: off [fixed]
+rx-vlan-offload: on
+tx-vlan-offload: on [fixed]
+ntuple-filters: off [fixed]
+receive-hashing: off [fixed]
+highdma: off [fixed]
+rx-vlan-filter: on [fixed]
+vlan-challenged: off [fixed]
+tx-lockless: off [fixed]
+netns-local: off [fixed]
+tx-gso-robust: off [fixed]
+tx-fcoe-segmentation: off [fixed]
+tx-gre-segmentation: off [fixed]
+tx-ipip-segmentation: off [fixed]
+tx-sit-segmentation: off [fixed]
+tx-udp_tnl-segmentation: off [fixed]
+tx-mpls-segmentation: off [fixed]
+fcoe-mtu: off [fixed]
+tx-nocache-copy: off
+loopback: off [fixed]
+rx-fcs: off
+rx-all: off
+tx-vlan-stag-hw-insert: off [fixed]
+rx-vlan-stag-hw-parse: off [fixed]
+rx-vlan-stag-filter: off [fixed]
+busy-poll: off [fixed]
+tx-gre-csum-segmentation: off [fixed]
+tx-udp_tnl-csum-segmentation: off [fixed]
+tx-gso-partial: off [fixed]
+tx-sctp-segmentation: off [fixed]
+l2-fwd-offload: off [fixed]
+hw-tc-offload: off [fixed]
 ```
 
 たとえば、以下でrx-checksummingやtx-checksummingを変更することができる。
