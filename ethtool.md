@@ -123,6 +123,43 @@ wol         0x4000     Wake-on-LAN ステータス
 # ethtool -s eth0 duplex half
 ```
 
+### IRQ coalescing設定
+```
+$ sudo ethtool -c enp0s3
+Coalesce parameters for enp0s3:
+Adaptive RX: off  TX: off
+stats-block-usecs: 0
+sample-interval: 0
+pkt-rate-low: 0
+pkt-rate-high: 0
+
+rx-usecs: 0
+rx-frames: 0
+rx-usecs-irq: 0
+rx-frames-irq: 0
+
+tx-usecs: 0
+tx-frames: 0
+tx-usecs-irq: 0
+tx-frames-irq: 0
+
+rx-usecs-low: 0
+rx-frame-low: 0
+tx-usecs-low: 0
+tx-frame-low: 0
+
+rx-usecs-high: 0
+rx-frame-high: 0
+tx-usecs-high: 0
+tx-frame-high: 0
+
+```
+
+設定を変更したい場合
+```
+$ sudo ethtool -C eth0 adaptive-rx on
+```
+
 ### デバイスのautonegotiationを切り返す。
 on, offの引数で切り替えることができる。
 ```
