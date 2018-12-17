@@ -3,6 +3,8 @@
 次のコマンドで簡単にパッケージインストールすることができます。
 ```
 $ sudo yum install dropwatch
+$ file /usr/bin/dropwatch 
+/usr/bin/dropwatch: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked (uses shared libs), for GNU/Linux 2.6.32, BuildID[sha1]=071bac5220bd45385f0a58a02aa06ed642cf0b84, stripped
 ```
 
 # 使い方
