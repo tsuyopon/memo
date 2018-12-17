@@ -27,6 +27,8 @@ $ sudo ln -s /usr/bin/python3.6 /usr/bin/python3
 $ sudo ln -s /usr/bin/pip3.6 /usr/bin/pip
 ```
 
+pipについてはeasy_installやpython get-pip.pyでインストールする方法もありますが、ここでは割愛します。
+
 ### virtualenvのインストール
 pythonやpipが入っていることを前提にしてvirtualenvのインストールを行う
 ```
@@ -111,7 +113,8 @@ test==2.3.4.5
 virtualenv==16.1.0
 ```
 
-作成したrequirements.txtを使って他の環境で同様のpython環境を作成したい。
+### パッケージリストからインストールしたい
+上記で作成したrequirements.txtを使って他の環境で同様のpython環境を作成したい。
 ```
 $ cat requirements.txt 
 test==2.3.4.5
@@ -133,6 +136,24 @@ $ virtualenv -p python3.7 testenv
 ```
 $ pip install test==2.3.4.5
 Collecting test==2.3.4.5
+Installing collected packages: test
+Successfully installed test-2.3.4.5
+```
+
+次のような指定も可能です
+```
+$ pip install 'test==0.16.2'
+$ pip install 'test>=0.16.2'
+$ pip install 'test<0.16.2
+```
+
+### 入っているパッケージを再度インストールする
+パッケージが入っている場合にはIオプションを付与する必要があります。
+```
+(hoge2) $ pip install test
+Requirement already satisfied: test in ./hoge2/lib/python3.6/site-packages (2.3.4.5)
+(hoge2) $ pip install test -I
+Collecting test
 Installing collected packages: test
 Successfully installed test-2.3.4.5
 ```
@@ -185,6 +206,11 @@ Uninstalling test-2.3.4.5:
     /home/tsuyoshi/hoge2/lib/python3.6/site-packages/test.py
 Proceed (y/n)? y
   Successfully uninstalled test-2.3.4.5
+```
+
+不要なパッケージをinstall.txtに記載して次のようにしてパッケージ削除することも可能です
+```
+$ pip uninstall -r install.txt
 ```
 
 ### インストール済みライブラリが最新版かどうかをチェックする
