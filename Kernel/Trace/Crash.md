@@ -346,6 +346,12 @@ ffffffffa0187dc0  bluetooth          273667  /lib/modules/3.3.4-5.fc17.x86_64/ke
 ffffffffa01ad540  bnep                19584  /lib/modules/3.3.4-5.fc17.x86_64/kernel/net/bluetooth/bnep/bnep.ko 
 ```
 
+### モジュールをアンロードする
+lsmodなどで表示されるモジュール名を指定してアンロードできます。アンロードはdオプションを使います。
+```
+crash> mod -d e1000
+```
+
 ### 構造体の定義を確認する
 ```
 crash> struct task_struct
@@ -370,6 +376,26 @@ struct task_struct {
     unsigned int btrace_seq;
     unsigned int policy;
 	(snip)
+```
+
+なお、どのように割り当てされるのかはoオプションで確認することができます。
+```
+crash> struct -o task_struct
+struct task_struct {
+     [0] volatile long int state;
+     [8] void *stack;
+    [16] atomic_t usage;
+    [20] unsigned int flags;
+    [24] unsigned int ptrace;
+    [32] struct llist_node wake_entry;
+    [40] int on_cpu;
+    [44] int on_rq;
+    [48] int prio;
+    [52] int static_prio;
+    [56] int normal_prio;
+    [60] unsigned int rt_priority;
+    [64] const struct sched_class *sched_class;
+...
 ```
 
 ### IRQ情報を確認する。
@@ -529,6 +555,12 @@ ffff88001d6b6000  p2p1   10.0.2.15
 ffff88001b7ce000  p7p1   192.168.56.1
 ```
 
+数値からIPアドレスに変換する
+```
+crash> net -n 1041236234
+10.1.16.62
+```
+
 ARPキャッシュテーブルを表示する
 ```
 crash> net -a
@@ -625,6 +657,38 @@ ROOT: /    CWD: /home/tsuyoshi
   7 ffff88001a1a1000 ffff880017197900 ffff880004f0a690 FIFO 
   8 ffff88001c47e700 ffff880017197a80 ffff88001e7820b0 REG  /tmp/tmpfX85qAK
  10 ffff88001d752700 ffff88001bcac300 ffff880004f0a8c0 FIFO 
+```
+
+### filesで絞り込みを行いたい場合
+```
+# TCPソケットだけを表示
+crash> foreach files -R TCP
+
+# UDPソケットだけを表示
+crash> foreach files -R UDP
+
+# Netlinkソケットだけを表示
+crash> foreach files -R NETLINK
+
+# Unixdomainsocketだけを表示
+crash> foreach files -R UNIX
+
+# ptsを指定して表示
+crash> foreach files -R pts/1
+```
+
+たとえば、該当する場合には次のように表示されます。
+```
+crash> foreach files -R /var/log
+PID: 536    TASK: ffff88003a310000  CPU: 0   COMMAND: "auditd"
+ROOT: /    CWD: / 
+ FD       FILE            DENTRY           INODE       TYPE PATH
+  4 ffff880036971100 ffff88003bb51cc0 ffff88003bbca790 REG  /var/log/audit/audit.log
+
+PID: 542    TASK: ffff88003d2dae40  CPU: 0   COMMAND: "abrt-watch-log"
+ROOT: /    CWD: / 
+ FD       FILE            DENTRY           INODE       TYPE PATH
+  4 ffff88003a40f700 ffff88003dfe50c0 ffff8800370000b0 REG  /var/log/messages
 ```
 
 ### メモリ内部を覗く
@@ -1257,6 +1321,13 @@ CPU 0 RUNQUEUE: ffff88003fc13580
      [no tasks queued]
 ```
 
+そのCPUで最終実行されたタイムスタンプを表示するにはtオプションを付与します。
+```
+crash> runq -t
+ CPU 0: 1016980844734
+        1016981513482  PID: 1145   TASK: ffff880036c91720  COMMAND: "crash"
+```
+
 ### grepを使う
 実はパイプ経由で普通に使えます
 ```
@@ -1480,6 +1551,31 @@ ffffffff81b04c8d (t) spawn_ksoftirqd
 ffffffff81bbb0f0 (t) __initcall_spawn_ksoftirqdearly
 ```
 
+上記ではgrepを使いましたが、qオプションの後に文字列を指定するとその文字列が含まれているシンボルのみを表示します。
+```
+crash> sym -q ksoftirq  
+e080 (D) ksoftirqd
+ffffffff8105ddb0 (t) run_ksoftirqd
+ffffffff81b04c8d (t) spawn_ksoftirqd
+ffffffff81bbb0f0 (t) __initcall_spawn_ksoftirqdearly
+```
+
+### 特定のモジュールに含まれるシンボルを確認する。
+lsmodで表示されるモジュールのシンボルを確認したい場合にはmオプションの後にモジュールを指定します。
+```
+crash> sym -m e1000
+ffffffffa001a000 MODULE START: e1000
+ffffffffa001a000 (t) e1000_fix_features
+ffffffffa001a020 (t) e1000_setup_rctl
+ffffffffa001a0d0 (t) e1000_configure_rx
+ffffffffa001a310 (t) e1000_get_stats
+ffffffffa001a330 (t) e1000_update_itr
+ffffffffa001a440 (t) netif_tx_stop_queue
+ffffffffa001a480 (t) e1000_vlan_used
+ffffffffa001a4a0 (t) e1000_receive_skb
+...
+```
+
 ### virtualアドレスからphysicalアドレスへと変換する
 vtop(virtual to physical)コマンドを利用するとvirtualアドレスからphysicalアドレスに変換します。
 ```
@@ -1598,8 +1694,107 @@ jiffies = $13 = 4300994932
 jiffies = $14 = 4300995940
 ```
 
+### 逆アセンブルを表示する方法
+
+```
+crash> dis do_IRQ
+0xffffffff815f55a0 <do_IRQ>:    push   %rbp
+0xffffffff815f55a1 <do_IRQ+1>:  mov    %rsp,%rbp
+0xffffffff815f55a4 <do_IRQ+4>:  sub    $0x20,%rsp
+0xffffffff815f55a8 <do_IRQ+8>:  mov    %rbx,-0x20(%rbp)
+0xffffffff815f55ac <do_IRQ+12>: mov    %r12,-0x18(%rbp)
+0xffffffff815f55b0 <do_IRQ+16>: mov    %r13,-0x10(%rbp)
+0xffffffff815f55b4 <do_IRQ+20>: mov    %r14,-0x8(%rbp)
+0xffffffff815f55b8 <do_IRQ+24>: data32 data32 data32 xchg %ax,%ax
+...
+```
+
+ソースコードとアセンブリの対応付けを確認する。
+```
+crash> dis -l do_IRQ
+/usr/src/debug/kernel-3.3.fc17/linux-3.3.4-5.fc17.x86_64/arch/x86/kernel/irq.c: 182
+0xffffffff815f55a0 <do_IRQ>:    push   %rbp
+0xffffffff815f55a1 <do_IRQ+1>:  mov    %rsp,%rbp
+0xffffffff815f55a4 <do_IRQ+4>:  sub    $0x20,%rsp
+0xffffffff815f55a8 <do_IRQ+8>:  mov    %rbx,-0x20(%rbp)
+0xffffffff815f55ac <do_IRQ+12>: mov    %r12,-0x18(%rbp)
+0xffffffff815f55b0 <do_IRQ+16>: mov    %r13,-0x10(%rbp)
+0xffffffff815f55b4 <do_IRQ+20>: mov    %r14,-0x8(%rbp)
+0xffffffff815f55b8 <do_IRQ+24>: data32 data32 data32 xchg %ax,%ax
+/usr/src/debug/kernel-3.3.fc17/linux-3.3.4-5.fc17.x86_64/arch/x86/kernel/irq.c: 186
+0xffffffff815f55bd <do_IRQ+29>: mov    0x78(%rdi),%r12d
+/usr/src/debug/kernel-3.3.fc17/linux-3.3.4-5.fc17.x86_64/arch/x86/kernel/irq.c: 182
+0xffffffff815f55c1 <do_IRQ+33>: mov    %rdi,%rbx
+/usr/src/debug/kernel-3.3.fc17/linux-3.3.4-5.fc17.x86_64/arch/x86/include/asm/irq_regs.h: 18
+0xffffffff815f55c4 <do_IRQ+36>: mov    %gs:0xbf10,%r14
+/usr/src/debug/kernel-3.3.fc17/linux-3.3.4-5.fc17.x86_64/arch/x86/kernel/irq.c: 186
+0xffffffff815f55cd <do_IRQ+45>: not    %r12d
+/usr/src/debug/kernel-3.3.fc17/linux-3.3.4-5.fc17.x86_64/arch/x86/include/asm/irq_regs.h: 26
+0xffffffff815f55d0 <do_IRQ+48>: mov    %rdi,%gs:0xbf10
+/usr/src/debug/kernel-3.3.fc17/linux-3.3.4-5.fc17.x86_64/arch/x86/kernel/irq.c: 189
+0xffffffff815f55d9 <do_IRQ+57>: callq  0xffffffff8105df20 <irq_enter>
+/usr/src/debug/kernel-3.3.fc17/linux-3.3.4-5.fc17.x86_64/arch/x86/kernel/irq.c: 190
+0xffffffff815f55de <do_IRQ+62>: callq  0xffffffff81012110 <exit_idle>
+/usr/src/debug/kernel-3.3.fc17/linux-3.3.4-5.fc17.x86_64/arch/x86/kernel/irq.c: 192
+0xffffffff815f55e3 <do_IRQ+67>: mov    %r12d,%eax
+/usr/src/debug/kernel-3.3.fc17/linux-3.3.4-5.fc17.x86_64/arch/x86/kernel/irq.c: 194
+```
+
+ソースコードを確認する
+```
+crash> dis -s do_fork
+```
+
+なお、次の環境ではsオプションは存在しなかった
+```
+crash version: 6.1.0-1.fc17   gdb version: 7.3.1
+```
+
+### スクロールを変更したい
+デフォルトではスクロールonとなっています。画面に表示しきれないデータを制御しています。
+たとえば、デフォルトからoffに変更したい場合には次のようにします。
+```
+crash> set scroll off
+scroll: off (/usr/bin/less)
+```
+
+### 各ノードのメンバの値を求める
+```
+crash> tree -t rbtree -o vmap_area.rb_node vmap_area_root -s vmap_area.va_start,va_end
+ffff880036ef1100
+  va_start = 18446683600576839680
+  va_end = 18446683600576974848
+ffff88003dbff400
+  va_start = 18446683600575066112
+  va_end = 18446683600575086592
+ffff88003e009600
+  va_start = 18446683600571629568
+  va_end = 18446683600571645952
+...
+```
+
+xオプションを付与することで16進数で確認することができます。
+```
+carsh> tree -t rbtree -o vmap_area.rb_node vmap_area_root -s vmap_area.va_start,va_end -x
+ffff880036ef1100
+  va_start = 0xffffc90000680000
+  va_end = 0xffffc900006a1000
+ffff88003dbff400
+  va_start = 0xffffc900004cf000
+  va_end = 0xffffc900004d4000
+ffff88003e009600
+  va_start = 0xffffc90000188000
+  va_end = 0xffffc9000018c000
+...
+```
+
+# TODO
+以下のtree, listについてもっとちゃんとまとめたい
+- https://qiita.com/hana_shin/items/02d8da181c8287580613
+
 # 参考URL
 - 公式github
   - https://github.com/crash-utility/crash
 - ドキュメントとして存在しているのは次のドキュメントぐらい?
   - http://people.redhat.com/anderson/crash_whitepaper/
+

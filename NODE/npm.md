@@ -184,6 +184,9 @@ $ npm view knockout
 }
 ```
 
+package.jsonの仕様は公式サイトにも記載されています
+- https://docs.npmjs.com/files/package.json
+
 参考URL
 - https://qiita.com/sotarok/items/4ebd4cfedab186355867
 
