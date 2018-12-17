@@ -15,6 +15,35 @@ kernel-devel-3.3.4-5.fc17.x86_64
 kernel-debuginfo-3.3.4-5.fc17.x86_64
 ```
 
+debuginfoパッケージが存在しないとエラーになります。
+```
+$ crash
+
+crash 7.1.9-2.el7
+Copyright (C) 2002-2016  Red Hat, Inc.
+Copyright (C) 2004, 2005, 2006, 2010  IBM Corporation
+Copyright (C) 1999-2006  Hewlett-Packard Co
+Copyright (C) 2005, 2006, 2011, 2012  Fujitsu Limited
+Copyright (C) 2006, 2007  VA Linux Systems Japan K.K.
+Copyright (C) 2005, 2011  NEC Corporation
+Copyright (C) 1999, 2002, 2007  Silicon Graphics, Inc.
+Copyright (C) 1999, 2000, 2001, 2002  Mission Critical Linux, Inc.
+This program is free software, covered by the GNU General Public License,
+and you are welcome to change it and/or distribute copies of it under
+certain conditions.  Enter "help copying" to see the conditions.
+This program has absolutely no warranty.  Enter "help warranty" for details.
+ 
+crash: cannot find booted kernel -- please enter namelist argument
+
+
+Usage:
+
+  crash [OPTION]... NAMELIST MEMORY-IMAGE[@ADDRESS]	(dumpfile form)
+  crash [OPTION]... [NAMELIST]             		(live system form)
+
+Enter "crash -h" for details.
+```
+
 パッケージをインストールしたらあとは引数なしでsudo権限でcrashコマンドを実行する。
 crashコマンドを実行しただけでcrashのインタプリタに遷移しない場合には、debuginfo等の必要なパッケージが不足していると思われる。
 ```
