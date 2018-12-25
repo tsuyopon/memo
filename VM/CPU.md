@@ -17,7 +17,7 @@ VM専用空間(VMX nonroot)上でVM上の命令を実行する。未実装命令
   - VMX rootからVMLAUNCH/VMRESUME命令によってVMX nonrootへ遷移する。
 
 上記でも登場しているがVMX Instructionには次のような命令が存在する(主要な命令のみを記載)
-説明で登場するVMCSは、Virtual Machine Control Structureを意味する。
+説明で登場するVMCSは、Virtual Machine Control Structureを意味していて、特にオーバーヘッドが大きい特権命令の処理やコンテキストスイッチをハードウェアで支援する。
 - VMXON: VMX rootへの状態遷移
 - VMXOFF: VMX rootから通常動作モードへの状態遷移
 - VMPTRLD: 操作対象となるCurrent VMCSを取得する
@@ -88,16 +88,19 @@ VT-xとほとんど同じ機能を有するが、特にゲストOSに対する�
 # Intel VT-d
 ダイレクトI/O向けインテルVT(Intel VT-d)は、I/O処理の仮想化を支援する技術です。
 この仮想化技術が存在しない場合には、VMMはI/OデバイスをエミュレートしてDMAのメモリ領域の李マッピングを行う必要があります。
-VT-dでは、ハードウェア的にDMA転送時のリマッピングを行うことができます。この場合には、通常のデバイスドライバを利用する
+VT-dでは、ハードウェア的にDMA転送時のリマッピングを行うことができます。この場合には、ゲストOSでも通常のデバイスドライバを利用することができます。
 
 TBD
 
 # Intel VT-c
 Virtualization Technology for Connectivityは、均衡的なサーバー性能のための最適なI/Oの仮想化を支援する各種テクノロジーの総称です。  
 次の技術で構成されています。
-- Virtual Machine Device Queues (VMDq)
-- Intel I/O Acceleration Technology (I/OAT)
-- Single Root I/O Virtualization (SR-IOV) 
+- 1. Virtual Machine Device Queues (VMDq)
+  - 複数の仮想マシンからのNICへのアクセスを調整し、データの並び替えと通信の効率化を行う。
+- 2. Intel I/O Acceleration Technology (I/O AT)
+  - NICのTCP/IPプロトコルの処理を行うことで、OSの処理を簡略化してCPU負荷を軽減する。
+- 3. Single Root I/O Virtualization (SR-IOV) 
+  - I/Oデバイスを仮想化する。PCI-Expressカードを仮想化し、複数の仮想マシンからアクセスが可能になりパフォーマンスが改善する。
 
 (TODO: 上記の３つの技術を深追いする)
 
