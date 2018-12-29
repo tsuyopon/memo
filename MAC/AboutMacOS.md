@@ -14,6 +14,11 @@ $ sysctl -n machdep.cpu.brand_string
 machdep.cpu.brand_string: Intel(R) Core(TM) i5-5287U CPU @ 2.90GHz
 ```
 
+```
+$ sysctl  -a | grep -i machdep.cpu.features
+machdep.cpu.features: FPU VME DE PSE TSC MSR PAE MCE CX8 APIC SEP MTRR PGE MCA CMOV PAT PSE36 CLFSH DS ACPI MMX FXSR SSE SSE2 SS HTT TM PBE SSE3 PCLMULQDQ DTES64 MON DSCPL VMX SMX EST TM2 SSSE3 CX16 TPR PDCM SSE4.1 SSE4.2 x2APIC POPCNT AES PCID XSAVE OSXSAVE TSCTMR AVX1.0 RDRAND F16C
+```
+
 # Apple周りのソースコード
 - https://opensource.apple.com/
 
