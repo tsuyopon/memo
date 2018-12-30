@@ -1,60 +1,62 @@
-全体を俯瞰できそうなサイト
-	http://pekopeko1.tumblr.com/webmemo2
-
-###########################################################################
-概要
-###########################################################################
-*** XV6とは
-XV6とは、マサチューセッツ工科大の院生向け教材として、UNIX V6 を ANSI の C で書き直し、x86 CPU 向けに書き直したオペレーティングシステムです。 講義用の資料とソースコード、ビルド環境( MakeFile や QEMU オプション )などの一式が、無料で公開・配布されています。
-	http://pdos.csail.mit.edu/6.828/2011/xv6.html
-	http://en.wikipedia.org/wiki/Xv6
-
-ここでコードを読むことができる
-	http://ertl.jp/~yutaka/os2013/xv6-doxygen/index.html
+# XV6とは
+XV6とは、マサチューセッツ工科大の院生向け教材として、UNIX V6 を ANSI の C で書き直し、x86 CPU 向けに書き直したオペレーティングシステムです。 
+講義用の資料、動画とソースコード、ビルド環境( MakeFile や QEMU オプション )などの一式が、無料で公開・配布されています。
+- http://pdos.csail.mit.edu/6.828/2011/xv6.html
+- http://en.wikipedia.org/wiki/Xv6
 
 ソースコードは以下のテキストを参考に読んでいくといいようです。
-	http://pdos.csail.mit.edu/6.828/2011/xv6/book-rev6.pdf
-	http://pdos.csail.mit.edu/6.828/2014/xv6/book-rev8.pdf(最新版)
+- http://pdos.csail.mit.edu/6.828/2011/xv6/book-rev6.pdf
+- http://pdos.csail.mit.edu/6.828/2014/xv6/book-rev8.pdf(最新版)
 
-このあたりのブログがXV6のソースコードリーディングについて解説しています。
-	http://peta.okechan.net/blog/xv6%E3%82%BD%E3%83%BC%E3%82%B9%E3%82%B3%E3%83%BC%E3%83%89%E3%83%AA%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0
-
-
-「はじめてのOSコードリーディング」の著者が書いているブログのようです
-	http://d.hatena.ne.jp/takahirox/20120212/1329049014
-
-
-###########################################################################
-XV6を使ってみる
-###########################################################################
-*** Fedora上にてXV6を動かしてみる
+# XV6を使ってみる(Fedora上にてXV6を動かしてみる)
+```
 $ cat /proc/version 
 Linux version 3.3.4-5.fc17.x86_64 (mockbuild@x86-14.phx2.fedoraproject.org) (gcc version 4.7.0 20120504 (Red Hat 4.7.0-4) (GCC) ) #1 SMP Mon May 7 17:29:34 UTC 2012
 
 $ mkdir UNIX_V6
 $ cd UNIX_V6
+```
 
+続いて必要なパッケージをインストールします。
+```
 $ sudo yum install git qemu build-essential
 git clone git://pdos.csail.mit.edu/xv6/xv6.git
+```
 
+ディレクトリに移動してMakefileを修正します。
+```
 $ cd xv6
 $ vim Makefile 
 QEMU = /usr/bin/qemu-system-x86_64   # コメントアウトしているのでそれを外すこと
+```
 
 以下のようにして起動することができます
+```
 ターミナルモードで起動する:      $ make qemu-nox 
 ターミナルモードで起動する(GDB): $ make qemu-nox-gdb
 Windowモードで起動する:          $ make qemu
 Windowモードで起動する(GDB):     $ make qemu-gdb
+```
 
 XV6を抜ける場合には
-	$ Ctrl + A を押して、その後 Xを押す
+```
+$ Ctrl + A を押して、その後 Xを押す
+```
 
 XV6をwindowモードで起動した時のマウスの切り替えは
-	$ Ctrl + Alt
+```
+$ Ctrl + Alt
+```
 
-(参考URL)
-	http://krakenbeal.blogspot.jp/2014/04/xv6-ubuntu.html
+# 参考資料
+- doxygenについては以下を参考のこと
+  - http://ertl.jp/~yutaka/os/xv6-doxygen/dir_9ea4cef9241f1bffc3ca4a9e1d6c3cce.html
+- このあたりのブログがXV6のソースコードリーディングについて解説しています。
+  - http://peta.okechan.net/blog/xv6%E3%82%BD%E3%83%BC%E3%82%B9%E3%82%B3%E3%83%BC%E3%83%89%E3%83%AA%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0
+- 「はじめてのOSコードリーディング」の著者が書いているブログのようです
+  - http://d.hatena.ne.jp/takahirox/20120212/1329049014
+- xv6実行環境構築参考資料
+  - http://krakenbeal.blogspot.jp/2014/04/xv6-ubuntu.html
 
 
 *** コマンドを追加してみる。
@@ -369,7 +371,5 @@ lcr3の定義はx86.hに記述されている。
 http://homepage1.nifty.com/herumi/prog/prog10.html
 を参考に読み解いてみると
 入力パラメータvalが%0に入り、それをCR３に代入します。参照するものがあるときには%が２つ連続します。
-
-
 
 
