@@ -13,6 +13,8 @@
 - Celeron(かなり機能を抑えた廉価版)
 - Atom(性能と消費電力が最も低い CPU)
 
+- Intel Architecture Overview
+  - http://www.lisha.ufsc.br/teaching/shi/processors/ia32/overview2.pdf
 
 # Intel Core i9, Core i7, Core i5, Core i3の世代について
 
