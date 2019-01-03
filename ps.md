@@ -12,7 +12,24 @@ f   プロセスの親子関係をツリー状にして表示
 L   スレッドを表示
 ```
 
-#
+# 詳細
+
+### カーネルスレッドであることを確認
+RSSが0となるのはカーネルスレッドとして生成されたプログラムのみです
+```
+$ ps auxww 
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root         1  0.0  0.4  41556  4172 ?        Ss   Jan01   0:00 /usr/lib/systemd/systemd
+root         2  0.0  0.0      0     0 ?        S    Jan01   0:00 [kthreadd]
+root         3  0.0  0.0      0     0 ?        S    Jan01   0:00 [ksoftirqd/0]
+root         6  0.0  0.0      0     0 ?        S    Jan01   0:00 [migration/0]
+root         7  0.0  0.0      0     0 ?        S    Jan01   0:00 [watchdog/0]
+root         8  0.0  0.0      0     0 ?        S<   Jan01   0:00 [cpuset]
+root         9  0.0  0.0      0     0 ?        S<   Jan01   0:00 [khelper]
+root        10  0.0  0.0      0     0 ?        S    Jan01   0:00 [kdevtmpfs]
+...
+```
+
 ### ps -lコマンド
 ```
 $ ps -l
@@ -20,8 +37,8 @@ F S   UID   PID  PPID  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD
 0 S  1000 12814 12813  0  80   0 - 29049 wait   pts/0    00:00:00 bash
 0 R  1000 13610 12814  0  80   0 -  2757 -      pts/0    00:00:00 ps
 ```
-左から２番目の状態には以下の種類がある
 
+左から２番目の状態には以下の種類がある
 ```
     S（State）
         状態。
@@ -46,7 +63,6 @@ TTY     端末名。そのプロセスが結びつけられている端末の省
 TIME    CPU時間。 CPUがそのプロセスを実行するために費やした時間。 
 COMMAND そのプロセスを起動した時のコマンド。 プログラムが含まれているファイルの名前の一部。 
 ```
-
 
 ### ps uコマンド(プロセスに割り当てられた資源を確認する)
 psコマンドにuオプションを付けると、 プロセスに割り当てられたメモリ資源やCPU資源が表示する。 
