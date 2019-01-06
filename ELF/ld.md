@@ -38,7 +38,7 @@ $ gcc -Wl,aaa,bbb,ccc
 
 ### 順番を気にせずにうまくリンクする
 
-関数が main() ->　foo() -> bar() のようにコールしているならば、 リンク時にも main.c -lfoo -lbar の順に並べないと、リンク解決できないようです。
+関数が main() ->　foo() -> bar() のように関数内で各々をコールしているならば、 リンク時にも main.c -lfoo -lbar の順に並べないと、デフォルトではリンク解決できないようです。
 このような場合にはno-as-neededを付与すればlfooとlbarの順番を気にせずに以下のどちらでもリンク解決できるようになるようです。
 ```
 $ gcc -Wl,-no-as-needed -L. -lfoo -lbar main.c
