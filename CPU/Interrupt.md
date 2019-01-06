@@ -109,11 +109,10 @@ SMPシステムにおいて周辺装置からの割り込みをI/O APICが受け
 - I/O APIC(IOAPIC)
   - I/Oデバイスから受け取った割り込みは処理は全て一旦IOAPICを経由する。IOAPICはOSやBIOSによって設定されたリダイレクション・テーブルを参照してそれに従ってCPUへの割り込み処理を行う。　
 
-TODO: 上記の仕様書を読むといいかも
-
-
 # ローカルAPIC詳細
 - http://d.hatena.ne.jp/think_carefully/20090811/1249975469
+
+TODO: レジスタ周りについてはまたこんど時間がある際に
 
 # 参考URL
 - VA LINUX技術文章: 
@@ -136,7 +135,6 @@ TODO: 上記の仕様書を読むといいかも
 - Intel64 and IA-32 Architectures Software Developer’s Manual
   - https://www.intel.com/content/dam/www/public/us/en/documents/manuals/64-ia-32-architectures-software-developer-vol-3a-part-1-manual.pdf
 
-TODO: 上記公式資料読みたい
-
 # TODO
 - 設定方法も記載する
+- エッジトリガー、レベルトリガー
