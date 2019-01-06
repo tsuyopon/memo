@@ -1,14 +1,21 @@
-#  概要
-このページでは、readelfコマンドについてまとめます。
-- ELFヘッダの読み出し
+# readeld
+
+ELFのフォーマットについてはELFFormat.mdでまとめています。
+
+次の情報に分けて情報出力方法を記載しています。
+- (1) ELFヘッダ(ELFファイルヘッダ、プログラムヘッダ、セクションヘッダ)
+- (2) 各種section情報
+
+
+- (1) ELFヘッダ
 ```
  ELFファイルヘッダ              -h    
  プログラムヘッダ               -l
  セクションヘッダ               -S
- 以上3つのヘッダ                -e
+ 3つのヘッダをまとめて出力      -e
 ```
  
-- ELF情報の読み出し
+- (2) section情報
 ```
  シンボルテーブル               -s
  リロケーション情報             -r
@@ -21,88 +28,199 @@
  unwind情報                     -u
 ```
 
+
 # 詳細
-## ELFヘッダの読み出し
+## ELFヘッダ(ELFファイルヘッダ、プログラムヘッダ、セクションヘッダ)の読み出し
 
-### ELF仕様書
-- http://www.skyfree.org/linux/references/ELF_Format.pdf
-
-### readelfコマンドを利用する
-オプションは通常は-hを利用する。
+### ELFファイルヘッダを表示する
 ```
-$ readelf -h a.out
-ELF ヘッダ:
-  マジック:  7f 45 4c 46 01 01 01 00 00 00 00 00 00 00 00 00
-  クラス:                            ELF32
-  データ:                            2 の補数、リトルエンディアン
-  バージョン:                        1 (current)
+$ readelf -h /bin/ls
+ELF Header:
+  Magic:   7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00 
+  Class:                             ELF64
+  Data:                              2's complement, little endian
+  Version:                           1 (current)
   OS/ABI:                            UNIX - System V
-  ABI バージョン:                    0
-  タイプ:                            EXEC (実行可能ファイル)
-  マシン:                            Intel 80386
-  バージョン:                        0x1
-  エントリポイントアドレス:          0x8048278
-  プログラムの開始ヘッダ:            52 (バイト)
-  セクションヘッダ始点:              7476 (バイト)
-  フラグ:                            0x0
-  このヘッダのサイズ:                52 (バイト)
-  プログラムヘッダサイズ:            32 (バイト)
-  プログラムヘッダ数:                6
-  セクションヘッダ:                  40 (バイト)
-  Number of section headers:         34
-  Section header string table index: 31
+  ABI Version:                       0
+  Type:                              EXEC (Executable file)
+  Machine:                           Advanced Micro Devices X86-64
+  Version:                           0x1
+  Entry point address:               0x404b48
+  Start of program headers:          64 (bytes into file)
+  Start of section headers:          115736 (bytes into file)
+  Flags:                             0x0
+  Size of this header:               64 (bytes)
+  Size of program headers:           56 (bytes)
+  Number of program headers:         9
+  Size of section headers:           64 (bytes)
+  Number of section headers:         30
+  Section header string table index: 29
 ```
 
-### -lオプションもよく利用される
+### プログラムヘッダを出力する
 ```
-$ readelf -l hellopecl.so
+$ readelf -l /bin/ls
 
-Elf file type is DYN (Shared object file)
-Entry point 0x6f0
-There are 4 program headers, starting at offset 52
+Elf file type is EXEC (Executable file)
+Entry point 0x404b48
+There are 9 program headers, starting at offset 64
 
 Program Headers:
-  Type           Offset   VirtAddr   PhysAddr   FileSiz MemSiz  Flg Align
-  LOAD           0x000000 0x00000000 0x00000000 0x00b98 0x00b98 R E 0x1000
-  LOAD           0x000b98 0x00001b98 0x00001b98 0x00200 0x00220 RW  0x1000
-  DYNAMIC        0x000bb0 0x00001bb0 0x00001bb0 0x000c8 0x000c8 RW  0x4
-  GNU_STACK      0x000000 0x00000000 0x00000000 0x00000 0x00000 RW  0x4
+  Type           Offset             VirtAddr           PhysAddr
+                 FileSiz            MemSiz              Flags  Align
+  PHDR           0x0000000000000040 0x0000000000400040 0x0000000000400040
+                 0x00000000000001f8 0x00000000000001f8  R E    8
+  INTERP         0x0000000000000238 0x0000000000400238 0x0000000000400238
+                 0x000000000000001c 0x000000000000001c  R      1
+      [Requesting program interpreter: /lib64/ld-linux-x86-64.so.2]
+  LOAD           0x0000000000000000 0x0000000000400000 0x0000000000400000
+                 0x00000000000193fc 0x00000000000193fc  R E    200000
+  LOAD           0x000000000001a328 0x000000000061a328 0x000000000061a328
+                 0x00000000000012d8 0x0000000000001ff8  RW     200000
+  DYNAMIC        0x000000000001ada8 0x000000000061ada8 0x000000000061ada8
+                 0x0000000000000200 0x0000000000000200  RW     8
+  NOTE           0x0000000000000254 0x0000000000400254 0x0000000000400254
+                 0x0000000000000044 0x0000000000000044  R      4
+  GNU_EH_FRAME   0x0000000000016650 0x0000000000416650 0x0000000000416650
+                 0x0000000000000744 0x0000000000000744  R      4
+  GNU_STACK      0x0000000000000000 0x0000000000000000 0x0000000000000000
+                 0x0000000000000000 0x0000000000000000  RW     10
+  GNU_RELRO      0x000000000001a328 0x000000000061a328 0x000000000061a328
+                 0x0000000000000cd8 0x0000000000000cd8  R      1
 
  Section to Segment mapping:
   Segment Sections...
-   00     .gnu.hash .dynsym .dynstr .gnu.version .gnu.version_r .rel.dyn .rel.plt .init .plt .text .fini .rodata .eh_frame
-   01     .ctors .dtors .jcr .data.rel.ro .dynamic .got .got.plt .data .bss
-   02     .dynamic
-   03
+   00     
+   01     .interp 
+   02     .interp .note.ABI-tag .note.gnu.build-id .gnu.hash .dynsym .dynstr .gnu.version .gnu.version_r .rela.dyn .rela.plt .init .plt .text .fini .rodata .eh_frame_hdr .eh_frame 
+   03     .init_array .fini_array .jcr .data.rel.ro .dynamic .got .got.plt .data .bss 
+   04     .dynamic 
+   05     .note.ABI-tag .note.gnu.build-id 
+   06     .eh_frame_hdr 
+   07     
+   08     .init_array .fini_array .jcr .data.rel.ro .dynamic .got 
 ```
 
-### -Sオプションを以下に載せる
+### セクションヘッダ情報を表示する
 ```
-$ readelf -S hellopecl.so
-There are 35 section headers, starting at offset 0x51a0:
+$ readelf -S /bin/ls
+There are 30 section headers, starting at offset 0x1c418:
 
 Section Headers:
-  [Nr] Name              Type            Addr     Off    Size   ES Flg Lk Inf Al
-  [ 0]                   NULL            00000000 000000 000000 00      0   0  0
-  [ 1] .gnu.hash         GNU_HASH        000000b4 0000b4 000068 04   A  2   0  4
-		(途中略)
-  [32] .shstrtab         STRTAB          00000000 005064 00013a 00      0   0  1
-  [33] .symtab           SYMTAB          00000000 005718 000510 10     34  54  4
-  [34] .strtab           STRTAB          00000000 005c28 000319 00      0   0  1
+  [Nr] Name              Type             Address           Offset
+       Size              EntSize          Flags  Link  Info  Align
+  [ 0]                   NULL             0000000000000000  00000000
+       0000000000000000  0000000000000000           0     0     0
+  [ 1] .interp           PROGBITS         0000000000400238  00000238
+       000000000000001c  0000000000000000   A       0     0     1
+  [ 2] .note.ABI-tag     NOTE             0000000000400254  00000254
+       0000000000000020  0000000000000000   A       0     0     4
+  [ 3] .note.gnu.build-i NOTE             0000000000400274  00000274
+       0000000000000024  0000000000000000   A       0     0     4
+  [ 4] .gnu.hash         GNU_HASH         0000000000400298  00000298
+       0000000000000038  0000000000000000   A       5     0     8
+  [ 5] .dynsym           DYNSYM           00000000004002d0  000002d0
+       0000000000000c60  0000000000000018   A       6     1     8
+  [ 6] .dynstr           STRTAB           0000000000400f30  00000f30
+       00000000000005bc  0000000000000000   A       0     0     1
+  [ 7] .gnu.version      VERSYM           00000000004014ec  000014ec
+       0000000000000108  0000000000000002   A       5     0     2
+  [ 8] .gnu.version_r    VERNEED          00000000004015f8  000015f8
+       0000000000000090  0000000000000000   A       6     2     8
+  [ 9] .rela.dyn         RELA             0000000000401688  00001688
+       00000000000000d8  0000000000000018   A       5     0     8
+  [10] .rela.plt         RELA             0000000000401760  00001760
+       0000000000000ac8  0000000000000018  AI       5    12     8
+  [11] .init             PROGBITS         0000000000402228  00002228
+       000000000000001a  0000000000000000  AX       0     0     4
+  [12] .plt              PROGBITS         0000000000402250  00002250
+       0000000000000740  0000000000000010  AX       0     0     16
+  [13] .text             PROGBITS         0000000000402990  00002990
+       000000000000ffcc  0000000000000000  AX       0     0     16
+  [14] .fini             PROGBITS         000000000041295c  0001295c
+       0000000000000009  0000000000000000  AX       0     0     4
+  [15] .rodata           PROGBITS         0000000000412980  00012980
+       0000000000003cce  0000000000000000   A       0     0     32
+  [16] .eh_frame_hdr     PROGBITS         0000000000416650  00016650
+       0000000000000744  0000000000000000   A       0     0     4
+  [17] .eh_frame         PROGBITS         0000000000416d98  00016d98
+       0000000000002664  0000000000000000   A       0     0     8
+  [18] .init_array       INIT_ARRAY       000000000061a328  0001a328
+       0000000000000008  0000000000000000  WA       0     0     8
+  [19] .fini_array       FINI_ARRAY       000000000061a330  0001a330
+       0000000000000008  0000000000000000  WA       0     0     8
+  [20] .jcr              PROGBITS         000000000061a338  0001a338
+       0000000000000008  0000000000000000  WA       0     0     8
+  [21] .data.rel.ro      PROGBITS         000000000061a340  0001a340
+       0000000000000a68  0000000000000000  WA       0     0     32
+  [22] .dynamic          DYNAMIC          000000000061ada8  0001ada8
+       0000000000000200  0000000000000010  WA       6     0     8
+  [23] .got              PROGBITS         000000000061afa8  0001afa8
+       0000000000000048  0000000000000008  WA       0     0     8
+  [24] .got.plt          PROGBITS         000000000061b000  0001b000
+       00000000000003b0  0000000000000008  WA       0     0     8
+  [25] .data             PROGBITS         000000000061b3c0  0001b3c0
+       0000000000000240  0000000000000000  WA       0     0     32
+  [26] .bss              NOBITS           000000000061b600  0001b600
+       0000000000000d20  0000000000000000  WA       0     0     32
+  [27] .gnu_debuglink    PROGBITS         0000000000000000  0001b600
+       0000000000000010  0000000000000000           0     0     4
+  [28] .gnu_debugdata    PROGBITS         0000000000000000  0001b610
+       0000000000000cec  0000000000000000           0     0     1
+  [29] .shstrtab         STRTAB           0000000000000000  0001c2fc
+       000000000000011a  0000000000000000           0     0     1
 Key to Flags:
-  W (write), A (alloc), X (execute), M (merge), S (strings)
-  I (info), L (link order), G (group), x (unknown)
+  W (write), A (alloc), X (execute), M (merge), S (strings), l (large)
+  I (info), L (link order), G (group), T (TLS), E (exclude), x (unknown)
   O (extra OS processing required) o (OS specific), p (processor specific)
 ```
 
-### h, l, Sオプション３つを一括で実行する
+### ELFヘッダ(ELFファイルヘッダ、プログラムヘッダ、セクションヘッダ)を全て出力する
+ELFファイルヘッダ(hオプション)、プログラムヘッダ(lオプション)、セクションヘッダ(Sオプション)をまとめて出力してくれるのはeオプションです。
 ```
-$ readelf -e a.out
+$ readelf -e /bin/ls
 ```
 
-## ELF情報の読み出し
 
-### シンボルテーブルを表示する
+## section情報の取得
+
+### .dynamicセクション
+.dynamicセクションを参照することで共有ライブラリの情報を取得することができます。
+```
+$ readelf -d /bin/ls 
+
+Dynamic section at offset 0x1ada8 contains 27 entries:
+  Tag        Type                         Name/Value
+ 0x0000000000000001 (NEEDED)             Shared library: [libselinux.so.1]
+ 0x0000000000000001 (NEEDED)             Shared library: [libcap.so.2]
+ 0x0000000000000001 (NEEDED)             Shared library: [libacl.so.1]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]
+ 0x000000000000000c (INIT)               0x402228
+ 0x000000000000000d (FINI)               0x41295c
+ 0x0000000000000019 (INIT_ARRAY)         0x61a328
+ 0x000000000000001b (INIT_ARRAYSZ)       8 (bytes)
+ 0x000000000000001a (FINI_ARRAY)         0x61a330
+ 0x000000000000001c (FINI_ARRAYSZ)       8 (bytes)
+ 0x000000006ffffef5 (GNU_HASH)           0x400298
+ 0x0000000000000005 (STRTAB)             0x400f30
+ 0x0000000000000006 (SYMTAB)             0x4002d0
+ 0x000000000000000a (STRSZ)              1468 (bytes)
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x0000000000000015 (DEBUG)              0x0
+ 0x0000000000000003 (PLTGOT)             0x61b000
+ 0x0000000000000002 (PLTRELSZ)           2760 (bytes)
+ 0x0000000000000014 (PLTREL)             RELA
+ 0x0000000000000017 (JMPREL)             0x401760
+ 0x0000000000000007 (RELA)               0x401688
+ 0x0000000000000008 (RELASZ)             216 (bytes)
+ 0x0000000000000009 (RELAENT)            24 (bytes)
+ 0x000000006ffffffe (VERNEED)            0x4015f8
+ 0x000000006fffffff (VERNEEDNUM)         2
+ 0x000000006ffffff0 (VERSYM)             0x4014ec
+ 0x0000000000000000 (NULL)               0x0
+```
+
+### .dynsymを表示する(シンボル情報)
 ```
 $ readelf -s hellopecl.so  | head -10
 
@@ -117,7 +235,8 @@ Symbol table '.dynsym' contains 28 entries:
     6: 00000000     0 NOTYPE  GLOBAL DEFAULT  UND php_printf
 ```
 
-### リロケーション情報を表示する
+### .rel.dyn, .rel.pltを表示する(リロケーション情報)
+rオプションを付与することで.rel.dynと.rel.pltのセクション情報を表示します。
 ```
 $ readelf -r hellopecl.so
 
@@ -157,37 +276,7 @@ Relocation section '.rel.plt' at offset 0x5bc contains 11 entries:
 00001cc0  00000c07 R_386_JUMP_SLOT   00000000   __cxa_finalize
 ```
 
-### 共有ライブラリの依存関係を調べる
-```
-$ readelf -d /bin/ls
-Dynamic segment at offset 0x14f00 contains 22 entries:
-Tag        Type                         Name/Value
-0x00000001 (NEEDED)                     Shared library: [librt.so.1]
-0x00000001 (NEEDED)                     Shared library: [libacl.so.1]
-0x00000001 (NEEDED)                     Shared library: [libc.so.6]
-0x0000000c (INIT)                       0x10002698
-0x0000000d (FINI)                       0x100114c4
-0x00000004 (HASH)                       0x10000184
-0x00000005 (STRTAB)                     0x100015a8
-0x00000006 (SYMTAB)                     0x10000808
-0x0000000a (STRSZ)                      2545 (bytes)
-0x0000000b (SYMENT)                     16 (bytes)
-0x00000015 (DEBUG)                      0x0
-0x00000003 (PLTGOT)                     0x10025120
-0x00000002 (PLTRELSZ)                   1116 (bytes)
-0x00000014 (PLTREL)                     RELA
-0x00000017 (JMPREL)                     0x1000223c
-0x00000007 (RELA)                       0x10002200
-0x00000008 (RELASZ)                     1176 (bytes)
-0x00000009 (RELAENT)                    12 (bytes)
-0x6ffffffe (VERNEED)                    0x10002150
-0x6fffffff (VERNEEDNUM)                 3
-0x6ffffff0 (VERSYM)                     0x10001f9a
-0x00000000 (NULL)                       0x0
-```
-上記によりlsの実行に際しても、librt.so.1, libacl.so.1, libc.so.6が必要となることがわかる。
-
-### バージョン情報を調べる
+### .gnu.versionと.gnu.version_rセクションを確認する
 ```
 $ readelf -V hellopecl.so 
 
@@ -208,6 +297,51 @@ Version needs section '.gnu.version_r' contains 1 entries:
   0x0020:   Name: GLIBC_2.0  Flags: none  Version: 2
 ```
 
+### .shstrtabを表示する
+.shstrtabセクションにはセクション名の文字列が格納されています。
+```
+$ readelf -p .shstrtab /bin/ls
+
+String dump of section '.shstrtab':
+  [     1]  .shstrtab
+  [     b]  .interp
+  [    13]  .note.ABI-tag
+  [    21]  .note.gnu.build-id
+  [    34]  .gnu.hash
+  [    3e]  .dynsym
+  [    46]  .dynstr
+  [    4e]  .gnu.version
+  [    5b]  .gnu.version_r
+  [    6a]  .rela.dyn
+  [    74]  .rela.plt
+  [    7e]  .init
+  [    84]  .text
+  [    8a]  .fini
+  [    90]  .rodata
+  [    98]  .eh_frame_hdr
+  [    a6]  .eh_frame
+  [    b0]  .init_array
+  [    bc]  .fini_array
+  [    c8]  .jcr
+  [    cd]  .data.rel.ro
+  [    da]  .dynamic
+  [    e3]  .got
+  [    e8]  .got.plt
+  [    f1]  .data
+  [    f7]  .bss
+  [    fc]  .gnu_debuglink
+  [   10b]  .gnu_debugdata
+```
+
+### .interpセクションを表示する
+動的リンクを行う外部プログラムが.interpに格納されている。
+```
+$ readelf -p .interp /bin/ls
+
+String dump of section '.interp':
+  [     0]  /lib64/ld-linux-x86-64.so.2
+```
+
 ### バケットリスト(?)を表示する(不明)
 何を表しているのか不明(要確認)
 ```
@@ -225,11 +359,14 @@ Histogram for `.gnu.hash' bucket list length (total of 3 buckets):
 ```
 
 ### 全情報を表示する
-迷ったらとりあえずこれを実行すればreadelfで得られるほぼ全ての情報を得られるものと思われます。
+迷ったらとりあえずこれを実行すればreadelfで得られるほぼ全ての情報を得られます。
 ```
 $ readelf -a hellopecl.so
 ```
 
+
+### ELF仕様書
+- http://www.skyfree.org/linux/references/ELF_Format.pdf
+- https://github.com/warabanshi/binstudy/blob/master/memo/ELF-memo.txt
 - readelf
   - http://sourceware.org/binutils/docs-2.16/binutils/readelf.html
-
