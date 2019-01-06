@@ -1,6 +1,26 @@
 # 概要
 gcc周りについて
 
+# 詳細
+
+### 実行形式ファイルの生成にダイナミックリンクを使わない
+```
+$ gcc -static test.c
+```
+
+### sharedバイナリを作成する
+```
+$ gcc -shared -fPIC test.c
+```
+
+### rpathを埋め込む
+以下はtest.cに/opt/と/tmp/をrpathとして埋め込む例です。
+```
+$ gcc -Wl,-rpath /opt/ -Wl,-rpath /tmp/ test.c 
+$ objdump  -x a.out | grep -i rpath
+  RPATH                /opt/:/tmp/
+```
+
 ### デバッグオプションについて
 デバッグはgオプションだけかと思っていたらg3というオプションがあることが判明
 サイズやデバッグセクションなども変わってくるようだ。
@@ -32,7 +52,7 @@ $ nm --debug-syms a.out | grep " N "
 $ gcc -g3 hello.c 
 $ ls -alt a.out 
 -rwxrwxr-x. 1 tsuyoshi tsuyoshi 29216 11月 23 12:21 a.out
-[tsuyoshi@localhost ~]$ nm --debug-syms a.out | grep " N "
+$ nm --debug-syms a.out | grep " N "
 0000000000000000 N .debug_abbrev
 0000000000000000 N .debug_aranges
 0000000000000000 N .debug_info
