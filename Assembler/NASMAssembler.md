@@ -1,7 +1,5 @@
 # 概要
-NASM(Netwide Assembler)とはx86用アセンブラの１つです。  
-アセンブラの種類については以下を参照
-- http://ja.wikibooks.org/wiki/X86%E3%82%A2%E3%82%BB%E3%83%B3%E3%83%96%E3%83%A9/x86%E3%82%A2%E3%82%BB%E3%83%B3%E3%83%96%E3%83%A9
+NASM(Netwide Assembler)とはx86用アセンブラの１つで、GASと同様にAT&T記法です。
 
 特徴
 - クロスプラットフォームである。GASと同様にNASMはほとんどのプラットフォームで動作する。
