@@ -61,6 +61,15 @@ __vdso_time             LINUX_2.6
 - Linuxカーネル側でsoファイルが生成され、.incbinでカーネルに取り込まれます。(arch/x86/vdso/を参照のこと)
 - glibc側ではVDSOのアドレスを特定して、__vdso_gettimeofdayを呼び出すラッパーをgettimeofday関数として実装しています。
 
+どのようにVDSO側のアドレスを特定しているのかというと、次のサンプルプログラムを参考にすると具体的な処理が想像できます。
+- https://github.com/torvalds/linux/blob/v3.13/Documentation/vDSO/
+  - vdso_test.cにmainが定義されていて、parse_vdso.cで定義されている関数を使っている
+  - 上記では__vdso_gettimeofdayへのVDSOのアドレスを特定しているが
+    - https://github.com/torvalds/linux/blob/v3.13/Documentation/vDSO/parse_vdso.c#L238
+    - 次のような流れとなっている
+      - stackに格納されるタイプがAT_SYSINFO_EHDRの値と一致しているかどうかのチェック
+    - PT_LOADの場合には、「AT_SYSINFO_EHDRの値 + プログラムヘッダに存在するp_offset - プログラムヘッダのp_vaddr + symtabセクションに含まれるst_value」の値からVDSOの位置を特定する。symtabセクションに含まれるst_valueの値は関数名(今回だと__vdso_gettimeofday)から決定される。
+
 # 参考URL
 - LWN.net
   - vdsoとvsyscallの違いについて説明している
