@@ -1,8 +1,8 @@
-UNIXV6.md$B$+$iGI@8$7$?;qNA!#8E$$$N$G@0M}$,I,MW$+$b$7$l$J$$!#!#!#(B
+UNIXV6.mdから派生した資料。古いので整理が必要かもしれない。。。
 
 
-# $B%=!<%9%3!<%I2r@O(B
-main.c$B$N(Bmain$B4X?t$O0J2<$N$h$&$K$J$C$F$$$k(B
+# ソースコード解析
+main.cのmain関数は以下のようになっている
 ```
  17 int
  18 main(void)
@@ -34,16 +34,16 @@ main.c$B$N(Bmain$B4X?t$O0J2<$N$h$&$K$J$C$F$$$k(B
 ```
 
 
-# $B%=!<%9%3!<%I2r@O(B (1) kinit1(end, P2V(4*1024*1024))
+# ソースコード解析 (1) kinit1(end, P2V(4*1024*1024))
 ```
 kinit1(end, P2V(4*1024*1024))
 ```
-$B$rDI$C$F$_$k!#(B
+を追ってみる。
 
-memlayout.h$B$K(BP2V$B$,Dj5A$5$l$F$$$k(B
+memlayout.hにP2Vが定義されている
 ```
   8 #define KERNBASE 0x80000000         // First kernel virtual address
-    ($BCfN,(B)
+    (中略)
  19 #define P2V(a) (((void *) (a)) + KERNBASE)
 ```
 
@@ -69,7 +69,7 @@ memlayout.h$B$K(BP2V$B$,Dj5A$5$l$F$$$k(B
 ```
 
 
-initlock$B$O(Bspinlock.c$B$KDj5A$5$l$F$$$k!#(B
+initlockはspinlock.cに定義されている。
 ```
  12 void
  13 initlock(struct spinlock *lk, char *name)
@@ -80,7 +80,7 @@ initlock$B$O(Bspinlock.c$B$KDj5A$5$l$F$$$k!#(B
  18 } 
 ```
 
-freerange$B$O(Bcalloc.c$B$KDj5A$5$l$F$$$k!#(B
+freerangeはcalloc.cに定義されている。
 ```
  45 void
  46 freerange(void *vstart, void *vend)
@@ -92,19 +92,19 @@ freerange$B$O(Bcalloc.c$B$KDj5A$5$l$F$$$k!#(B
  52 }
 ```
 
-mmu.h$B$K>e5-$G;H$o$l$F$$$k(BPGSIZE$B$H(BPGGROUNDU$B$,Dj5A$5$l$F$$$k!#(B
+mmu.hに上記で使われているPGSIZEとPGGROUNDUが定義されている。
 ```
 123 #define PGSIZE          4096    // bytes mapped by a page
 129 #define PGROUNDUP(sz)  (((sz)+PGSIZE-1) & ~(PGSIZE-1))
 ```
 
-$B$3$N4X?t$O$7$F$$$5$l$?NN0hA4$F$N=i4|2=$r9T$C$F$$$k$h$&$@!#(B
+この関数はしていされた領域全ての初期化を行っているようだ。
 
-# $B%=!<%9%3!<%I2r@O(B (1) kvmalloc();      // (2) kernel page table
-$B$3$3$iJU$r;29M$K$G$-$k!#(B
+# ソースコード解析 (1) kvmalloc();      // (2) kernel page table
+ここら辺を参考にできる。
 - http://peta.okechan.net/blog/archives/1273
 
-vm.c$B$KDj5A$,B8:_$9$k!#(B
+vm.cに定義が存在する。
 ```
 146 // Allocate one page table for the machine for the kernel address
 147 // space for scheduler processes.
@@ -116,7 +116,7 @@ vm.c$B$KDj5A$,B8:_$9$k!#(B
 153 }
 ```
 
-(a)$B$NDj5A$+$i$^$:8+$F$_$k$3$H$H$9$k!#(B
+(a)の定義からまず見てみることとする。
 ```
 127 // Set up kernel part of a page table.
 128 pde_t*
@@ -138,19 +138,19 @@ vm.c$B$KDj5A$,B8:_$9$k!#(B
 144 }
 ```
 
-mamlayout.h$B$h$jDj5A$rH4?h(B
+mamlayout.hより定義を抜粋
 ```
 4 #define PHYSTOP 0xE000000           // Top physical memory
 5 #define DEVSPACE 0xFE000000         // Other devices are at high addresses
 ```
 
-defs.h$B$h$j(BNELEM$BDj5A$rH4?h(B
+defs.hよりNELEM定義を抜粋
 ```
 182 // number of elements in fixed-size array
 183 #define NELEM(x) (sizeof(x)/sizeof((x)[0]))
 ```
 
-vm.c$B$h$j(Bkmap$BDj5A$rH4?h(B
+vm.cよりkmap定義を抜粋
 ```
  92 // There is one page table per process, plus one that's used when
  93 // a CPU is not running any process (kpgdir). The kernel uses the
@@ -188,7 +188,7 @@ vm.c$B$h$j(Bkmap$BDj5A$rH4?h(B
 125 };
 ```
 
-vm.c$B$h$j(Bmappages$B$rH4?h(B
+vm.cよりmappagesを抜粋
 ```
  67 // Create PTEs for virtual addresses starting at va that refer to
  68 // physical addresses starting at pa. va and size might not
@@ -216,12 +216,12 @@ vm.c$B$h$j(Bmappages$B$rH4?h(B
  90 }
 ```
 
-PGROUNDDOWN$B$NDj5A$O0J2<!#$J$K$r$d$C$F$$$k$s$@$m$&(B!?
+PGROUNDDOWNの定義は以下。なにをやっているんだろう!?
 ```
  130 #define PGROUNDDOWN(a) (((a)) & ~(PGSIZE-1))
 ```
 
-mmu.h$B$K5-:\(B
+mmu.hに記載
 ```
 132 // Page table/directory entry flags.
 133 #define PTE_P           0x001   // Present
@@ -236,7 +236,7 @@ mmu.h$B$K5-:\(B
 ```
 
 
-kalloc()$B$O(Bkalloc.c$B$GDj5A$5$l$F$$$k!#(B
+kalloc()はkalloc.cで定義されている。
 ```
  79 // Allocate one 4096-byte page of physical memory.
  80 // Returns a pointer that the kernel can use.
@@ -258,8 +258,8 @@ kalloc()$B$O(Bkalloc.c$B$GDj5A$5$l$F$$$k!#(B
 ```
 
 
-$B$D$E$$$F!"(B(b)$B$NDj5A$rFI$_2r$/(B
-(b)$B$NDj5A$O0J2<(B
+つづいて、(b)の定義を読み解く
+(b)の定義は以下
 ```
 155 // Switch h/w page table register to the kernel-only page table,
 156 // for when no process is running.
@@ -271,15 +271,15 @@ kalloc()$B$O(Bkalloc.c$B$GDj5A$5$l$F$$$k!#(B
 ```
 
 
-v2p$B$NDj5A$O(Bmemlayout.h$B$K5-=R$5$l$F$$$k(B
+v2pの定義はmemlayout.hに記述されている
 ```
   8 #define KERNBASE 0x80000000         // First kernel virtual address
-     ($B>JN,(B)
+     (省略)
  13 static inline uint v2p(void *a) { return ((uint) (a))  - KERNBASE; }
 ```
 
-lcr3$B$NDj5A$O(Bx86.h$B$K5-=R$5$l$F$$$k!#(B
-$B%Z!<%8%G%#%l%/%H%j%F!<%V%k$N%"%I%l%9$r(BCPU$B$K%;%C%H$9$k$?$a$N%l%8%9%?$H$7$F(BCR3$B%l%8%9%?$,MQ0U$5$l$F$$$^$9!#(B
+lcr3の定義はx86.hに記述されている。
+ページディレクトリテーブルのアドレスをCPUにセットするためのレジスタとしてCR3レジスタが用意されています。
 ```
 141 static inline void
 142 lcr3(uint val)
@@ -290,7 +290,7 @@ lcr3$B$NDj5A$O(Bx86.h$B$K5-=R$5$l$F$$$k!#(B
 
 
 - http://homepage1.nifty.com/herumi/prog/prog10.html
-$B$r;29M$KFI$_2r$$$F$_$k$H(B
-$BF~NO%Q%i%a!<%?(Bval$B$,(B%0$B$KF~$j!"$=$l$r(BCR$B#3$KBeF~$7$^$9!#;2>H$9$k$b$N$,$"$k$H$-$K$O(B%$B$,#2$DO"B3$7$^$9!#(B
+を参考に読み解いてみると
+入力パラメータvalが%0に入り、それをCR３に代入します。参照するものがあるときには%が２つ連続します。
 
 
