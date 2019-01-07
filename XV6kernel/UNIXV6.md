@@ -3,10 +3,15 @@ XV6とは、マサチューセッツ工科大の院生向け教材として、UN
 講義用の資料、動画とソースコード、ビルド環境( MakeFile や QEMU オプション )などの一式が、無料で公開・配布されています。
 - http://pdos.csail.mit.edu/6.828/2011/xv6.html
 - http://en.wikipedia.org/wiki/Xv6
+- Sphinx
+  - http://pekopeko11.sakura.ne.jp/unix_v6/xv6-book/en/index.html
+- doxygen
+  - http://ertl.jp/~yutaka/os/xv6-doxygen/spinlock_8c_source.html
 
 ソースコードは以下のテキストを参考に読んでいくといいようです。
 - http://pdos.csail.mit.edu/6.828/2011/xv6/book-rev6.pdf
-- http://pdos.csail.mit.edu/6.828/2014/xv6/book-rev8.pdf(最新版)
+- http://pdos.csail.mit.edu/6.828/2014/xv6/book-rev8.pdf
+- https://pdos.csail.mit.edu/6.828/2017/xv6/book-rev10.pdf(最新版)
 
 # XV6を使ってみる(Fedora上にてXV6を動かしてみる)
 ```
@@ -48,6 +53,15 @@ XV6をwindowモードで起動した時のマウスの切り替えは
 $ Ctrl + Alt
 ```
 
+# 公式資料
+- xv6トップページ
+  - http://pdos.csail.mit.edu/6.828/2011/xv6.html
+- 教材
+  - http://pdos.csail.mit.edu/6.828/2011/xv6/book-rev6.pdf
+  - http://pdos.csail.mit.edu/6.828/2014/xv6/book-rev8.pdf(最新版)
+- スライド資料
+  - http://www.cse.iitm.ac.in/~chester/courses/16o_os/syllabus.html
+
 # 参考資料
 - doxygenについては以下を参考のこと
   - http://ertl.jp/~yutaka/os/xv6-doxygen/dir_9ea4cef9241f1bffc3ca4a9e1d6c3cce.html
@@ -58,6 +72,12 @@ $ Ctrl + Alt
 - xv6実行環境構築参考資料
   - http://krakenbeal.blogspot.jp/2014/04/xv6-ubuntu.html
 
+
+# 参考URL
+- xv6実装の詳解(boot処理編: segmentationとpagingを中心に)
+  - https://qiita.com/knknkn1162/items/cb06f19e1f999bf098a1
+- xv6実装の詳解(マルチタスク処理 switching編)
+  - https://qiita.com/knknkn1162/items/0bc9afc3ae304590e16c
 
 # 簡単なコマンドを追加してみる。
 
