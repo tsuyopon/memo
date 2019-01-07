@@ -9,14 +9,41 @@ VDSOの特徴
 - vsyscallよりもセキュアな方式である。
   - vsyscallはVDSOと同機能を提供するが、固定アドレスに配置されている仕組みである。
 
-# 詳細
-procのmapsを確認するとvdsoで表示されます。同時にvsyscallも出力されることが確認できます。
-vdsoとvsyscallは同じ機能を提供しますが、vdsoの方はセキュリティのためのランダムなアドレスに配置されます。(この仕組みはASLRと呼びます。)
+# ASLR、VDSO、PIC、PIEについて整理する
+上記の単語について混乱をしているので整理しておきます。
 
-ASLRの仕組みの1つとしてVDSOが存在します。
 ASLR(Address Space Layout Randomization)はプロセス実行時のメモリ空間の配置をランダマイズすることで，例えば攻撃者が配置したコードのアドレスへのJMP等を防ぐことができる仕組みです。
 ASLRはデフォルトで有効です。ASLRを無効化するにはsysctlのkernel.randomize_va_spaceに0を指定します(有効なときは2です。)
 なお、ASLRが無効の場合にはvsyscallというVDSOと同機能であるが固定アドレスに配置されている仕組みが利用されるはず(ちゃんとは追えていない。)
+
+ASLRをフル機能で稼働させると、プロセスの動作するアドレス空間において次のような値を決定できます。  ( 参考: http://d.hatena.ne.jp/yupo5656/20060906/p1 )
+- 1. DSOをどこに貼り付けるか
+- 2. ELFのINTERPをどこに貼り付けるか
+- 3. 実行ファイルをどこに貼り付けるか
+- 4. heapをどこから開始するか
+- 5. PROT_EXECではないmmapで返却するアドレスをどこにするか
+- 6. stackをどの辺から開始するか
+- 7. vDSOをどこから開始するか
+
+つまり、vDSOについては上記のうちの1つの7に該当するので、vDSOはASLRとしての多くの実装のうちの1つということに該当します。
+
+PIC(Position-Independent Code)とPIE(Position-Independent Executable)は、以下のwikipediaに記載されている。
+- https://ja.wikipedia.org/wiki/位置独立コード
+- https://tokyodebian-team.pages.debian.net/pdf2017/debianmeetingresume201712-presentation-sugimoto.pdf
+
+PICは主に共有ライブラリで使われる。
+PIEはPICのみの機械語を含む実行ファイルとして使われる。
+
+TODO: PICとPIEは異なることがわかったが、両者の違いやメリットがよくわからないのでもう少し調べる
+
+gccでのコンパイル時に付与するfpicとfpieはまた別物なので注意が必要です
+- Stack Overflow: Difference between pic Vs pie [closed]
+  - https://stackoverflow.com/questions/16023637/difference-between-pic-vs-pie
+
+# VDSOについての詳細
+procのmapsを確認するとvdsoで表示されます。同時にvsyscallも出力されることが確認できます。
+vdsoとvsyscallは同じ機能を提供しますが、vdsoの方はセキュリティのためのランダムなアドレスに配置されます。(この仕組みはASLRと呼びます。)
+
 
 通常のアプリケーションは絶対アドレスを用いて記述されているため，ASLRによるランダマイズが適用できませんが、
 セキュリティ向上のために相対アドレスを用いたPIE(position-independent executable)と呼ばれる形式が通常のアプリケーションにおいても使用されている。
