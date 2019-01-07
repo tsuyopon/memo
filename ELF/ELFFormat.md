@@ -12,15 +12,16 @@ ELFには次の３種類のHeaderが存在します。**上記Sectionとして�
   - ELF Header直後に配置される。
 - Section Header
   - Program HeaderとSection Headerの間には各種section情報(.text, rodata, .data)が存在します。Section HeaderはELFオブジェクトの最後尾に存在しています
+  - プログラム実行にはSection Headerは使われておらず、リンクやデバッグ、objdumpなどのツールによってこのヘッダが参照されています。
 
-静的バイナリ(static)、共有バイナリ(shared)、libdlライブラリを使ったバイナリなどでは、含まれてくるSection情報(ヘッダではない)の数などが変化してきます。
+静的バイナリ(static)、共有バイナリ(shared)、libdlライブラリを使ったバイナリ、coreなど、バイナリの種類によって含まれてくるSection情報(ヘッダではない)の数などが変化してきます。
 
 なお、ヘッダ情報やセクション情報の意味は以下のELF公式資料に記載されていますので適宜参照してください。
 - http://www.skyfree.org/linux/references/ELF_Format.pdf
 
-
 # ヘッダの中身を覗いてみる
 ELFには3種類のヘッダがあることを紹介しましたが、それぞれのヘッダの中身をreadelf, objdumpコマンドで見てみます。
+
 
 ### ELF File Headerの情報を表示する
 ```
@@ -114,6 +115,7 @@ Program Headers:
 
 - PT_PHDR
 - PT_INTERP
+  - インタープリターとしてinvokeするためのロケーション及びサイズを示す配列要素である。
 - PT_LOAD
 - PT_DYNAMIC
 - GNU_EH_FRAME 
@@ -282,7 +284,7 @@ Idx Name          Size      VMA               LMA               File off  Algn
 
 
 
-# section
+# sectionについて
 
 ### 特に重要なセクションについて
 - .text   [SHT_PROGBITS, SHF_ALLOC+SHF_EXECINSTR]
@@ -336,6 +338,11 @@ Idx Name          Size      VMA               LMA               File off  Algn
 - .fini
   - 
 
+- .plt
+  - Procedure Linkage Tableのためのセクション
+- .rel.<x>
+  - 
+
 
 ### データ領域概要
 - スタック領域(stack)
@@ -382,6 +389,8 @@ static int x = 100;
   - const修飾子のついた変数や文字列リテラルなどの定数化された変数が入り、その領域は本質的に読み取り専用と定義されています。  
 
 
+
+### .dynamicセクション
 
 ## readelfコマンドでバイナリを確認する実験
 ### セクション情報を表示してみる。
