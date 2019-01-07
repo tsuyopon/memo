@@ -372,6 +372,25 @@ for文を利用する際には変数を「$i」等と記述しても動作しま
  for i in *.sh; do echo $$i;done
 ```
 
+サンプルMakefile
+```
+LENGTH := 3
+
+all:
+	@for i in {1..$(LENGTH)}; do \
+		echo $$i; \
+	done
+```
+
+実行結果
+```
+$ make
+1
+2
+3
+```
+
+
 ### 各種マクロについて(応用編)
 
 ```
@@ -530,7 +549,7 @@ all:
 ```
 
 ### 関数について
-深くは触れません。概要だけ記しておきます。
+深くは触れません。概要だけ記し、詳細はMakefile_function.mdに譲ります。
 - subst : 置換動作
 - patsubst : 置換動作，ワイルドカードあり
 - strip : 空白文字の削除
