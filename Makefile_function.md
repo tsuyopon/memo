@@ -1,25 +1,25 @@
-# Makefile$B$N4X?t$K$D$$$F(B
+# Makefileの関数について
 
-$B<+J,$NJ}$G$b<j$r;H$C$F$+$i5-:\$7$F$$$k$,!"$[$H$s$I$3$A$i$r;29M$K5-:\$7$?$b$N$H$J$C$F$$$^$9!#(B
-- Qiita: Makefile$B$N4X?t(B
+自分の方でも手を使ってから記載しているが、ほとんどこちらを参考に記載したものとなっています。
+- Qiita: Makefileの関数
   - https://qiita.com/chibi929/items/b8c5f36434d5d3fbfa4a
 
-$B4X?t$N8F$S=P$7$O<!$N$$$:$l$+$NJ}K!$K$h$C$F8F$S=P$9$3$H$,$G$-$^$9!#(B
+関数の呼び出しは次のいずれかの方法によって呼び出すことができます。
 ```
-$($B4X?t(B $B0z?t(B)
-$B$^$?$O(B
-${$B4X?t(B $B0z?t(B}
+$(関数 引数)
+または
+${関数 引数}
 ```
 
-# $BJ8;zNs4XO"4X?t(B
+# 文字列関連関数
 ## filter
 
-- $B=q<0(B
-  - TEXT$B$NCf$+$i(BPATTERN$B$NJ8;zNs$K0lCW$9$kMWAG$r<hF@$9$k!#(B
+- 書式
+  - TEXTの中からPATTERNの文字列に一致する要素を取得する。
 ```
 $(filter PATTERN...,TEXT)
 ```
-- $B;H$$J}(B
+- 使い方
 ```
 VAR := hoge.h hoge.cpp hogera.h hogera.cpp
 
@@ -27,20 +27,20 @@ VAR := hoge.h hoge.cpp hogera.h hogera.cpp
 all:
 	@echo "$(filter %.cpp,$(VAR))"
 ```
-- $B<B9T7k2L(B
+- 実行結果
 ```
 $ make
 hoge.cpp hogera.cpp
 ```
 
 ## filter-out
-- $B=q<0(B
-  - filter$B$N5U$r9T$&(B
-  - TEXT$B$NCf$+$i(BPATTERN$B$NJ8;zNs$K0lCW$7$J$$MWAG$r<hF@$9$k!#(B
+- 書式
+  - filterの逆を行う
+  - TEXTの中からPATTERNの文字列に一致しない要素を取得する。
 ```
 $(filter-out PATTERN...,TEXT)
 ```
-- $B;H$$J}(B
+- 使い方
 ```
 VAR := hoge.h hoge.cpp hogera.h hogera.cpp
 
@@ -48,19 +48,19 @@ VAR := hoge.h hoge.cpp hogera.h hogera.cpp
 all:
 	@echo "$(filter-out %.cpp,$(VAR))"
 ```
-- $B<B9T7k2L(B
+- 実行結果
 ```
 $ make
 hoge.h hogera.h
 ```
 
 ## findstring
-- $B=q<0(B
-  - IN$BFb$K(BFIND$B$NJ8;z$,4^$^$l$F$$$kMWAG$r<hF@$9$k!#(B
+- 書式
+  - IN内にFINDの文字が含まれている要素を取得する。
 ```
 $(findstring FIND,IN)
 ```
-- $B;H$$J}(B
+- 使い方
 ```
 VAR := abc def ghi
 
@@ -68,19 +68,19 @@ VAR := abc def ghi
 all:
 	@echo "$(findstring bc,$(VAR))"
 ```
-- $B<B9T7k2L(B
+- 実行結果
 ```
 $ make
 bc
 ```
 
 ## firstword
-- $B=q<0(B
-  - NAMES$BFb$N:G=i$NMWAG$r<hF@$9$k(B
+- 書式
+  - NAMES内の最初の要素を取得する
 ```
 $(firstword NAMES...)
 ```
-- $B;H$$J}(B
+- 使い方
 ```
 VAR := abc def ghi
 
@@ -88,20 +88,20 @@ VAR := abc def ghi
 all:
 	@echo "$(firstword $(VAR))"
 ```
-- $B<B9T7k2L(B
+- 実行結果
 ```
 $ make
 abc
 ```
 
 ## lastword
-- $B=q<0(B
-  - NAMES$BFb$N:G8e$NMWAG$r<hF@$9$k!#(B
-  - firstword$B$N5U$N=hM}$r9T$&(B
+- 書式
+  - NAMES内の最後の要素を取得する。
+  - firstwordの逆の処理を行う
 ```
 $(lastword NAMES...)
 ```
-- $B;H$$J}(B
+- 使い方
 ```
 VAR := abc def ghi
 
@@ -109,19 +109,19 @@ VAR := abc def ghi
 all:
 	@echo "$(lastword $(VAR))"
 ```
-- $B<B9T7k2L(B
+- 実行結果
 ```
 $ make
 ghi
 ```
 
 ## patsubst
-- $B=q<0(B
-  - TEXT$BFb$+$i(BPATTERN$B$K%^%C%A$7$?CM$r(BREPLACEMENT$B$KCV$-49$($r9T$&!#(B
+- 書式
+  - TEXT内からPATTERNにマッチした値をREPLACEMENTに置き換えを行う。
 ```
 $(patsubst PATTERN,REPLACEMENT,TEXT)
 ```
-- $B;H$$J}(B
+- 使い方
 ```
 VAR := hoge.cpp hogera.cpp .cppfile.o cpp.cpp cpp.x
 
@@ -129,20 +129,20 @@ VAR := hoge.cpp hogera.cpp .cppfile.o cpp.cpp cpp.x
 all:
 	@echo "$(patsubst %.cpp,%.o,$(VAR))"
 ```
-- $B<B9T7k2L(B
+- 実行結果
 ```
 $ make 
 hoge.o hogera.o .cppfile.o cpp.o cpp.x
 ```
 
 ## subst
-- $B=q<0(B
-  - TEXT$BFb$+$i(BFROM$B$K%^%C%A$7$?CM$r(BTO$B$KCV$-49$($k!#(B
-  - patsubst$B$N%Q%?!<%s%^%C%A$rMxMQ$7$J$$%P!<%8%g%s(B 
+- 書式
+  - TEXT内からFROMにマッチした値をTOに置き換える。
+  - patsubstのパターンマッチを利用しないバージョン 
 ```
 $(subst FROM,TO,TEXT)
 ```
-- $B;H$$J}(B
+- 使い方
 ```
 VAR := hoge.cpp hogera.cpp .cpp.x
 
@@ -150,19 +150,19 @@ VAR := hoge.cpp hogera.cpp .cpp.x
 all:
 	@echo "$(subst .cpp,.o,$(VAR))"
 ```
-- $B<B9T7k2L(B
+- 実行結果
 ```
 $ make
 hoge.o hogera.o .o.x
 ```
 
 ## sort
-- $B=q<0(B
-  - LIST$B$N3F<oMWAG$r%=!<%H$9$k(B
+- 書式
+  - LISTの各種要素をソートする
 ```
 $(sort LIST)
 ```
-- $B;H$$J}(B
+- 使い方
 ```
 VAR := eee ddd bbb aa ddc aaa
 
@@ -170,19 +170,19 @@ VAR := eee ddd bbb aa ddc aaa
 all:
 	@echo "$(sort $(VAR))"
 ```
-- $B<B9T7k2L(B
+- 実行結果
 ```
 $ make
 aa aaa bbb ddc ddd eee
 ```
 
 ## strip
-- $B=q<0(B
-  - STRING$B$NL5BL$J6uGrItJ,$r<h$j=|$/(B
+- 書式
+  - STRINGの無駄な空白部分を取り除く
 ```
 $(strip STRING)
 ```
-- $B;H$$J}(B
+- 使い方
 ```
 VAR := a b    c    d
 
@@ -190,19 +190,19 @@ VAR := a b    c    d
 all:
 	@echo "$(strip $(VAR))"
 ```
-- $B<B9T7k2L(B
+- 実行結果
 ```
 $ make
 a b c d
 ```
 
 ## word
-- $B=q<0(B
-  - TEXT$BFb$N(BN$BHVL\$NMWAG$r<hF@$9$k(B
+- 書式
+  - TEXT内のN番目の要素を取得する
 ```
 $(word N,TEXT)
 ```
-- $B;H$$J}(B
+- 使い方
 ```
 VAR := abc def ghi jkl mno pqr
 
@@ -210,19 +210,19 @@ VAR := abc def ghi jkl mno pqr
 all:
 	@echo "$(word 5,$(VAR))"
 ```
-- $B<B9T7k2L(B
+- 実行結果
 ```
 $ make
 mno
 ```
 
 ## wordlist
-- $B=q<0(B
-  - TEXT$BFb$r(BSTART_NUM$B$G;XDj$5$l$?HV9f$+$i(BEND_NUM$B$G;XDj$5$l$?HV9f$^$G$NMWAG$r<hF@$9$k(B
+- 書式
+  - TEXT内をSTART_NUMで指定された番号からEND_NUMで指定された番号までの要素を取得する
 ```
 $(wordlist START_NUM,END_NUM,TEXT)
 ```
-- $B;H$$J}(B
+- 使い方
 ```
 VAR := abc def ghi jkl mno pqr
 
@@ -230,19 +230,19 @@ VAR := abc def ghi jkl mno pqr
 all:
 	@echo "$(wordlist 4,5,$(VAR))"
 ```
-- $B<B9T7k2L(B
+- 実行結果
 ```
 $ make
 jkl mno
 ```
 
 ## words
-- $B=q<0(B
-  - TEXT$BFb$NMWAG?t$r<hF@$9$k(B
+- 書式
+  - TEXT内の要素数を取得する
 ```
 $(words TEXT)
 ```
-- $B;H$$J}(B
+- 使い方
 ```
 VAR := abc def ghi jkl mno pqr
 
@@ -250,7 +250,7 @@ VAR := abc def ghi jkl mno pqr
 all:
 	@echo "$(words $(VAR))"
 ```
-- $B<B9T7k2L(B
+- 実行結果
 ```
 $ make
 6
@@ -259,21 +259,21 @@ $ make
 # MEMO
 
 ## sample for added
-- $B=q<0(B
+- 書式
   - TBD
 ```
 ```
-- $B;H$$J}(B
+- 使い方
 ```
 ```
-- $B<B9T7k2L(B
+- 実行結果
 ```
 ```
 
-# $B;29M(BURL
-- Makefile$B8x<0%^%K%e%"%k(B
+# 参考URL
+- Makefile公式マニュアル
   - https://www.gnu.org/software/make/manual/
-- Qiita: Makefile$B$N4X?t(B
+- Qiita: Makefileの関数
   - https://qiita.com/chibi929/items/b8c5f36434d5d3fbfa4a
 - GNU Make
   - http://www.ecoop.net/coop/translated/GNUMake3.77/make_8.jp.html
