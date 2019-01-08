@@ -277,3 +277,5 @@ $ make
   - https://qiita.com/chibi929/items/b8c5f36434d5d3fbfa4a
 - GNU Make
   - http://www.ecoop.net/coop/translated/GNUMake3.77/make_8.jp.html
+  - functionについては以下を参考のこと
+    - https://www.gnu.org/software/make/manual/html_node/Functions.html#Functions
