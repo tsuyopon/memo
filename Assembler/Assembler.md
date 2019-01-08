@@ -8,7 +8,16 @@
   - GCCで標準的に使われるGASやNASMなどはこちらの記法である。
 - Intel記法
   - 最も違うのIntel記法であるMASMはGASの場合とオペランドの順番が逆ということである。これ以外にも細かな文法の違いはある。
+  - GASでも指定でIntel記法にできる。
 
+主要な記法の違いを記しておく
+
+| 記法 | MASM | GAS(AT&T)  | GAS(Intel) |
+| :---: | :--- | :--- | :--- |
+| instruction | mov <to> <from> | mov <from> <to> | mov <to> <from> |
+| comment | # comment | # comment | @ comment|
+| literal | 29 | $29 | #29 |
+| register | reg | %reg | reg |
 
 アセンブラの種類については以下を参照のこと
 - http://ja.wikibooks.org/wiki/X86%E3%82%A2%E3%82%BB%E3%83%B3%E3%83%96%E3%83%A9/x86%E3%82%A2%E3%82%BB%E3%83%B3%E3%83%96%E3%83%A9
