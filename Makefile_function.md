@@ -11,7 +11,10 @@ $(関数 引数)
 ${関数 引数}
 ```
 
-# 文字列関連関数
+以下の分類に則って自分の方でもまとめてみます。
+- https://www.gnu.org/software/make/manual/html_node/Functions.html#Functions
+
+# Text-Functions
 ## filter
 
 - 書式
@@ -255,6 +258,32 @@ all:
 $ make
 6
 ```
+
+# value-Function
+
+## value
+- 書式
+  - VARIABLEを変数として解釈する
+```
+$(value VARIABLE)
+```
+- 使い方
+```
+$ cat Makefile 
+FOO = $PATH
+
+all:
+	@echo $(FOO)
+	@echo $(value FOO)
+```
+- 実行結果
+  - 最初の行の結果は意図しない"ATH"という値となってしまっているが、後者の行は意図した結果となっている。
+```
+$ make
+ATH
+/usr/local/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:
+```
+
 
 # MEMO
 
