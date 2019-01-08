@@ -125,40 +125,40 @@ esi, edi, esp, ebpは1〜16bit(2byte)をそれぞれsi, di, sp, bpと呼びま�
 各ビットの意味は以下の通りです。
 
 ```
-    Bit 31～22. 未使用
-    Bit 21. IDフラグ：CPUID命令の使用を制御する。(ID)
-    Bit 20. 仮想割り込みペンディングフラグ：仮想86モードでの割り込み関連のフラグ(VIP)
-    Bit 19. 仮想割り込みフラグ：仮想86モードでの割り込み関連のフラグ(VIF)
-    Bit 18. アラインメントチェックフラグ：メモリアクセスのアラインメントチェックを制御するフラグ(AC)
-    Bit 17. 仮想86モードフラグ：仮想86モードの制御をするフラグ(VM)
-    Bit 16. レジュームフラグ：デバッグ関連の制御フラグ(RF)
-    Bit 15. 未使用
-    Bit 14. ネストタスクフラグ：タスクがネストしているかどうかを示す。(NNT)
-    Bit 13～12. 割り込み特権レベルフラグ：動作中タスクの割り込み特権レベルを示す。(IOPL)
-    Bit 11. オーバーフローフラグ(OF)
-    Bit 10. ディレクションフラグ(DF)
-    Bit 9.  インタラプトフラグ(IF)
-    Bit 8． トラップフラグ(TF)
-    Bit 7.  サインフラグ (SF)
-    Bit 6.  ゼロフラグ (ZF)
-    Bit 5.  未使用
-    Bit 4.  補助キャリーフラグ(AF)
-    Bit 3.  未使用
-    Bit 2.  パリティフラグ (PF)
-    Bit 1.  未使用
-    Bit 0.  キャリーフラグ (CF)
+Bit 31～22. 未使用
+Bit 21. IDフラグ：CPUID命令の使用を制御する。(ID)
+Bit 20. 仮想割り込みペンディングフラグ：仮想86モードでの割り込み関連のフラグ(VIP)
+Bit 19. 仮想割り込みフラグ：仮想86モードでの割り込み関連のフラグ(VIF)
+Bit 18. アラインメントチェックフラグ：メモリアクセスのアラインメントチェックを制御するフラグ(AC)
+Bit 17. 仮想86モードフラグ：仮想86モードの制御をするフラグ(VM)
+Bit 16. レジュームフラグ：デバッグ関連の制御フラグ(RF)
+Bit 15. 未使用
+Bit 14. ネストタスクフラグ：タスクがネストしているかどうかを示す。(NNT)
+Bit 13～12. 割り込み特権レベルフラグ：動作中タスクの割り込み特権レベルを示す。(IOPL)
+Bit 11. オーバーフローフラグ(OF)
+Bit 10. ディレクションフラグ(DF)
+Bit 9.  インタラプトフラグ(IF)
+Bit 8． トラップフラグ(TF)
+Bit 7.  サインフラグ (SF)
+Bit 6.  ゼロフラグ (ZF)
+Bit 5.  未使用
+Bit 4.  補助キャリーフラグ(AF)
+Bit 3.  未使用
+Bit 2.  パリティフラグ (PF)
+Bit 1.  未使用
+Bit 0.  キャリーフラグ (CF)
 ```
 
 # 参考URL
 - GNU アセンブラ入門(GAS) 
- - http://www.oklab.org/program/assembler/gas.html
+  - http://www.oklab.org/program/assembler/gas.html
 - x86系(8086系)アセンブラ入門
- - http://www5c.biglobe.ne.jp/~ecb/index.html
- - http://www5c.biglobe.ne.jp/~ecb/assembler/assembler00.html
+  - http://www5c.biglobe.ne.jp/~ecb/index.html
+  - http://www5c.biglobe.ne.jp/~ecb/assembler/assembler00.html
 - 記法
- - http://sci10.org/on_gcc_asm.html
+  - http://sci10.org/on_gcc_asm.html
 - x86レジスタ一覧
- - http://www.wiki.os-project.jp/?x86%2FRegister
+  - http://www.wiki.os-project.jp/?x86%2FRegister
 - GCC-Inline-Assembly-HOWTO
- - http://www.ibiblio.org/gferg/ldp/GCC-Inline-Assembly-HOWTO.html
+  - http://www.ibiblio.org/gferg/ldp/GCC-Inline-Assembly-HOWTO.html
 
