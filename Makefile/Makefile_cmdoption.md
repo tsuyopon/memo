@@ -1,4 +1,6 @@
 # Makefileのコマンドラインで指定可能なオプションについて
+この辺の資料が参考になります。
+- https://www.ecoop.net/coop/translated/GNUMake3.77/make_9.jp.html
 
 # makeコマンドやオプション
 

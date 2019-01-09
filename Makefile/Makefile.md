@@ -1,116 +1,28 @@
 # Makefileについて
-
-Makefileは次の構成を持ちます。target, prerequisites, commandとなります。commandはタブの後に記載します。
-これはMakefile関連で検索したいときに覚えておくと便利です。
+Makefileはtarget, prerequisites, commandの３つで構成されます。commandはタブの後に記載します。
+これはMakefile関連で検索したい時に覚えておくと便利です。
 ```
 target: prerequisites
 	command
 ```
 
-# makeコマンドやオプション
-
-### 強制的に全実行したい
-毎回make clean && makeと打つと実行時間ももったいないので次のコマンドで強制的に全実行させられるらしい
-```
-$ make -B
-```
-
-最新だよと言われたり、途中までビルドされてしまった状態でも、Bオプションを付与すると最初からすべてを実行してくれます。
-```
-$ make hello 
-make: `hello' is up to date.
-$ make hello -B
-cc -Wall -I/usr/local/include  -march=native hello.c   -o hello
-```
-
-### ドライランを実行したい
-nオプションでコマンドを実行しませんが、実行するコマンドを出力してくれます。
-```
-$ make -n hello
-cc -Wall -I/usr/local/include  -march=native hello.c   -o hello
-```
-
-### Makefile内で-(ハイフン)を付加していなくても、コマンドがエラー時は処理を継続させたい
--iオプションで全てのMakefile内のコマンドに-(ハイフン)が付与されているようにみせかけることができます。   
-処理がエラーとなっても継続したい場合に便利です。   
-```
-$ make -i 
-```
-
-### Makefile内で@を付加していなくても、コマンド出力をしないようにしたい。
--sオプションで全てのMakefile内のコマンドに@が付与されているようにみせかけることができます。   
-```
-$ make -s 
-```
-
-### 別のディレクトリへと移動してmakeを実行したい
-Cオプションの後にディレクトリを指定するとそのディレクトリに移動してmakeを実行します。
-```
-$ make -C dir
-```
-
-例えば、このCオプションはMakefile中で次のように複数のディレクトリで実行したい場合に利用される。
-```
-SUBDIRS = lib bin util
-$(SUBDIRS):
-        $(MAKE) -C $@
-```
-
-### make であらかじめ定義されている規則・マクロをすべて展開し表示して確認したい
-pオプションですべての規則やマクロを表示します。出力量が非常に多いので一部のみ表示しています。
-```
-$ make -p
-...
-# environment
-PATH = /usr/local/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/Applications/Wireshark.app/Contents/MacOS
-# default
-LD = ld
-# default
-TEXI2DVI = texi2dvi
-# default
-YACC = yacc
-# default
-COMPILE.mod = $(M2C) $(M2FLAGS) $(MODFLAGS) $(TARGET_ARCH)
-# makefile (from `Makefile', line 1)
-CFLAGS = -Wall
-...
-```
-
-### 複数のプロセッサで並列実行する
-並列実行したいジョブ数をjオプションで指定します。
-```
-$ make -j 2
-```
-
-### その他のオプション(未調査)
-```
--t 
-   生成コマンドを何も実行せず、指定されたターゲットを touch する。 
--e 
-   make 内で定義されたマクロよりも環境変数の値を優先する。
-```
-
-### 一時的に変数を変更したい
-以下の様にして、引数に変数を指定することもできる。   
-たとえば、ccからgccにコンパイラを変更したい場合は以下の様にする。   
-```
-$ make CC=gcc
-```
-
-
-# Makefileの記法について
+# Makefile記法
 
 ## @と-の意味について
 - "@"は実行するコマンドの出力を抑制します。
 - "-"はエラーがあってもそのまま処理を続行します。
 
-次のようにして同時に指定することも可能です。
+同時に指定することも可能です。
 ```
 clean:
 	-@rm *.o
 ```
 
-## 自動変数
+## 自動変数(Automatic Variables)
+
+自動変数については公式ドキュメントも参考のこと
+- https://www.gnu.org/software/make/manual/html_node/Automatic-Variables.html
+
 変数は次の意味を表します。少しわかりにくいので例を載せています。
 ```
 $@ : target
@@ -118,32 +30,62 @@ $^ : prerequisites、ただし重複分は除く
 $? : prerequisitesのうちターゲットより新しい全ての依存するファイル名
 $< : prerequisitesのうち最初に書かれたもの1つのみ
 $+ : prerequisites、重複分もそのまま表示する
-$% : ターゲットがアーカイブメンバだったときのターゲットメンバ名(ターゲット名が“edajima.a(momo.o)”の場合、$@は“edajima.a”で、$%は“momo.o”)
+$% : ターゲットがアーカイブメンバだったときのターゲットメンバ名(ターゲット名が"edajima.a(momo.o)"の場合、$@は"edajima.a"で、$%は"momo.o")
 $* : suffixを除いたターゲットの名前
 ```
 
 ### 単純なサンプル
-
-最初の５つは次のMakefileを実行することで比較できる。
+- サンプル1
 ```
-$ cat Makefile
-hello: hello.c sub.c sub.c sub.c
-    @printf "$$ @ = $@ \n"
-    @printf "$$ ^ = $^ \n"
-    @printf "$$ ? = $? \n"
-    @printf "$$ < = $< \n"
-    @printf "$$ + = $+ \n"
+mytarget.o: hello.c sub.c sub.c sub.c
+	@printf "$$ @ = $@ \n"
+	@printf "$$ ^ = $^ \n"
+	@printf "$$ ? = $? \n"
+	@printf "$$ < = $< \n"
+	@printf "$$ + = $+ \n"
+	@printf "$$ %% = $% \n"
+	@printf "$$ * = $* \n"
+```
+
+上記を実行すると、次の結果となります。$%は出力されません。
+```
 $ touch hello.c sub.c sub.c sub.c
-```
-
-makeでhelloターゲットを実行してみる。
-```
-$ make hello
-$ @ = hello 
+$ make
+$ @ = mytarget.o 
 $ ^ = hello.c sub.c 
 $ ? = hello.c sub.c 
 $ < = hello.c 
 $ + = hello.c sub.c sub.c sub.c 
+$ % =  
+$ * = mytarget 
+```
+
+
+$%の例が上記では確認できなかったので、次にターゲットに()が含まれるパターンを見てみましょう。
+- サンプル2
+```
+$ cat Makefile
+mytarget(hack.o) : hello.c sub.c sub.c sub.c
+	@printf "$$ @ = $@ \n"
+	@printf "$$ ^ = $^ \n"
+	@printf "$$ ? = $? \n"
+	@printf "$$ < = $< \n"
+	@printf "$$ + = $+ \n"
+	@printf "$$ %% = $% \n"
+	@printf "$$ * = $* \n"
+```
+
+makeでhelloターゲットを実行してみると$%には()内の値が出力されていることがわかります。
+```
+$ touch hello.c sub.c sub.c sub.c
+$ make
+$ @ = mytarget 
+$ ^ = hello.c sub.c 
+$ ? = hello.c sub.c 
+$ < = hello.c 
+$ + = hello.c sub.c sub.c sub.c 
+$ % = hack.o 
+$ * = hack 
 ```
 
 ### 自動変数詳細
@@ -225,59 +167,10 @@ $$?
 $$*
 $$^
 $$+
-objects := $(wildcard *.o)
 $(objects): %.o: %.c
 vpath
-SUBDIRS
-先頭の@       画面上に実行するコマンドを表示したくない場合
-先頭の-       実行エラーとなっても処理を行わせたいコマンドの先頭に付与する
-@D
-@F
-@f
 ```
 
-### GNU MAKEの定義済みマクロ変数
-```
-マクロ名    文字列     説明
-AR          ar         アーカイブユーティリティ
-AS          as         アセンブラ
-CC          cc         Cコンパイラ
-CXX         g++        C++コンパイラ
-CO          co         RCS ファイルからリビジョンをチェックアウトする
-CPP         $(CC) -E   Cプリプロセッサ
-FC          f77        Fortranコンパイラ
-GET         get        知らね
-LEX         lex        lex
-PC          pc         Pascalコンパイラ
-YACC        yacc       yacc
-YACCR       yacc -r    知らね
-MAKEINFO    makeinfo   Texinfo -> Info
-TEX         tex        TeX
-TEXI2DVI    texi2dvi   Texinfo -> DVI
-WEAVE       weave      知らね
-CWEAVE      cweave     知らね
-TANGLE      tangle     知らね
-CTANGLE     ctangle    知らね
-RM          rm -f      ファイルの削除
-```
-
-引数用マクロ変数
-```
-マクロ名    文字列 説明
-ARFLAGS     rv ARの引数
-ASFLAGS     ASの引数
-CFLAGS      CCの引数
-CXXFLAGS    CXXの引数
-COFLAGS     COの引数
-CPPFLAGS    CPPの引数
-FFLAGS      FCの引数
-GFLAGS      GETの引数
-LDFLAGS     リンカldの引数
-LFLAGS      LEXの引数
-PFLAGS      PCの引数
-RFLAGS      知らね
-YFLAGS      YACCの引数
-```
 
 ### マクロの参照方法
 次のいずれかの方法で参照することができます。
@@ -341,15 +234,6 @@ targetA:: targetC
 all: ;
 ```
 
-### 拡張子に特化したターゲットを作成する。
-xxxx.cやxxxx.oが存在する場合にはmake xxxxとするだけで実行されるターゲットを生成することができます。この場合には.SUFFIXESに対象の拡張子を指定する必要があります。
-以下のような感じでMakefileを準備してカレントディレクトリにxxxx.cが存在していればmake xxxxでコンパイルすることができます。
-```
-.SUFFIXES: .c .o
-.c.o:
-	$(CC) $(CFLAGS) -c $<
-```
-
 
 ### ファイルが無いと実行させないようにするには
 例えば、test.txtというファイルが存在しなければエラーにするにはMakefileがコマンド実行してエラーになる性質を利用します。
@@ -357,13 +241,6 @@ xxxx.cやxxxx.oが存在する場合にはmake xxxxとするだけで実行さ�
 depfile: test.txt
     @cat test.txt
 ```
-
-### シェルを実行した結果を変数に格納したい
-以下の様にしてshellストリングを利用すれば、whoamiの結果がUNAMEに格納されることになる。
-```
-   UNAME = $(shell whoami)
-```
-
 
 ### シェルスクリプトのforの中の変数「$i」を解釈させたい
 for文を利用する際には変数を「$i」等と記述しても動作しません。   
@@ -432,43 +309,6 @@ $ make
 - 参考資料
   - http://www.unixuser.org/~euske/doc/makefile/#cascade
 
-
-### .PHONY
-Makefile中にcleanというターゲットが存在していて、万が一そのディレクトリにcleanファイルが存在していると以下のエラーになる。
-```
-$ touch clean
-$ make clean
-make: `clean' is up to date.
-```
-
-これを回避できるのが.PHONYである。
-cleanファイルを作りたいのではなくてcleanというターゲットを実行したいということを明示する。
-```
-.PHONY: clean
-clean:
-	rm -f *.o lexer.c
-```
-
-### .SUFFIXES
-サフィックスルール適用対象の拡張子の定義です。左のほうが優先度が高いです。
-.c.oは.SUFFIXESで指定された拡張子でないと有効になりません。
-```
-.SUFFIXES: .c .o
-.c.o:
-	$(CC) $(CFLAGS) -c $<
-```
-
-### .DEFAULT
-.DEFAULTを定義するとルールやエントリが見つからなかった場合に実行するターゲットを定義します。
-ターゲットを指定しなくても実行できるようにするには"default: all"もかいておくと良い。
-```
-default: all
-
-.DEFAULT:
-	cd src && $(MAKE) $@
-```
-
-### .PRECIOUS
 
 ### %のみのターゲットについて
 例えば、以下のように記述されているとします。 
