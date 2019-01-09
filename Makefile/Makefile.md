@@ -563,7 +563,7 @@ OBJS    = $(SRCS:.cpp=.o)
   - https://www.gnu.org/software/make/manual/html_node/index.html#Top
 - 公式マニュアル
   - http://www.gnu.org/software/make/manual/make.html
-- もっとも豊富な日本語リファレンス
+- もっとも豊富な日本語リファレンス(GNU Make GNU make Version 3.77)
   - http://www.ecoop.net/coop/translated/GNUMake3.77/make_toc.jp.html
 - MakeとMakefileの説明
   - http://www.unixuser.org/~euske/doc/makefile/
