@@ -299,6 +299,11 @@ $ nm --debug-syms /opt/openssl-1.0.2m/lib/libssl.so | grep " T " | grep -ie SSL_
 
 - U
   - 以下はただのhello worldのa.outから未定義シンボルを抽出したり、opensslから一部抜粋した例です。
+  - 出力される@@の意味については以下のリンクを参照のこと
+    - StackOverflow: What does the '@@' symbol mean in the output of nm command?
+      - https://stackoverflow.com/questions/39507830/what-does-the-symbol-mean-in-the-output-of-nm-command
+    - 公式サイト
+      - https://sourceware.org/binutils/docs/ld/VERSION.html
 ```
 $ nm a.out  | grep -i " U "
                  U __libc_start_main@@GLIBC_2.2.5
