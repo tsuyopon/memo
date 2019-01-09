@@ -53,6 +53,12 @@ gccやg++がサポートしてそうなバージョンはあくまで検索し�
     - https://stackoverflow.com/questions/53310625/how-to-install-gcc8-using-devtoolset-8-gcc
   - gccやg++は8.1.1, 8.2.1がありそう
 
+
+次のコマンドでdevtoolsetに切り替えることができます。(バージョン部分は適宜変更すること)
+```
+$ scl enable devtoolset-4 bash
+```
+
 # 参考URL
 - 各種処理系(clang, gnu, intel, microsoft)などへのポインタ
   - https://cpprefjp.github.io/implementation.html
