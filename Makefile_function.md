@@ -14,7 +14,7 @@ ${関数 引数}
 以下の分類に則って自分の方でもまとめてみます。
 - https://www.gnu.org/software/make/manual/html_node/Functions.html#Functions
 
-# Text-Functions
+# 各種関数
 ## filter
 
 - 書式
@@ -158,6 +158,25 @@ all:
 $ make
 hoge.o hogera.o .o.x
 ```
+
+公式ドキュメントからもう１つよく使われそうな例を載せておきます。
+
+- 使い方2
+```
+VPATH = "aaa/bbb:ccc/ddd/eee:/home/test"
+
+.PHONY: all
+all:
+	@echo $(subst :, ,$(VPATH))
+	@echo $(patsubst %,-I%,$(subst :, ,$(VPATH)))
+```
+- 実行結果2
+```
+$ make
+aaa/bbb ccc/ddd/eee /home/test
+-Iaaa/bbb -Iccc/ddd/eee -I/home/test
+```
+
 
 ## sort
 - 書式
@@ -471,31 +490,6 @@ $ make
 /tmp/com.apple.launchd.77KhTemqSv /tmp/com.apple.launchd.MoOzx9Kjqg /tmp/com.apple.launchd.NqmptkTNvA ./Makefile
 ```
 
-# value-Function
-
-## value
-- 書式
-  - VARIABLEを変数として解釈する
-```
-$(value VARIABLE)
-```
-- 使い方
-```
-$ cat Makefile 
-FOO = $PATH
-
-all:
-	@echo $(FOO)
-	@echo $(value FOO)
-```
-- 実行結果
-  - 最初の行の結果は意図しない"ATH"という値となってしまっているが、後者の行は意図した結果となっている。
-```
-$ make
-ATH
-/usr/local/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:
-```
-
 ## shell
 - 書式
   - シェルを叩く
@@ -513,6 +507,362 @@ all:
 ```
 $ make
 Wed Jan  9 08:55:51 JST 2019
+```
+
+## call
+- 書式
+  - 他の変数やマクロを呼び出すときに使用します。
+```
+$(call VARIABLE,PARAM,...)
+```
+- 使い方
+```
+VAR = "var $1 $2"
+define MACRO
+    @echo "macro $1 $2"
+endef
+
+.PHONY: all
+all:
+	@echo "$(call VAR,a,b)"
+	$(call MACRO,a,b)
+```
+- 実行結果
+```
+$ make
+var a b
+macro a b
+```
+
+## foreach
+- 書式
+  - LISTの要素をVARに分解して、TEXTで展開して実行する。
+```
+$(foreach VAR,LIST,TEXT)
+```
+- 使い方
+```
+directories := /tmp /opt
+files := $(foreach dir,$(directories),$(wildcard $(dir)/*))
+
+.PHONY: all
+all: 
+	@echo ${files}
+```
+- 実行結果
+```
+$ make
+/tmp/com.apple.launchd.77KhTemqSv /tmp/com.apple.launchd.MoOzx9Kjqg /tmp/com.apple.launchd.NqmptkTNvA /opt/X11 /opt/local
+```
+
+## flavor
+- 書式
+  - 変数の状態を表します。
+  - flavor関数を使うと次の３つの状態のいずれであるかを判定することができます。
+    - undefined: 変数が定義されていない場合
+    - simple:    変数が単純に展開された値である場合 (単純展開変数(Simply expanded variables)は":="を使って定義されたもの)
+    - recursive: 変数が最適的に展開された値である場合
+```
+$(flavor VARIABLE)
+```
+- 使い方
+```
+DEFINED := test
+RECURSIVE = test
+
+.PHONY: all
+all:
+	@echo $(flavor UNDEFINED)
+	@echo $(flavor DEFINED)
+	@echo $(flavor RECURSIVE)
+```
+- 実行結果
+```
+$ make
+undefined
+simple
+recursive
+```
+
+## origin
+- 書式
+  - どこで定義された変数なのかを知る
+  - 取得できる文字列は次の通り
+    - undefined: 未定義
+    - file:
+    - environment:
+    - environment override: 
+    - override
+    - automatic
+    - default:
+    - command line: 
+```
+$(origin VARIABLE)
+```
+- 使い方
+```
+DEFINED := test
+OVERRIDE := test
+override OVERRIDE := test
+
+.PHONY: all
+all:
+	@echo $(origin UNDEFINED)
+	@echo $(origin DEFINED)
+	@echo $(origin PATH)
+	@echo $(origin OVERRIDE)
+	@echo $(origin @)
+	@echo $(origin MAKE)
+```
+- 実行結果
+```
+$ make
+undefined
+file
+environment
+override
+automatic
+default
+```
+- See
+  - https://www.gnu.org/software/make/manual/html_node/Origin-Function.html#Origin-Function
+
+TODO: "environment override" と "command line" はどのような場合に出力させるのか確認。
+
+## value
+- 書式
+  - VARIABLEを変数として解釈する
+```
+$(value VARIABLE)
+```
+- 使い方
+```
+FOO = $PATH
+
+all:
+	@echo $(FOO)
+	@echo $(value FOO)
+```
+- 実行結果
+  - 最初の行の結果は$Pが空の変数として扱われて意図しない"ATH"という値となってしまっているが、後者の行は意図した結果となっている。
+```
+$ make
+ATH
+/usr/local/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:
+```
+
+## eval
+- 書式
+  - 変数を展開した上で、Makefileの構文として定義される
+```
+$(eval TEXT)
+```
+- 使い方
+  - 以下の例ではターゲット中でCC変数をgccとして定義する際にevalを用いてMakefileの構文であるとして定義している。
+```
+all:
+	$(eval CC := gcc)
+	@$(if $(CC:gcc=), \
+		echo "$(CC) is not gcc", \
+		echo "$(CC) is gcc" \
+	)
+```
+- 実行結果
+```
+$ make
+gcc is gcc
+```
+
+- 使い方2 (公式のサンプルを添付しておきます)
+```
+PROGRAMS    = server client
+
+server_OBJS = server.o server_priv.o server_access.o
+server_LIBS = priv protocol
+
+client_OBJS = client.o client_api.o client_mem.o
+client_LIBS = protocol
+
+# Everything after this is generic
+
+.PHONY: all
+all: $(PROGRAMS)
+
+# $(1)は$1と同じでcall時で指定された引数です
+define PROGRAM_template =
+ $(1): $$($(1)_OBJS) $$($(1)_LIBS:%=-l%)
+ ALL_OBJS   += $$($(1)_OBJS)
+endef
+
+$(foreach prog,$(PROGRAMS),$(eval $(call PROGRAM_template,$(prog))))
+
+$(PROGRAMS):
+	$(LINK.o) $^ $(LDLIBS) -o $@
+
+clean:
+	rm -f $(ALL_OBJS) $(PROGRAMS)
+```
+
+
+# Conditional Function
+
+## and
+- 書式
+  - 指定した全てのCONDITIONが空でない場合には、最後に指定したCONDTIONXを返す。
+```
+$(and CONDITION1[,CONDITION2[,CONDITION...]])
+```
+- 使い方
+```
+VAR1 := abc
+VAR2 := def
+VAR3 := ghi
+
+.PHONY: all
+all:
+	@echo "$(and $(VAR1),$(EMPTY),$(VAR3))"
+	@echo "$(and $(VAR1),$(VAR2),$(VAR3))"
+	@echo "$(and $(VAR2),$(VAR3),$(VAR1))"
+	@echo "$(and $(VAR3),$(VAR1),$(VAR2))"
+```
+- 実行結果
+```
+$ make
+
+ghi
+abc
+def
+```
+
+
+## if
+- 書式
+  - CONDTIONが空文字でなければTHEN_PARTを返し、CONDITIONが空文字であればELSE_PARTを返す。 
+```
+$(if CONDITION,THEN_PART[,ELSE_PART])
+```
+- 使い方
+```
+VAR1 := abc
+VAR2 := def
+VAR3 := ghi
+
+.PHONY: all
+all:
+	@echo "$(if $(VAR1),$(VAR2),$(VAR3))"
+	@echo "$(if $(EMPTY),$(VAR2),$(VAR3))"
+```
+- 実行結果
+```
+$ make
+def
+ghi
+```
+
+
+## or
+- 書式
+  - CONDITION全てが空文字列の場合は空を返す。
+  - 1つもで空でなければCONDITION1を返す。CONDITION1が空ならばその次のCONDTIONを返す(以下、繰り返し)
+```
+$(or CONDITION1[,CONDITION2[,CONDITION...]])
+```
+- 使い方
+```
+VAR1 := abc
+VAR2 := def
+VAR3 := ghi
+
+.PHONY: all
+all:
+	@echo "$(or $(VAR1),$(VAR2),$(VAR3))"
+	@echo "$(or $(VAR3),$(VAR2),$(VAR1))"
+	@echo "$(or $(VAR1),$(EMPTY),$(VAR3))"
+	@echo "$(or $(EMPTY),$(EMPTY),$(EMPTY))"
+	@echo "$(or $(EMPTY),$(VAR2),$(VAR3))"
+	@echo "$(or $(EMPTY),$(EMPTY),$(VAR3))"
+```
+- 実行結果
+```
+$ make
+abc
+ghi
+abc
+
+def
+ghi
+```
+
+
+
+# Function That Controle Make
+
+レベルとしてはerror>warning>infoとなる。
+
+## error
+- 書式
+  - errorレベルとなり、処理がSTOPされる。
+```
+$(error TEXT...)
+```
+- 使い方
+```
+.PHONY: all
+all:
+	@echo "Hello"
+	@echo "$(error this is error message!!!)"
+	@echo "World"
+```
+- 実行結果
+```
+$ make
+Makefile:3: *** this is error message!!!.  Stop.
+```
+
+## warning
+- 書式
+  - warningレベルとなり、指定したwarningのアラート情報は表示されるが処理は継続する
+```
+$(warning TEXT...)
+```
+- 使い方
+```
+.PHONY: all
+all:
+	@echo "Hello"
+	@echo "$(warning this is warning message!!!)"
+	@echo "World"
+```
+- 実行結果
+```
+$ make
+Makefile:3: this is alert message!!!
+Hello
+
+World
+```
+
+## info
+- 書式
+  - infoレベルとなり、参考となるメッセージ情報が表示される。
+```
+$(info TEXT...)
+```
+- 使い方
+```
+.PHONY: all
+all:
+	@echo "Hello"
+	@echo "$(info this is info message!!!)"
+	@echo "World"
+```
+- 実行結果
+```
+$ make
+this is info message!!!
+Hello
+
+World
 ```
 
 # MEMO
@@ -538,3 +888,7 @@ Wed Jan  9 08:55:51 JST 2019
   - http://www.ecoop.net/coop/translated/GNUMake3.77/make_8.jp.html
   - functionについては以下を参考のこと
     - https://www.gnu.org/software/make/manual/html_node/Functions.html#Functions
+
+
+# TODO
+- make 4系で追加されたfile, guileといったオプションは手元の環境が3.81だったのでまだ試せていません。
