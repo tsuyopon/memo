@@ -457,6 +457,8 @@ provision,
 # 参考URL
 - docker公式資料(Docker Machine)
   - https://docs.docker.com/machine/
+- docker.jp 公式資料
+  - http://docs.docker.jp/machine/index.html
 - docker/machine github
   - https://github.com/docker/machine
 - Docker Machine をローカル VM で始めるには
