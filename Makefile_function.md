@@ -259,6 +259,218 @@ $ make
 6
 ```
 
+# その他の関数
+
+## abspath
+- 書式
+  - NAMESの各要素の絶対パスを取得する。ファイルやディレクトリが存在するかどうかはチェックしない。
+```
+$(abspath NAMES...)
+```
+- 使い方
+```
+VAR := ../ ./ ./notexist Makefile
+
+.PHONY: all
+all:
+	@echo "$(abspath $(VAR))"
+```
+- 実行結果
+```
+$ make
+/Users/tsuyoshi /Users/tsuyoshi/gomi /Users/tsuyoshi/gomi/notexist /Users/tsuyoshi/gomi/Makefile
+```
+
+## realpath
+- 書式
+  - NAMESの各要素の絶対パスを取得する。
+  - abspath関数と異なり、ファイルやディレクトリが存在するかどうかはチェックし、存在するもののみ取得する。
+```
+$(realpath NAMES...)
+```
+- 使い方
+```
+VAR := ../ ./ ./notexist Makefile
+
+.PHONY: all
+all:
+	@echo "$(realpath $(VAR))"
+```
+- 実行結果
+```
+$ make
+/Users/tsuyoshi /Users/tsuyoshi/gomi /Users/tsuyoshi/gomi/Makefile
+```
+
+
+## addprefix
+- 書式
+  - NAMESの要素の接頭辞としてPREFIXを追加する。
+  - 複数のinclude path(I)やライブラリパス(L)などで使えるオプション
+```
+$(addprefix PREFIX,NAMES...)
+```
+- 使い方
+```
+VAR := ./include ./dir/include
+
+.PHONY: all
+all:
+	@echo "$(addprefix -I,$(VAR))"
+```
+- 実行結果
+```
+$ make
+-I./include -I./dir/include
+```
+
+## addsuffix
+- 書式
+  - NAMESの各要素への末尾にSUFFIXを追加する。
+  - フィアルをバックアップしたい場合などに使うことができそうか?
+```
+$(addsuffix SUFFIX,NAMES...)
+```
+- 使い方
+```
+VAR := hoge.cpp hogera.cpp
+
+.PHONY: all
+all:
+	@echo "$(addsuffix .bak,$(VAR))"
+```
+- 実行結果
+```
+$ make
+hoge.cpp.bak hogera.cpp.bak
+```
+
+## suffix
+- 書式
+  - NAMESの各要素の拡張子のみを取得する。
+  - basename関数の逆バージョン
+```
+$(suffix NAMES...)
+```
+- 使い方
+```
+VAR := hoge.txt ./dir/hogera.txt test.c
+
+.PHONY: all
+all:
+	@echo "$(suffix $(VAR))"
+```
+- 実行結果
+```
+$ make
+.txt .txt .c
+```
+
+
+## basename
+- 書式
+  - ファイル名から拡張子を除去する。ファイルやディレクトリの存在はチェックしない。
+  - suffix関数の逆バージョン
+```
+$(basename NAMES...)
+```
+- 使い方
+```
+VAR := hoge.txt ./dir/hogera.txt
+
+.PHONY: all
+all:
+	@echo "$(basename $(VAR))"
+```
+- 実行結果
+```
+$ make
+hoge ./dir/hogera
+```
+
+## dir
+- 書式
+  - NAMESの各要素のディレクトリ名を取得する
+```
+$(dir NAMES...)
+```
+- 使い方
+```
+VAR := hoge.txt ./dir/hogera.txt
+
+.PHONY: all
+all:
+	@echo "$(dir $(VAR))"
+```
+- 実行結果
+```
+$ make
+./ ./dir/
+```
+
+## notdir
+- 書式
+  - NAMESの各要素のファイル名を取得する
+  - basenameの拡張子が付与される版と思えば良い。
+```
+$(notdir NAMES...)
+```
+- 使い方
+```
+VAR := hoge.txt ./dir/hogera.txt
+
+.PHONY: all 
+all:
+	@echo "$(notdir $(VAR))"
+```
+- 実行結果
+```
+$ make
+hoge.txt hogera.txt
+```
+
+## join
+- 書式
+  - LIST1とLIST2の結合を行う。要素が一致する対象同士を結合する。
+```
+$(join LIST1,LIST2)
+```
+- 使い方
+```
+VAR1 := a b c d
+VAR2 := 1 2 3 4 5
+
+.PHONY: all
+all:
+	@echo "$(join $(VAR1),$(VAR2))"
+```
+- 実行結果
+```
+$ make
+a1 b2 c3 d4 5
+```
+
+## wildcard
+- 書式
+  - ワイルドカードを使って実在するファイルを取得する。PATTERNは複数記述できる。
+  - 代替としてはshell関数も可能である。
+```
+$(wildcard PATTERN)
+```
+- 使い方
+```
+VAR := /tmp/* ./*
+
+.PHONY: all
+all:
+	@echo "$(wildcard $(VAR))"
+```
+- 実行結果
+```
+$ make
+/tmp/com.apple.launchd.77KhTemqSv /tmp/com.apple.launchd.MoOzx9Kjqg /tmp/com.apple.launchd.NqmptkTNvA ./Makefile
+```
+
 # value-Function
 
 ## value
@@ -284,6 +496,24 @@ ATH
 /usr/local/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:
 ```
 
+## shell
+- 書式
+  - シェルを叩く
+```
+$(shell COMMAND)
+```
+- 使い方
+```
+.PHONY: all
+all:
+    # shell関数を使うことで例えば"ls *.c"などワイルドカードの代用も可能です。
+	@echo "$(shell date)"
+```
+- 実行結果
+```
+$ make
+Wed Jan  9 08:55:51 JST 2019
+```
 
 # MEMO
 
