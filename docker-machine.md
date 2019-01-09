@@ -5,6 +5,8 @@
 MacやWindowsでは、VirtualBoxなどの仮想マシン上でDockerデーモンがインストールされたLinux環境を構築する必要があります。これをやってくれる仕組みがDocker Machineです。
 
 これによって、Mac OSの仮想マシン上でLinuxが起動され、その中でdockerコンテナを動かすためのdockerデーモンが起動され、dockerを動かすことができるという仕組みになっています。
+概念図などは以下の資料を参考にすると良いでしょう。
+- https://knowledge.sakura.ad.jp/3990/
 
 今回、手元で確認したVirtualBoxのバージョンは「5.1.30 r118389 (Qt5.6.3)」です。
 
