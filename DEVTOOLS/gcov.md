@@ -14,15 +14,16 @@ gcovで生成されるプログラムについては以下にあります。
 新しいgccの場合: --coverage
 ```
 
-上記プログラムをmakeすると次の３つのファイルが生成されます。
-- sample1.c.gcov
+上記プログラムをmakeすると次の３つのファイルが生成されます。上記オプションを付与すると.gcdaと.gcnoファイルを生成し、その後gcovコマンドを実行すると.gcovファイルが生成されます。
+- sample1.c.gcov: 
 - sample1.gcda
 - sample1.gcno
 
 これらのファイルは次のような意味をもちます。 (参考: https://gcc.gnu.org/onlinedocs/gcc/Gcov-Data-Files.html )
 - .gcnoファイル: コンパイル時に生成されソースコードの行番号の情報などが格納されている。fprofile-arcsオプションが指定されると生成される。
 - .gcdaファイル: カバレッジデータファイル。このファイルにデータが蓄積される。ftest-coverageオプションが指定されると生成される。
-- .gcovファイル: catで閲覧できる。おそらく、.gcnoと.gcdaを合わせて生成したファイルだと思われる(推測です)
+- .gcovファイル: catで閲覧できる。gcovコマンドを実行すると.gcnoと.gcdaから生成される。
+  - 参考: http://www.asahi-net.or.jp/~wg5k-ickw/html/online/gcc-2.95.2/gcc_6.html
 
 
 ### gcovコマンドの使い方
