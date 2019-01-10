@@ -25,6 +25,10 @@ gcovで生成されるプログラムについては以下にあります。
 - .gcovファイル: catで閲覧できる。gcovコマンドを実行すると.gcnoと.gcdaから生成される。
   - 参考: http://www.asahi-net.or.jp/~wg5k-ickw/html/online/gcc-2.95.2/gcc_6.html
 
+注意点メモ
+- 最適化オプション02などは付与しないほうがよいらしい
+- 参考: http://shusaku721-bibou6.seesaa.net/article/451638174.html
+
 
 ### gcovコマンドの使い方
 gcovコマンドでカバレッジレポートを見る。
