@@ -83,6 +83,10 @@ $ cat sample1.c.gcov
 gcovrツールを使う
 - http://futurismo.biz/archives/485
 
+### Linux Kernelでgcovを使う
+この辺を参考にすれば良いらしい(試していない)
+- https://sites.google.com/site/kandamotohiro/linux/gcov-txt
+
 # 参考URL
 - Gcov公式リファレンス
   - https://gcc.gnu.org/onlinedocs/gcc/Gcov.html
