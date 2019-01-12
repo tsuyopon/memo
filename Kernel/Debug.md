@@ -61,7 +61,23 @@ $ gdb -p `pidof qemu-system-x86_64`
 cを入力すると処理が開始されるようになります。
 
 
+# トラブルシューティング
+
+### qemu: could not load PC BIOS 'bios-256k.bin'のエラーが出る
+qemu-system-x86_64を実行したときに上記のエラーメッセージが出力された。
+以下をインストールすることで問題は解消した。
+
+```
+$ yum install seabios
+```
+
+- 参考
+  - Cannot Start KVM VM Because Missing BIOS
+  - https://unix.stackexchange.com/questions/134893/cannot-start-kvm-vm-because-missing-bios/413725
+
 # 参考URL
 - QEMU上のLinuxカーネルをGDBでデバッグする
   - https://www.hiroom2.com/2014/01/15/qemu%E4%B8%8A%E3%81%AElinux%E3%82%AB%E3%83%BC%E3%83%8D%E3%83%AB%E3%82%92gdb%E3%81%A7%E3%83%87%E3%83%90%E3%83%83%E3%82%B0%E3%81%99%E3%82%8B/
+- StackOverflow: How to debug the Linux kernel with GDB and QEMU?
+  - https://stackoverflow.com/questions/11408041/how-to-debug-the-linux-kernel-with-gdb-and-qemu
 
