@@ -100,6 +100,16 @@ $ sudo docker attach fdb376b21eaf
 [root@fdb376b21eaf /]# 
 ```
 
+### dockerの停止
+```
+$ docker stop dbb4bbe0f470
+```
+
+以下は２秒後に停止させる
+```
+$ docker stop -t 2 dbb4bbe0f470
+```
+
 ### 稼働しているコンテナに関するプロセスを表示する
 aオプションを付与すると起動していないコンテナも合わせて表示してくれます。
 ```
@@ -216,11 +226,23 @@ $ sudo docker push ubuntu/mysql:latest
 ```
 - 5. docker hubを確認してレポジトリが作成されたことを確認する。
 
-# 参考URL
-- docker公式資料
-  - https://docs.docker.com/
-- docker hub
-  - https://hub.docker.com/
+### dockerイメージの履歴を表示する
+```
+$ docker history node
+IMAGE               CREATED             CREATED BY                                      SIZE                COMMENT
+72ff1a4450d9        22 hours ago        /bin/sh -c #(nop)  CMD ["node"]                 0 B                 
+<missing>           22 hours ago        /bin/sh -c set -ex   && for key in     6A010C   5.057 MB            
+<missing>           22 hours ago        /bin/sh -c #(nop)  ENV YARN_VERSION=1.12.3      0 B                 
+<missing>           22 hours ago        /bin/sh -c ARCH= && dpkgArch="$(dpkg --print-   59.17 MB            
+<missing>           22 hours ago        /bin/sh -c #(nop)  ENV NODE_VERSION=11.6.0      0 B                 
+<missing>           22 hours ago        /bin/sh -c groupadd --gid 1000 node   && user   333.4 kB            
+<missing>           24 hours ago        /bin/sh -c set -ex;  apt-get update;  apt-get   560.2 MB            
+<missing>           12 days ago         /bin/sh -c apt-get update && apt-get install    141.8 MB            
+<missing>           12 days ago         /bin/sh -c set -ex;  if ! command -v gpg > /d   7.812 MB            
+<missing>           12 days ago         /bin/sh -c apt-get update && apt-get install    23.23 MB            
+<missing>           12 days ago         /bin/sh -c #(nop)  CMD ["bash"]                 0 B                 
+<missing>           12 days ago         /bin/sh -c #(nop) ADD file:da71baf0d22cb2ede9   100.6 MB     
+```
 
 ### dockerのバージョン
 以下は、MacOS上のVirtualBoxのdocker-machineを利用したdocker versionの出力結果です。
@@ -348,6 +370,12 @@ $ docker inspect node
     }
 ]
 ```
+
+# 参考URL
+- docker公式資料
+  - https://docs.docker.com/
+- docker hub
+  - https://hub.docker.com/
 
 
 ### TODO
