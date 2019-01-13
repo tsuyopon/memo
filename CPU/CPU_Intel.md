@@ -68,6 +68,9 @@ Core i9については第７世代から登場しています。
 この辺を参考に
 - http://pcinformation.info/cpu/corei9-corei7-corei5-corei3-difference.html
 
+### 世代別の性能差比較
+- https://chimolog.co/bto-cpu-intel-core-gen/
+- https://www.dospara.co.jp/5info/cts_lp_intel_cpu
 
 ### 型番に付与されるアルファベットについて
 
