@@ -95,3 +95,11 @@ default: all
 
 ### .PRECIOUS
 
+
+### .DEFAULT_GOAL
+デフォルトターゲット(all)からの変更する場合には.DEFAULT_GOALを利用します。(3.8.1より利用可能) 
+以下の例の場合には、デフォルトで2ndというターゲットが実行されます。
+```
+.DEFAULT_GOAL := 2nd 
+```
+
