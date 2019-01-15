@@ -47,6 +47,40 @@ Date:   Mon Sep 4 09:05:41 2017 +0900
     added new (git-grep.md)
 ```
 
+### HEADつきのログを表示する
+```
+$ git log --decorate 
+commit 4d71925b570339a1d56a4cdfe314e0b3469e4930 (HEAD, origin/master, origin/HEAD, master)
+Author: tsuyopon <tsuyoppy@r2.dion.ne.jp>
+Date:   Tue Jan 15 08:39:44 2019 +0900
+
+    added .DEFAULT_GOAL
+
+commit 4ffd7c8243976bcf0123af5eb0ec4e3d5317c709
+Author: tsuyopon <tsuyoppy@r2.dion.ne.jp>
+Date:   Mon Jan 14 03:03:55 2019 +0900
+
+    added
+
+commit ba6c6189ac2495bf5b8c56e31e61f01d2a3047c5
+Author: tsuyopon <tsuyoppy@r2.dion.ne.jp>
+Date:   Sun Jan 13 16:59:34 2019 +0900
+
+    added benchmark reference between intel cpu generation
+...
+```
+
+### ブランチを指定する
+git logの後にブランチ名を指定するだけ
+```
+$ git log remotes/origin/gh-pages
+commit 5ec35039942bfde47b7feef7a080fa04f1137a04
+Author: helloworld <tsuyoshiooishi@yahoo.co.jp>
+Date:   Tue May 5 09:54:47 2015 +0900
+
+    Create gh-pages branch via GitHub
+```
+
 ### git logの他に変更点も表示する
 ```
 $ git log -p
