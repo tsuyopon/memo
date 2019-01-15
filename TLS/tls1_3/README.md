@@ -1,5 +1,75 @@
 # 概要
-TLS1.3について
+TLS1.3についての全体像について記載します。
+
+# TLS1.2未満とTLS1.3の違いについて
+- 全般
+  - CBCモードが廃止され、AEAD(AES-GCM, ChaCha20-Poly1305など)
+    - CBCモードを狙ったBEAST攻撃、Lucky Thirteen攻撃などが頻発したことが背景にある。
+  - CipherSuites
+    - 共通鍵暗号(AES/CHACHA20)とそのメッセージ認証形式(GCM-SHA384等)を指定することになります。サーバ証明書の確認や鍵交換方式は暗号スイートに含まれません。
+- ClientHello
+  - TLS1.2と互換性がある
+  - サーババージョンはSupported Version拡張(必須)にその役割を移動し、固定で0x0303(TLS1.2)
+  - session_idやcompression_methodsは廃止され、代わりにPSKが利用される。ミドルボックス問題のためにlegacy_としてその名残は残る。
+  - extensionは必ず存在することになる
+  - extensions中で暗号パラメータのやりとりが行われる
+- ServerHello
+  - 互換性がなくなった
+- ClienKeyExchange
+  - 廃止
+  - ClientHello中のExtensionに移動する
+- ServerKeyExchange
+  - 廃止
+  - ServerHello中のExtensionに移動する
+- ChangeCipherSpec
+  - 廃止
+  - 鍵交換直後に暗号化が開始される
+
+TODO: まだ整理していないので後で追記
+
+# 詳細
+
+### ブラウザからどのTLSプロトコルを利用しているのかどうかを確認する
+- chrome
+  - Developer Toolsの「Security」タブから確認することができます。
+- firefox
+  - 開発ツールを開いたら「暗号化」タブでどのプロトコルを利用しているのかを確認することができます。
+
+### 接続確認の方法など
+- サーバとして起動する
+```
+$ /opt/openssl-1.1.1/bin/openssl s_server -accept 443 -cert server.crt -key server.key -www -debug -tls1_3
+```
+
+- クライアントとして接続する
+```
+$ /opt/openssl-1.1.1/bin/openssl s_client -connect localhost:443 --tls1_3
+```
+
+### TLS1.3として公開されているサーバ
+- https://enabled.tls13.com
+- https://www.tls13.facebook.com
+- https://tls13.crypto.mozilla.org
+
+### CipherSuiteの指定について
+TLS1.3ではCipherSuiteの指定で共通鍵交換と証明書検証を含まないようになりました。
+
+- TLS1.2
+```
+RSA_WITH_AES_128_CBC_SHA
+ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+```
+- TLS1.3
+```
+共通鍵交換: secp256r1
+証明書検証: rsa_pkcs1_sha256
+暗号化: AES_128_GCM_SHA256
+```
+
+TLS1.3では共通鍵交換はKeyShare拡張、サーバ認証はSignatureAlgorithms拡張となりました。
+
+### TLS1.3の実装リスト
+- https://github.com/tlswg/tls13-spec/wiki/Implementations
 
 # 全体像を理解するために参考になる資料
 - 今なぜHTTPS化なのか？インターネットの信頼性のために、技術者が知っておきたいTLSの歴史と技術背景
@@ -7,9 +77,18 @@ TLS1.3について
 - TLS1.3とは何か? 大津さん資料
   - https://www.jnsa.org/seminar/pki-day/2016/data/1-3_ootsu_.pdf
 - TLS 1.3 の標準化動向 山本和彦さん資料
+  - draftの歴史などについて。なぜ仕様が変わっていったのかを垣間見れて面白い
   - http://www.mew.org/~kazu/material/2018-tls13.pdf
+- TLS 1.3 draft 23 ハンズオン(IIJ: 山本和彦さん)
+  - Haskel用クライアントライブラリやpicotlsの説明
+  - http://www.mew.org/~kazu/material/2018-handson.pdf
+- あどけない話
+  - 山本和彦さんによるTLS1.3について20回以上に分割して掲載している。すごい勉強になる記事
+  - http://d.hatena.ne.jp/kazu-yamamoto/archive
 - TLSv1.3: Minor Version, Major Changes. F5
   - https://www.f5.com/pdf/agility2018/TLSv13-Minor-Version-Major-Changes.pdf
+- TLS1.3 Overview
+  - https://qiita.com/sylph01/items/3bf7bc2d42da4e0efb37	
 - 祝RFC！Transport Layer Security (TLS) 1.3 発行の軌跡 ～熟成された4年間の安全性解析～  レピダム
   - https://lepidum.co.jp/blog/2018-10-01/tls1\_3security/
 
