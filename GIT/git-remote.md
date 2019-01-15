@@ -61,5 +61,12 @@ upstreamをupstream2としておきたい場合には次のようにします。
 $ git remote rename upstream upstream2
 ```
 
+### リモートで存在しないはずのブランチを削除する
+dry-runで削除されるブランチが問題ないことを確認してから、削除すると良い。
+```
+$ git remote prune origin --dry-run
+$ git remote prune origin
+```
+
 # 参考URL
 - https://git-scm.com/book/ja/v1/Git-%E3%81%AE%E5%9F%BA%E6%9C%AC-%E3%83%AA%E3%83%A2%E3%83%BC%E3%83%88%E3%81%A7%E3%81%AE%E4%BD%9C%E6%A5%AD
