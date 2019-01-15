@@ -13,6 +13,11 @@ $ git branch <branch>
 $ git branch -m <oldbranch> <newbranch>
 ```
 
+上記でoldnameを省略すると、現在いるブランチとなる
+```
+$ git branch -m <newbranch>
+```
+
 ### ブランチを確認する
 - ローカルブランチを確認する
 ```
