@@ -10,7 +10,7 @@ TLS1.3についての全体像について記載します。
 - ClientHello
   - TLS1.2と互換性がある
   - サーババージョンはSupported Version拡張(必須)にその役割を移動し、固定で0x0303(TLS1.2)
-  - session_idやcompression_methodsは廃止され、代わりにPSKが利用される。ミドルボックス問題のためにlegacy_としてその名残は残る。
+  - session\_idやcompression\_methodsは廃止され、代わりにPSKが利用される。ミドルボックス問題のためにlegacy\_としてその名残は残る。
   - extensionは必ず存在することになる
   - extensions中で暗号パラメータのやりとりが行われる
 - ServerHello
