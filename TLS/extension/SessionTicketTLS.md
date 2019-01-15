@@ -3,6 +3,9 @@ SessionIDでは32byteしか許容せず、そのバイト数からはサーバ�
 しかし、セッションチケット拡張を利用することによってサーバ側に状態を保持しなくてもチケットの中にセッション状態を保持することでサーバ側に保持する必要がなくなります。 
 この仕組みを利用することで複数台のロードバランサ配下にあるサーバで接続先が異なった場合でも毎回ハンドシェイクを行うことを防ぐ効果があります。
 
+TLS1.3ではSession Ticket TLSはsession_ticketという名称となりました。
+- 参考: https://www.iana.org/assignments/tls-extensiontype-values/tls-extensiontype-values.xhtml
+
 # 詳細
 
 ## 古典的なSessionIDとセッションチケット拡張の違い
