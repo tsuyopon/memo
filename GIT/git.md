@@ -340,6 +340,13 @@ hoge/repoa
 - 参考
   - http://qiita.com/atskimura/items/a90dfa8bfc72e3657ef9
 
+### 「No newline at end of file」が出た時
+末尾に改行が含まれていないため、警告がでている状態
+```
+:set binary noeol
+```
+
+
 
 # 参考URL
 - Pro Git
