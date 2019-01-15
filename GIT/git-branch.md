@@ -64,6 +64,15 @@ $ git rev-parse --abbrev-ref HEAD
 master_derived
 ```
 
+### 現在のハッシュ値や直前のコミットメッセージを表示する
+vやvvオプションでブランチの現在のハッシュ値や直前のコミットメッセージが表示されます。
+```
+$ git branch -v
+* master 4d71925 added .DEFAULT_GOAL
+$ git branch -vv
+* master 4d71925 [origin/master] added .DEFAULT_GOAL
+```
+
 ### TODO
 - http://qiita.com/chihiro/items/e178e45a7fd5a2fb4599
   - 以下のコマンドをまとめたい
