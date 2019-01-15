@@ -12,6 +12,15 @@ HomebrewとMacportsについての違いは以下を参考のこと
 $ brew list
 ```
 
+### パッケージに含まれるファイルを確認する
+```
+$ brew list qemu
+/usr/local/Cellar/qemu/3.1.0_1/bin/qemu-edid
+/usr/local/Cellar/qemu/3.1.0_1/bin/qemu-img
+/usr/local/Cellar/qemu/3.1.0_1/bin/qemu-io
+...
+```
+
 ### パッケージのインストール・アンインストール
 インストールは次のコマンドで可能
 ```
@@ -107,6 +116,11 @@ Ruby: /usr/bin/ruby => /System/Library/Frameworks/Ruby.framework/Versions/1.8/us
 ＄brew cleanup [パッケージ名]
 ```
 
+古いバージョンのパッケージを一括で削除するには引数を指定しなければ問題ありません。
+```
+$ brew cleanup
+```
+
 ### コマンドのソースコードを閲覧する。
 ```
 $ brew cat wget
@@ -197,3 +211,40 @@ $ curl --http2 -I https://http2bin.org/get
 
 # 参考URL
 - http://yonchu.hatenablog.com/entry/20110226/1298723822
+
+
+```
+$ brew list --versions | grep -i tls
+gnutls 3.3.11 3.6.5
+```
+
+```
+$ brew cleanup | grep -i gnutls
+gnutls 3.6.5
+```
+
+```
+$ qemu-system-x86_64 --kernel ./vmlinuz-3.10.0-693.el7.x86_64 -initrd initramfs-3.10.0-693.el7.x86_64.img -nographic -append "console=ttyS0"
+dyld: Library not loaded: /usr/local/lib/libgnutls.28.dylib
+  Referenced from: /usr/local/bin/qemu-system-x86_64
+  Reason: image not found
+Trace/BPT trap: 5
+```
+
+
+```
+$ brew ls --verbose curl
+/usr/local/Cellar/curl/7.61.1/.brew/curl.rb
+/usr/local/Cellar/curl/7.61.1/bin/curl
+/usr/local/Cellar/curl/7.61.1/bin/curl-config
+/usr/local/Cellar/curl/7.61.1/CHANGES
+/usr/local/Cellar/curl/7.61.1/COPYING
+...
+```
+
+- homebrewの実は知ってそうで、やっぱり知ってたことまとめ
+  - https://qiita.com/muran001/items/409b8cb42cca02b147a0
+- 備忘録_homebrewもろもろ
+  - https://qiita.com/y_sekitoba/items/1cb62ac2031ef693049a
+- brew switchってなに?
+  - https://christina04.hatenablog.com/entry/2017/01/08/120459
