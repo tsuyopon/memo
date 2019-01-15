@@ -17,17 +17,6 @@ $ git mv oldname newname
 $ git mv -f oldname newname
 ```
 
-# 設定関連
-リモートブランチの設定などを確認する場合
-```
-$ git remote -v
-```
-
-リモートブランチの設定を変更する場合
-```
-$ git remote set-url origin git://github.com/hoge/fuga.git
-```
-
 # 取得
 
 ### 再帰的に取得する
