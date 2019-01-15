@@ -9,6 +9,11 @@ git checkoutについて
 $ git checkout HEAD -- dir/xxxx
 ```
 
+これだけでもいけるらしい
+```
+$ git checkout -- <file_name>
+```
+
 ### タグの状態をチェックアウトする
 ```
 $ git checkout <タグ名>
