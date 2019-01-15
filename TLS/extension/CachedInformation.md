@@ -104,3 +104,5 @@ CachedInformationTypeがcertの場合も、cert_reqの場合も入力値が異�
 # 参考URL
 - Transport Layer Security (TLS) Cached Information Extension
   - https://tools.ietf.org/html/rfc7924
+- IANA: TLS CachedInformationType Values
+  - https://www.iana.org/assignments/tls-extensiontype-values/tls-extensiontype-values.xhtml#cachedinformationtype
