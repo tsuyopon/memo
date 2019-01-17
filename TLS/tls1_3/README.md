@@ -2,11 +2,16 @@
 TLS1.3についての全体像について記載します。
 
 # TLS1.2未満とTLS1.3の違いについて
+あらかじめRFCにTLS1.2とTLS1.3の違いがあるのでそちらを確認しておくこと
+- https://tools.ietf.org/html/rfc8446#section-1.2
+
 - 全般
   - CBCモードが廃止され、AEAD(AES-GCM, ChaCha20-Poly1305など)
     - CBCモードを狙ったBEAST攻撃、Lucky Thirteen攻撃などが頻発したことが背景にある。
+    - Static RSAやDH cipher suiteは削除され、PFSとなる暗号のみをサポート
   - CipherSuites
     - 共通鍵暗号(AES/CHACHA20)とそのメッセージ認証形式(GCM-SHA384等)を指定することになります。サーバ証明書の確認や鍵交換方式は暗号スイートに含まれません。
+  - SessionIDやSessionTicketを利用したSessionResumptionは全てPSK交換に置き換わることとなった
 - ClientHello
   - TLS1.2と互換性がある
   - サーババージョンはSupported Version拡張(必須)にその役割を移動し、固定で0x0303(TLS1.2)
@@ -15,6 +20,10 @@ TLS1.3についての全体像について記載します。
   - extensions中で暗号パラメータのやりとりが行われる
 - ServerHello
   - 互換性がなくなった
+  - ServerHelloに鍵交換に必要な拡張情報を含めて、それ以外は暗号化されたEncryptedExtensionに含まれるようになった
+- ServerHelloDone
+  - 廃止
+  - TLS1.2までは厳密にServerHelloの終了パケットはこれで判定していたが、StateMachineを定めることによって不要となった。
 - ClienKeyExchange
   - 廃止
   - ClientHello中のExtensionに移動する
@@ -24,8 +33,6 @@ TLS1.3についての全体像について記載します。
 - ChangeCipherSpec
   - 廃止
   - 鍵交換直後に暗号化が開始される
-
-TODO: まだ整理していないので後で追記
 
 # 詳細
 
