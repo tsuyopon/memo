@@ -137,17 +137,22 @@ ECDHE-ECDSA-AES256-SHA384 TLSv1.2 Kx=ECDH     Au=ECDSA Enc=AES(256)  Mac=SHA384
 
 上記のオプションで表示されるHIGHなどの定義は次の通り
 ```
-eNULL   通信の暗号をしないもの (そういうのもあるのか!)
-aNULL   認証をしないもの (そういうのもあるのか!)
 ALL     eNULL を使ってない全て
 DEFAULT ALL:!aNULL:!eNULL、つまり ALL から aNULL と eNULL を除いたもの。ALL の時点で eNULL は除かれてる気がする
-MD5     MD5 を使ってるもの
-3DES    Triple DES すな
+eNULL   通信時に暗号化しないもの
+aNULL   通信開始時にサーバ認証をしないもの
+3DES    
 TLSv1,SSLv3,SSLv2 そのままなんだけど、どうやらこのバージョンでは SSLv2 は一切無くなってて TLSv1 = SSLv3 みたい
-EXP     米国の輸出規制にひっかかってなかったやつ、で 40bit と 56bit のが入ってるはずなんだけど 40bit しか出てこない
-LOW     56bit とか 60bit のらしい
-HIGH    暗号に 128bit 以上の鍵を使うものほぼ全て
+RC4     暗号方式にRC4を利用している
+MD5     メッセージ認証にMD5を利用している
+EXP     米国輸出規制緩和によって使用可能となった暗号方式で、鍵長が40bitもしくは56bitの暗号方式
+LOW     米国輸出制限緩和によって使用可能となったものを除く鍵長が56bitもしくは60bitの暗号方式
+MEDIUM  128bitの鍵長の暗号化方式で、128bitRC4やSEEDなどが含まれる
+HIGH    暗号に128bit以上の鍵を使うものほぼ全て。AES, 3DES, Camelliaなどが含まれる
 ```
+
+- 参考
+  - https://bacchi.me/security/ciphersuites-tips/
 
 ### base64エンコードとデコード
 エンコードとデコード
