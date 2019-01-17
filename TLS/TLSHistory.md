@@ -75,7 +75,7 @@ SSL時代はNetscape社による開発だが、TLSになってIETFで標準化�
     - ServerHelloから後のメッセージは暗号化されて送付されるようになった。
   - MiddleBox介在を防ぐためにTLS1.2と同一のパケット構成にて、バージョンはsupported_version拡張にて実施
 
-参考資料
+バージョン差異に関する参考資料
 - Strong SSL Configuration & Compatibility Report
   - SSLv2とSSLv3の違い、SSLv3とTLSv1の違いが記載されている重要な資料
   - http://www.g-sec.lu/ssl_recommendations.pdf
@@ -92,6 +92,10 @@ SSL時代はNetscape社による開発だが、TLSになってIETFで標準化�
 - keycdn: TLS 1.2 vs TLS 1.1
   - https://www.keycdn.com/support/tls-1-2-vs-tls-1-1
 
-概念図などは以下を参考のこと
-- http://qiita.com/kuni-nakaji/items/5118b23bf2ea44fed96e#comment-456cb90d89c71c924782
+# 参考資料
+- SSL/TLS生誕20年、脆弱性と対策を振り返る
+  - 歴史がわかる良い資料
+  - https://www.jnsa.org/seminar/pki-day/2015/data/2-1_urushima.pdf
+- 概念図などは以下を参考のこと
+  - http://qiita.com/kuni-nakaji/items/5118b23bf2ea44fed96e#comment-456cb90d89c71c924782
 
