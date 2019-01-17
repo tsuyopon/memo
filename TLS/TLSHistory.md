@@ -2,7 +2,7 @@
 TLS周りの歴史やバージョンごとの差異についてまとめる
 
 # 詳細
-### TLS超概略
+### TLS概略
 
 とりあえずSSLに関する説明や役に立ちそうなリンク集など
 SSL(Secure Socket Layer)の開発元はNetscape、TLS(Transport Layer Security)の開発元はIETFとなっている。SSLとTLSのバージョンは次の通り。
@@ -13,8 +13,10 @@ SSL3.0    SSL2.0の問題を修正して機能追加も行い1995年にSSL3.0と
 TLS1.0    SSL3.0とTLS1.0の両者間には正確な互換性はないがほぼ同じ。CVE-2011-3389(BEAST)による一部脆弱性を含む。
 TLS1.1    TLS 1.0からの変更点は、新しく発見された攻撃手法に対する耐性の強化が中心である。
 TLS1.2    ハッシュのアルゴリズムにSHA-256が追加されたほか、ブロック暗号について、従来のCBCモードだけではなく、GCM、CCMといった認証付き暗号が利用可能となった。
-TLS1.3    
+TLS1.3    CipherSuiteを5つに絞り古いのは廃止AEADのみとなった。PFS。ハンドシェイク改善、1RTT追加、HKDFによる鍵派生関数再定義
 ```
+
+SSL時代はNetscape社による開発だが、TLSになってIETFで標準化されるようになった。
 
 ### バージョン差異
 - SSL1.0(Never Released)
