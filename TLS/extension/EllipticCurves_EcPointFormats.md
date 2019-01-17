@@ -1,14 +1,14 @@
 # 概要
 elliptic_curves(supported_groups)とec_point_formatsの２つのエクステンションによってECDHEの鍵交換が決定されます。
-ECC証明書の場合にはこん２つのエクステンションが付与される(??: 要確認)
+ECC証明書の場合には２つのエクステンションが付与される(??: 要確認)
 
-- elliptic_curves(supported_groups)
+- elliptic_curves(TLS1.3では名称がsupported_groupsとなる)
   - 試験するための曲線の種別を表す
   - クライアントがサポートする楕円曲線の種別を表しています
   - ServerKeyExchangeのパケットにはこの中で選択される値を含みます
 - ec_point_formats
   - クライアントがパース可能な点のフォーマットを示す
-
+  - TLS1.3では1つフォーマットが望ましいとしてec_point_formatは廃止される。
 
 楕円曲線についてはmath/ECC.mdを確認のこと
 
