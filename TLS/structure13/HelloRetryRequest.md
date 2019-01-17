@@ -1,4 +1,4 @@
-### HelloRetryRequest$B%5%s%W%k(B
+### HelloRetryRequestサンプル
 ```
 TLSv1.3 Record Layer: Handshake Protocol: Hello Retry Request
     Content Type: Handshake (22)
@@ -25,7 +25,7 @@ TLSv1.3 Record Layer: Handshake Protocol: Hello Retry Request
                 Selected Group: secp256r1 (23)
 ```
 
-HelloRetryRequest$B$N8e$K$O(BChange Cipher Spec$B%a%C%;!<%8$,AwIU$5$l$F$$$?!#0l1~!"$=$N%5%s%W%k$bE:IU$7$F$*$/!#(B
+HelloRetryRequestの後にはChange Cipher Specメッセージが送付されていた。一応、そのサンプルも添付しておく。
 ```
 TLSv1.3 Record Layer: Change Cipher Spec Protocol: Change Cipher Spec
     Content Type: Change Cipher Spec (20)
@@ -34,12 +34,12 @@ TLSv1.3 Record Layer: Change Cipher Spec Protocol: Change Cipher Spec
     Change Cipher Spec Message
 ```
 
-# $B;29M$^$G$K>e5-$N(BHelloRetryRequest$B%a%C%;!<%8$rAwIU$9$kA08e$N(BClientHello$B%a%C%;!<%8$b0J2<$KE:IU$7$F$*$/(B
-$B0J2<$N%5%s%W%k$G$NA08e$NBg$-$J0c$$$H$7$F$O!"<!$N#2E@$G$9!#(B
-- Version$B$,(B1.2$B$H(B1.0$B$G0c$$$,$"$k!#(B
-- key_share$B$,A08e$G%5%]!<%H$5$l$k%0%k!<%W$,(Bx25519$B$+$i(Bsecp256r1$B$KJQ99$K$J$k$N$G!"FbMF$,JQ99$5$l$k!#(B
+# 参考までに上記のHelloRetryRequestメッセージを送付する前後のClientHelloメッセージも以下に添付しておく
+以下のサンプルでの前後の大きな違いとしては、次の２点です。
+- Versionが1.2と1.0で違いがある。
+- key_shareが前後でサポートされるグループがx25519からsecp256r1に変更になるので、内容が変更される。
 
-### HelloRetryRequest$B$r<u$1<h$kA0$N(BClientHello
+### HelloRetryRequestを受け取る前のClientHello
 ```
 TLSv1.3 Record Layer: Handshake Protocol: Client Hello
     Content Type: Handshake (22)
@@ -204,7 +204,7 @@ TLSv1.3 Record Layer: Handshake Protocol: Client Hello
             Padding Data: 000000000000000000000000000000000000000000000000...
 ```
 
-### HelloRetryRequest$B$r<u$1<h$C$?8e$N(BClientHello
+### HelloRetryRequestを受け取った後のClientHello
 ```
 TLSv1.3 Record Layer: Handshake Protocol: Client Hello
     Content Type: Handshake (22)
