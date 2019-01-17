@@ -39,3 +39,8 @@ TLS1.3関連についてはtls1.3/README.mdを参照のこと
   - https://www.feistyduck.com/library/openssl-cookbook/online/
 - Mozilla wiki: Security/Server Side TLS
   - https://wiki.mozilla.org/Security/Server_Side_TLS
+
+# 関連資料
+- TLS/SSL Hardening & Compatibility Report 2011
+  - 非常に参考になりそうなレポート
+  - http://www.besecure.gr/tools/sslscan/pdf/TLS_SSL_hardening.pdf

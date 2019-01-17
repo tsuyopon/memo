@@ -23,10 +23,17 @@ TLS1.3
   - 数年使われたが実用上欠陥があった。
 - SSL3.0(1996) RFC6101
   - SSL2.0からは名前は一緒であるが設計が根本から見直されています。
+    - key materialはメッセージ認証や解読時に双方で再利用しなくなった。
+    - MAC構成をより高めた。SHA1をサポートした。
+    - ハンドシェイクの保護を追加した。サーバサイドではダウングレード攻撃が検出できるようになった。
+    - closureアラートのサポートを追加
   - POODLEがSSL3.0にトドメを指した(2014/10)
   - ガラケーのサポートはたいていここまでとなっている。
 - TLS1.0(1999) RFC2246
   - 非常にマイナーな修正(SSL3.1相当の修正)ではあるが、SSL3.0との互換性は無い。
+    - 最初に交換したsecretの値から暗号鍵の拡張を行う機能が改善された。
+    - MACを構成するアルゴリズムがHMACへと修正された。
+    - DH鍵交換、DSS、3DESのサポートの義務化
   - PCI DSSという1つの規格の中で廃止が推奨されるようになった。
 - TLS1.1(2006) RFC4346
   - セキュリティに関する修正が行われた。
@@ -66,6 +73,9 @@ TLS1.3
   - MiddleBox介在を防ぐためにTLS1.2と同一のパケット構成にて、バージョンはsupported_version拡張にて実施
 
 参考資料
+- Strong SSL Configuration & Compatibility Report
+  - SSLv2とSSLv3の違い、SSLv3とTLSv1の違いが記載されている重要な資料
+  - http://www.g-sec.lu/ssl_recommendations.pdf
 - RFC6101(Appendix E.  Version 2.0 Backward Compatibility)
   - https://tools.ietf.org/html/rfc6101#appendix-E
 - RFC4346 (Differences from TLS 1.0)
