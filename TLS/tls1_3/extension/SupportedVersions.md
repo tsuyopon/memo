@@ -2,13 +2,17 @@
 SupportedVersionsはTLS拡張でTLS1.3のRFC8446中で規定されているものです。
 - https://tools.ietf.org/html/rfc8446#section-4.2.1
 
-まだ、IANAから正式に割り当ては行われていません。
 TLS1.3以降はバージョン番号をTLS拡張の中に隠蔽します。それによりミドルボックスによる意図せぬフィルタリングの弊害を避けることを目的としています。
 
-この拡張はTLS1.3としてサポートしているTLSバージョンのリストをTLSサーバに伝えるものであり、TLS1.3以降では必須の拡張です(MUST)。
+この拡張はTLS1.3としてサポートしているTLSバージョンのリストをTLSサーバに伝えるものであり、TLS1.3以降ではSupportedVersionsは必須の拡張機能です(MUST)。
 この拡張が付与されない場合にはTLS1.3未満として扱うことになります。
 
 # 詳細
+
+### メリット
+- ミドルボックスの存在からTLS基本パケットを弄ることはできないので、SupportedVersionsにすることで回避できる。
+- TLS1.2まではClientHello.client_versionによって最大バージョンのみを指定しているので、歯抜けに未対応のパターンが許容されなかった。SupportedVersionsではクライアントが対応しているバージョンをリスト形式で保持できるのでバージョンの歯抜けにも対応することができる。
+- TLS1.3ではTLS1.2であるかのようにミドルボックスを騙すようになっていて、SupportedVersionsではリスト形式で保持できることから、TLS1.4, TLS1.5, TLS1.6などをすぐにdeployすることができるようになる。不備などがあっても簡単にバージョンの廃止ができるようになる。
 
 ### 仕様詳細
 - クライアントからどのTLSバージョンが利用できるかどうかをTLS拡張によって優先度の高い順番で示すことができます。
@@ -33,6 +37,7 @@ struct {
 
 ### サンプルデータ
 - ClientHello
+  - リスト形式で、優先度が高い順番で上から指定する。
 ```
 Extension: supported_versions (len=11)
     Type: supported_versions (43)
@@ -45,6 +50,7 @@ Extension: supported_versions (len=11)
     Supported Version: TLS 1.0 (0x0301)
 ```
 - ServerHello
+  - 指定されたプロトコルバージョンから選択を行い、クライアントに通知します。
 ```
 Extension: supported_versions (len=2)
     Type: supported_versions (43)
