@@ -16,7 +16,6 @@ Menu -> More Tools -> Developer Tools -> click on the Security Tab.
 ```
 各種項目にクリックするとその値を表示します。
 
-
 ### ルート証明書
 ブラウザによってはHTTPSが正しく表示されて、別のブラウザではHTTPSが正しく表示されないといったことがおります。  
 ルート証明書への対応状況などをよく確認して、テストすべきブラウザも決めましょう。
@@ -70,12 +69,16 @@ $keytool -list -rfc -keystore C:/Java/jre1.8.0_102/lib/security/cacerts -storepa
 ### go.jpのサイトがmozillaだと安全ではない接続とされる理由
 Mozillaはユーザーの安全を守るために、どのルート証明書を登録するかを独自に判断しており、他社の判断を鵜呑みにはしないというポリシーで証明書ストアを管理しています。
 
-例えば、次のGPKIのサイトにアクセスをしても認証してくれません。
+例えば、次のGPKIのサイトにアクセスをしても認証してくれません。日本政府がCAとして運用したいetaxなどはこれに基づいて運用されています。
 - https://www.gpki.go.jp/
 
-以下のチケットにてルート証明書として登録してほしいチケットを投げていますが、mozillaポリシーに合致しておらず議論が長引いている状況です。
+以下のチケットにてルート証明書として登録してほしいチケットを投げていますが、mozillaポリシーに合致しておらず議論が長引いている状況でしたが最近却下される運びとなりました。
 - https://bugzilla.mozilla.org/show_bug.cgi?id=870185
 
+GPKIの顛末については以下の内容を参考のこと
+- https://yumetodo.hateblo.jp/entry/2018/02/28/232939
+
+### FirefoxでWindowsの証明書ストアに登録されたルート証明書を利用する
 尚、Firefox52以降ではsecurity.enterprise_roots.enabledをtrueに変更することによって、Windowsの証明書ストアに登録されたルート証明書をFirefox側で認識して使えるようになりましたが、あくまでもWindowsのみでこの機能はMACでは使うことはできません。
 - 参考URL
   - http://www.clear-code.com/blog/2017/6/1.html
