@@ -1,8 +1,14 @@
 # 概要
 HTTP Public Key Pinning(HPKP)ヘッダは、クライアントに特定の公開鍵をウェブサーバに関連付けさせる機能です。
-これによって、偽造された証明書による中間者攻撃リスクを減少させるための機能です。
+これによって、偽造された不正な証明書を見分けることができ、中間者攻撃リスクを減少させるための機能です。
 
 RFC7469によって規定されています。
+
+HTTP Public Key Pinningには次の２種類の方法があります。
+- Pre-loaded public key pinning
+  - あらかじめブラウザのソースコードに公開鍵情報を埋め込む
+- HTTP-based public key pinning (HPKP)
+  - サーバからHTTPヘッダでブラウザに公開鍵情報を通知する
 
 しかし、現在ではサイト運営者が誤ってサイト訪問者をブロックするような悪影響がある可能性が指摘されていてChrome67ではサポートが廃止されている。
 代替としてはHPKPではなくて、Certificate TransparencyやExpect-CT HTTP拡張ヘッダを推奨しているとのこと。
@@ -33,6 +39,9 @@ report-uriを解析するためのテストサイトとして次のサイトが�
 - https://report-uri.com/
 - 利用方法に関する参考資料: https://rms-digicert.ne.jp/howto/basis/Scott_Helme_io.html
 
+# HPKPを有効にする
+- https://developer.mozilla.org/en-US/docs/Web/HTTP/Public_Key_Pinning
+
 # 参考URL
 - RFC7469: Public Key Pinning Extension for HTTP
   - https://tools.ietf.org/html/rfc7469
@@ -40,4 +49,8 @@ report-uriを解析するためのテストサイトとして次のサイトが�
   - https://developer.mozilla.org/ja/docs/Web/Security/Public_Key_Pinning
 - 「Public Key Pinning Extension for HTTP（HPKP）」で証明書の不正利用を防止する
   - https://rms-digicert.ne.jp/howto/basis/pinning.html
+- ぼちぼち日記(不正なSSL証明書を見破るPublic Key Pinningを試すAdd Starboyasanmkt)
+  - http://d.hatena.ne.jp/jovi0608/20140902/1409635279
+- 自堕落な技術者の日記
+  - http://blog.livedoor.jp/k_urushima/archives/1811745.html
 
