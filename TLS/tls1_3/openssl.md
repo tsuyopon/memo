@@ -3,13 +3,78 @@ opensslコマンド関連で主にTLS1.3に関連する操作について
 
 # 詳細
 
+### 接続できることを確認する
+```
+$ echo q | /opt/openssl-1.1.1/bin/openssl s_client -connect localhost:443
+CONNECTED(00000003)
+depth=0 C = XX, L = Default City, O = Default Company Ltd
+verify error:num=18:self signed certificate
+verify return:1
+depth=0 C = XX, L = Default City, O = Default Company Ltd
+verify return:1
+---
+Certificate chain
+ 0 s:C = XX, L = Default City, O = Default Company Ltd
+   i:C = XX, L = Default City, O = Default Company Ltd
+---
+Server certificate
+-----BEGIN CERTIFICATE-----
+MIIDADCCAegCCQCUVPJKARwj8TANBgkqhkiG9w0BAQsFADBCMQswCQYDVQQGEwJY
+WDEVMBMGA1UEBwwMRGVmYXVsdCBDaXR5MRwwGgYDVQQKDBNEZWZhdWx0IENvbXBh
+bnkgTHRkMB4XDTE5MDEyMzAwMTgzOFoXDTIwMDEyMzAwMTgzOFowQjELMAkGA1UE
+BhMCWFgxFTATBgNVBAcMDERlZmF1bHQgQ2l0eTEcMBoGA1UECgwTRGVmYXVsdCBD
+b21wYW55IEx0ZDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMObpIhI
+ZaekP20Ef4MBxwaI/LSo6J0ZxVrgapWoteAhrbbJ1TqhkkqK7qTqtfnQ/mp9xhWT
+SaoVMCBJtULAEI+MAEiMDATTnlaePxu+3Preri3u4mAhlxtDgBbCxk+VKFQJmzoT
+YE4qGNAB6lHn+NGKeUNrk4rojGEoFPDeEUX/Y/Rmrk6RR9eZWJoQfCwb2mRLcpj/
+6x08QhxCQcj0sE0LQwmbT4FKucTjfIPQOj9gyvsBI8LUKj3ynf7kpMyd/dG9qTuE
+k4CjeDdlR5jfzwixdS/zinj+DDlI9oaieoQp1J8WjsA3RtXCNWkZWNN7/2yX3p87
+dkbwbfVe/vwJZ1ECAwEAATANBgkqhkiG9w0BAQsFAAOCAQEAGoagFZUxRVACctVe
+zAVDMwxzphCOSS+PAJkEq4poLlqz7/ahg2vVgs4G2amin3pHNuuNDtu61i0bZpJ1
+VaMFyfsBIZlHtGlHlk6JlWAgsQqTQ/4RlwGByQkn9XtIaafMbFkaVF28dtduR9yz
+aVC29tueqQustaVbQDVCY3h7GNw3JOn//c0P2D+2dKGzJfXSMkeGcC7w7eV1jXOD
+D2W+rFoOtAzl2K2KiCPlcNy2KSDi837sZeGjSCgqvbTLJOBot/z0DhOq/wkvT902
+3YWuLOxfKjYbCEoWhc+ikZUrf6+f0jaz8zAEH5iXOe3BNJ5MF9+e0lNwAKPeUNKQ
+bq4g5g==
+-----END CERTIFICATE-----
+subject=C = XX, L = Default City, O = Default Company Ltd
+
+issuer=C = XX, L = Default City, O = Default Company Ltd
+
+---
+No client certificate CA names sent
+Peer signing digest: SHA256
+Peer signature type: RSA-PSS
+Server Temp Key: X25519, 253 bits
+---
+SSL handshake has read 1328 bytes and written 391 bytes
+Verification error: self signed certificate
+---
+New, TLSv1.3, Cipher is TLS_AES_256_GCM_SHA384
+Server public key is 2048 bit
+Secure Renegotiation IS NOT supported
+Compression: NONE
+Expansion: NONE
+No ALPN negotiated
+Early data was not sent
+Verify return code: 18 (self signed certificate)
+---
+DONE
+```
+
 ### Cipherを指定する
 opensslでデフォルトで存在する３つのcipherです。
 ```
-$ echo Q | /opt/openssl-1.1.1/bin/openssl s_client -connect localhost:443 -cipher 'TLS13-CHACHA20-POLY1305-SHA256'
-$ echo Q | /opt/openssl-1.1.1/bin/openssl s_client -connect localhost:443 -cipher 'TLS13-AES-256-GCM-SHA384'
-$ echo Q | /opt/openssl-1.1.1/bin/openssl s_client -connect localhost:443 -cipher 'TLS13-AES-128-GCM-SHA256'
+$ echo q | /opt/openssl-1.1.1/bin/openssl s_client -connect localhost:443 -ciphersuites 'TLS_CHACHA20_POLY1305_SHA256'
+$ echo q | /opt/openssl-1.1.1/bin/openssl s_client -connect localhost:443 -ciphersuites 'TLS_AES_128_GCM_SHA256'
+$ echo q | /opt/openssl-1.1.1/bin/openssl s_client -connect localhost:443 -ciphersuites 'TLS_AES_256_GCM_SHA384'
 ```
+
+コロン区切りで複数のciphersuiteを指定することも可能です。
+```
+$ echo q | /opt/openssl-1.1.1/bin/openssl s_client -connect localhost:443 -ciphersuites 'TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256'
+```
+
 
 ### グループを変更する
 Signature Groupsで指定する値をgroupsオプションで指定することができます。
