@@ -3,6 +3,15 @@
 
 # 詳細
 
+
+### TLSバージョンの有効・無効や最大値、最小値などの設定方法
+
+- Firefoxの場合
+  - about:configにおいて、以下にTLSの最小バージョンや最大バージョンを設定することが可能です。 指定できる値は http://kb.mozillazine.org/Security.tls.version.*#Possible_values_and_their_effects あたりを参考のこと
+    - security.tls.version.min
+    - security.tls.version.max 
+
+
 ### SSL証明書の詳細確認方法
 
 - Google Chrome(version56以降)
