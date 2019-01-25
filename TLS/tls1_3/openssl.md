@@ -3,7 +3,50 @@ opensslコマンド関連で主にTLS1.3に関連する操作について
 
 # 詳細
 
-### 接続できることを確認する
+### サーバとして起動する
+通常と変わらない。鍵を生成してから次のコマンドを実行する
+```
+$ sudo /opt/openssl-1.1.1/bin/openssl s_server -accept 443 -cert server.crt -key server.key -www -debug
+```
+
+ただし、IPv4とIPv6が混在する場合には"-4"などを付与しないと起動しないかもしれません。
+```
+(例)
+$ sudo /opt/openssl-1.1.1/bin/openssl s_server -accept 443 -cert server.crt -key server.key -www -debug -4
+```
+
+### TLS拡張情報を表示させる
+```
+$ sudo /opt/openssl-1.1.1/bin/openssl s_server -accept 443 -cert server.crt -key server.key -www -4 -tlsextdebug
+Enter pass phrase for server.key:
+Using default temp DH parameters
+ACCEPT
+TLS client extension "server name" (id=0), len=14
+0000 - 00 0c 00 00 09 31 32 37-2e 30 2e 30 2e 31         .....127.0.0.1
+TLS client extension "EC point formats" (id=11), len=4
+0000 - 03 00 01 02                                       ....
+TLS client extension "supported_groups" (id=10), len=12
+0000 - 00 0a 00 1d 00 17 00 1e-00 19 00 18               ............
+TLS client extension "session ticket" (id=35), len=0
+TLS client extension "application layer protocol negotiation" (id=16), len=11
+0000 - 00 09 08 68 74 74 70 2f-31 2e 31                  ...http/1.1
+TLS client extension "encrypt-then-mac" (id=22), len=0
+TLS client extension "extended master secret" (id=23), len=0
+TLS client extension "signature algorithms" (id=13), len=48
+0000 - 00 2e 04 03 05 03 06 03-08 07 08 08 08 09 08 0a   ................
+0010 - 08 0b 08 04 08 05 08 06-04 01 05 01 06 01 03 03   ................
+0020 - 02 03 03 01 02 01 03 02-02 02 04 02 05 02 06 02   ................
+TLS client extension "supported versions" (id=43), len=9
+0000 - 08 03 04 03 03 03 02 03-01                        .........
+TLS client extension "psk kex modes" (id=45), len=2
+0000 - 01 01                                             ..
+TLS client extension "key share" (id=51), len=38
+0000 - 00 24 00 1d 00 20 33 de-2c fe 8a 2e 71 a6 d2 2f   .$... 3.,...q../
+0010 - c2 34 cb 17 f5 ae 42 9e-f0 2d 6d 46 48 e2 80 99   .4....B..-mFH...
+0020 - 97 49 9a a4 0d 62                                 .I...b
+```
+
+### サーバに接続できることを確認する
 ```
 $ echo q | /opt/openssl-1.1.1/bin/openssl s_client -connect localhost:443
 CONNECTED(00000003)
@@ -75,21 +118,30 @@ $ echo q | /opt/openssl-1.1.1/bin/openssl s_client -connect localhost:443 -ciphe
 $ echo q | /opt/openssl-1.1.1/bin/openssl s_client -connect localhost:443 -ciphersuites 'TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256'
 ```
 
+### TLS1.3で指定できるciphersuiteについて
+識別子がわからなくなる場合には"ciphers -v"のオプションで確認すればよい。
+```
+$ /opt/openssl-1.1.1/bin/openssl ciphers -v |grep 1.3
+TLS_AES_256_GCM_SHA384  TLSv1.3 Kx=any      Au=any  Enc=AESGCM(256) Mac=AEAD
+TLS_CHACHA20_POLY1305_SHA256 TLSv1.3 Kx=any      Au=any  Enc=CHACHA20/POLY1305(256) Mac=AEAD
+TLS_AES_128_GCM_SHA256  TLSv1.3 Kx=any      Au=any  Enc=AESGCM(128) Mac=AEAD
+```
+
 
 ### グループを変更する
 Signature Groupsで指定する値をgroupsオプションで指定することができます。
 ```
-$ echo Q | /opt/openssl-1.1.1/bin/openssl s_client -connect localhost:443 -cipher 'TLS13-AES-256-GCM-SHA384' -groups prime256v1 | grep -i "Server Temp"
+$ echo Q | /opt/openssl-1.1.1/bin/openssl s_client -connect localhost:443 -ciphersuites 'TLS_AES_256_GCM_SHA384' -groups prime256v1 | grep -i "Server Temp"
 Server Temp Key: ECDH, P-256, 256 bits
-$ echo Q | /opt/openssl-1.1.1/bin/openssl s_client -connect localhost:443 -cipher 'TLS13-AES-256-GCM-SHA384' -groups secp384r1 | grep -i "Server Temp"
+$ echo Q | /opt/openssl-1.1.1/bin/openssl s_client -connect localhost:443 -ciphersuites 'TLS_AES_256_GCM_SHA384' -groups secp384r1 | grep -i "Server Temp"
 Server Temp Key: ECDH, P-384, 384 bits
-$ echo Q | /opt/openssl-1.1.1/bin/openssl s_client -connect localhost:443 -cipher 'TLS13-AES-256-GCM-SHA384' -groups secp521r1 | grep -i "Server Temp"
+$ echo Q | /opt/openssl-1.1.1/bin/openssl s_client -connect localhost:443 -ciphersuites 'TLS_AES_256_GCM_SHA384' -groups secp521r1 | grep -i "Server Temp"
 Server Temp Key: ECDH, P-521, 521 bits
 ```
 
 次のようにして複数のグループ候補を指定することも可能です
 ```
-$ echo Q | /opt/openssl-1.1.1/bin/openssl s_client -connect localhost:443 -cipher 'TLS13-AES-256-GCM-SHA384' -groups prime256v1:secp384r1:secp521r1
+$ echo Q | /opt/openssl-1.1.1/bin/openssl s_client -connect localhost:443 -ciphersuites 'TLS_AES_256_GCM_SHA384' -groups prime256v1:secp384r1:secp521r1
 ```
 
 - 参考
@@ -98,7 +150,6 @@ $ echo Q | /opt/openssl-1.1.1/bin/openssl s_client -connect localhost:443 -ciphe
 ### 指定できるグループをチェックする
 ```
 $ echo Q | /opt/openssl-1.1.1/bin/openssl ecparam -list_curves | tail -10
-  brainpoolP224r1: RFC 5639 curve over a 224 bit prime field
   brainpoolP224t1: RFC 5639 curve over a 224 bit prime field
   brainpoolP256r1: RFC 5639 curve over a 256 bit prime field
   brainpoolP256t1: RFC 5639 curve over a 256 bit prime field
@@ -108,12 +159,13 @@ $ echo Q | /opt/openssl-1.1.1/bin/openssl ecparam -list_curves | tail -10
   brainpoolP384t1: RFC 5639 curve over a 384 bit prime field
   brainpoolP512r1: RFC 5639 curve over a 512 bit prime field
   brainpoolP512t1: RFC 5639 curve over a 512 bit prime field
+  SM2       : SM2 curve over a 256 bit prime field
 ```
 
 ### curvesを指定する
 以下はP-256、P521の順番で優先度を指定する場合を表す。(TODO: groupとの違いは何か?)
 ```
-$ echo Q | /opt/openssl-1.1.1/bin/openssl s_client -connect localhost:443 -cipher 'TLS13-AES-256-GCM-SHA384' -curves P-256:P-521 | grep -i "Server Temp"
+$ echo Q | /opt/openssl-1.1.1/bin/openssl s_client -connect localhost:443 -ciphersuites 'TLS_AES_256_GCM_SHA384' -curves P-256:P-521 | grep -i "Server Temp"
 Server Temp Key: ECDH, P-256, 256 bits
 ```
 
@@ -122,14 +174,12 @@ Server Temp Key: ECDH, P-256, 256 bits
 ```
 $ echo Q | /opt/openssl-1.1.1/bin/openssl s_client -connect 127.0.0.1:443 -sess_out ticket | grep -ie reused -ie new
 (snip)
-New, TLSv1.3, Cipher is TLS13-AES-256-GCM-SHA384
+New, TLSv1.3, Cipher is TLS_AES_256_GCM_SHA384
 ```
 
 Reusedが出力されれば再利用となります。
 ```
 $ echo Q | /opt/openssl-1.1.1/bin/openssl s_client -connect 127.0.0.1:443 -sess_in ticket | grep -ie reused -ie new
-DONE
-Reused, TLSv1.3, Cipher is TLS13-AES-256-GCM-SHA384
 ```
 
 試しにcipherやgroupなどを以前とは異なるものに変更するとReusedとならずにNewとなります。
@@ -161,6 +211,6 @@ $ openssl s_client -connect nghttp2.org:13443 -sess_out session.dat -sess_in ses
 nginxでearly_dataに対応させるための修正は次を参考のこと
 - http://hg.nginx.org/nginx/rev/548a63b354a2
 
-early_dataに関するAPI群は以下のリファレンスを山椒のこと
+early_dataに関するAPI群は以下のリファレンスを参照のこと
 - https://www.openssl.org/docs/man1.1.1/man3/SSL_read_early_data.html
 
