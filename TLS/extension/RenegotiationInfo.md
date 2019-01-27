@@ -1,14 +1,36 @@
 # 概要
-RFC5746はrenegtiaion_infoのTLS拡張に関するものです。
-これは、2009年にTLSv1, SSL3のハンドシェイク過程において「TLS再ネゴシエーション時の中間者攻撃」の脆弱性(CVE-2009-3555)が発見されたのをきっかけとしてできたRFCで、TLS1.2から2年後の2010年2月にリリースされました。
+RFC5746はrenegtiaion_infoのTLS拡張に関するもので、脆弱性(CVE-2009-3555)が発見されたことからこの拡張が策定されました。
+
+Renegotiationは次のタイミングでサーバからHelloRetryRequestをクライアント側に送付することで引き起こします。
+- クライアント認証をさせたい場合
+- 鍵のアップデート処理を行いたい場合
+
+renegtiaion_info拡張が導入する前は、Renegotiationした後との２つの情報を結びつけることができませんでした。
+このため第三者が無理やりHelloRetryRequestを行うことでハンドシェイクの脆弱性(CVE-2009-3555: 後述)が発見された。
+
+このため、クライント及びサーバで前のハンドシェイクのFinishedを保存しておきそれをもとにハンドシェイクを行ないます。それによって前のハンドシェイクのFinished値を知っている人しかハンドシェイクができなくなります。
+
+
+なお、TLS1.3からは次のメッセージが追加された為に、リネゴーシエーション自体が廃止されました。
+- クライアント認証をさせたい場合はPost-Handshake Authenticationメッセージが追加された
+  - https://tools.ietf.org/html/rfc8446#section-4.6.2
+- 鍵のアップデート処理を行いたい場合はKey and Initialization Vector Updateメッセージが追加された
+  - https://tools.ietf.org/html/rfc8446#section-4.6.3
+
+
+# 脆弱性(CVE-2009-3555)
+
+これは、2009年にTLSv1, SSL3のハンドシェイク過程において「TLSリネゴシエーション時の中間者攻撃」の脆弱性(CVE-2009-3555)が発見されたのをきっかけとしてできたRFCで、TLS1.2から2年後の2010年2月にリリースされました。
 この脆弱性はHTTP, IMAP, SMTPをはじめとする多くのTLS/SSLに依存するプロトコルに影響を与えます。
 この脆弱性を防ぐ対応としてrenegotion_info拡張(RFC5746)が提案されるようになりました。
 
-この仕様は再ネゴシエーションの新しい仕組みであると同時に、バージョン及び拡張に対するintorelanceが開発者によって解消されることを期待しています。
+この仕様はリネゴシエーションの新しい仕組みであると同時に、バージョン及び拡張に対するintorelanceが開発者によって解消されることを期待しています。
 
-SSLv3, TLS 1.0, TLS 1.1などの仕様ではClientHelloに拡張を含んでしまうとハンドシェイクエラーを引き起こしてしまう可能性があります。そこで、RFC5746の3.3節ではTLS_EMPTY_RENEGOTIATION_INFO_SCSVによる第２のメカニズムを提供しています(RFC7507でも規定)。
+SSLv3, TLS 1.0, TLS 1.1などの仕様ではClientHelloに拡張を含んでしまうとハンドシェイクエラーを引き起こしてしまう可能性があります。そこで、RFC5746の3.3節ではTLS_EMPTY_RENEGOTIATION_INFO_SCSVによる第２のメカニズムを提供しています(RFC7507で規定)。
+
 
 # この拡張ができた背景とそれが解決するもの
+
 TLS1.2よりまでは後方互換性に関する明確な記述は存在しなかった。
 そのために、プロトコルバージョンが大きいと未知であると判断したり、好ましくなければハンドシェイクを拒否したりする実装が発生する。
 また、TLS1.2に対応した最初のブラウザIEはデフォルトでTLS1.1とTLS1.2を両方とも無効にした状態でローンチされました。
@@ -30,22 +52,36 @@ Client                        Attacker                        Server
 <--------------------------  Handshake ============================>
 <======================== Client Traffic ==========================>
 ```
+TODO: 上の図にはHelloRetryRequestが記載されていないので記載が必要
+
+
+# 解決方法
+この拡張を導入することによって、ConnectionState(RFC5246#section6.1)に次の３つの変数が追加されます。(詳しくは詳細で説明)
+- secure_renegotiation
+- client_verify_data
+- server_verify_data
+
+これによって、HelloRetryRequestを送付されてきて強制的にハンドシェイクをRetryする場合にも、前回やりとりしていたFinishedのハンドシェイクを必要とするようになります。
+
 
 # 詳細
+
 ## 仕様詳細
 主に3.2節から3.7節について説明する
 - https://tools.ietf.org/html/rfc5746#section-3.2
 
 この拡張を実現するにあたって、クライアントとサーバはTLSコネクション状態ごとに次の３つのフラグをConnectionState(RFC5246#section6.1)に追加すると規定しています。
-- secure_renegotiation: このコネクションでセキュアな再ネゴシエーションが利用されるかどうかを示すフラグ
+- secure_renegotiation: このコネクションでセキュアなリネゴシエーションが利用されるかどうかを示すフラグ
 - client_verify_data: 前回のハンドシェイクでクライアントによってFinishedメッセージから送付されたデータ。現行のTLSバージョンやCipherではこの値は12byteで、SSL3では36byteの値となります。
 - server_verify_data: 前回のハンドシェイクでサーバによってFinishedメッセージから送付されたデータ
 
 ここではクライアントとサーバの次の４つのフェーズについてのRFC仕様を説明します
 - クライアントの初回ハンドシェイクの挙動(3.4節)
-- クライアントのセキュア再ネゴシエーションの挙動(3.5節)
+- クライアントのセキュアリネゴシエーションの挙動(3.5節)
 - サーバの初回ハンドシェイクの挙動(3.6節)
-- サーバのセキュア再ネゴシエーションの挙動(3.7節)
+- サーバのセキュアリネゴシエーションの挙動(3.7節)
+
+TODO: サーバ側ではFinishedの値を保存しておくようになったということなのか??
 
 ### クライアントの初回ハンドシェイクの挙動
 - ClientHelloでenegotiation_info拡張とTLS_EMPTY_RENEGOTIATION_INFO_SCSVを同時に載せることは推奨されていません。
@@ -54,14 +90,13 @@ Client                        Attacker                        Server
   - 拡張が存在すれば、secure_renegotiation=trueをセットする。そして、クライアントはrenegotiated_connectionフィールドが0かどうかをチェックしなければならない、もし0じゃなかったらhandshake_failureアラートを送付してハンドシェイクをabortしなければならない。
 
 
-### クライアントのセキュア再ネゴシエーションの挙動
+### クライアントのセキュアリネゴシエーションの挙動
 secure_renegotiation=trueとなっている場合にのみ次の処理を行います。
 
-- クライアントはClientHelloのenegotiation_info中に保存されたclient_verify_dataを含めなければならない。SCSVを含めてはならない。
+- クライアントはClientHelloのrenegotiation_info中に保存されたclient_verify_dataを含めなければならない。SCSVを含めてはならない。
 - ServerHelloを受信したら、クライアントはrenegotiation_info拡張が存在するかどうかを検証しなければならない。もしなかったら、クライアントはハンドシェイクをabortしなければならない。
 - クライアントはrenegotiated_connectionフィールドが保存されたclient_verify_dataとserver_verify_dataの値が保存されたものと一致するかどうかを検証しなければならない。
 - ハンドシェイクが完了したら、クライアントは新しいclient_verify_dataとserver_verify_dataの値を保存しておく必要がある。
-
 
 ### サーバの初回ハンドシェイクの挙動
 - サーバはClientHello中にrenegotiation_infoが含まれているかどうかをチェックしなければならない。
@@ -71,7 +106,7 @@ secure_renegotiation=trueとなっている場合にのみ次の処理を行い�
   - secure_renegotiation=trueとセットされたのであれば、サーバはrenegotiation_infoをServerHelloに含めなければならない
 - ハンドシェイクが完了したら、サーバはclient_verify_dataとserver_verify_data valuesを将来の利用のために保存する必要がある。
 
-### サーバのセキュア再ネゴシエーションの挙動
+### サーバのセキュアリネゴシエーションの挙動
 secure_renegotiation=trueとなっている場合にのみ次の処理を行います。
 - ClientHelloを受信したら、サーバはTLS_EMPTY_RENEGOTIATION_INFO_SCSVを含んでいないことを検証する。もし含まれていたら、サーバはハンドシェイクをアボートしなければならない。
 - サーバはrenegotiation_info拡張を検証しなければならない。もしなかったら、ハンドシェイクをabortしなければならない (???)
@@ -101,10 +136,12 @@ struct {
 } RenegotiationInfo;
 ```
 
-renegotiated_connectionの仕様については次の通りです。
-- 接続に対する初回ハンドシェイクだとrenegotiated_connectionはClientHello及びServerHello共に長さ0となります。
-- 再ネゴシエーションするClientHelloだと、client_verify_dataが入ります。
-- 再ネゴシエーションするServerHelloだと、client_verify_dataとserver_verify_dataの結合されたデータを含みます
+renegotiated_connectionの仕様については初回ハンドシェイク時かリネゴシエーション時かで中身が変わってきます。
+- 初回ハンドシェイク時
+  - 接続に対する初回ハンドシェイクだとrenegotiated_connectionはClientHello及びServerHello共に長さ0となります。
+- リネゴシエーション時
+  - リネゴシエーションするClientHelloだと、client_verify_dataが入ります。
+  - リネゴシエーションするServerHelloだと、client_verify_dataとserver_verify_dataの結合されたデータを含みます
 
 
 ### データ構造サンプル
@@ -141,7 +178,7 @@ CONNECTED(00000003)
 ```
 
 # TODO
-- パケットをキャプチャーしても0以外(再ネゴシエーション)が入っていることをみたことがないが、本当に使われている?
+- パケットをキャプチャーしても0以外(リネゴシエーション)が入っていることをみたことがないが、本当に使われている?
 - session_idを指定したときとのロジックでの共通点は何か?
 - RFCの読み込みがまだ足りない
 - opensslコマンドでrenegotiation_infoを含める方法について調査する
@@ -156,5 +193,5 @@ CONNECTED(00000003)
   - https://tools.ietf.org/html/rfc5746
 - RFC7507: TLS Fallback Signaling Cipher Suite Value (SCSV) for Preventing Protocol Downgrade Attacks
   - https://tools.ietf.org/html/rfc7507
-- 「TLS再ネゴシエーション時の中間者攻撃」の脆弱性(CVE-2009-3555)
+- 「TLSリネゴシエーション時の中間者攻撃」の脆弱性(CVE-2009-3555)
   - http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-3555
