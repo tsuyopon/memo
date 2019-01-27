@@ -24,6 +24,20 @@ compiler: cc -fPIC -DOPENSSL_PIC -DOPENSSL_THREADS -D_REENTRANT -DDSO_DLFCN -DHA
 OPENSSLDIR: "/usr/lib/ssl"
 ```
 
+### openssl Manpage
+man opensslをすると次のようなSEE ALSOが表示される。
+```
+SEE ALSO
+       asn1parse(1), ca(1), config(5), crl(1), crl2pkcs7(1), dgst(1), dhparam(1), dsa(1), dsaparam(1), enc(1), gendsa(1), genpkey(1), genrsa(1), nseq(1),
+       openssl(1), sslpasswd(1), pkcs12(1), pkcs7(1), pkcs8(1), sslrand(1), req(1), rsa(1), rsautl(1), s_client(1), s_server(1), s_time(1), smime(1),
+       spkac(1), verify(1), version(1), x509(1), crypto(3), ssl(3), x509v3_config(5)
+```
+
+つまり、s_serverオプションを知りたければ以下のコマンドでOK
+```
+man s_server
+```
+
 ### opensslヘルプ
 第１引数が間違っていると第１引数に指定するヘルプを表示する。
 ```
