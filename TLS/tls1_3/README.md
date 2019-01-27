@@ -12,6 +12,9 @@ TLS1.3についての全体像について記載します。
   - CipherSuites
     - 共通鍵暗号(AES/CHACHA20)とそのメッセージ認証形式(GCM-SHA384等)を指定することになります。サーバ証明書の確認や鍵交換方式は暗号スイートに含まれません。
   - SessionIDやSessionTicketを利用したSessionResumptionは全てPSK交換に置き換わることとなった
+  - Renegotiationの廃止
+    - 今までクライアント認証、鍵アップデートが発生するとRenegotiationしていたが、PostAuthentication Messageを定義することで同一ハンドシェイク中で行うことになった。
+    - なお、シーケンス番号がオーバーフローした場合にもRenegotiationしていたが、これはTLS1.3ではカバーせず、切断を切ることがわかった。
 - ClientHello
   - TLS1.2と互換性がある
   - サーババージョンはSupported Version拡張(必須)にその役割を移動し、固定で0x0303(TLS1.2)
@@ -100,6 +103,8 @@ TLS1.3では共通鍵交換はKeyShare拡張、サーバ認証はSignatureAlgori
   - https://lepidum.co.jp/blog/2018-10-01/tls1\_3security/
 
 # 参考情報
+- 実装時に参考となるwiki
+  - https://wiki.openssl.org/index.php/TLS1.3
 - TLS1.3で使える・使えない暗号アルゴリズム
   - https://qiita.com/s\_machida/items/0f6ef0466503c0f00839
 - Traffic Analysis of an SSL/TLS Session
