@@ -6,22 +6,18 @@ ECC証明書の場合には２つのエクステンションが付与される(?
   - 試験するための曲線の種別を表す
   - クライアントがサポートする楕円曲線の種別を表しています
   - ServerKeyExchangeのパケットにはこの中で選択される値を含みます
-- ec_point_formats
-  - クライアントがパース可能な点のフォーマットを示す
-  - TLS1.3では1つフォーマットが望ましいとしてec_point_formatは廃止される。
 
 楕円曲線についてはmath/ECC.mdを確認のこと
 
+# 解決したい課題
+公開鍵暗号方式の楕円曲線暗号をネゴシエーションをする際に、クライアントがどの楕円曲線をサポートしているのかをサーバ側に伝えたい。
+
+# 解決方法
+elliptic_curvesによってサーバ側にクライアントがサポートしている楕円曲線を伝えます。
+なお、TLS1.3ではelliptic_curvesではなくsupported_groups拡張となり、ec_point_formatsは廃止されます。
+
 # 詳細
 
-## 拡張データ構造
-ExtensionTypeは次の番号を利用します。
-```
-enum { elliptic_curves(10), ec_point_formats(11) } ExtensionType;
-```
-
-上記２つのタイプそれぞれについて説明します。
-### 1) elliptic_curves (Supported Elliptic Curves Extension):   
 - クライアントによってサポートされる楕円曲線(elliptic curves)のセットを示しています。 
 - opaque型のextension_dataにはEllipticCurveListを含んでいます。
 
@@ -53,27 +49,8 @@ enum {
 - データ型については以下を参照のこと
   - https://tools.ietf.org/html/rfc4492#section-5.1.1
 
-### 2) ec_point_formats (Supported Point Formats Extension):
-- クライアントがパースすることができるポイントフォーマットのセットを示します。 
-- opaque型のextension_dataにはECPointFormatListを含んでいます。
+### データ構造サンプル(ec_point_formatsも合わせて記載)
 
-```
-enum { uncompressed (0), ansiX962_compressed_prime (1),
-       ansiX962_compressed_char2 (2), reserved (248..255)
-} ECPointFormat;
-```
-
-```
-struct {
-    ECPointFormat ec_point_format_list<1..2^8-1>
-} ECPointFormatList;
-```
-
-
-- データ型については以下を参照のこと
-  - https://tools.ietf.org/html/rfc4492#section-5.1.2
-
-### データ構造サンプル
 - ClientHelloサンプル
 ```
 Extension: ec_point_formats
@@ -82,8 +59,6 @@ Extension: ec_point_formats
     EC point formats Length: 1
     Elliptic curves point formats (1)
         EC point format: uncompressed (0)
-```
-```
 Extension: elliptic_curves
     Type: elliptic_curves (0x000a)
     Length: 10
@@ -106,37 +81,13 @@ Extension: ec_point_formats
         EC point format: ansiX962_compressed_char2 (2)
 ```
 
-### データ構造サンプル(TLS1.3 draft18)
-- ClientHelloサンプル(TLS1.3からはelliptic_curvesはsupported_groupsという名称に変更になりました)
-```
-Extension: supported_groups (len=10)
-    Type: supported_groups (10)
-    Length: 10
-    Supported Groups List Length: 8
-    Supported Groups (4 groups)
-        Supported Group: Reserved (GREASE) (0x3a3a)
-        Supported Group: x25519 (0x001d)
-        Supported Group: secp256r1 (0x0017)
-        Supported Group: secp384r1 (0x0018)
-Extension: ec_point_formats (len=2)
-    Type: ec_point_formats (11)
-    Length: 2
-    EC point formats Length: 1
-    Elliptic curves point formats (1)
-        EC point format: uncompressed (0)
-```
-
 # SeeAlso
 - RFC4492: Elliptic Curve Cryptography (ECC) Cipher Suites for Transport Layer Security (TLS)
   - https://www.ietf.org/rfc/rfc4492.txt
     - elliptic_curves
       - https://tools.ietf.org/html/rfc4492#section-5.1.1
-    - ec_point_formats
-      - https://tools.ietf.org/html/rfc4492#section-5.1.2
 - IANA:
   - TLS Supported Groups Registry
     - https://www.iana.org/assignments/tls-parameters/tls-parameters.xhtml#tls-parameters-8
-  - TLS EC Point Format Registry
-    - https://www.iana.org/assignments/tls-parameters/tls-parameters.xhtml#tls-parameters-9
   - TLS EC Curve Type Registry
     - https://www.iana.org/assignments/tls-parameters/tls-parameters.xhtml#tls-parameters-10
