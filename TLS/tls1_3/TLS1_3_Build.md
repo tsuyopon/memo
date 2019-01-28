@@ -45,7 +45,7 @@ configにはTLS1.3を有効にするためにenable-tls1_3を指定します。
 ```
 $ git clone https://github.com/openssl/openssl.git
 $ cd openssl
-$ ./config -fPIC --prefix=/opt/openssl-1.1.1 shared zlib enable-tls1_3
+$ ./config -d -fPIC --prefix=/opt/openssl-1.1.1 shared zlib enable-tls1_3      // gdbでもデバッグビルドできるように-dをここでは付与
 $ make
 $ sudo make install
 ```
