@@ -48,6 +48,8 @@ Content-Length: 6794
 iオプション(include)を含めればレスポンスヘッダも表示する。
 ```
 $ curl -i http://www.yahoo.co.jp
+or
+$ curl --include http://www.yahoo.co.jp
 ```
 
 ### POSTメソッド
