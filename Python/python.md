@@ -1,6 +1,14 @@
 # 概要
 python関連の文法についての基本的な事項についてまとめます。
 
+# インストール
+2系と3系でインストールが異なるらしいので注意すること
+
+- Python 3 Installation & Setup Guide
+  - https://realpython.com/installing-python/
+
+
+# 詳細
 ### 覚えておくこと
 - pythonはタブによって表現します。
 - Pythonには変数の宣言はありません。変数に代入する型も制限されません。
