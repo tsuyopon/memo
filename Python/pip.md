@@ -85,7 +85,7 @@ test       2.3.4.5
 
 ### インストール済みパッケージを確認する
 ```
-$ python -m pip freeze
+$ python -m pip freeze | tee requirements.txt
 test==2.3.4.5
 ```
 
@@ -105,9 +105,9 @@ Proceed (y/n)? y
   Successfully uninstalled test-2.3.4.5
 ```
 
-不要なパッケージをinstall.txtに記載して次のようにしてパッケージ削除することも可能です
+不要なパッケージをrequirements.txtに記載して次のようにしてパッケージ削除することも可能です
 ```
-$ pip uninstall -r install.txt
+$ pip uninstall -r requirements.txt
 ```
 
 ### インストール済みライブラリが最新版かどうかをチェックする
@@ -135,6 +135,26 @@ Required-by:
 ```
 $ pip install pycrypto --proxy=http://user@proxy.example.jp:8080
 ```
+
+### パッケージをダウンロードする
+```
+$ pip download scons
+Collecting scons
+  Using cached https://files.pythonhosted.org/packages/13/31/43b96f5b79731468a6731e4dbc71601f67fdeddad053bd4f1d1e2f0dbeec/scons-3.0.4-py2.py3-none-any.whl
+  Saved ./scons-3.0.4-py2.py3-none-any.whl
+Successfully downloaded scons
+You are using pip version 18.1, however version 19.0.1 is available.
+You should consider upgrading via the 'pip install --upgrade pip' command.
+$ ls scons*
+scons-3.0.4-py2.py3-none-any.whl
+```
+
+### 互換性のあるパッケージが問題なく入っていることを確認する
+```
+$ pip check virtualenv
+No broken requirements found.
+```
+
 
 ### ヘルプを表示
 ```
