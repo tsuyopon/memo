@@ -1,14 +1,14 @@
-# $B35MW(B
-MySQL$B$N%5%s%W%k%F!<%V%k=8$K$D$$$F(B
+# 概要
+MySQLのサンプルテーブル集について
 
-# $B>\:Y(B
-- $B<!$N(BMySQL$B8x<0%5%$%H$GDs6!$5$l$F$$$k%5%s%W%k(B
+# 詳細
+- 次のMySQL公式サイトで提供されているサンプル
 - https://dev.mysql.com/doc/index-other.html
   - sakila\_sample.md
   - world\_x\_sample.md
-  - $B>e5-0J30$K$b$$$/$D$+$"$k$h$&$J$N$G(B
+  - 上記以外にもいくつかあるようなので
 
-- $BBgNL$N%l%3!<%I$rEjF~$9$k$3$H$,$G$-$k(B
+- 大量のレコードを投入することができる
   - https://github.com/datacharmer/test_db.git
   - test\_db.md
 

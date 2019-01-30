@@ -1,18 +1,18 @@
-# $B35MW(B
-dig(Domain Information Grouper)$B$K$D$$$F$^$H$a$k(B
-dig$B%3%^%s%I$O(Bdig$B%Q%C%1!<%8!"(Bbind-utils(centos)$B!"(Bdnsutils(ubuntu)$B$J$I$GDs6!$5$l$F$$$k$h$&$G$9!#(B
+# 概要
+dig(Domain Information Grouper)についてまとめる
+digコマンドはdigパッケージ、bind-utils(centos)、dnsutils(ubuntu)などで提供されているようです。
 
-$B%3%^%s%I$N;H$$J}$OC1=c$G0J2<$NDL$j$G$9(B
+コマンドの使い方は単純で以下の通りです
 ```
 $ dig @server domain query-type
 ```
 
-# $B>\:Y(B
-### dig$B$H(Bnslookup$B$N0c$$(B
-dig$B$O(BDNS$B$NLd$$9g$o$;$K6a$$7A<0$G=PNO$7!"(Bnslookup$B$OLd$$9g$o$;7k2L$r=PNO$9$k!#(B
-$B%M%C%H%o!<%/%H%i%V%k%7%e!<%F%#%s%0$G$O!"(Bdig$B$r;H$C$?$[$&$,NI$$$H$N$3$H(B
+# 詳細
+### digとnslookupの違い
+digはDNSの問い合わせに近い形式で出力し、nslookupは問い合わせ結果を出力する。
+ネットワークトラブルシューティングでは、digを使ったほうが良いとのこと
 
-nslookup$B$N;~$O<!$N$h$&$J=PNO$H$J$k(B
+nslookupの時は次のような出力となる
 ```
 $ nslookup www.yahoo.co.jp
 Server:		192.168.3.1
@@ -24,7 +24,7 @@ Name:	edge.g.yimg.jp
 Address: 182.22.31.252
 ```
 
-dig$B$N>l9g$K$O<!$N$h$&$J=PNO$H$J$j!"<B:]$N(BDNS$B%5!<%P$N=PNO7k2L$H;w$?$h$&$J7A$K$J$k!#(B
+digの場合には次のような出力となり、実際のDNSサーバの出力結果と似たような形になる。
 ```
 $ dig www.yahoo.co.jp
 
@@ -55,13 +55,13 @@ gns12.yahoo.co.jp.	205	IN	A	124.83.255.100
 ;; MSG SIZE  rcvd: 147
 ```
 
-- QUERY SECTION: $BLd$$9g$o$;$7$?FbMF$rI=<($9$k(B
-- ANSWER SECTION: $BLd$$9g$o$;$KBP$9$k7k2L$rI=<($9$k(B
-- AUTHORITY SECTION: $B1~Ez$7$?8"0R%5!<%P$r4^$`8"0R%5!<%P72(B($B8"0R%5!<%P$N(BNS$B%l%3!<%I(B)
-- ADDITIONAL SECTION: $B8"0R%5!<%P$N(BA$B%l%3!<%I(B($B8"0R%5!<%P$N(BSOA$B%l%3!<%I$KEPO?$5$l$k%0%k!<%l%3!<%I(B)
+- QUERY SECTION: 問い合わせした内容を表示する
+- ANSWER SECTION: 問い合わせに対する結果を表示する
+- AUTHORITY SECTION: 応答した権威サーバを含む権威サーバ群(権威サーバのNSレコード)
+- ADDITIONAL SECTION: 権威サーバのAレコード(権威サーバのSOAレコードに登録されるグルーレコード)
 
-### $BFCDj$N%;%/%7%g%s$@$1<hF@$9$k(B
-$B4v$D$+Nc$r<($9(B
+### 特定のセクションだけ取得する
+幾つか例を示す
 
 - ANSWER SECTION
 ```
@@ -77,7 +77,7 @@ g.yimg.jp.		333	IN	NS	gns02.yahoo.co.jp.
 g.yimg.jp.		333	IN	NS	gns12.yahoo.co.jp.
 ```
 
-- $B:G8e$N9T(B
+- 最後の行
 ```
 $ dig +noall +cmd www.yahoo.co.jp
 
@@ -85,15 +85,15 @@ $ dig +noall +cmd www.yahoo.co.jp
 ;; global options: +cmd
 ```
 
-### $B2sEz7k2L$rC;$/F@$k(B
+### 回答結果を短く得る
 ```
 $ dig www.yahoo.co.jp +short
 edge.g.yimg.jp.
 183.79.249.124
 ```
 
-### IP$B%"%I%l%9$N5U0z$-$r9T$&(B
-x$B%*%W%7%g%s$r;XDj$7$?8e$K(BIP$B%"%I%l%9$r;XDj$9$l$P$h$$!#(B
+### IPアドレスの逆引きを行う
+xオプションを指定した後にIPアドレスを指定すればよい。
 ```
 $ dig -x 8.8.4.4
 
@@ -125,11 +125,11 @@ ns2.level3.net.		327	IN	A	209.244.0.2
 ;; MSG SIZE  rcvd: 171
 ```
 
-### DNS$B%5!<%P$r;XDj$9$k(B
-8.8.8.8$B$d(B4.4.4.4$B$J$I$O(BGoogle Public DNS$B$H$7$FDs6!$5$l$F$$$k$N$G$3$l$r;H$C$FLd$$9g$o$;$F8+$^$9!#(B
+### DNSサーバを指定する
+8.8.8.8や4.4.4.4などはGoogle Public DNSとして提供されているのでこれを使って問い合わせて見ます。
 - https://developers.google.com/speed/public-dns/
 
-$B$G$O(BDNS$B%5!<%P$r;XDj$7$F%"%/%;%9$7$^$9!#(B
+ではDNSサーバを指定してアクセスします。
 ```
 $ dig @8.8.8.8 www.google.com
 
@@ -152,8 +152,8 @@ www.google.com.		109	IN	A	216.58.221.4
 ;; MSG SIZE  rcvd: 48
 ```
 
-### $B%l%3!<%I$r;XDj$7$F<hF@$9$k(B
-$B0J2<$O(BNS$B$r;XDj$7$?Nc$G$9(B
+### レコードを指定して取得する
+以下はNSを指定した例です
 ```
 $ dig www.google.com NS
 
@@ -177,7 +177,7 @@ google.com.		60	IN	SOA	ns1.google.com. dns-admin.google.com. 183402538 900 900 1
 ;; MSG SIZE  rcvd: 93
 ```
 
-$B0J2<$O(BSOA$B$r;XDj$7$?Nc$G$9!#(B
+以下はSOAを指定した例です。
 ```
 $ dig www.google.com SOA
 ; <<>> DiG 9.8.3-P1 <<>> www.google.com SOA
@@ -200,7 +200,7 @@ google.com.		60	IN	SOA	ns1.google.com. dns-admin.google.com. 183448256 900 900 1
 ;; MSG SIZE  rcvd: 93
 ```
 
-### $B8+$d$9$$7A<0$K$9$k(B
+### 見やすい形式にする
 ```
 $ dig google.com soa +noall +answer +multiline
 
@@ -215,7 +215,7 @@ google.com.		60 IN SOA ns1.google.com. dns-admin.google.com. (
 				)
 ```
 
-### $B%k!<%H(BDNS$B$+$iLd$$9g$o$;$r9T$$!"7k2L$r=gHV$K=PNO$9$k(B
+### ルートDNSから問い合わせを行い、結果を順番に出力する
 ```
 $ dig www.google.com +trace
 
@@ -261,19 +261,19 @@ www.google.com.		300	IN	A	216.58.199.228
 ;; Received 48 bytes from 216.239.36.10#53(216.239.36.10) in 48 ms
 ```
 
-### TCP$B$GLd$$9g$o$;$r9T$&(B
-$BDL>o$O(Bdig$B$O(BUDP$B$GLd$$9g$o$;$r9T$C$F$$$k$N$@$,!"1~Ez%5%$%:$,(B512$B$rD6$($k>l9g$K$O(BTCP$B$G$NLd$$9g$o$;$KJQ99$9$k$h$&$K$J$C$F$$$k(B
+### TCPで問い合わせを行う
+通常はdigはUDPで問い合わせを行っているのだが、応答サイズが512を超える場合にはTCPでの問い合わせに変更するようになっている
 ```
 $ dig www.yahoo.co.jp +vc
 ```
 
-### DNSSEC$B$GLd$$9g$o$;$r9T$&(B
+### DNSSECで問い合わせを行う
 ```
 $ dig www.yahoo.co.jp +dnssec
 ```
 
-### $B:F5/Ld$$9g$o$;$r9T$o$J$$(B
-$BBP>]$H$J$k(BDNS$B%5!<%P$GJ];}$7$F$$$k%-%c%C%7%e$G$N$_Ld$$9g$o$;$r9T$&(B
+### 再起問い合わせを行わない
+対象となるDNSサーバで保持しているキャッシュでのみ問い合わせを行う
 ```
 $ dig www.yahoo.co.jp +norecurse
 ```

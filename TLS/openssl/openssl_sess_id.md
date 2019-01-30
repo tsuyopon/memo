@@ -1,5 +1,5 @@
-### SSL$B%;%C%7%g%s>pJs$r2rFI$9$k(B
-sess_out$B$G(BSSL$B%;%C%7%g%s>pJs$r%U%!%$%k$KJ]B8$9$k$3$H$,$G$-$^$9!#(Bsess_out.txt$B$K$O80>pJs$b4^$^$l$F$$$k$N$G<h$j07$$$OCm0U$9$k$3$H(B
+### SSLセッション情報を解読する
+sess_outでSSLセッション情報をファイルに保存することができます。sess_out.txtには鍵情報も含まれているので取り扱いは注意すること
 ```
 $ echo Q | openssl s_client -connect www.yahoo.co.jp:443 -sess_out sess_out.txt
 $ cat sess_out.txt 
@@ -9,7 +9,7 @@ MIIN2AIBAQICAwEEAgAvBCAojDT12uPks31zRTxR/4OLzaf/mxqgHVlUX0LEj7Jb
 -----END SSL SESSION PARAMETERS-----
 ```
 
-SSL$B%;%C%7%g%s>pJs$r2rFI$9$k%3%^%s%I$H$7$F!V(Bopenssl sess_id$B!W$,MQ0U$5$l$F$$$^$9!#(B
+SSLセッション情報を解読するコマンドとして「openssl sess_id」が用意されています。
 ```
 $ openssl sess_id -text -noout -in sess_out.txt
 SSL-Session:
