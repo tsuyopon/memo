@@ -31,17 +31,37 @@ pipについてはeasy_installやpython get-pip.pyでインストールする方
 
 ### パッケージをインストールする
 ```
+$ pip install test
+```
+
+バージョンを固定としたいのであれば次のようにして指定できます。
+```
 $ pip install test==2.3.4.5
 Collecting test==2.3.4.5
 Installing collected packages: test
 Successfully installed test-2.3.4.5
 ```
 
-次のような指定も可能です
+次のようなバージョン指定も可能です
 ```
 $ pip install 'test==0.16.2'
 $ pip install 'test>=0.16.2'
+$ pip install 'test>=0.16'        # 0.16.*が対象です
 $ pip install 'test<0.16.2
+$ pip install "test~=0.16.2"
+```
+
+複合パターンも指定できます。
+```
+$ pip install "test>=1,<2"     # バージョン1系のみ許容する。
+```
+
+### VersionControlSystem(VCS)からインストールする
+```
+$ pip install -e git+https://git.repo/some_pkg.git#egg=SomeProject          # from git
+$ pip install -e hg+https://hg.repo/some_pkg#egg=SomeProject                # from mercurial
+$ pip install -e svn+svn://svn.repo/some_pkg/trunk/#egg=SomeProject         # from svn
+$ pip install -e git+https://git.repo/some_pkg.git@feature#egg=SomeProject  # from a branch
 ```
 
 ### 入っているパッケージを再度インストールする
@@ -199,3 +219,8 @@ General Options:
                               Don't periodically check PyPI to determine whether a new version of pip is available for download. Implied with --no-index.
   --no-color                  Suppress colored output
 ```
+
+
+# 参考資料
+- PyPA: Installing Packages
+  - https://packaging.python.org/tutorials/installing-packages/
