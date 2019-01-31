@@ -53,7 +53,7 @@ Ctrl + I    Ctrl+Oを実行して移動前の位置に戻った後に、再度�
 
 定義元も合わせてvimの水平タブで表示するには次のキーバインドを実行します。
 ```
-Ctrl + W, Ctrl + ]      定義元を水平タブで合わせて開く
+Ctrl + w, Ctrl + ]      定義元を水平タブで合わせて開く
 ```
 
 なお、標準ではありませんが、次を.vimrcに追加することによって
@@ -89,6 +89,58 @@ $HOME/.vimrcに次のような行を追加することでvimを開いた時に�
 ```
 set tags+=$HOME/tags
 set tags+=$HOME/tags2
+```
+
+カンマ区切りで複数セットすることができます。
+```
+set tags=./tags,./TAGS,tags,TAGS
+```
+
+### 対応している拡張子について
+```
+$ ctags --list-maps
+Ant      *.build.xml
+Asm      *.asm *.ASM *.s *.S *.A51 *.29[kK] *.[68][68][kKsSxX] *.[xX][68][68]
+Asp      *.asp *.asa
+Awk      *.awk *.gawk *.mawk
+Basic    *.bas *.bi *.bb *.pb
+BETA     *.bet
+C        *.c
+C++      *.c++ *.cc *.cp *.cpp *.cxx *.h *.h++ *.hh *.hp *.hpp *.hxx
+C#       *.cs
+Cobol    *.cbl *.cob *.CBL *.COB
+DosBatch *.bat *.cmd
+Eiffel   *.e
+Erlang   *.erl *.ERL *.hrl *.HRL
+Flex     *.as *.mxml
+Fortran  *.f *.for *.ftn *.f77 *.f90 *.f95
+HTML     *.htm *.html
+Java     *.java
+JavaScript
+Lisp     *.cl *.clisp *.el *.l *.lisp *.lsp
+Lua      *.lua
+Make     *.mak *.mk [Mm]akefile GNUmakefile
+MatLab   *.m
+OCaml    *.ml *.mli
+Pascal   *.p *.pas
+Perl     *.pl *.pm *.plx *.perl
+PHP      *.php *.php3 *.phtml
+Python   *.py *.pyx *.pxd *.pxi *.scons
+REXX     *.cmd *.rexx *.rx
+Ruby     *.rb *.ruby
+Scheme   *.SCM *.SM *.sch *.scheme *.scm *.sm
+Sh       *.sh *.SH *.bsh *.bash *.ksh *.zsh
+SLang    *.sl
+SML      *.sml *.sig
+SQL      *.sql
+Tcl      *.tcl *.tk *.wish *.itcl
+Tex      *.tex
+Vera     *.vr *.vri *.vrh
+Verilog  *.v
+VHDL     *.vhdl *.vhd
+Vim      *.vim
+YACC     *.y
+js       *.js
 ```
 
 ## .ctagsファイルについて
