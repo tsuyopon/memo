@@ -5,6 +5,9 @@ MAC OSではELFではなくMach-Oと呼ばれるバイナリ形式になって�
 
 # 詳細
 
+### Linuxでの/optなどの代替のインストール先
+- https://apple.stackexchange.com/questions/119230/what-is-standard-for-os-x-filesystem-e-g-opt-vs-usr
+
 ### lddが使えない
 MACではlddが使えない。そのためにotoolコマンドを利用します。
 ```

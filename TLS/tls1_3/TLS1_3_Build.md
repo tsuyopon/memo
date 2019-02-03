@@ -1,5 +1,4 @@
-# 概要
-TLS1.3関連ソフトウェアのビルドなど
+# 概要 TLS1.3関連ソフトウェアのビルドなど
 
 # 詳細
 ### Wiresharkで最新のパケット構造
@@ -40,11 +39,12 @@ $ sudo yum install git
 3266cf582a8e1b0bd04600658f64e2c9a79cf903
 ```
 
-opensslビルドを行います。最新ブランチはOpenSSL_1_1_1-pre2だと若干エラーがありますので最新版を取得します。
-configにはTLS1.3を有効にするためにenable-tls1_3を指定します。
+opensslビルドを行います。ここではOpenSSL_1_1_1aブランチを指定しています。
+configにはTLS1.3を有効にするためにenable-tls1_3を指定します(デフォルトで有効となっているはずです)
 ```
 $ git clone https://github.com/openssl/openssl.git
 $ cd openssl
+$ git checkout OpenSSL_1_1_1a
 $ ./config -d -fPIC --prefix=/opt/openssl-1.1.1 shared zlib enable-tls1_3      // gdbでもデバッグビルドできるように-dをここでは付与
 $ make
 $ sudo make install
