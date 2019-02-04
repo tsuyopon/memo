@@ -1,53 +1,53 @@
 # HMAC-based Extract-and-Expand Key Derivation Function (HKDF)
-KDF(Key Derivation Function)$B$O80$r9=@.$9$k=i4|CM$r<u$1<h$C$F!"(B1$B$D$J$$$7$OJ#?t$N0E9f3XE*$K6/$$80$r@8@.$9$k$3$H$,$G$-$k;EAH$_$G$9!#(B
-HKDF$B$H8F$P$l$k(BKDF$B$N<BAu$N(B1$B$D$,(BRFC5869$B$G5,Dj$5$l$F$$$^$9!#(B
+KDF(Key Derivation Function)は鍵を構成する初期値を受け取って、1つないしは複数の暗号学的に強い鍵を生成することができる仕組みです。
+HKDFと呼ばれるKDFの実装の1つがRFC5869で規定されています。
 
-RFC5869$B$NL\E*$H$7$F$O!">-MhE*$J%W%m%H%3%k$d%"%W%j%1!<%7%g%s$G$N0lHLE*$J(BKDF$B$rDj5A$7$F!"J#?t$N(BKDF$B%a%+%K%:%`$,A}?#$5$l$k$3$H$rHr$1$kL\E*$b$"$j$^$9!#(B
+RFC5869の目的としては、将来的なプロトコルやアプリケーションでの一般的なKDFを定義して、複数のKDFメカニズムが増殖されることを避ける目的もあります。
 
-HKDF$B$O(Bextract-then-expand$B$NOHAH$_$K=>$C$F=hM}$5$l$^$9!#(B
+HKDFはextract-then-expandの枠組みに従って処理されます。
 
-KDF$B$O$3$N>l9g$K$O!"O@M}E*$K#2$D$N%b%8%e!<%k$+$i9=@.$5$l$^$9!#(B
-- Step1(Extract): $BF~NO$H$J$k80$N=i4|CM(B(IKM: Input Keying Material)$B$r<u$1<h$j!"(BIKM$B$+$i8GDjD9$H$J$k(BPRK(PesedoRandom Key)$B$r<hF@$7$^$9!#(B
-- Step2(Expand):  Step1$B$G@8@.$7$?(BPRK$B$rJ#?t$N(BPRK$B$X$H3HD%$7$^$9!#(B
+KDFはこの場合には、論理的に２つのモジュールから構成されます。
+- Step1(Extract): 入力となる鍵の初期値(IKM: Input Keying Material)を受け取り、IKMから固定長となるPRK(PesedoRandom Key)を取得します。
+- Step2(Expand):  Step1で生成したPRKを複数のPRKへと拡張します。
 
 
-Extract$B$O(BIKM$B$NJ,;6%(%s%H%m%T!<$r$h$jC;$$7A$X$HJQ49$9$k!#$7$+$7!"0E9f3XE*$K$O6/$$$H$$$C$?$3$H$rL\E*$H$9$k!#(B
-Expand$B$O(BPRK$B$r4uK>$9$kD9$5$N(BPRK$B$X$H3HD%$9$k$3$H$G$9!#(B
+ExtractはIKMの分散エントロピーをより短い形へと変換する。しかし、暗号学的には強いといったことを目的とする。
+ExpandはPRKを希望する長さのPRKへと拡張することです。
 
 # HKDF
 
 ### Step1: Extract
 ```
-$B=hM}FbMF(B: HKDF-Extract(salt, IKM)$B$+$i(BPRK$B$X$NJQ49=hM}(B
+処理内容: HKDF-Extract(salt, IKM)からPRKへの変換処理
 ```
 
-- $B%*%W%7%g%s(B
-  - Hash: $B%O%C%7%e4X?t!#(BHashLen$B$O%O%C%7%e4X?t$N=PNO%"%&%H%W%C%H$H$J$k%*%/%F%C%H$ND9$5$rI=$9!#(B
-- $BF~NO(B: 
+- オプション
+  - Hash: ハッシュ関数。HashLenはハッシュ関数の出力アウトプットとなるオクテットの長さを表す。
+- 入力: 
   - salt:
-  - IKM:  $BF~NOCM$H$J$k%a%C%;!<%8(B(Input Keying Material)
-- $B=PNO(B: 
+  - IKM:  入力値となるメッセージ(Input Keying Material)
+- 出力: 
   - PRK(PesedoRandom Key)
-- $B=hM}4X?t(B:
+- 処理関数:
 ```
 PRK = HMAC-Hash(salt, IKM)
 ```
 
 ### Step2: Expand
 ```
-$B=hM}FbMF(B: HKDF-Expand(PRK, info, L) $B$+$i(B OKM(Output Keying Material) $B$X$NJQ49=hM}(B
+処理内容: HKDF-Expand(PRK, info, L) から OKM(Output Keying Material) への変換処理
 ```
 
-- $B%*%W%7%g%s(B:
-  - Hash: $B%O%C%7%e4X?t!#(BHashLen$B$O%O%C%7%e4X?t$N=PNO$N%*%/%F%C%HD9$r<($9(B
-- $BF~NO(B:
-  - PRK:  $B>/$J$/$H$b(BHashLen$B%*%/%F%C%HD9$N(BPRK
-  - info: $B%*%W%7%g%J%k$J%3%s%F%-%9%H$d%"%W%j%1!<%7%g%sFCM-$N>pJs(B
-  - L:    $B%*%/%F%C%HD9$G$N(BOKM$B$ND9$5(B (<= 255*HashLen)
-- $B=PNO(B:
-  - L$B%*%/%F%C%H$N(BOKM
-- $B=hM}4X?t(B:
-  - $B<!$N$h$&$K7W;;$5$l$^$9!#(B|$B$O7k9g$rI=$9!#(B
+- オプション:
+  - Hash: ハッシュ関数。HashLenはハッシュ関数の出力のオクテット長を示す
+- 入力:
+  - PRK:  少なくともHashLenオクテット長のPRK
+  - info: オプショナルなコンテキストやアプリケーション特有の情報
+  - L:    オクテット長でのOKMの長さ (<= 255*HashLen)
+- 出力:
+  - LオクテットのOKM
+- 処理関数:
+  - 次のように計算されます。|は結合を表す。
 ```
    N = ceil(L/HashLen)
    T = T(1) | T(2) | T(3) | ... | T(N)
@@ -62,12 +62,12 @@ PRK = HMAC-Hash(salt, IKM)
 ```
 
 
-### $B%5%s%W%k(B
-$B0J2<$N%1!<%9$r;n$7$F$_$k(B
+### サンプル
+以下のケースを試してみる
 - https://tools.ietf.org/html/rfc5869#appendix-A.1
 
 
-$B%W%m%0%i%`$O<!$NFbMF$G$"$k!#(Btestvector$B$O0J2<$K5-:\$5$l$F$$$k!#(B
+プログラムは次の内容である。testvectorは以下に記載されている。
 ```
 #!/usr/bin/env python3
 import hashlib
@@ -76,7 +76,7 @@ import hmac
 from math import ceil
 from binascii import hexlify, unhexlify
 
-# SHA256 = $B%O%C%7%e$ND9$5(B32byte
+# SHA256 = ハッシュの長さ32byte
 hash_len = 32
 
 def hmac_sha256(key, data):
@@ -102,7 +102,7 @@ L = 42
 print (hexlify(hkdf(L, ikm, salt, info)))
 ```
 
-$B<B9T$7$F$_$k!##19TL\$,(BPRK$B$G!"(B2$B9TL\$,(BOKM$B$G$"$k!#(B
+実行してみる。１行目がPRKで、2行目がOKMである。
 ```
 $ ./hkdf.py 
 b'077709362c2e32df0ddc3f0dc47bba6390b6c73bb50f9c3122ec844ad7c2b3e5'
@@ -110,12 +110,23 @@ b'3cb25f25faacd57a90434f64d0362f2a2d2d0a90cf1a5a4c5db02d56ecc4c5bf34007208d5b887
 ```
 
 
-# $B;29M(BURL
+# RFC5869に記載されたテストベクタを使ってサンプルを検証する。
+以下はHKDFの簡単なサンプルです。
+以下はpython3で実行すること。
+- https://github.com/tsuyopon/python/blob/9826f72d6a350b7a698d37ca37ae8dad9ed4176b/cipher/hkdf.py
+
+上記サンプルでは以下のTest Case1に関するPRFとOKMを出力しています。
+- https://tools.ietf.org/html/rfc5869#appendix-A.1
+
+# 参考URL
 - wikipedia: HKDF
   - https://en.wikipedia.org/wiki/HKDF
 - Openssl: hkdf.c
   - https://github.com/openssl/openssl/blob/master/crypto/kdf/hkdf.c
 
+# 実装サンプル
+- https://github.com/warner/id-keywrapping-demo/blob/e77d260399e14cbe1794543164a1f41fdb4b86b0/hkdf.py
+  - PythonコードでRFC5869に記載されたテストベクターを試しているサンプルコード
 
 # SeeAlso
 - RFC5869: HMAC-based Extract-and-Expand Key Derivation Function (HKDF)
