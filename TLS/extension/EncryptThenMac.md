@@ -11,6 +11,9 @@ Encrypt-Then-MACへと変換するためのネゴシエーションを可能と�
 encrypt( data || pad ) || MAC
 ```
 
+上記の詳細は以下のwikipediaも参考のこと
+- https://ja.wikipedia.org/wiki/%E8%AA%8D%E8%A8%BC%E4%BB%98%E3%81%8D%E6%9A%97%E5%8F%B7
+
 # 詳細
 ### 解決したい課題
 MAC-Then-Encryptは2000年以前までは安全であると考えられていたが、現在では脆弱性や攻撃対象となってしまっている。
@@ -69,6 +72,7 @@ TLS1.1以上でIV有りの場合
 # Encrypt-then-MACとMAC-then-Encryptの違い
  
 - 参考
+  - https://ja.wikipedia.org/wiki/%E8%AA%8D%E8%A8%BC%E4%BB%98%E3%81%8D%E6%9A%97%E5%8F%B7
   - https://crypto.stackexchange.com/questions/202/should-we-mac-then-encrypt-or-encrypt-then-mac
 
 
