@@ -21,9 +21,9 @@ AES-192   192bit   128bit      12段
 AES-256   256bit   128bit      14段
 ```
 
-AESの凄いところは、SubBytes,ShiftRows,MixColumns それぞれの処理をビット演算だけで実現できることにあるので、早くハードウェアの実装も簡単
+AESの凄いところは、SubBytes,ShiftRows,MixColumns それぞれの処理をビット演算だけで実現できることにあるので、早くハードウェアの実装も簡単です。
 
-TODO: ブロック長よりも長い鍵長を使うのはなぜ?
+ブロック長よりも長い鍵長を使うことによって、暗号学的により強固なブロックを生成することができます。
 
 
 # AESアルゴリズム概要
@@ -45,7 +45,20 @@ ShiftRows
 AddRoundKey
 ```
 
-例えば、Intel-CPUではAES-NIという命令を用いる事によって、SubBytes, ShiftRows, MixColumns, AddRoundKeyという1ラウンドの処理を1命令で実行できるようになる。
+上記のアルゴリズムについては以下の動画「AES Rijndael Cipher explained as a Flash animation」が参考になる。
+- https://www.youtube.com/watch?v=gP4PqVGudtg&t=47s
+
+以下の４つの命令についての説明は以下の通り
+- SubBytes
+  - S-BOXという行列を用いて、ある要素を他の要素へと変換する。すべての要素に対して処理を行う。(Substitute)
+- ShiftRows
+  - 2行目は右に1byteローテート、3行目は右に2byteローテート、4行目は右に3byteローテートする。(Shift)
+- MixColumns
+  - 縦の列(4x1行列)を4x4の行列と掛け合わせることで新しい列行列(4x1)を得る。これを元の行列部分と置き換える。すべての列に対して行う。
+- AddRoundKey
+  - RoundKeyという行列(4x4)が用意される。元の行列とRoundKeyの行列を行の部分(1行目, ..., 4行目)でそれぞれ排他的倫理和を取る。計算された列は組み合わせて新しい行列を形成する。
+
+余談だが、Intel-CPUではAES-NIという命令を用いる事によって、SubBytes, ShiftRows, MixColumns, AddRoundKeyという1ラウンドの処理を1命令で実行できるようになる。
 
 # 入力と出力
 
