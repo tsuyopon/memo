@@ -1,0 +1,2 @@
+- RFC4086: Randomness Requirements for Security
+  - https://tools.ietf.org/html/rfc4086

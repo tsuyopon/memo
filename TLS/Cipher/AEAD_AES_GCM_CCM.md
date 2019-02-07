@@ -1,0 +1,2 @@
+- RFC5116: An Interface and Algorithms for Authenticated Encryption
+  - https://tools.ietf.org/html/rfc5116
