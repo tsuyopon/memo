@@ -1,4 +1,6 @@
 # 概要
+この拡張はPSK情報を指定するための拡張です。
+
 TLS1.3ではSessionIDとSessionTicket拡張は廃止され、PSK(Pre-Shared Key)と呼ばれる仕組みが利用されるようになります。
 TLS1.2ではWEPのように双方で事前に秘密鍵を保持する仕組みとしてPSKを定義していましたが、これもTLS1.3のPSKに含まれます。
 
@@ -7,7 +9,7 @@ psk_key_exchange_modes拡張にて次の２つがPSKモードとして規定さ�
 - psk_dhe_ke: PSKとDHEの２つを使って秘密鍵を導出して通信を行う。この場合にはPFSとなる
 
 なお、pre_shared_key拡張が付与される場合には、必ずpsk_key_exchange_modes拡張が付与されてきます。
-TLS接続を初めて行う場合は、pre_shared_key拡張は送付されません。
+TLS接続を初めて行う場合は、PSKを保持していないのでpre_shared_key拡張は送付されません。
 
 # 詳細
 
