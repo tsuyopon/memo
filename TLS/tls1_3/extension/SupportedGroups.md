@@ -4,6 +4,10 @@ TLS1.3から存在するsupported_group拡張は、実はTLS1.2以前ではellip
 - Elliptic Curve Groups (ECDHE)
 - Finite Field Groups (DHE)
 
+TLS1.2ではelliptic_curvesはec_point_formatsとセットで曲線のグループとフォーマットを決定していました。
+しかし、TLS1.3ではec_point_formatsは廃止され、supported_groupsで表されたそれぞれの曲線に対して1つのフォーマットが固定で決まってくることになります。
+- (参考) https://tools.ietf.org/html/rfc8446#section-4.2.7
+
 # 詳細
 
 ### 解決したい課題
@@ -73,4 +77,5 @@ Extension: key_share (len=43)
 ```
 
 # 参考URL
-- https://tools.ietf.org/html/rfc8446#section-4.2.7
+- 4.2.7.  Supported Groups
+  - https://tools.ietf.org/html/rfc8446#section-4.2.7
