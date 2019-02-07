@@ -3,7 +3,10 @@ TLS拡張としてRFC5246に唯一定義されています。TLS1.2から加わ�
 - https://tools.ietf.org/html/rfc5246#section-7.4.1.4.1
 
 このTLS拡張はデジタル署名においてどの署名/ハッシュアルゴリズムのペアを証明書検証として使用するかということをサーバ側に指示するために利用します。
-この拡張はServerCertificate, ServerKeyExchange, ClientKeyExchange, ClientVerifyに影響します。
+この拡張はTLS1.2以前ではServerCertificate, ServerKeyExchange, ClientKeyExchange, ClientVerifyに影響します。
+
+TLS1.3のSignatureAlgorithms拡張については以下にまとめています。
+- tls1_3/extension/SignatureAlgorithms.md
 
 # 概要
 
