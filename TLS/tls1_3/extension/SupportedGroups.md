@@ -21,9 +21,15 @@ TLS1.2ではelliptic_curvesとec_point_formatsを指定することで曲線と�
 - ec_point_formats拡張を廃止して、選択された曲線(x25519, secp256r1等)に応じてcompressedやuncompressedかは一意に決定する様になりました。
 
 ### 仕様
-- 1. ClientHelloのsupproted_groupにて対応している曲線情報が指定されてきます。優先度順で指定されています。
-  - supported_groupに入っているグループで1つ以上がKeyShare拡張として公開鍵も含めて送付されます。
-- 2. サーバ側はsupported_group拡張とkey_share拡張を確認して、鍵グループを確認して公開鍵を生成します。この公開鍵はServerHelloのKeyShareとして応答します。
+
+- 利用フロー
+  - 1. ClientHelloのsupproted_groupにて対応している曲線情報が指定されてきます。優先度順で指定されています。
+    - supported_groupに入っているグループで1つ以上がKeyShare拡張として公開鍵も含めて送付されます。
+  - 2. サーバ側はsupported_group拡張とkey_share拡張を確認して、鍵グループを確認して公開鍵を生成します。この公開鍵はServerHelloのKeyShareとして応答します。
+
+- 特記事項
+  - supported_groups拡張で指定された曲線とサーバ側がサポートしている曲線でoverlapがなければ、サーバ側はhandshake_failureかinsufficient_securityアラートで中断しなければなりません。
+
 
 ### データ構造
 ```
