@@ -104,6 +104,8 @@ QUICの相互接続試験についてはGoogle Spreadsheetsで確認すること
   - https://asnokaze.hatenablog.com/entry/2018/02/06/004539
 - 総務省資料
   - http://www.soumu.go.jp/main_content/000485069.pdf
+- HTTP/3 explained
+  - https://http3-explained.haxx.se/en/
 
 # TODO
 - コマンドラインでアクセスする方法はあるのか?
