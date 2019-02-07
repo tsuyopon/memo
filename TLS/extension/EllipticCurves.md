@@ -1,13 +1,14 @@
 # 概要
-elliptic_curves(supported_groups)とec_point_formatsの２つのエクステンションによってECDHEの鍵交換が決定されます。
-ECC証明書の場合には２つのエクステンションが付与される(??: 要確認)
+TLS1.2以前ではelliptic_curvesとec_point_formatsの２つのエクステンションによってECDHEの鍵交換が決定されます。
+elliptic_curves拡張は次の情報を表しています。
+- クライアントがサポートする楕円曲線の種別を表しています
+- ServerKeyExchangeのパケットにはこの拡張で選択されるた曲線情報とその曲線に応じた公開鍵情報を含みます。
 
-- elliptic_curves(TLS1.3では名称がsupported_groupsとなる)
-  - 試験するための曲線の種別を表す
-  - クライアントがサポートする楕円曲線の種別を表しています
-  - ServerKeyExchangeのパケットにはこの中で選択される値を含みます
+TLS1.3ではelliptic_curvesはsupported_groupsという拡張に名称が変更されます。TLS1.3ではec_point_formatsは廃止され、supported_groupsのみで表された曲線に対して1つのフォーマットが固定で決定されます。
+- (参考) https://tools.ietf.org/html/rfc8446#section-4.2.7
 
-楕円曲線についてはmath/ECC.mdを確認のこと
+TLS1.3のsupported_groupsについては以下で説明していますので、ここではelliptic_curvesについて説明します。
+- ../tls1_3/extension/SupportedGroups.md 
 
 # 解決したい課題
 公開鍵暗号方式の楕円曲線暗号をネゴシエーションをする際に、クライアントがどの楕円曲線をサポートしているのかをサーバ側に伝えたい。
@@ -17,10 +18,10 @@ elliptic_curvesによってサーバ側にクライアントがサポートし�
 なお、TLS1.3ではelliptic_curvesではなくsupported_groups拡張となり、ec_point_formatsは廃止されます。
 
 # 詳細
-
 - クライアントによってサポートされる楕円曲線(elliptic curves)のセットを示しています。 
 - opaque型のextension_dataにはEllipticCurveListを含んでいます。
 
+### elliptic_curves
 ```
 struct {
      NamedCurve elliptic_curve_list<1..2^16-1>
