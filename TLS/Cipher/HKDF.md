@@ -1,5 +1,5 @@
 # HMAC-based Extract-and-Expand Key Derivation Function (HKDF)
-KDF(Key Derivation Function)は鍵を構成する初期値を受け取って、1つないしは複数の暗号学的に強い鍵を生成することができる仕組みです。
+鍵導出関数(KDF: Key Derivation Function)は鍵を構成する初期値を受け取って、1つないしは複数の暗号学的に強い鍵を生成することができる仕組みです。
 HKDFと呼ばれるKDFの実装の1つがRFC5869で規定されています。
 
 RFC5869の目的としては、将来的なプロトコルやアプリケーションでの一般的なKDFを定義して、複数のKDFメカニズムが増殖されることを避ける目的もあります。
