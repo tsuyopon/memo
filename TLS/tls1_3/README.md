@@ -5,25 +5,68 @@ TLS1.3についての全体像について記載します。
 あらかじめRFCにTLS1.2とTLS1.3の違いがあるのでそちらを確認しておくこと
 - https://tools.ietf.org/html/rfc8446#section-1.2
 
+
+# 全体像
 - 全般
+  - RFC記載のGOALの変更
+    - RFC8446: Authentication, Confidentiality, Integrity
+    - RFC5246: Cryptographic security, Interoperability, Extensibility, Relative efficiency
   - CBCモードが廃止され、AEAD(AES-GCM, ChaCha20-Poly1305など)
     - CBCモードを狙ったBEAST攻撃、Lucky Thirteen攻撃などが頻発したことが背景にある。
-    - Static RSAやDH cipher suiteは削除され、PFSとなる暗号のみをサポート
-  - CipherSuites
-    - 共通鍵暗号(AES/CHACHA20)とそのメッセージ認証形式(GCM-SHA384等)を指定することになります。サーバ証明書の確認や鍵交換方式は暗号スイートに含まれません。
-  - SessionIDやSessionTicketを利用したSessionResumptionは全てPSK交換に置き換わることとなった
+    - Static RSAやDH cipher suiteは削除され、すべての鍵交換メカニズムはPerfect Forward Secrecyとなった。
+  - CipherSuitesは5種類のみに変更
+    - 共通鍵暗号(AES/CHACHA20)とそのメッセージ認証形式(GCM-SHA384等)を指定することになります。
+    - サーバ証明書の確認や鍵交換方式は暗号スイートに含まれません。TLS\_<AEAD>\_<HKDFハッシュ> というcipherに変更になります。
+  - コネクションのRoundTripTimeの削減。2RTTから1RTTへの変更
+  - State Machineの定義
+  - メッセージの変更
+    - ServerHelloに含まれる拡張は鍵交換に必要な情報のみに変更
+    - HelloRetryRequest、EncryptedExtensionsの追加
+    - ChangeCipherSpecの削除(ミドルボックス互換性は残す)
+    - ClientCertificate、ServerCertificateはCertificateへ統合
+    - HelloRequest、ServerHelloDone、ClienKeyExchange、ServerKeyExchangeの削除
+  - 0RTTモードの追加
+  - 鍵交換モードの追加
+    - ECDHE
+    - PSK-only
+    - SDK with ECDHE
+  - PRFからHKDFへの変更
+    - PRFのようにエントロピーの強さがよくわからないものからExpandさせるよりも、暗号学的により強いエントロピーを持ったランダムなキー生成が必要ということでHKDFが採用された。
+  - SessionIDやSessionTicketを利用したSessionResumptionは全てPSKに置き換わることとなった
+    - NewSessionTicketメッセージを新しく導入し、ハンドシェイク完了後にこのメッセージを受け取ることでPSKを取得することができます。
   - Renegotiationの廃止
     - 今までクライアント認証、鍵アップデートが発生するとRenegotiationしていたが、PostAuthentication Messageを定義することで同一ハンドシェイク中で行うことになった。
     - なお、シーケンス番号がオーバーフローした場合にもRenegotiationしていたが、これはTLS1.3ではカバーせず、切断を切ることがわかった。
-- ClientHello
-  - TLS1.2と互換性がある
-  - サーババージョンはSupported Version拡張(必須)にその役割を移動し、固定で0x0303(TLS1.2)
-  - session\_idやcompression\_methodsは廃止され、代わりにPSKが利用される。ミドルボックス問題のためにlegacy\_としてその名残は残る。
-  - extensionは必ず存在することになる
-  - extensions中で暗号パラメータのやりとりが行われる
-- ServerHello
-  - 互換性がなくなった
-  - ServerHelloに鍵交換に必要な拡張情報を含めて、それ以外は暗号化されたEncryptedExtensionに含まれるようになった
+  - EncryptedExtensionsメッセージ以降は暗号化されている。
+  - TLS拡張に関するいくつかの変更
+    - supported\_versions拡張でサポートするバージョンをリスト形式を受け付ける。
+    - signature\_algorithms\_cert拡張を追加
+    - ec\_point\_format拡張を廃止
+    - key\_share拡張を追加
+    - pre\_shared\_key拡張を追加
+    - psk\_key\_exchange\_mode拡張を追加
+    - early\_data拡張を追加
+  
+
+- 各種メッセージ詳細
+  - ClientHello
+    - TLS1.2と互換性がある
+    - サーババージョンはSupported Version拡張(必須)にその役割を移動し、固定で0x0303(TLS1.2)
+    - session\_idやcompression\_methodsは廃止され、代わりにPSKが利用される。ミドルボックス問題のためにlegacy\_としてその名残は残る。
+      -  legacy_version、 legacy_session_id、 legacy_compression_methodsという変数となる
+    - extensionは必ず存在することになる
+    - extensions中で暗号パラメータのやりとりが行われる
+  - ServerHello
+    - 互換性がなくなった
+    - ServerHelloに鍵交換に必要な拡張情報を含めて、それ以外は暗号化されたEncryptedExtensionに含まれるようになった
+
+
+廃止されるがミドルボックスとしての互換性のために残されるメッセージ
+- ChangeCipherSpec
+  - 廃止
+  - 鍵交換直後に暗号化が開始される
+
+廃止されるメッセージ
 - ServerHelloDone
   - 廃止
   - TLS1.2までは厳密にServerHelloの終了パケットはこれで判定していたが、StateMachineを定めることによって不要となった。
@@ -33,9 +76,6 @@ TLS1.3についての全体像について記載します。
 - ServerKeyExchange
   - 廃止
   - ServerHello中のExtensionに移動する
-- ChangeCipherSpec
-  - 廃止
-  - 鍵交換直後に暗号化が開始される
 
 # 詳細
 
