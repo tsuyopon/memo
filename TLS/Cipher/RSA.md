@@ -65,8 +65,6 @@ nQNqbrLxYwDFDYIqm4WWB7s0TNhTVVVt5f5Dtu2s
 
 秘密鍵の情報は次のようにして詳細を確認することができます。
 modulusは実はprime1とprime2の積の値となっています。
-「RSAの処理の流れ」で説明したパラメータを当てはめるとprime1, prime2がそれぞれp, qを表し、n=pqがmodulusを表しています。
-また、eについてはpublicExponentに記載されている65537が表しています(計算量の観点から固定値になっているらしい)
 ```
 $ openssl rsa -text < private-key.pem
 Private-Key: (512 bit)
@@ -115,6 +113,24 @@ nQNqbrLxYwDFDYIqm4WWB7s0TNhTVVVt5f5Dtu2s
 -----END RSA PRIVATE KEY-----
 ```
 
+上記の出力結果を「RSAの処理の流れ」で説明したパラメータを当てはめるとprime1, prime2がそれぞれp, qを表し、n=pqがmodulus、秘密鍵dがprivateExponentである。
+lについては秘密鍵dを生成するときにだけ必要なので以下では表示されていないものと思われる。
+また、eについてはpublicExponentに記載されている65537(=0x10001)が表しています(計算量の観点から固定値になっているらしい)
+
+- prime1: p
+- prime2: q
+- modulus: n=pq
+- publicExponent: e=65537 (=0x10001)
+- privateExponent: d = e^(-1) mod (p-1)*(q-1)
+- exponent1: d mod (p-1) 
+- exponent2: d mod (q-1) 
+- coefficient: q^(-1) mod p
+
+上記のexponent1, exponent2, coefficientは複合処理を中国の剰余定理により効率的に行うために保存されている数字である。
+- https://en.wikipedia.org/wiki/RSA_%28cryptosystem%29#Using_the_Chinese_remainder_algorithm
+
+TODO: 中国の剰余定理でどのようにexponent1, exponent2, coefficientが使われるのかわかっていないので時間があれば調査すること
+
 
 秘密鍵の情報を元に公開鍵を書き出します。
 ```
@@ -162,3 +178,5 @@ HELLO
   - https://ja.wikipedia.org/wiki/RSA%E6%9A%97%E5%8F%B7
 - ろば電子が詰まっている: opensslでRSA暗号と遊ぶ
   - https://ozuma.hatenablog.jp/entry/20130510/1368114329
+- ももいろテクノロジー: OpenSSLとPythonでRSA暗号の原理を知る
+  - http://inaz2.hatenablog.com/entry/2013/11/27/225953
