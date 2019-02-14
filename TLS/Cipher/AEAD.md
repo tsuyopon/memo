@@ -123,4 +123,6 @@ CipherSuite TLS_DH_anon_WITH_AES_256_GCM_SHA384 = {0x00,0xA7}
   - https://tools.ietf.org/html/rfc5116
 - RFC5288: AES Galois Counter Mode (GCM) Cipher Suites for TLS
   - https://tools.ietf.org/html/rfc5288
+- NIST: Recommendation for Block Cipher Modes of Operation: Galois/Counter Mode (GCM) and GMAC
+  - https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38d.pdf
 
