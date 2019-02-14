@@ -91,3 +91,5 @@ pが素数、楕円曲線パラメータa, b、開始点Gがcompressとuncompres
 # 参考
 - 技術勉強会（楕円曲線暗号）資料
   - https://www.slideshare.net/tyk97/ss-35444178
+- An Introduction to the Theory of Elliptic Curves
+  - http://www.math.brown.edu/~jhs/Presentations/WyomingEllipticCurve.pdf
