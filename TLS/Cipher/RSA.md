@@ -230,6 +230,22 @@ c^d == m mod n
 - https://ja.wikipedia.org/wiki/RSA%E6%9A%97%E5%8F%B7
 
 
+# RSAの署名形式について
+RSA署名では長い間RSASSA-PKCS1-v1_5が書式として使われていたが、この安全性が証明されていない。
+専門家などは安全性の高いRSASSA-PSSを推奨している。
+
+RSASSA-PSSの詳細については以下を参考にすること
+- RFC3447: Public-Key Cryptography Standards (PKCS) #1: RSA Cryptography Specifications Version 2.1
+  - https://tools.ietf.org/html/rfc3447
+- RFC8017: PKCS #1: RSA Cryptography Specifications Version 2.2
+  - https://tools.ietf.org/html/rfc8017
+
+- 参考
+  - https://kazu-yamamoto.hatenablog.jp/entry/20171114/1510635277
+
+
+TODO:  https://qiita.com/kunichiko/items/2e0a2bd35c8e9492ceb5 あたりで全体像を理解しておく
+
 # 参考URL
 - wikipedia: RSA暗号
   - https://ja.wikipedia.org/wiki/RSA%E6%9A%97%E5%8F%B7
