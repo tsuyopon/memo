@@ -61,7 +61,54 @@ TLS_ECDH_RSA_WITH_AES_256_CBC_SHA
 - 証明書中のsignature algorithm上の制約を削除した
 
 
+# ECDSAとEdDSAの用語整理
+ECDSAとEdDSAの違いを抑えておかないと混乱しますので予めちゃんと抑えておきます。
+以下の資料を参考に整理
+- https://kazu-yamamoto.hatenablog.jp/entry/20171114/1510635277
+
+### ECDSA(Elliptic Curve Digital Signature Algorithm)
+以下の３つがRFC中でNIST Curveという用語として定義されています。
+- P256(secp256r1)
+- P384(secp384r1)
+- P521(secp521r1)
+
+NIST Curveと定義されているセクション
+- https://tools.ietf.org/html/rfc8422#section-5.1.1
+
+NIST Curveについての参考資料は上記にリファレンスがありますが以下を参照します。
+- http://www.secg.org/sec2-v2.pdf
+- https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-4.pdf
+
+ECDSAについてはソニーPlay Station3のソフトウェア署名に用いていたECDSA秘密鍵の解読に成功されてしまった事例がある。
+これは本来乱数とすべき値を固定値としてしまったことによる実装ミスであり、アルゴリズムの脆弱性ではない。
+
+### EdDSA(Edwards-curve Digital Signature Algorithm)
+NISTが疑似乱数生成アルゴリズムにバックドアを仕込んでいたことが明るみになった。
+これによってセキュリティの専門家がNISTを信用しなくなり、NISTのECDHEとECDSAに対する代替が必要とされるようになった。
+
+DJBはCurve25519とCurve449を策定した。
+この２つのcurveを使ってDHEを実現するつのが名前がXから始まる鍵交換である。
+- Curve25519を利用したDHE: X25519
+- Curve448を利用したDHE:   X448
+
+上記実装については以下を参照のこと
+- https://tools.ietf.org/html/rfc7748
+
+
+ここでやっと登場するのが、上記の認証についてはDSAと異なる署名方式であるEdDSAを使うことになる。以下のRFCで定義されている。
+- https://tools.ietf.org/html/rfc8032	
+
+上記では次の２つが規定されている。
+- Curve25519を利用して実現されるEdDSA:  Ed25519
+- Curve448を利用して実現されるEdDSA:    Ed448
+
+
+- 参考
+  - https://ed25519.cr.yp.to/
+    - 特徴、実装の紹介、論文へのリンクなど
+
 # 詳細
+
 ### 鍵交換アルゴリズム ( https://tools.ietf.org/html/rfc8422#section-2 )
 ECC基盤の鍵交換アルゴリズムについては次の3種類が存在しています。
 ３つはすべてpremaster secretの計算をEphemeral ECDH (ECDHE) を利用しますが、それぞれで認証メカニズムが異なります。
