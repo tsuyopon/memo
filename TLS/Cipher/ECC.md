@@ -110,7 +110,7 @@ DJBはCurve25519とCurve449を策定した。
 # 詳細
 
 ### 鍵交換アルゴリズム ( https://tools.ietf.org/html/rfc8422#section-2 )
-ECC基盤の鍵交換アルゴリズムについては次の3種類が存在しています。
+ECC基盤の鍵交換アルゴリズムについては次の3種類が存在しています。以下の３つはIANAのTLS_XXXX_WITH_YYYYで表されるXXXXの部分です。
 ３つはすべてpremaster secretの計算をEphemeral ECDH (ECDHE) を利用しますが、それぞれで認証メカニズムが異なります。
 ```
      +-------------+------------------------------------------------+
@@ -149,8 +149,14 @@ TBD
 TBD
 
 # 公式URL
-- Elliptic Curve Cryptography (ECC) Cipher Suites for Transport Layer Security (TLS) Versions 1.2 and Earlier
+- RFC6090: Fundamental Elliptic Curve Cryptography Algorithms
+  - https://tools.ietf.org/html/rfc6090
+- RFC8422: Elliptic Curve Cryptography (ECC) Cipher Suites for Transport Layer Security (TLS) Versions 1.2 and Earlier
   - https://tools.ietf.org/html/rfc8422
-- Elliptic Curve Cryptography (ECC) Cipher Suites for Transport Layer Security (TLS)
+- RFC4492: Elliptic Curve Cryptography (ECC) Cipher Suites for Transport Layer Security (TLS)
   - RFC8422によってObsoleteされています。
   - https://tools.ietf.org/html/rfc4492
+
+
+# TODO
+- RFC6090も確認しておくこと
