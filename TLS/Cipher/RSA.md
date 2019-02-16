@@ -4,6 +4,13 @@ RSAは1978年にRivest, Shamir, Adlemanが発表した公開鍵暗号方式で�
 
 このアルゴリズムは1983年にRSA Security社が特許を取得していましたが、特許期間満了により2000年9月からは誰でも利用できるようになりました。
 
+RSA暗号の仕様に関する公式資料としてはRSA Security社が策定したPKCSを元にたどっていくのが良いようです。
+PKCS #1-#15まで存在しているようです。
+
+以下にその参照が記載されているので参考にすると良いです。
+- https://qiita.com/kunichiko/items/7796ecfb88a62ce26b36
+
+
 # RSAの処理の流れ
 RSAは鍵生成、暗号化、復号の３つのアルゴリズムによって定義される。
 
@@ -246,7 +253,11 @@ RSASSA-PSSの詳細については以下を参考にすること
 
 TODO:  https://qiita.com/kunichiko/items/2e0a2bd35c8e9492ceb5 あたりで全体像を理解しておく
 
-# 参考URL
+# Normative URL
+- 以下のリンクからPKCS#1-#15の参照があるので、公式URLをたどると良い(上記URL自体はInformative)
+  - https://qiita.com/kunichiko/items/7796ecfb88a62ce26b36
+
+# Informative URL
 - wikipedia: RSA暗号
   - https://ja.wikipedia.org/wiki/RSA%E6%9A%97%E5%8F%B7
 - ろば電子が詰まっている: opensslでRSA暗号と遊ぶ
