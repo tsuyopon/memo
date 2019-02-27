@@ -210,3 +210,10 @@ $ xxd hoge
 0000000: 686f 6765 2e74 7874 0a                   hoge.txt.
 ```
 
+## tips
+
+### rpathを変更する
+binutilsにはrpathだけを変更する仕組みはないがchrpathパッケージを使うことで変更可能らしい
+- 参考
+  - https://stackoverflow.com/questions/13769141/can-i-change-rpath-in-an-already-compiled-binary
+
