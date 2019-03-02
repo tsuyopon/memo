@@ -139,6 +139,15 @@ $ ip neigh
 10.0.2.2 dev eth0 lladdr 52:54:00:12:35:02 REACHABLE
 ```
 
+さらに詳細を表示するにはsオプションを付与します。
+```
+$ ip -s neigh
+10.0.2.2 dev enp0s3 lladdr 52:54:00:12:35:02 ref 1 used 0/0/3 probes 1 DELAY
+$ sleep 10
+$ ip -s neigh
+10.0.2.2 dev enp0s3 lladdr 52:54:00:12:35:02 ref 1 used 19/0/17 probes 1 REACHABLE
+```
+
 ### コネクション先の履歴
 ```
 $  ip tcp_metrics | sort | more

@@ -1,5 +1,50 @@
-# netstatについて
+# netstat, nstat
+関連コマンドとしてnstat, ssなどもある。　nstatについてはここでも取り上げる。
 
+
+## nstat
+```
+$ nstat 
+#kernel
+IpInReceives                    498                0.0
+IpInDelivers                    498                0.0
+IpOutRequests                   341                0.0
+TcpActiveOpens                  16                 0.0
+TcpPassiveOpens                 16                 0.0
+TcpInSegs                       494                0.0
+TcpOutSegs                      349                0.0
+UdpInDatagrams                  4                  0.0
+UdpOutDatagrams                 4                  0.0
+TcpExtTW                        14                 0.0
+TcpExtDelayedACKs               4                  0.0
+TcpExtTCPHPHits                 97                 0.0
+TcpExtTCPPureAcks               56                 0.0
+TcpExtTCPHPAcks                 172                0.0
+TcpExtTCPDeferAcceptDrop        8                  0.0
+TcpExtTCPRcvCoalesce            16                 0.0
+TcpExtTCPOrigDataSent           245                0.0
+IpExtInOctets                   61576              0.0
+IpExtOutOctets                  83104              0.0
+IpExtInNoECTPkts                498                0.0
+```
+
+```
+$ nstat -z -a 'Tcp*'
+#kernel
+TcpActiveOpens                  5621               0.0
+TcpPassiveOpens                 2359               0.0
+TcpAttemptFails                 3245               0.0
+TcpEstabResets                  0                  0.0
+TcpInSegs                       70475              0.0
+TcpOutSegs                      53042              0.0
+TcpRetransSegs                  8                  0.0
+TcpInErrs                       0                  0.0
+TcpOutRsts                      3283               0.0
+TcpInCsumErrors                 0                  0.0
+...
+```
+
+## netstat
 
 ### インターフェース情報をみる
 ```

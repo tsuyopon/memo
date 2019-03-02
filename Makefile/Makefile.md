@@ -1,12 +1,18 @@
-# Makefileについて
+# Makefile
 Makefileはtarget, prerequisites, commandの３つで構成されます。commandはタブの後に記載します。
-これはMakefile関連で検索したい時に覚えておくと便利です。
+これらの用語についてMakefile関連で検索したい時に覚えておくと便利です。
 ```
 target: prerequisites
 	command
 ```
 
-# Makefile記法
+Makefileを検索する際には次の公式マニュアルがおすすめです。
+1ページ内に全てを表示してくれるので検索する際にも非常に便利です。
+- Makefile公式マニュアル
+  - http://www.gnu.org/software/make/manual/make.html
+
+
+# 変数
 
 ## @と-の意味について
 - "@"は実行するコマンドの出力を抑制します。
@@ -88,71 +94,50 @@ $ % = hack.o
 $ * = hack 
 ```
 
-### 自動変数詳細
 
-- $@, $^は自動変数。ここでは$@はターゲット名なのでprogを, $^は全ての依存するファイルの名前なのでここでは*.cを指している。
-```
-prog: *.c
-	$(CC) -o $@ $^
-```
+## 変数への代入
 
-- $<
-  - 今、実行しようとしている生成コマンドの中で、そのターゲットが依存しているファイルのひとつに展開される。
-  - ここでmakeがsub1.cからsub1.oを生成するためにこのコマンドを実行するならば、「$<」は「sub1.c」へと展開される。
-```
-# 例
-.c.o:
-	cc -c $<
-```
-
-- $?
-  - 依存ファイルで更新されたもののリストに展開される。
-  - 下記でもしも、sub1.cだけがa.outよりも新しければ「$?」→「sub1.c」に展開される。
-```
-a.out: sub1.c sub2.c
-        echo "$? are modified."
-```
-
-- $^
-  - 「$^」により依存関係のリストを表示させることができます。
-```
-all: testfile testfil2
-	@echo $^
-```
-  - 上記に対する出力例を以下に示します。
-```
-$ make
-testfile testfile2
-```
-
-- $*
-  - ターゲット名からサフィックスを除いたものに展開される。
-  - 下記の例では「$*」は「paper」に展開される。
-```
-paper.ps: paper.dvi
-        dvips $*
-```
-
-- 参考
- -　http://minus9d.hatenablog.com/entry/20140203/1391436293
+#### "="と":="の違いについて
+次のことを覚えておきましょう。
+- "="の場合には、遅延評価
+- ":"の場合には、即時評価
 
 
-### 現在のディレクトリ直下のディレクトリのMakefileも実行したい
-Cオプションを指定してその後にディレクトリが指定されるようにしておくのが一般的である。
+この２つは以下の違いですぐにわかります。２つの違いはMakefileのCMDLINE変数の代入演算子が":"か":="かの違いだけです。
+
+- "="による遅延評価
+  - CMDLINEが定義ではなく実行された時点で評価されるのでLSOPT変数の内容が反映されます。
 ```
-SUBDIRS = foo bar baz
+$ cat Makefile 
+CMDLINE = ls $(LSOPT)
+LSOPT = -al
 
-.PHONY: subdirs $(SUBDIRS)
-
-subdirs: $(SUBDIRS)
-
-$(SUBDIRS):
-        $(MAKE) -C $@
-
-foo: baz
+all:
+	$(CMDLINE)
+$ gmake
+ls -al
+合計 12
+drwxrwxr-x   2 tsuyoshi tsuyoshi   34  2月 28 07:09 .
+drwx------. 36 tsuyoshi tsuyoshi 4096  2月 28 07:09 ..
+-rw-rw-r--   1 tsuyoshi tsuyoshi   52  2月 28 07:09 Makefile
+-rw-rw-r--   1 tsuyoshi tsuyoshi    0  2月 28 07:08 hoge
 ```
 
-### 要確認
+- ":="による即時評価
+  - CMDLINEの定義された時点で評価されるのでLSOPT変数の内容が反映されていません。
+```
+$ cat Makefile 
+CMDLINE := ls $(LSOPT)
+LSOPT = -al
+
+all:
+	$(CMDLINE)
+$ gmake
+ls 
+Makefile  hoge
+```
+
+### 代入演算子の意味
 ```
 ::
 := または ::=
@@ -458,6 +443,21 @@ LINK.s = $(CC) $(ASFLAGS) $(LDFLAGS) $(TARGET_MACH)
 LINK.cpp = $(LINK.cc)
 ```
 
+### 現在のディレクトリ直下のディレクトリのMakefileも実行したい
+Cオプションを指定してその後にディレクトリが指定されるようにしておくのが一般的である。
+```
+SUBDIRS = foo bar baz
+
+.PHONY: subdirs $(SUBDIRS)
+
+subdirs: $(SUBDIRS)
+
+$(SUBDIRS):
+        $(MAKE) -C $@
+
+foo: baz
+```
+
 
 ### デバッグ方法
 
@@ -550,22 +550,20 @@ hoge-%:
 以下のドキュメントも合わせて参考のこと
 - https://www.gnu.org/software/make/manual/html_node/Pattern-Match.html#Pattern-Match
 
-# TODO
-いかについてメモ
-```
-OBJS    = $(SRCS:.cpp=.o)
-		rm -f hello hello.o edajima.o raiden raiden.o
-```
-
 # 参考
+- Makefile公式マニュアル
+  - 1ページ内に全てを表示してくれるので検索する際にも非常に便利
+  - http://www.gnu.org/software/make/manual/make.html
 - 公式ドキュメント
   - 非常に豊富なドキュメント群
   - https://www.gnu.org/software/make/manual/html_node/index.html#Top
-- 公式マニュアル
-  - http://www.gnu.org/software/make/manual/make.html
 - もっとも豊富な日本語リファレンス(GNU Make GNU make Version 3.77)
   - http://www.ecoop.net/coop/translated/GNUMake3.77/make_toc.jp.html
 - MakeとMakefileの説明
   - http://www.unixuser.org/~euske/doc/makefile/
+- POSTD: Makeについて知っておくべき7つのこと
+  - https://postd.cc/7-things-you-should-know-about-make/
+- Makefileの書き方に関する備忘録 (第１回〜第４回)
+ -　http://minus9d.hatenablog.com/entry/20140203/1391436293
 
 
