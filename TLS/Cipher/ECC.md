@@ -148,7 +148,7 @@ TBD
 ### データ構造と計算 ( https://tools.ietf.org/html/rfc8422#section-5 )
 TBD
 
-# 公式URL
+# Normative URL
 - RFC6090: Fundamental Elliptic Curve Cryptography Algorithms
   - https://tools.ietf.org/html/rfc6090
 - RFC8422: Elliptic Curve Cryptography (ECC) Cipher Suites for Transport Layer Security (TLS) Versions 1.2 and Earlier
@@ -157,6 +157,8 @@ TBD
   - RFC8422によってObsoleteされています。
   - https://tools.ietf.org/html/rfc4492
 
+# Informative URL
+- http://mattyuu.hatenadiary.com/entry/2017/01/29/161758
 
 # TODO
 - RFC6090も確認しておくこと
