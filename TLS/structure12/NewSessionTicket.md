@@ -1,4 +1,5 @@
 # New Session Ticket
+セッションチケットの長さはその時その時で異なる。
 ```
 Secure Sockets Layer
     TLSv1.2 Record Layer: Handshake Protocol: New Session Ticket
