@@ -317,6 +317,10 @@ $ strings /bin/ld.bfd
 - 上記で必要な変数は以下で定義
   - https://github.com/bminor/binutils-gdb/blob/53892e6d2395b818554b825cabf6129fed7e2aae/ld/emulparams/elf_x86_64.sh
 
+### リンカに-l:libxxxx.soや-l:libxxxa.aなどと指定する場合
+一致するパスのライブラリをチェックする
+- https://stackoverflow.com/questions/48532868/gcc-library-option-with-a-colon-llibevent-a
+
 # 参考URL
 - https://www.glamenv-septzen.net/view/843#id6a22ec
 - The GNU Linker(PDF)
