@@ -42,9 +42,9 @@ RM          rm -f      ファイルの削除
 ARFLAGS     rv ARの引数
 ASFLAGS     ASの引数
 CFLAGS      CCの引数
-CXXFLAGS    CXXの引数
+CXXFLAGS    CXXの引数   // C++プリプロセッサ用なので-std=c++11 などを入れるのは誤り
 COFLAGS     COの引数
-CPPFLAGS    CPPの引数
+CPPFLAGS    CPPの引数   // C++コンパイラ用
 FFLAGS      FCの引数
 GFLAGS      GETの引数
 LDFLAGS     リンカldの引数
@@ -52,6 +52,12 @@ LFLAGS      LEXの引数
 PFLAGS      PCの引数
 RFLAGS      知らね
 YFLAGS      YACCの引数
+```
+
+"make -p"と実行すればどの拡張子でどのような環境変数を使って実行しているのかがわかります。
+```
+LINK.c = $(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(TARGET_ARCH)
+LINK.cc = $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS) $(TARGET_ARCH)
 ```
 
 ### .PHONY
