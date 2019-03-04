@@ -88,11 +88,12 @@ $ git log --graph
 ```
 
 たとえば、masterから派生したmaster_branchというブランチに対して(1)〜(3)をcherry-pickして追加する場合には次のようになります。
+
 マージの場合には"-m"オプションを付与しないとマージすることができません。
 ```
-$ git cherry-pick 78d2b22a272529ce503552edfec483db914bddd2
-$ git cherry-pick -m 1 25ff275fa54b4c4cb2180419f3cce68289e9afe5
-$ git cherry-pick -m 1 0dae1432a8b2455c1c4d7edfa94c1189cc917fd1
+$ git cherry-pick 78d2b22a272529ce503552edfec483db914bddd2         // (1) マージコミットではないコミットなので、この場合には-mがつかない。
+$ git cherry-pick -m 1 25ff275fa54b4c4cb2180419f3cce68289e9afe5    // (2) 一気に3個分のコミットがマージされる
+$ git cherry-pick -m 1 0dae1432a8b2455c1c4d7edfa94c1189cc917fd1    // (3) 一気に5個分のコミットがマージされる
 ```
 
 "-m 1"と"-m 2"にはどのような意味があるのかというと派生元へのマージか、派生先へのマージかといった点で異なります。
