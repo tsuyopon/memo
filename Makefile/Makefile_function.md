@@ -850,20 +850,26 @@ $(info TEXT...)
 ```
 - 使い方
 ```
-.PHONY: all
+.PHONY: all 
+
+var=HOGEHOGE
 all:
 	@echo "Hello"
-	@echo "$(info this is info message!!!)"
+	$(info this is info message!!!)
+	$(info $$var is [${var}])
 	@echo "World"
+
 ```
 - 実行結果
 ```
 $ make
 this is info message!!!
+$var is [HOGEHOGE]
 Hello
-
 World
 ```
+- 参考
+  - https://stackoverflow.com/questions/16467718/how-to-print-out-a-variable-in-makefile
 
 # MEMO
 
