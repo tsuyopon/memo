@@ -94,6 +94,40 @@ git push origin :v1.0.0
 $ git pull upstream --tags
 ```
 
+### 特定のコミットに紐付いているタグ情報を確認する
+まずはタグを一気に３つ付与して、現在のHEADに紐づくタグを確認する。
+```
+$ git tag hoge
+$ git tag hoge2
+$ git tag hoge3
+$ git tag --points-at HEAD
+hoge
+hoge2
+hoge3
+```
+
+この後にコミットしてみるHEADに紐づく状態が変わることを確認します。
+```
+$ touch aaa.txt
+$ git add aaa.txt
+$ git commit -m "added aaa.txt" aaa.txt
+[hoge1 c6f8bcd] added aaa.txt
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 aaa.txt
+$ git tag newhoge
+$ git tag --points-at HEAD
+newhoge
+```
+
+上記ではHEADを指定していますが、次のようにハッシュ値を指定することも可能です。
+```
+$ git tag --points-at 763fa14bd23df8db5b26e94413a3419838ea2bc6
+hoge
+hoge2
+hoge3
+$ git tag --points-at c6f8bcd302f0f731f37edb65c1f99367ce965747
+newhoge
+```
 
 # 参考URL
 - https://git-scm.com/book/ja/v1/Git-%E3%81%AE%E5%9F%BA%E6%9C%AC-%E3%82%BF%E3%82%B0
