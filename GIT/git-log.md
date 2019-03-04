@@ -142,6 +142,51 @@ $ git log --graph
 | |   
 ```
 
+ブランチ名を指定することができます。
+```
+$ git log --graph testbranch
+*   commit f0b9f1bfe7dcbe278888fc278d90981477b8f6d1
+|\  Merge: 434fde7 bd3dc5d
+| | Author: tsuyopon <tsuyoppy@r2.dion.ne.jp>
+| | Date:   Tue Mar 5 01:46:30 2019 +0900
+| | 
+| |     Merge branch 'mas1' of https://github.com/tsuyopon/test into mas1
+| |     
+| *   commit bd3dc5d24d39196359d952168e5382fbcba2739c
+| |\  Merge: 6cf200f f77ff34
+| | | Author: Tsuyoshi Ooishi <tsuyoshiooishi@yahoo.co.jp>
+| | | Date:   Tue Mar 5 01:45:31 2019 +0900
+| | | 
+| | |     Merge pull request #2 from tsuyopon/mas2
+| | |     
+| | |     Mas2
+| | |    
+| | * commit f77ff34cf165ea7d3ebcec4649c0e52d1ccb0342
+| | | Author: tsuyopon <tsuyoppy@r2.dion.ne.jp>
+| | | Date:   Tue Mar 5 01:44:57 2019 +0900
+| | | 
+| | |     test3
+| | |    
+| | * commit c489b4adac06b7a38549345cba7502865ac11fb5
+| |/  Author: tsuyopon <tsuyoppy@r2.dion.ne.jp>
+| |   Date:   Tue Mar 5 01:44:46 2019 +0900
+| |   
+| |       test2.txt
+| |   
+* | commit 434fde776960506bdd1beb72f8c87adc599e2907
+|/  Author: tsuyopon <tsuyoppy@r2.dion.ne.jp>
+|   Date:   Tue Mar 5 01:46:11 2019 +0900
+|   
+|       added test.txt
+|  
+* commit 6cf200f99d4ef50596dad07ab78141dbcc981b7e
+  Author: Tsuyoshi Ooishi <tsuyoshiooishi@yahoo.co.jp>
+  Date:   Tue Mar 5 01:29:41 2019 +0900
+  
+      Initial commit
+...
+```
+
 onelineを付与すると画面表示がすっきりします。
 ```
 $ git log --graph -oneline
