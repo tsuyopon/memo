@@ -29,6 +29,22 @@ Usage: objdump <option(s)> <file(s)>
 ```
 
 # 詳細
+
+### ライブラリ内で設定されているrpathを確認する
+```
+$ objdump -x n/grep | grep -i rpath
+```
+
+### ライブラリ内で依存しているライブラリのみを表示する
+lddを使ってELFの依存ライブラリを参照することができますが、lddの場合だと依存しているライブラリまで取得してしまいます。
+そこで
+```
+$ objdump -p /usr/bin/grep | grep -i needed
+  NEEDED               libpcre.so.1
+  NEEDED               libc.so.6
+```
+
+
 ### アーカイブヘッダ情報を表示する
 ```
 $ objdump -a /usr/lib/libcrypt.a
