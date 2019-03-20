@@ -944,6 +944,12 @@ sudo gdb `find iocore -type d -printf '-d %p '`  -p `pidof /opt/trafficserver-7.
 (gdb) set logging off
 ```
 
+### PAGERをmoreのように流れる出力にしたい
+表示される情報をlessではなくmoreで一括でログに落としたいといった場合には、上記の「set logging on」を実行した後に、次の設定を入れる必要があります。
+```
+(gdb) set height 0
+```
+
 ### メモリダンプする
 書式は次の通り
 ```
