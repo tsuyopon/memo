@@ -88,5 +88,15 @@ ggguG                   全てのテキストを小文字にする。(原文で�
 :%s/.*/\l&              全ての行の先頭を小文字にする。
 ```
 
+### diffをとった際に表示される「No newline at end of file」の改行メッセージの対処法
+```
+:set binary eol
+```
+
+逆の操作をする場合には
+```
+:set binary noeol
+```
+
 # 参考
 - http://loumo.jp/wp/archive/20080701175525/
