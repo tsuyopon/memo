@@ -76,6 +76,14 @@ struct {
 HeartbeatMessageの送信側は少なくとも16byteのランダムパティングをしなければなりません。受け取ったpaddingは無視されなければなりません。
 もし、payload_lengthがあまりに長いものであったら、受け取ったHeartbeatMessageは何もせずにそのまま捨てられなければなりません。
 
+### データ構造サンプル
+- i以下はClientHelloのキャプチャサンプル
+```
+Extension: heartbeat (len=1)
+    Type: heartbeat (15)
+    Length: 1
+    Mode: Peer allowed to send requests (1)
+```
 
 
 ## IANA規定項目

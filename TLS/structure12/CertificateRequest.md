@@ -11,6 +11,9 @@ TLSv1.2 Record Layer: Handshake Protocol: Certificate Request
         Length: 54
         Certificate types count: 3
         Certificate types (3 types)
+            Certificate type: RSA Sign (1)
+            Certificate type: DSS Sign (2)
+            Certificate type: ECDSA Sign (64)
         Signature Hash Algorithms Length: 46
         Signature Hash Algorithms (23 algorithms)
             Signature Algorithm: ecdsa_secp256r1_sha256 (0x0403)
