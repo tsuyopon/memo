@@ -12,6 +12,41 @@ SSL/TLSの信頼性を高めるための新たな技術で、Google社により�
 
 CTは認証局が発行する証明書を都度、すべての証明書の発行の証跡を第三者の監査ログに残すための仕組みです。防ぐわけではなく、いち早く発見するための仕組みです。
 
+# なぜこのような仕組みが生まれたか?
+SymantecがBaseline Requirementに準拠しない事案が２件発生させてしまったことによって、Googleを怒らせてしまったことが原因です。
+
+歴史から見ていくとCT必須化の流れがわかります。
+- 2013/06
+  - 認証局がハッカーによって不正アクセスを受けて偽の証明書を発行したり、認証局が誤って不適切な証明書が発行される自体を受けてRFC6962としてCertificate Transparencyが策定されました。
+    - https://tools.ietf.org/html/rfc6962
+- 2015/09/14
+  - google.com, www.google.comのEV SSLの証明書をGoogleの許可なく不正に発行していたことがCertificate Transparencyによりわかった。発行していたのはSymantec傘下のブランドであるThawteであった。
+    - https://boingboing.net/2015/09/19/symantec-caught-issuing-rogue.html
+- 2015/12/11
+  - GoogleはSymantecのルート証明書を無効にすると発表します。
+    - https://security.googleblog.com/2015/12/proactive-measures-in-digital.html
+- 2016/10/24
+  - Chromeチームは新たに公開されたすべての信頼できる証明書に対してCTを要求したいと発表しました。
+  - この発表は以下のサイトページとCAブラウザフォーラムで行われました。
+    - https://groups.google.com/a/chromium.org/forum/#!msg/ct-policy/78N3SMcqUGw/ykIwHXuqAQAJ
+- 2017/01/19
+  - Symantecが自身が所有していないexample.comのドメインに勝手に証明書を発行しているのがCTのログから見つかった。
+    - https://groups.google.com/d/msg/mozilla.dev.security.policy/fyJ3EK2YOP8/yvjS5leYCAAJ
+- 2017/09/11
+  - GoogleからSymantecから発行された証明書を無効にする旨とそのリリーススケジュールが発表された。
+    - https://security.googleblog.com/2017/09/chromes-plan-to-distrust-symantec.html
+- 2017/10/31
+  - DigiCertがSymantecのウェブサイトのセキュリティ事業、関連するPKIソリューションの買収を完了した。
+    - https://www.websecurity.symantec.com/ja/jp/digicert-and-symantec-faq
+- 2018/04/30
+  - この日以降に発行されたサーバ証明書はCTに対応していないと警告が表示されるようになる。
+    - https://groups.google.com/a/chromium.org/forum/#!topic/ct-policy/wHILiYf31DE
+- 2018/10/23
+  - 提示されたリリーススケジュールどおりにChrome70からSymantecから発行された証明書を無効にした。
+
+削除されてしまったウェブページもあるので、以下のサイトにまとまっています。
+- https://notchained.hatenablog.com/entry/2017/03/27/090554
+
 # CTの流れ
 以下を参考にしたところ
 - https://www.cybertrust.ne.jp/sureserver/productinfo/ct.html
