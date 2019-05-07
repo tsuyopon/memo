@@ -1,4 +1,30 @@
 # Server Key Exchange
+Server Key Exchangeはもっとも混乱しやすいメッセージである。
+なぜ混乱しやすいかというとRFC2246、RFC4346、RFC4492、RFC5246、RFC8422の５つが複雑に絡み合っている。
+バージョンごとに構造体の違いも多く、歴史的経緯による用語の混乱(dhe_dss, dhe_rsa)なども非常に多い。
+
+ECCかどうかで構造体構造が変わってきたりするので注意が必要。例えば、TLS_DHEとTLS_ECDHEでは構造体が異なってくる。
+
+- RFC2246 (TLS1.0)
+  - https://www.ietf.org/rfc/rfc2246.txt
+- RFC4346 (TLS1.1)
+  - https://www.ietf.org/rfc/rfc4346.txt
+- RFC5246 (TLS1.2)
+  - https://tools.ietf.org/html/rfc5246#section-7.4.3
+- RFC4492
+  - ECCに関してはこちらを参考にする。
+  - https://tools.ietf.org/html/rfc4492#section-5.4
+- RFC8422
+  - RFC4492をエフェメラルのみに限定し、EdDSAに関する記述も付与されている。
+  - https://tools.ietf.org/html/rfc8422#section-5.4
+
+なお、TLS1.3ではkey_shared拡張の登場によってこのメッセージは廃止されている。
+
+# 詳細
+ここでは一部のパケットしか載せていない
+
+### TLS1.2でecdheの場合(RFC8422を参照のこと)
+
 ClientKeyExchangeでも公開鍵が32バイト、64バイトの違いがあった。
 Server Key Exchangeでもx25519かsecp256r1でその違いがあったのでこれらに応答する鍵サイズとなっていると思われます。
 
