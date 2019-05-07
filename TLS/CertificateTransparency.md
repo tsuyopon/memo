@@ -22,6 +22,12 @@ SymantecがBaseline Requirementに準拠しない事案が２件発生させて�
 - 2015/09/14
   - google.com, www.google.comのEV SSLの証明書をGoogleの許可なく不正に発行していたことがCertificate Transparencyによりわかった。発行していたのはSymantec傘下のブランドであるThawteであった。
     - https://boingboing.net/2015/09/19/symantec-caught-issuing-rogue.html
+- 2015/10/13
+  - symantecが上記の件の最終報告書をURL上で公開 (現在では以下のページは閲覧できない)
+    - https://www.symantec.com/connect/sites/default/files/Test_Certificates_Incident_Final_Report_10_13_2015v3b.pdf
+- 2015/10/28
+  - Googleがsymantecの最終報告書を受けて声明を発表した。
+    - https://security.googleblog.com/2015/10/sustaining-digital-certificate-security.html
 - 2015/12/11
   - GoogleはSymantecのルート証明書を無効にすると発表します。
     - https://security.googleblog.com/2015/12/proactive-measures-in-digital.html
