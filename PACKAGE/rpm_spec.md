@@ -202,6 +202,18 @@ Requires: tcl >= 8.4, tk >= 8.4
 ExclusiveArch: i386 x86_64
 ```
 
+- 自動的な依存追加を回避する
+```
+AutoReq: 0
+```
+
+- debuginfoパッケージを作成しない場合
+  - 以下の記述があるとdebuginfoパッケージを作成しなくなります。
+```
+%define debug_package %{nil}
+```
+
+
 ### descriptionセクション
 
 
