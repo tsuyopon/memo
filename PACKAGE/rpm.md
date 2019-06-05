@@ -288,8 +288,7 @@ $ rpm -qpl httpd-2.2.23-1.fc17.x86_64.rpm | head -5
 ```
 
 ### rpmパッケージ内のファイルを全て展開する
-rpmのダウンロード方法はあとでyumdownloaderコマンドを取得することで簡単に取得できる。
-展開は次のようにして行う。ディレクトリを新しく作ってその中で行うのが良いです。
+rpmの展開は次のようにして行う。ディレクトリを新しく作ってその中で行うのが良いです。
 ```
 $ mkdir xxxx; cp *.rpm xxx; cd xxxx
 $ rpm2cpio httpd-2.2.23-1.fc17.x86_64.rpm | cpio -idv
@@ -355,53 +354,6 @@ $ rpm -q --changelog nagios
 * 火 10月 05 2010 Dag Wieers <dag@wieers.com> - 3.2.2-1
 - Updated to release 3.2.2.
 ```
-
-### ソースコードを取得したい
-たとえば、mysqlのソースコードを取得したい場合
-```
-$ yumdownloader --source mysql-server-5.5.32-1.fc17.x86_64
-$ ls
-mysql-5.5.32-1.fc17.src.rpm
-```
-
-src.rpmに含まれるファイル一覧を表示する場合は次のコマンドで確認できる。
-```
-$ rpm2cpio mysql-5.5.32-1.fc17.src.rpm | cpio --list
-```
-
-src.rpmを展開するには次のようにする。
-```
-$ mkdir work
-$ cd work/
-$ rpm2cpio ../mysql-5.5.32-1.fc17.src.rpm | cpio -id
-42555 blocks
-$ ls
-README.mysql-docs           mysql-chain-certs.patch      mysql-innodbwarn.patch    mysql-stack-guard.patch      mysqld-wait-ready
-README.mysql-license        mysql-cipherspec.patch       mysql-install-test.patch  mysql-string-overflow.patch  mysqld.service
-filter-requires-mysql.sh    mysql-dh1024.patch           mysql-logrotate.patch     mysql-strmov.patch           rh-skipped-tests-arm.list
-generate-tarball.sh         mysql-dubious-exports.patch  mysql-man-gpl.tar.gz      mysql-va-list.patch          rh-skipped-tests-base.list
-libmysql.version            mysql-embedded-check.c       mysql-netdevname.patch    mysql-versioning.patch       scriptstub.c
-my.cnf                      mysql-errno.patch            mysql-plugin-bool.patch   mysql.spec
-my_config.h                 mysql-expired-certs.patch    mysql-plugin-test.patch   mysql.tmpfiles.d
-mysql-5.5.32-nodocs.tar.gz  mysql-file-contents.patch    mysql-s390-tsc.patch      mysqld-prepare-db-dir
-$ tar zxvf mysql-5.5.32-nodocs.tar.gz
-$ cd mysql
-```
-あとはこの中にソースコードが含まれている。
-
-### rpmパッケージを取得して、展開する
-rpmをダウンロードする場合には次のようにします。destdirでダウンロード先を指定します。拡張子が.rpm隣っていることに注意すること
-```
-$ yumdownloader --destdir=/tmp httpd 
-httpd-2.2.23-1.fc17.x86_64.rpm
-```
-
-rpmを展開するには
-```
-$ mkdir xxxx; cp *.rpm xxx; cd xxxx
-$ rpm2cpio httpd-2.2.23-1.fc17.x86_64.rpm | cpio -idv
-```
-
 
 # 参考URL
 - RPMパッケージの管理に使うRPMコマンド使えるオプション一覧
