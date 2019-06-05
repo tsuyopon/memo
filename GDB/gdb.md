@@ -523,6 +523,22 @@ connection_context = 0x7f9b5d1a0c88
 (gdb) set environment LD_LIBRARY_PATH=/usr/lib/debug
 ```
 
+### "repeat 30 times" のような表記を実際の出力に変更したい
+たとえば、次のような出力はまとめられてしまうことがあります。
+```
+(gdb) p "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+$6 = 'a' <repeats 30 times>
+```
+
+これは次の設定値で回避することができます。　
+```
+set print repeats 0
+```
+
+
+- 参考
+  - https://stackoverflow.com/questions/2252711/print-whole-string-verbatim-in-gdb
+
 ## TIPS関連
 
 ### IntelやATT形式にシンタックスに変更する。
@@ -1291,6 +1307,11 @@ $7 = {d = 0x703e10 "/usr/local/apache2.4.23/htdocs/", d_components = 5, opts = 5
   use_canonical_phys_port = 2, allow_encoded_slashes = 0, decode_encoded_slashes = 0, condition_ifelse = 0, condition = 0x0, log = 0x0, override_list = 0x0, 
   max_ranges = -1, max_overlaps = -1, max_reversals = -1, refs = 0x0, response_code_exprs = 0x0, cgi_pass_auth = 2, qualify_redirect_url = 2, 
   expr_handler = 0x0, cgi_var_rules = 0x0}
+```
+
+### プロセスIDを表示する
+```
+(gdb) print getpid()
 ```
 
 ### TODO
