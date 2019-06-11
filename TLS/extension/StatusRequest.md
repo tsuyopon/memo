@@ -1,13 +1,21 @@
 # 概要
-status_request拡張はTLSハンドシェイク中にクライアント証明書のステータス情報(つまり、OCSP)をサーバからクライアント側に送付することを許可することを示しています。
-これは制限されたネットワーク環境下でバンド幅を節約するためのCRL転送を避けるために望ましいとされています。
+status_request拡張はOCSP Staplingを実現するための拡張です。
+TLSハンドシェイク中にクライアント証明書のステータス情報をサーバからクライアント側に送付することを許可することを示しています。
+
+OCSPだけだと3rdパーティのOCSPレスポンダに頼ることでレスポンスが悪化するなどがありましたが、OCSP Staplingとすることで独自のサーバから失効情報を配信できるようになりました。
+RFC6066中においてCertificateStatusというメッセージが規定されていて、Certificateメッセージの後に送付するように規定されています。
 
 # 詳細
 
-### 動作概要
-ClientHello中にstatus_request拡張を埋め込むことによってクライアント側はOCSPに対応していることを明示することができます。
+## 動作概要
+ClientHello中にstatus_request拡張を信頼するレスポンダリストも含めて埋め込むことによってクライアント側はOCSP Staplingに対応していることを明示します。
+サーバ側がOCSP Staplingに対応していたらServerHelloでstatus_requestを応答します。
+その後、ハンドシェイクのCertificateメッセージの後に送付されてくる、CertificateStatusというOCSP Stapling専用のメッセージをサーバから受け取ることでクライアントは送付されてくるメッセージをチェックします。
 
-### データ構造 
+## データ構造 
+
+### ClientHello
+ClientHelloの拡張データには信頼できるOCSPレスポンダのリストresponder_id_listとX509の拡張情報を表すrequest_extensionsが含まれるようです。
 ```
 struct {
     CertificateStatusType status_type;
@@ -30,11 +38,31 @@ opaque Extensions<0..2^16-1>;
 上記から次のようなデータ構造になります
 - CertificateStatusType: 固定で"ocsp"を表す1が入る
 - ResponderID: クライアントが信用するOCSPレスポンダIDのリスト。ここが0の場合には特別な意味があり、暗にサーバ側によって知られているといった意味となる。
-- Extensions: 
+- Extensions: 以下のRFC5280のExtensionsが参照される。
+  - https://tools.ietf.org/html/rfc5280#section-4.1.2.9
 
+### ServerHello
+OCSP StaplingのCertificateStatusメッセージを応答する場合にはServerHelloにはstatus_request拡張を空データで含めなければならに。
 
-### データ構造サンプル
-- ClientHelloサンプル
+### CertificateStatus
+```
+struct {
+    CertificateStatusType status_type;
+    select (status_type) {
+        case ocsp: OCSPResponse;
+    } response;
+} CertificateStatus;
+
+opaque OCSPResponse<1..2^24-1>;
+```
+
+注意点としては以下の通り
+- サーバ側はstatus_requestに対応しているとServerHelloで応答したにも関わらずCertificateStatusメッセージを返さないかもしれない。
+- サーバはクライアントとstatus_requestのネゴシエーションをしていない限りCertificateStatusメッセージを送付してはならない(MUST NOT)。
+- クライアントはCertificateStatusメッセージのOCSPレスポンスをチェックしなければならない
+
+## データ構造サンプル
+### ClientHelloサンプル
 ```
 Extension: status_request
     Type: status_request (0x0005)
@@ -43,7 +71,9 @@ Extension: status_request
     Responder ID list Length: 0
     Request Extensions Length: 0
 ```
-- ServerHelloサンプル
+
+### ServerHelloサンプル
+status_reuqestに対応している場合には空の応答が入ってくる。
 ```
 Extension: status_request
     Type: status_request (0x0005)
