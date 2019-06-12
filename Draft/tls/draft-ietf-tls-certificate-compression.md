@@ -18,11 +18,12 @@
 enum {
     zlib(1),
     brotli(2),
+    zstd(3),
     (65535)
 } CertificateCompressionAlgorithm;
 
 struct {
-    CertificateCompressionAlgorithm algorithms<1..2^8-1>;
+    CertificateCompressionAlgorithm algorithms<2..2^8-2>;
 } CertificateCompressionAlgorithms;
 ```
 
@@ -31,6 +32,8 @@ zlibやbrotilは次のRFC仕様に準ずるものがサーバから送られて�
   - https://tools.ietf.org/html/rfc1950
 - brotil
   - https://tools.ietf.org/html/rfc7932
+- zstd
+  - https://tools.ietf.org/html/rfc8478
 
 ### ServerHello
 クライアント側へのエコーバックは不要
@@ -44,7 +47,7 @@ struct {
      opaque compressed_certificate_message<1..2^24-1>;
 } CompressedCertificate;
 ```
-- algorithm: ClientHelloで指定したものが使われる
+- algorithm: ClientHelloのcompress_certificate拡張で指定したアルゴリズムのリストの中のものが利用されなければならない(MUST)
 - uncompressed_length: 解凍後のサイズ
 - compressed_certificate_message: 証明書の圧縮されたボディ
 
@@ -53,6 +56,6 @@ struct {
 
 
 # 参考URL
-- https://tools.ietf.org/html/draft-ietf-tls-certificate-compression-03
+- https://tools.ietf.org/html/draft-ietf-tls-certificate-compression-05
 
 
