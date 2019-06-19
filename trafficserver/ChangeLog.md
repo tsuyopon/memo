@@ -50,3 +50,11 @@ githubで各バージョンタグの直下にChangeLogが配置されている�
   - https://github.com/apache/trafficserver/blob/8.0.x/CHANGELOG-8.0.3
   - https://github.com/apache/trafficserver/blob/8.0.x/CHANGELOG-8.0.4
 
+
+### PRラベルからのバージョンごとの変更点
+次のページからmilestonesやlabelsごとに遷移することができます。
+- マイルストン(主にバージョンごと)
+  - https://github.com/apache/trafficserver/milestones
+- ラベル(QUIC, TLSなど)
+  - https://github.com/apache/trafficserver/labels
+
