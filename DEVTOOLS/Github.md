@@ -102,5 +102,8 @@ TODO*
 *.swp
 ```
 
+なお、gitですでにバージョン管理下にあるものは上記にマッチしても対象外となります。
+- https://stackoverflow.com/questions/1274057/how-to-make-git-forget-about-a-file-that-was-tracked-but-is-now-in-gitignore
+
 - 参考
   - http://inkdesign.jp/posts/notes/gitignore/
