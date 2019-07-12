@@ -561,3 +561,11 @@ Please see the manpage for more information.
   - http://stackoverflow.com/questions/3828157/how-to-use-cscope
 - if_cscop - Vim日本語ドキュメント(Vimバージョン8.0)
   - http://vim-jp.org/vimdoc-ja/if_cscop.html
+  - https://github.com/vim-jp/vimdoc-ja-working/blob/master/doc/if_cscop.jax
+
+
+# 確認したいこと
+- リスト一覧からの検索
+- autoを自動判別して、その定義に飛ぶ方法
+- 同一ファイルの定義に飛ぶ方法
+- ヘッダファイルの宣言から定義に移動する方法

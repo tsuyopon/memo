@@ -3,6 +3,9 @@
 
 # 詳細
 
+- https://docs.trafficserver.apache.org/en/latest/developer-guide/plugins/hooks-and-transactions/index.en.html
+  - 一番よく見るフック実行に状態遷移に関するダイアグラム
+
 - http://people.apache.org/~amc/ats/doc/html/classHttpTunnel.html
   - Class Reference
 
@@ -11,9 +14,6 @@
     - Simplified HTTP Transaction
     - API Hooks Corresponding to States
     - Blacklist Plugin
-
-- Hookトランザクションの状態遷移図
-  - https://docs.trafficserver.apache.org/en/latest/developer-guide/plugins/hooks-and-transactions/index.en.html
 
 - Transaction Timers at various states
   - https://docs.trafficserver.apache.org/en/latest/developer-guide/plugins/hooks-and-transactions/trafficserver-timers.en.html
