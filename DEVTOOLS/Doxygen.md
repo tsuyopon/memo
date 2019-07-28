@@ -130,8 +130,14 @@ graphvizパッケージが入っていればグラフを生成することがで
 HAVE_DOT = YES
 ```
 
+クラス間の依存関係を表すグラフを生成することができる。
 ```
 CLASS_GRAPH = YES
+```
+
+クラス図を生成することもできる。
+```
+CLASS_DIAGRAMS = YES
 ```
 
 クラス図に関して実装依存関係(継承、所有、クラス参照変数)を生成する場合にチェックする
@@ -165,6 +171,22 @@ GRAPHICAL_HIERARCHY = YES
 DIRECTORY_GRAPH = YES
 ```
 
+グラフについては以下を参考にするとどの設定がどのようにビジュアル化できるのかを確認できる。
+- https://www13.atwiki.jp/uhaku/pages/49.html
+
+### グラフに関する設定
+グラフの最大深度を設定することができる。
+```
+MAX_DOT_GRAPH_DEPTH = 3
+```
+
+dhtmlでグラフを展開する機能により見やすくすることもできる。
+```
+HTML_DYNAMIC_SECTIONS = YES
+```
+
+- 参考
+  - http://idlysphere.blog66.fc2.com/blog-entry-176.html
 
 ### dotコマンドのパフォーマンスを高める
 ```
@@ -174,6 +196,19 @@ DOT_MULTI_TARGETS = YES
 スレッド数は3に設定する
 ```
 DOT_NUM_THREADS = 3
+```
+
+
+### ドキュメントに表記する関数の指定
+全ての関数をドキュメント化する
+```
+EXTRACT_ALL = YES
+```
+
+```
+EXTRACT_PRIVATE = YES
+EXTRACT_STATIC = YES
+EXTRACT_LOCAL_CLASS = YES
 ```
 
 ## 応用設定
@@ -283,6 +318,8 @@ int var; /*!< Detailed description after the member */
 
 # 参考URL
 - doxygen公式ホームページ
+  - http://www.doxygen.nl/index.html
+- doxygen公式ホームページ(JP)
   - http://www.doxygen.jp/
 - doxygen公式ホームページ マニュアル
   - http://www.doxygen.jp/manual.html
