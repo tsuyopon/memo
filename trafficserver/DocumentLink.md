@@ -33,3 +33,6 @@
   - https://trafficserver.readthedocs.io/ja/latest/developer-guide/index.en.html
   - Developer’s Guide » Plugin Development
     - https://trafficserver.readthedocs.io/ja/latest/developer-guide/plugins/index.en.html
+- Deploying Apache Traffic Server
+  - スライド
+  - https://slideplayer.com/slide/4697360/
