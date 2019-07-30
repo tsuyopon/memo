@@ -16,7 +16,10 @@ ScriptAlias /cgi-bin/ "/home/www/cgi-bin"
 ることを忘れないでほしい。
 
 ### 全てのユーザーでのCGIプログラムの実行
-これは仮想的なディレクトリの設定位置(<IfModule mod_alias.c>〜<IfModule>の間)
+これは仮想的なディレクトリの設定位置
+```
+<IfModule mod_alias.c>〜<IfModule>の間
+```
 に以下を記述するだけでよい。
 ```
 ScriptAliasMatch /~(..*)/cgi-bin/(.*) /home/$1/public_html/cgi-bin/$2
