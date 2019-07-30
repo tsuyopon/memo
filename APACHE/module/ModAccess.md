@@ -1,10 +1,12 @@
 # mod_accessについて
 IPアドレス、ネットワーク、ドメインにより制限をかけることができます。
 mod_accessの各ディレクティブは以下に対して記述することができます。
-- <Directory> 
-- <Location> 
-- <Files> 
-- .htaccess 
+```
+<Directory> 
+<Location> 
+<Files> 
+.htaccess 
+```
 
 # 詳細
 ### 基本アクセス許可する
