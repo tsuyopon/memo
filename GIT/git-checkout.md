@@ -14,6 +14,12 @@ $ git checkout HEAD -- dir/xxxx
 $ git checkout -- <file_name>
 ```
 
+なお、--がついているのはその後の文字列をオプションではなくただの引数として解釈させるため
+```
+$ git checkout master      // master ブランチをチェックアウト
+$ git checkout -- master   // masterというファイル名をチェックアウト
+```
+
 ### タグの状態をチェックアウトする
 ```
 $ git checkout <タグ名>
