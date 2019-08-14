@@ -178,6 +178,57 @@ Via: http/1.1 edge1123.img.bbt.yahoo.co.jp (ApacheTrafficServer [c sSf ])
 ```
 
 # HTTPSに関する利用
+
+### HTTPバージョンを指定する
+
+```
+$ curl -I --http2 https://www.yahoo.co.jp/
+HTTP/2 200 
+date: Wed, 14 Aug 2019 19:34:24 GMT
+p3p: policyref="http://privacy.yahoo.co.jp/w3c/p3p_jp.xml", CP="CAO DSP COR CUR ADM DEV TAI PSA PSD IVAi IVDi CONi TELo OTPi OUR DELi SAMi OTRi UNRi PUBi IND PHY ONL UNI PUR FIN COM NAV INT DEM CNT STA POL HEA PRE GOV"
+x-content-type-options: nosniff
+x-xss-protection: 1; mode=block
+x-frame-options: SAMEORIGIN
+expires: -1
+pragma: no-cache
+cache-control: private, no-cache, no-store, must-revalidate
+content-type: text/html; charset=UTF-8
+age: 0
+via: http/1.1 edge2626.img.djm.yahoo.co.jp (ApacheTrafficServer [c sSf ])
+server: ATS
+
+$ curl -I --http1.1 https://www.yahoo.co.jp/
+HTTP/1.1 200 OK
+Date: Wed, 14 Aug 2019 19:35:31 GMT
+P3P: policyref="http://privacy.yahoo.co.jp/w3c/p3p_jp.xml", CP="CAO DSP COR CUR ADM DEV TAI PSA PSD IVAi IVDi CONi TELo OTPi OUR DELi SAMi OTRi UNRi PUBi IND PHY ONL UNI PUR FIN COM NAV INT DEM CNT STA POL HEA PRE GOV"
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+X-Frame-Options: SAMEORIGIN
+Expires: -1
+Pragma: no-cache
+Cache-Control: private, no-cache, no-store, must-revalidate
+Content-Type: text/html; charset=UTF-8
+Age: 0
+Connection: keep-alive
+Via: http/1.1 edge2640.img.djm.yahoo.co.jp (ApacheTrafficServer [c sSf ])
+Server: ATS
+
+$ curl -I --http1.0 https://www.yahoo.co.jp/
+HTTP/1.0 200 OK
+Date: Wed, 14 Aug 2019 19:35:38 GMT
+P3P: policyref="http://privacy.yahoo.co.jp/w3c/p3p_jp.xml", CP="CAO DSP COR CUR ADM DEV TAI PSA PSD IVAi IVDi CONi TELo OTPi OUR DELi SAMi OTRi UNRi PUBi IND PHY ONL UNI PUR FIN COM NAV INT DEM CNT STA POL HEA PRE GOV"
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+X-Frame-Options: SAMEORIGIN
+Expires: -1
+Pragma: no-cache
+Cache-Control: private, no-cache, no-store, must-revalidate
+Content-Type: text/html; charset=UTF-8
+Age: 0
+Via: http/1.1 edge2637.img.djm.yahoo.co.jp (ApacheTrafficServer [c sSf ])
+Server: ATS
+```
+
 ### 接続方法を指定する
 ```
 $ curl --tlsv1 https://www.yahoo.co.jp/         # 最新版のtlsで接続する。例えば、tlsv1.2ならtlsv1.2として接続する

@@ -144,19 +144,30 @@ HTTP/2に関する重要な仕様として次の仕様を覚えておいてく�
 
 
 # TIPS
+
+### CURLでのHTTP/2接続を行う
+```
+$ curl --http2 https://www.yahoo.co.jp/
+```
+具体的にはcurl.mdを参照のこと
+
 ### TLSがALPNに対応していることを確認する
 TLSがALPN拡張に対応していないと初期接続としてHTTP/2を確立できません。
 次のopensslコマンドで確認することができます。なお、OpenSSLはALPNをサポートしていますが、サポートしているバージョンは OpenSSL 1.0.2 以降です。
 ```
+// HTTP/2のみを指定する例
 $ echo | openssl s_client -alpn h2 -connect www.yahoo.co.jp:443 
+
+// HTTP/2とHTTP/1.1を指定する例
+$ echo | openssl s_client -alpn h2,http/1.1 -connect www.yahoo.co.jp:443 
 ```
 
-対応している場合には次の行が表示されます
+ALPNのネゴシエーション成功した場合には次の様に選択されたALPNが表示されます。
 ```
 ALPN protocol: h2
 ```
 
-対応していない場合には次のようが表示されます
+指定されたALPNでネゴシエーションできなかった場合には次のようが表示されます
 ```
 No ALPN negotiated
 ```
