@@ -1,5 +1,5 @@
 # 概要
-HTTP/2ではフレームタイプごとにパケット構造が異なるが、これらについてまとめる。
+HTTP/2ではフレームタイプごとにパケット構造が異なるが、これらについてまとめます。
 
 HTTP2.mdで述べたように次の9バイトで始まる。Type(フレームタイプ)のパケット構造とTypeによって指定できるFlagsが異なります。
 ```
@@ -188,5 +188,7 @@ RST_STREAMは次のような場合に送付されます。
 # 参考URL
 - IANA: Hypertext Transfer Protocol version 2 (HTTP/2) Parameters
   - https://www.iana.org/assignments/http2-parameters/http2-parameters.xhtml
+- HTTP Alternative Services
+  - https://tools.ietf.org/html/rfc7838
 - The ORIGIN HTTP/2 Frame
   - https://tools.ietf.org/html/rfc8336
