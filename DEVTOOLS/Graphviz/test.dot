@@ -1,0 +1,24 @@
+// graphviz での作成の流れ
+
+digraph G1 {
+
+    graph [size="4,4"];
+    node [shape=ellipse] a f ;
+    node [shape=box] b c e ;
+    node [shape=diamond] d ;
+        a [label="Start"]; 
+        b [label="lagacy_versionに0x0303をセット"];
+        c [label="xdotで確認"];
+        d [label="正しくできているか"];
+        e [label="sphinxに取り込む"];
+        f [label="終了"];
+        
+        
+        a->b;
+        b->c;
+        c->d;
+        d->e [label="Yes"];
+        d->b [label="No"];
+        e->f;
+        
+}

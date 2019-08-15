@@ -1,6 +1,22 @@
 # 概要
 graphvizについて
 
+サンプルについてはgraphvizで示します。
+
+# 詳細
+
+### dotファイルを変換したい
+```
+$ dot -T pdf sample.dot -o sample.pdf 
+$ dot -T png sample.dot -o sample.png
+$ dot -T jpg sample.dot -o sample.jpg
+$ dot -T svg sample.dot -o sample.svg
+```
+
+### dotファイルを修正しながら画像を確認したい
+gveditというアプリケーションがあるらしいです。
+
+
 # 詳細
 
 ### ファイル間のincludeの依存関係を取得したい
@@ -17,3 +33,5 @@ graphvizについて
 # 公式サイト
 - Graphviz
   - http://www.graphviz.org/
+- Sphinxによるドキュメント
+  - https://graphviz.readthedocs.io/en/stable/index.html
