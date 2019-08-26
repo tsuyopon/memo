@@ -1,24 +1,77 @@
 // graphviz での作成の流れ
+// 参考: https://iroha208.com/categories/graphviz/02/
 
 digraph G1 {
 
-    graph [size="4,4"];
-    node [shape=ellipse] a f ;
-    node [shape=box] b c e ;
-    node [shape=diamond] d ;
-        a [label="Start"]; 
-        b [label="lagacy_versionに0x0303をセット"];
-        c [label="xdotで確認"];
-        d [label="正しくできているか"];
-        e [label="sphinxに取り込む"];
-        f [label="終了"];
+    graph [dpi = 500, ratio = 0.5, size="4,4"];
+    node [shape=box] e1 e2 e3 e4 e5 e6 e7 e8 e9 e10 e11 e101 e102 e103 e104 e105 e106 e1001 e1002 e1003;
+    node [shape=ellipse] c;
+    node [shape=diamond] d1 d2 d3 d4 d1001;
+        // ClientHello1
+        e1 [label="Start"]; 
+        e2 [label="lagacy_versionに0x0303をセット"];
+        e3 [label="random値を生成"];
+        e4 [label="legacy_session_idを埋める"];
+        e5 [label="cipher_suitesを埋める(優先順)"];
+        e6 [label="legacy_compression_methodsをセット"];
+        e7 [label="supported_versionをセット"];
+        e8 [label="hogeセット"];
+        e9 [label="hogeセット"];
+        e10 [label="hogeセット"];
+
+        // ClientHello2
+        e101 [label="送出しておいたClientHello2をClientHello2としてコピー"];
+        e102 [label="extensionsを変更する"];
+        e103 [label="early_dataがあれば除去"];
+        e104 [label="HRRで付与されたcookie拡張を追加"];
+        e105 [label="HRR.cipher_suiteと互換性がないpre_shared_keyを除去"];
+        e106 [label="(必要に応じて)padding拡張の新規追加、削除、パディング長更新"];
+
+        // Common1
+        e1001 [label="TLSPlaintext.lengthに書き込む"];
+        e1002 [label="Handshakeタイプのパケットを生成"];
+        e1003 [label="Recordレイヤーの先頭5byteを付与"];
+
+        d0 [label="HelloRetryRequestへの応答?"];
+        d1 [label="ECDHEの場合?"];
+        d2 [label="PSKの場合?"];
+        d3 [label="0-RTTを使う場合?"];
+        d4 [label="パディング必要?"];
+
+        d1001 [label="2^14bytes超過チェック"];
         
         
-        a->b;
-        b->c;
-        c->d;
-        d->e [label="Yes"];
-        d->b [label="No"];
-        e->f;
+// for ClientHello1
+        e1->d0;
+        d0->e2 [label="No"];
+        e2->e3;
+        e3->e4;
+        e4->e5;
+        e5->e6;
+        e6->e7;
+        e10->d1001;
+
+  subgraph cluster_0 {
+        e7->d1;
+        d1->e8;
+        e8->e9;
+        e9->e10;
+        label="Extension生成処理";
+  }
+
+// for ClientHello2
+        d0->e101 [label="Yes"];
+        e101->e102;
+        e102->e103;
+        e103->e104;
+        e104->e105;
+        e105->e106;
+        e106->d1001;
+
+        d1001->e1001;
+        e1001->e1002;
+        e1002->e1003;
+
+
         
 }

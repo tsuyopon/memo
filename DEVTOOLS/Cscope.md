@@ -552,6 +552,14 @@ Please see the manpage for more information.
 合わせてmanpageも参考のこと
 - http://cscope.sourceforge.net/cscope_man_page.html
 
+
+## Linuxでcsopeを使う
+トップディレクトリで次のようにcscopeターゲットを実行すると良いらしい
+```
+$ ARCH=x86 make cscope
+```
+- https://stackoverflow.com/questions/22938266/linux-kernel-makefile-cscope-target?noredirect=1&lq=1
+
 # 参考
 - The Vim/Cscope tutorial
   - http://cscope.sourceforge.net/cscope_vim_tutorial.html
