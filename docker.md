@@ -62,6 +62,16 @@ REPOSITORY          TAG                 DIGEST                                  
 alpine              3.2                 sha256:21e69d5899e4865b647f6a7aeaba3ddf0d0f17c0016b03ed716322c855533ccd   7bed0150ea37        4 weeks ago         5.265 MB
 ```
 
+### 80ポートでデーモンとして起動する
+```
+$ docker run -d -p 80:80 --name {コンテナ名} nginx
+```
+
+終わったら後片付けをしておきましょう。以下の例ではwebserverというコンテナ名にしています。
+```
+$ docker container stop webserver
+$ docker container rm webserver
+```
 
 ### dockerを起動する
 次のようにしてdockerを起動します。オプションは省略できるものもあります。

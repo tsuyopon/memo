@@ -78,6 +78,20 @@ $ git branch -vv
 * master 4d71925 [origin/master] added .DEFAULT_GOAL
 ```
 
+### プロンプトにブランチを表示させる
+
+- https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh
+上記ファイルを.git-prompt.shという名称でホームディレクトリに保存して、~/.bash_profileなどから
+```
+source ~/.git-prompt.sh
+```
+
+で呼び出せば良い
+
+- 参考
+  - https://qiita.com/hmmrjn/items/60d2a64c9e5bf7c0fe60
+
+
 ### TODO
 - http://qiita.com/chihiro/items/e178e45a7fd5a2fb4599
   - 以下のコマンドをまとめたい
