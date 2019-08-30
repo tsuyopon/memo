@@ -20,38 +20,7 @@ NAT + ホストオンリーモードの初期状態であるとする。
 を参考にして実施ポート設定を行います。
 
 ここでFedoraTest1というのは仮想環境の名称となります
-```
-$ VBoxManage setextradata "FedoraTest1" "VBoxInternal/Devices/pcnet/0/LUN#0/Config/guestssh/Protocol" TCP
-$ VBoxManage setextradata "FedoraTest1" "VBoxInternal/Devices/pcnet/0/LUN#0/Config/guestssh/GuestPort" 22
-$ VBoxManage setextradata "FedoraTest1" "VBoxInternal/Devices/pcnet/0/LUN#0/Config/guestssh/HostPort" 50022
-```
-
-以下のエラーが出ました。
-- http://murayama.hatenablog.com/entry/20100801/1280628489
-
-以下で設定を確認することができます。
-```
-$ VBoxManage getextradata "FedoraTest1" enumerate
-Key: GUI/LastCloseAction, Value: PowerOff
-Key: GUI/LastGuestSizeHint, Value: 720,400
-Key: GUI/LastNormalWindowPosition, Value: 400,46,640,501
-Key: GUI/LastScaleWindowPosition, Value: 400,189,640,480
-Key: GUI/RestrictedRuntimeDevicesMenuActions, Value: HardDrives
-Key: GUI/RestrictedRuntimeMachineMenuActions, Value: SaveState,PowerOff
-Key: GUI/StatusBar/IndicatorOrder, Value: HardDisks,OpticalDisks,FloppyDisks,Network,USB,SharedFolders,Display,VideoCapture,Features,Mouse,Keyboard
-Key: VBoxInternal/Devices/pcnet/0/LUN#0/Config/guestssh/GuestPort, Value: 22
-Key: VBoxInternal/Devices/pcnet/0/LUN#0/Config/guestssh/HostPort, Value: 50022
-Key: VBoxInternal/Devices/pcnet/0/LUN#0/Config/guestssh/Protocol, Value: TCP
-```
-
-あやまった設定を解除します。
-```
-$ VBoxManage setextradata "FedoraTest1" "VBoxInternal/Devices/pcnet/0/LUN#0/Config/guestssh/Protocol"
-$ VBoxManage setextradata "FedoraTest1" "VBoxInternal/Devices/pcnet/0/LUN#0/Config/guestssh/GuestPort"
-$ VBoxManage setextradata "FedoraTest1" "VBoxInternal/Devices/pcnet/0/LUN#0/Config/guestssh/HostPort"
-```
-
-新しい設定を追加(e1000になっていることに注意)します。
+新しい設定を追加(e1000になっていることに注意)します。間違った設定を入れるとVirtualBoxが起動しなくなることがあるので注意してください。
 ```
 $ VBoxManage setextradata "FedoraTest1" "VBoxInternal/Devices/e1000/0/LUN#0/Config/guestssh/Protocol" TCP
 $ VBoxManage setextradata "FedoraTest1" "VBoxInternal/Devices/e1000/0/LUN#0/Config/guestssh/GuestPort" 22
@@ -61,6 +30,14 @@ $ VBoxManage setextradata "FedoraTest1" "VBoxInternal/Devices/e1000/0/LUN#0/Conf
 以下のコマンドで入ることができます。
 ```
 $ ssh localhost -p 50022
+```
+
+または次の設定を~/.ssh/configに追加しておくことで常にssh vboxで入ることができるようになります。
+```
+Host vbox
+  HostName localhost
+  User tsuyoshi
+  Port 50022
 ```
 
 ### ゲストOS側の80番ブラウザにアクセスする(centOS7)
@@ -194,3 +171,39 @@ In use by VMs:  NewOSUbuntu (UUID: abc81f5c-d5c3-4e4b-8a70-e15861d3117b)
 ```
 $ svn co http://www.virtualbox.org/svn/vbox/trunk vbox
 ```
+
+
+### 設定を間違えてしまった場合
+たとえば、本来以下の設定でpcnetではなくe1000とすべきだったとしますが、次のコマンドを実行してしまったとします。
+このように誤った設定を行った場合には、VirtualBoxが起動しなくなります。
+```
+$ VBoxManage setextradata "FedoraTest1" "VBoxInternal/Devices/pcnet/0/LUN#0/Config/guestssh/Protocol" TCP
+$ VBoxManage setextradata "FedoraTest1" "VBoxInternal/Devices/pcnet/0/LUN#0/Config/guestssh/GuestPort" 22
+$ VBoxManage setextradata "FedoraTest1" "VBoxInternal/Devices/pcnet/0/LUN#0/Config/guestssh/HostPort" 50022
+```
+
+以下のエラーが出ました。
+- http://murayama.hatenablog.com/entry/20100801/1280628489
+
+以下で設定を確認することができます。
+```
+$ VBoxManage getextradata "FedoraTest1" enumerate
+Key: GUI/LastCloseAction, Value: PowerOff
+Key: GUI/LastGuestSizeHint, Value: 720,400
+Key: GUI/LastNormalWindowPosition, Value: 400,46,640,501
+Key: GUI/LastScaleWindowPosition, Value: 400,189,640,480
+Key: GUI/RestrictedRuntimeDevicesMenuActions, Value: HardDrives
+Key: GUI/RestrictedRuntimeMachineMenuActions, Value: SaveState,PowerOff
+Key: GUI/StatusBar/IndicatorOrder, Value: HardDisks,OpticalDisks,FloppyDisks,Network,USB,SharedFolders,Display,VideoCapture,Features,Mouse,Keyboard
+Key: VBoxInternal/Devices/pcnet/0/LUN#0/Config/guestssh/GuestPort, Value: 22
+Key: VBoxInternal/Devices/pcnet/0/LUN#0/Config/guestssh/HostPort, Value: 50022
+Key: VBoxInternal/Devices/pcnet/0/LUN#0/Config/guestssh/Protocol, Value: TCP
+```
+
+誤った設定を解除するための方法としてはsetextradataを使います
+```
+$ VBoxManage setextradata "FedoraTest1" "VBoxInternal/Devices/pcnet/0/LUN#0/Config/guestssh/Protocol"
+$ VBoxManage setextradata "FedoraTest1" "VBoxInternal/Devices/pcnet/0/LUN#0/Config/guestssh/GuestPort"
+$ VBoxManage setextradata "FedoraTest1" "VBoxInternal/Devices/pcnet/0/LUN#0/Config/guestssh/HostPort"
+```
+
