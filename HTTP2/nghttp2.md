@@ -64,6 +64,48 @@ The negotiated protocol: h2
 (snip)
 ```
 
+### methodを変更したり、ヘッダを変更、追加する
+```
+$ nghttp -v https://www.yahoo.co.jp -H ':method: HEAD' -H 'user-agent: hogeua' -H 'x-header: test'
+(snip)
+[  0.067] send HEADERS frame <length=52, flags=0x25, stream_id=13>
+          ; END_STREAM | END_HEADERS | PRIORITY
+          (padlen=0, dep_stream_id=11, weight=16, exclusive=0)
+          ; Open new stream
+          :method: HEAD
+          :path: /
+          :scheme: https
+          :authority: www.yahoo.co.jp
+          accept: */*
+          accept-encoding: gzip, deflate
+          user-agent: hogeua
+          x-header: test
+[  0.079] recv SETTINGS frame <length=0, flags=0x01, stream_id=0>
+          ; ACK
+          (niv=0)
+[  0.116] recv (stream_id=13) :status: 200
+[  0.116] recv (stream_id=13) date: Sat, 14 Sep 2019 00:42:30 GMT
+[  0.116] recv (stream_id=13) p3p: policyref="http://privacy.yahoo.co.jp/w3c/p3p_jp.xml", CP="CAO DSP COR CUR ADM DEV TAI PSA PSD IVAi IVDi CONi TELo OTPi OUR DELi SAMi OTRi UNRi PUBi IND PHY ONL UNI PUR FIN COM NAV INT DEM CNT STA POL HEA PRE GOV"
+[  0.116] recv (stream_id=13) x-content-type-options: nosniff
+[  0.116] recv (stream_id=13) x-xss-protection: 1; mode=block
+[  0.116] recv (stream_id=13) x-frame-options: SAMEORIGIN
+[  0.116] recv (stream_id=13) expires: -1
+[  0.116] recv (stream_id=13) pragma: no-cache
+[  0.116] recv (stream_id=13) cache-control: private, no-cache, no-store, must-revalidate
+[  0.116] recv (stream_id=13) content-type: text/html; charset=UTF-8
+[  0.116] recv (stream_id=13) age: 0
+[  0.116] recv (stream_id=13) via: http/1.1 edge2631.img.djm.yahoo.co.jp (ApacheTrafficServer [c sSf ])
+[  0.116] recv (stream_id=13) server: ATS
+[  0.116] recv HEADERS frame <length=411, flags=0x04, stream_id=13>
+          ; END_HEADERS
+          (padlen=0)
+          ; First response header
+[  0.116] recv DATA frame <length=0, flags=0x01, stream_id=13>
+          ; END_STREAM
+[  0.116] send GOAWAY frame <length=8, flags=0x00, stream_id=0>
+          (last_stream_id=0, error_code=NO_ERROR(0x00), opaque_data(0)=[])
+```
+
 ### HTTPで接続してUpgradeリクエストを送る
 ```
 $ nghttp -uv http://google.co.jp/
