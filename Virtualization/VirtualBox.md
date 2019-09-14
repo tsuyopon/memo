@@ -207,3 +207,7 @@ $ VBoxManage setextradata "FedoraTest1" "VBoxInternal/Devices/pcnet/0/LUN#0/Conf
 $ VBoxManage setextradata "FedoraTest1" "VBoxInternal/Devices/pcnet/0/LUN#0/Config/guestssh/HostPort"
 ```
 
+### VirtualBoxへのOSインストール
+以下を参考にRedHat64をインストール。
+- https://qiita.com/nooboolean/items/de4e6bbae5df040177af
+

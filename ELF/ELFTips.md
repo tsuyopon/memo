@@ -3,6 +3,51 @@ readelfとobjdumpと似たコマンドが２つあってわかりにくいので
 
 # 詳細
 
+### 現在の実行環境でどのようにライブラリが呼ばれ処理が実行されるのかを確認する
+```
+$ gcc clientSSL -Wl,-t
+/usr/bin/ld: mode elf_x86_64
+/usr/lib/gcc/x86_64-redhat-linux/4.8.5/../../../../lib64/crt1.o
+/usr/lib/gcc/x86_64-redhat-linux/4.8.5/../../../../lib64/crti.o
+/usr/lib/gcc/x86_64-redhat-linux/4.8.5/crtbegin.o
+clientSSL
+-lgcc_s (/usr/lib/gcc/x86_64-redhat-linux/4.8.5/libgcc_s.so)
+/lib64/libc.so.6
+/lib64/ld-linux-x86-64.so.2
+/lib64/ld-linux-x86-64.so.2
+-lgcc_s (/usr/lib/gcc/x86_64-redhat-linux/4.8.5/libgcc_s.so)
+/usr/lib/gcc/x86_64-redhat-linux/4.8.5/crtend.o
+/usr/lib/gcc/x86_64-redhat-linux/4.8.5/../../../../lib64/crtn.o
+clientSSL:(.rodata+0x0): multiple definition of `_IO_stdin_used'
+/usr/lib/gcc/x86_64-redhat-linux/4.8.5/../../../../lib64/crt1.o:(.rodata.cst4+0x0): first defined here
+clientSSL:(.rodata+0x8): multiple definition of `__dso_handle'
+/usr/lib/gcc/x86_64-redhat-linux/4.8.5/crtbegin.o:(.rodata+0x0): first defined here
+clientSSL: In function `_fini':
+(.fini+0x0): multiple definition of `_fini'
+/usr/lib/gcc/x86_64-redhat-linux/4.8.5/../../../../lib64/crti.o:(.fini+0x0): first defined here
+clientSSL: In function `_start':
+(.text+0x0): multiple definition of `_start'
+/usr/lib/gcc/x86_64-redhat-linux/4.8.5/../../../../lib64/crt1.o:(.text+0x0): first defined here
+clientSSL: In function `_init':
+(.init+0x0): multiple definition of `_init'
+/usr/lib/gcc/x86_64-redhat-linux/4.8.5/../../../../lib64/crti.o:(.init+0x0): first defined here
+clientSSL: In function `data_start':
+(.data+0x0): multiple definition of `__data_start'
+/usr/lib/gcc/x86_64-redhat-linux/4.8.5/../../../../lib64/crt1.o:(.data+0x0): first defined here
+/usr/lib/gcc/x86_64-redhat-linux/4.8.5/crtend.o:(.tm_clone_table+0x0): multiple definition of `__TMC_END__'
+clientSSL:(.data+0x8): first defined here
+/usr/bin/ld: error in clientSSL(.eh_frame); no .eh_frame_hdr table will be created.
+/usr/bin/ld: link errors found, deleting executable `a.out'
+collect2: error: ld returned 1 exit status
+```
+
+### バイナリがCPUの命令セットに対応していることを確認する
+objdumpでdisassembleして、命令セットに対応した文字列をgrepするという方法しかなさそう。
+
+- How to check if compiled code uses SSE and AVX instructions?
+  - https://stackoverflow.com/questions/47878352/how-to-check-if-compiled-code-uses-sse-and-avx-instructions/50056059
+
+
 ### バイナリのABI情報を取得したい
 ```
  $ readelf -n clientSSL 
@@ -115,5 +160,6 @@ String dump of section '.GCC.command.line':
 
 - 参考
   - https://stackoverflow.com/questions/12112338/get-the-compiler-options-from-a-compiled-executable
+
 
 
