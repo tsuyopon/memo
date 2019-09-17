@@ -106,5 +106,12 @@ via: http/1.1 edge2627.img.djm.yahoo.co.jp (ApacheTrafficServer [c sSf ])
 server: ATS
 ```
 
+### HTTP/2通信をdecryptしたい場合
+curlでもSSLKEYLOGFILE環境変数を使ってmaster secret情報を出力することができます。これはopensslなどで定義される環境変数仕様のようです。
+```
+$ SSLKEYLOGFILE=~/curl_ssl_keylog.keylog /opt/curl-7.64.1/bin/curl --http2 -v https://www.yahoo.co.jp/
+```
+
+wireshark側の設定についてはwireshak.mdを参考にしてください。
 
 
