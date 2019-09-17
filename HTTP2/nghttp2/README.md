@@ -7,6 +7,8 @@ nghttp2には他にも次のような便利なツールが提供されます。
 - HTTP/2プロキシ(nghttpx)
 
 # nghttp2インストール
+パッケージの依存情報は以下に記載されているので適宜参照すること。
+- https://nghttp2.org/documentation/package_README.html
 
 ### パッケージインストール
 Linux
