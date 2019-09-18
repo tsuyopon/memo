@@ -114,4 +114,7 @@ $ SSLKEYLOGFILE=~/curl_ssl_keylog.keylog /opt/curl-7.64.1/bin/curl --http2 -v ht
 
 wireshark側の設定についてはwireshak.mdを参考にしてください。
 
+- 参考資料
+  - https://cloudshark.io/articles/2017-10-12-ssl-keylog-in-curl/
+
 
