@@ -37,3 +37,8 @@ HTTP/1.0, HTTP/1.1について
   - https://tools.ietf.org/html/rfc7234
 - RFC7235: Hypertext Transfer Protocol (HTTP/1.1): Authentication
   - https://tools.ietf.org/html/rfc7235
+
+# 参考資料
+- New zine: HTTP: Learn your browser's language!
+  - HTTPの仕組みが絵で学べる
+  - https://jvns.ca/blog/2019/09/12/new-zine-on-http/
