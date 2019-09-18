@@ -274,6 +274,12 @@ hoge fuga
 (gdb) 
 ```
 
+時刻を表示したい場合にはdateコマンドを定期的に実行するなどするとよい。
+```
+(gdb) shell date
+Thu Sep 26 05:12:41 JST 2019
+```
+
 ### print書式
 ```
 (gdb) p 変数            // (例): p str

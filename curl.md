@@ -9,6 +9,12 @@ curlについて
 
 # 一般的な利用方法
 
+### HTTP/2での指定を行う(SNIも含めて)
+Hostヘッダの指定だけではSNI指定がうまくいかなかったのですが、次のようにresolveを使うことで回避できました。
+```
+$ curl -vik --resolve test.co.jp:443:127.0.0.1 https://test.co.jp --http2
+```
+
 ### OAuth関連
 OAuth2.0のbearerでの確認は次のようにして流し込みすると確認が簡単となる。
 ```

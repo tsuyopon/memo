@@ -65,6 +65,21 @@ $ git config --list                 // 削除するプロパティ名を確認�
 $ git config --unset プロパティ名
 ```
 
+### git statusすると日本語名のファイルが文字化けする場合
+```
+$ git config --global core.quotepath false
+```
+
+### git diffすると日本語名のファイルが文字化けする場合
+```
+$ git config --global core.pager "LESSCHARSET=utf-8 less"
+```
+
+また以下の設定を~/.bash_profileなどにいれておきましょう。
+```
+export GIT_PAGER="LESSCHARSET=utf-8 less"
+```
+
 # 参考
 - 他の人のgithub
   - https://github.com/yuroyoro/dotfiles/blob/master/.gitconfig

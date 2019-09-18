@@ -7,6 +7,15 @@ HomebrewとMacportsについての違いは以下を参考のこと
 
 # 詳細
 
+### インストール方法
+インストール方法は以下の公式ページにコマンド一発で済むようになっている。
+- https://brew.sh/
+
+詳細は上記公式ページからコマンドを取得して欲しいが、以下のようなコマンドを打つだけになっている。
+```
+$ /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+```
+
 ### インストールされているパッケージ
 ```
 $ brew list

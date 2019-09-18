@@ -1,10 +1,11 @@
 # 概要
 NASM(Netwide Assembler)とはx86用アセンブラの１つで、GASと同様にAT&T記法です。
+ここではインストール方法やアセンブル方法などについて簡単に説明します。
 
 特徴
 - クロスプラットフォームである。GASと同様にNASMはほとんどのプラットフォームで動作する。
 - オープンソースである
-	
+
 NASMのユーザーマニュアルは以下にあります。
 - http://www.nasm.us/doc/
 
@@ -62,3 +63,22 @@ $ ./hello
 
 - 参考
   - http://ravelll.hatenadiary.jp/entry/2014/10/09/142134
+
+
+### 32bitアセンブル、64bitアセンブル
+64bitシステムで32bit用のELFを作成する場合にはelf_i386が必要となります。
+```
+$ nasm -f elf helloworld.asm
+$ ld -m elf_i386 helloworld.o -o helloworld
+```
+
+```
+$ nasm -f elf64 helloworld_int.s
+$ ld -s -o helloworld_int helloworld_int.o
+```
+
+
+# 参考URL
+- NASM公式マニュアル
+  - https://www.nasm.us/doc/
+
