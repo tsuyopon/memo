@@ -5,10 +5,9 @@
 アセンブラには２つの記述方法があります。
 - AT&T記法
   - AT&Tはアメリカの代表的通信業者
-  - GCCで標準的に使われるGASやNASM(Netwide Assembler)などはこちらの記法である。
+  - GCCで標準的に使われるGASはこちらの記法である。(ただし、GASでも指定でIntel記法にできる。)
 - Intel記法
-  - 最も違うのIntel記法であるMASM(Microsoft Assembler)はGASの場合とオペランドの順番が逆ということである。これ以外にも細かな文法の違いはある。
-  - GASでも指定でIntel記法にできる。
+  - 最も違うのIntel記法であるNASM(Netwide Assembler)やMASM(Microsoft Assembler)はGASの場合とオペランドの順番が逆ということである。これ以外にも細かな文法の違いはある。
 
 主要な記法の違いを記しておく
 
