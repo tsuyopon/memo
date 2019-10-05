@@ -145,21 +145,18 @@ Contents of the .debug_info section:
 ```
 
 .GCC.command.lineというセクションにオプション情報が出力されるようです。
+たとえば、-DHOGEHOGEなどでコマンドライン上から埋め込みたい情報を埋め込むことも可能です。
 ```
-$ readelf -p .GCC.command.line  clientSSL 
+$ gcc -frecord-gcc-switches -DHOGEHOGE test.c
+$ readelf -p .GCC.command.line a.out
 
 String dump of section '.GCC.command.line':
-  [     0]  -I /opt/openssl-1.1.1/include
-  [    1e]  client_SSL.c
-  [    2b]  -mtune=generic
-  [    3a]  -march=x86-64
-  [    48]  -g
-  [    4b]  -O0
-  [    4f]  -frecord-gcc-switches
+  [     0]  -D HOGEHOGE
+  [     c]  test.c
+  [    13]  -mtune=generic
+  [    22]  -march=x86-64
+  [    30]  -frecord-gcc-switches
 ```
 
 - 参考
   - https://stackoverflow.com/questions/12112338/get-the-compiler-options-from-a-compiled-executable
-
-
-
