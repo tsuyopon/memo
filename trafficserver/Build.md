@@ -18,7 +18,7 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 予め必要なpackageをインストールします。Requirementsを知りたければtrafficserverのgitレポジトリ直下のREADMEに記載されています。
 ```
 $ sudo yum install openssl openssl-devel
-$ sudo yum -y install tcl-devel libxml2-devel pcre-devel
+$ sudo yum -y install tcl-devel libxml2-devel pcre-devel libtool
 ```
 
 githubを取得します。
