@@ -2,6 +2,7 @@
 /procのosについて
 
 
+# 詳細
 ### バージョンを表示する(/proc/version)
 ```
 $ cat /proc/version 

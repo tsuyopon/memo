@@ -86,6 +86,27 @@ RX Jumbo:   0
 TX:     256
 ```
 
+### multiqueue NICに関する設定の確認
+lオプションでI/F識別子を与えることによって、NICが最大で幾つのキューまで対応しているかと、現在設定されているキューサイズを表示してくれます。
+```
+$ sudo ethtool -l eth0
+    Channel parameters for eth0:
+    Pre-set maximums:
+    RX: 0
+    TX: 0
+    Other: 0
+    Combined: 2                     # この行は設定可能な最大のキューの数を表しています
+    Current hardware settings:
+    RX: 0
+    TX: 0
+    Other: 0
+    Combined: 1                     # この行は現在設定されているキューの数を表しています
+```
+
+たとえば、上記の設定を見て、2つにキューを変更したい場合には次のようにします。
+```
+$ sudo  ethtool -L eth0 combined 2
+```
 ### イーサネットのデバッグレベルを変更する
 以下はデバッグレベルが最大の場合の例です
 ```

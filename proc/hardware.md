@@ -6,7 +6,7 @@
 特定のCPUだけ割り込み回数が多いような場合には偏っている可能性がある。smp_affinityの設定をしてあげると良いようだ。
 - http://tsuchinoko.dmmlabs.com/?p=627
 
-一番左側はIRQ番号を表示している。
+一番左側はIRQ番号を表示している。CPUが複数ある場合にはCPU0, CPU1といったように複数行表示されることになります。
 ```
 $ cat /proc/interrupts 
            CPU0       
