@@ -35,3 +35,5 @@ gveditというアプリケーションがあるらしいです。
   - http://www.graphviz.org/
 - Sphinxによるドキュメント
   - https://graphviz.readthedocs.io/en/stable/index.html
+- GraphViz Pocket Reference
+  - https://graphs.grevian.org/example
