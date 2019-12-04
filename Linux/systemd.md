@@ -75,6 +75,23 @@ WantedBy=multi-user.target
 LimitNOFILE=10240
 ```
 
+### 各フェーズにおける起動時間を知る
+```
+$ systemd-analyze
+Startup finished in 484ms (kernel) + 2.786s (initrd) + 7.154s (userspace) = 10.425s
+```
+
+引数としてplotを付与するとSVGファイルを出力します
+```
+$ systemd-analyze plot
+```
+
+### 実行しているインスタンスの種類を確認する
+```
+$ systemd-detect-virt
+kvm
+```
+
 
 ## サービス状態変更
 ### サービスの起動・停止・再起動
@@ -438,9 +455,16 @@ redis.service
 
 
 # 参考資料
+以下の資料は時間をとってまとめたいやつ
 - Linux女子部　systemd徹底入門
   - https://www.slideshare.net/enakai/linux-27872553
 - はじめてのsystemdサービス管理ガイド
   - https://dev.classmethod.jp/cloud/aws/service-control-use-systemd/
+- unit定義ファイルの記述ほほう
+  - https://access.redhat.com/documentation/ja-jp/red_hat_enterprise_linux/7/html/system_administrators_guide/sect-managing_services_with_systemd-unit_files
+- systemd
+  - https://wiki.archlinux.jp/index.php/Systemd
+- mixi engineer blog
+  - https://alpha.mixi.co.jp/entry/2013/12063/
 
 
