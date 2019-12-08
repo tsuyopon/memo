@@ -13,6 +13,12 @@ runlevel5 -> graphical
 runlevel6 -> reboot
 ```
 
+systemdには次の5つのタイプが存在します。
+- service: 各種デーモンやサービスの起動
+- target: 従来のランレベルに相当する起動プロセスをまとめたユニット群の処理に使用
+- mount: ファイルシステムのマウントポイント制御
+- device: ディスクデバイス
+- socket: FIFO、UNIXドメインソケット、ポート番号等に関する通信資源
 
 # 詳細
 
@@ -166,6 +172,57 @@ disabled
 - static
 - enabled
 - disabled
+
+### サービスとして登録されているタイプの詳細を確認することする
+typeでタイプ情報を指定することができます。
+```
+$ systemctl --type=service
+UNIT                               LOAD   ACTIVE SUB     DESCRIPTION
+auditd.service                     loaded active running Security Auditing Service
+chronyd.service                    loaded active running NTP client/server
+crond.service                      loaded active running Command Scheduler
+dbus.service                       loaded active running D-Bus System Message Bus
+firewalld.service                  loaded active running firewalld - dynamic firewall daemon
+getty@tty1.service                 loaded active running Getty on tty1
+kdump.service                      loaded active exited  Crash recovery kernel arming
+kmod-static-nodes.service          loaded active exited  Create list of required static device nodes for the current kernel
+lvm2-lvmetad.service               loaded active running LVM2 metadata daemon
+lvm2-monitor.service               loaded active exited  Monitoring of LVM2 mirrors, snapshots etc. using dmeventd or progress polling
+lvm2-pvscan@8:2.service            loaded active exited  LVM2 PV scan on device 8:2
+network.service                    loaded active exited  LSB: Bring up/down networking
+NetworkManager-wait-online.service loaded active exited  Network Manager Wait Online
+NetworkManager.service             loaded active running Network Manager
+polkit.service                     loaded active running Authorization Manager
+postfix.service                    loaded active running Postfix Mail Transport Agent
+rhel-dmesg.service                 loaded active exited  Dump dmesg to /var/log/dmesg
+rhel-domainname.service            loaded active exited  Read and set NIS domainname from /etc/sysconfig/network
+rhel-import-state.service          loaded active exited  Import network configuration from initramfs
+rhel-readonly.service              loaded active exited  Configure read-only root support
+rsyslog.service                    loaded active running System Logging Service
+sshd.service                       loaded active running OpenSSH server daemon
+sysstat.service                    loaded active exited  Resets System Activity Logs
+systemd-journal-flush.service      loaded active exited  Flush Journal to Persistent Storage
+systemd-journald.service           loaded active running Journal Service
+systemd-logind.service             loaded active running Login Service
+systemd-random-seed.service        loaded active exited  Load/Save Random Seed
+systemd-remount-fs.service         loaded active exited  Remount Root and Kernel File Systems
+systemd-sysctl.service             loaded active exited  Apply Kernel Variables
+systemd-tmpfiles-setup-dev.service loaded active exited  Create Static Device Nodes in /dev
+systemd-tmpfiles-setup.service     loaded active exited  Create Volatile Files and Directories
+systemd-udev-trigger.service       loaded active exited  udev Coldplug all Devices
+systemd-udevd.service              loaded active running udev Kernel Device Manager
+systemd-update-utmp.service        loaded active exited  Update UTMP about System Boot/Shutdown
+systemd-user-sessions.service      loaded active exited  Permit User Sessions
+systemd-vconsole-setup.service     loaded active exited  Setup Virtual Console
+tuned.service                      loaded active running Dynamic System Tuning Daemon
+
+LOAD   = Reflects whether the unit definition was properly loaded.
+ACTIVE = The high-level unit activation state, i.e. generalization of SUB.
+SUB    = The low-level unit activation state, values depend on unit type.
+
+37 loaded units listed. Pass --all to see loaded but inactive units, too.
+To show all installed unit files use 'systemctl list-unit-files'.
+```
 
 ### サービスの有効化・無効化
 有効化は次の様にします。
@@ -452,6 +509,113 @@ redis.service
 
 
 
+## システム監視
+
+### ユニット起動にかかった時間
+```
+$ systemd-analyze blame
+          2.150s kdump.service
+          1.659s dev-mapper-centos\x2droot.device
+          1.065s lvm2-monitor.service
+           993ms tuned.service
+           980ms NetworkManager-wait-online.service
+           929ms postfix.service
+           752ms firewalld.service
+           725ms boot.mount
+           331ms network.service
+           185ms auditd.service
+           177ms lvm2-pvscan@8:2.service
+           173ms chronyd.service
+           150ms rhel-import-state.service
+           149ms polkit.service
+           136ms rhel-dmesg.service
+           123ms systemd-udev-trigger.service
+           117ms systemd-vconsole-setup.service
+           116ms dev-mapper-centos\x2dswap.swap
+           114ms systemd-user-sessions.service
+           112ms sysstat.service
+           105ms rhel-readonly.service
+            99ms sshd.service
+            92ms systemd-tmpfiles-setup-dev.service
+            88ms NetworkManager.service
+            86ms plymouth-quit-wait.service
+            83ms plymouth-quit.service
+            74ms rsyslog.service
+            67ms systemd-logind.service
+            59ms rhel-domainname.service
+            58ms systemd-journald.service
+            55ms systemd-udevd.service
+            51ms dev-mqueue.mount
+            47ms kmod-static-nodes.service
+            45ms systemd-sysctl.service
+            44ms sys-kernel-debug.mount
+            39ms systemd-tmpfiles-clean.service
+            38ms systemd-remount-fs.service
+            38ms plymouth-read-write.service
+            37ms plymouth-start.service
+            33ms systemd-tmpfiles-setup.service
+            32ms dev-hugepages.mount
+            28ms systemd-journal-flush.service
+            25ms systemd-update-utmp-runlevel.service
+            17ms systemd-fsck-root.service
+            14ms systemd-random-seed.service
+             8ms systemd-update-utmp.service
+             7ms sys-kernel-config.mount
+```
+
+### システム起動のクリティカルパスツリーを表示する
+```
+$ systemd-analyze critical-chain redis.service
+The time after the unit is active or started is printed after the "@" character.
+The time the unit takes to start is printed after the "+" character.
+
+`-network-online.target @4.906s
+  `-network.target @4.902s
+    `-network.service @4.569s +331ms
+      `-NetworkManager-wait-online.service @3.586s +980ms
+        `-NetworkManager.service @3.496s +88ms
+          `-network-pre.target @3.490s
+            `-firewalld.service @2.735s +752ms
+              `-polkit.service @2.577s +149ms
+                `-basic.target @2.576s
+                  `-sockets.target @2.576s
+                    `-dbus.socket @2.575s
+                      `-sysinit.target @2.573s
+                        `-systemd-update-utmp.service @2.564s +8ms
+                          `-auditd.service @2.377s +185ms
+                            `-systemd-tmpfiles-setup.service @2.339s +33ms
+                              `-rhel-import-state.service @2.188s +150ms
+                                `-local-fs.target @2.168s
+                                  `-boot.mount @1.404s +725ms
+                                    `-local-fs-pre.target @1.384s
+                                      `-lvm2-monitor.service @318ms +1.065s
+                                        `-lvm2-lvmetad.service @400ms
+                                          `-lvm2-lvmetad.socket @288ms
+                                            `--.slice
+```
+
+### 起動シーケンスをSVGとして出力する
+```
+$ systemd-analyze plot > systemd.sequence.svg 
+```
+
+- 参考資料
+  - https://qiita.com/ch7821/items/369090459769c603bb6b
+
+
+### 依存関係を出力する(graphvizが必要となります)
+```
+$ systemd-analyze dot | dot -Tsvg > systemd.dependencies.svg`
+```
+
+## 環境
+
+### 
+```
+$ systemctl show-environment
+LANG=ja_JP.UTF-8
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin
+```
 
 
 # 参考資料
@@ -466,5 +630,8 @@ redis.service
   - https://wiki.archlinux.jp/index.php/Systemd
 - mixi engineer blog
   - https://alpha.mixi.co.jp/entry/2013/12063/
+- systemd サービスユニット覚書
+  - 多くの知らないコマンドが存在する。一通り試しておいた方がいいかもしれない。
+  - https://qiita.com/ch7821/items/369090459769c603bb6b
 
 
