@@ -87,7 +87,7 @@ hello-1.0-1.noarch.rpm
 
 
 ## rpmdev-setuptreeを使う
-この辺の作業を手動でやったりする場合もあったが上記パッケージを使うとこれらは不要となるらしい。
+この辺の作業を手動でやったりする場合もあったがrpmdev-setuptreeパッケージを使うと手動でディレクトリを作る必要がなくなります。
 - 参考
   - http://blog.gachapin-sensei.com/archives/618872.html
 ```
@@ -98,7 +98,19 @@ $ echo '%_topdir %(echo $HOME)/rpmbuild' > ~/.rpmmacros
 パッケージをインストールして実行すると$HOME/rpmbuildディレクトリ作成と$HOME/.rpmmacroを生成します。
 ```
 $ yum install rpmdevtools
+```
+
+```
 $ rpmdev-setuptree 
+$ tree ~/rpmbuild/
+/home/tsuyoshi/rpmbuild/
+|-- BUILD
+|-- RPMS
+|-- SOURCES
+|-- SPECS
+`-- SRPMS
+
+5 directories, 0 files
 ```
 
 .rpmmacroは以下の通り
