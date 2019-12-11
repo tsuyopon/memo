@@ -161,5 +161,18 @@ $ ps auxww | grep -i udevd | grep -v grep | awk -F' ' '{print $2}' | xargs -I{} 
 - 参考
   - https://qiita.com/soymsk/items/7c1621ffca4d0f7ad678
 
+### プロセスがロードするライブラリを確認する
+lsof -pも使えますが、plddというコマンドも利用することができます。
+```
+$ sudo pldd `pidof /usr/bin/redis-server`
+6285:	/usr/bin/redis-server
+linux-vdso.so.1
+/lib64/libm.so.6
+/lib64/libdl.so.2
+/lib64/libjemalloc.so.1
+/lib64/libpthread.so.0
+/lib64/libc.so.6
+/lib64/ld-linux-x86-64.so.2
+```
 
 

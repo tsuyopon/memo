@@ -127,6 +127,8 @@ rpmlib(PayloadFilesHavePrefix) <= 4.0-1
 rtld(GNU_HASH)
 ```
 
+yum -q deplistでも依存情報を確認することができます。
+
 ### 指定したパッケージを使っているパッケージリストを表示します
 ```
 $ rpm -q --whatrequires httpd
@@ -149,6 +151,32 @@ $ rpm --showrc
 また、現在の値を知りたい場合には下記コマンド例の様にして確認することもできます。
 ```
 $ rpm --eval %{_libdir}
+```
+
+### フォーマットを指定してパッケージ情報を参照する
+```
+$ rpm -qa --queryformat "%{NAME} %{ARCH}\n" openssl
+openssl x86_64
+```
+
+### rpmインストール・アンインストール時に実行されるスクリプトを表示する
+```
+$ rpm -q --scripts dbus
+preinstall scriptlet (using /bin/sh):
+# Add the "dbus" user and group
+/usr/sbin/groupadd -r -g 81 dbus 2>/dev/null || :
+/usr/sbin/useradd -c 'System message bus' -u 81 -g 81 \
+    -s /sbin/nologin -r -d '/' dbus 2> /dev/null || :
+preuninstall scriptlet (using /bin/sh):
+
+if [ $1 -eq 0 ] ; then 
+        # Package removal, not upgrade 
+        systemctl --no-reload disable stop dbus.service dbus.socket > /dev/null 2>&1 || : 
+        systemctl stop stop dbus.service dbus.socket > /dev/null 2>&1 || : 
+fi
+postuninstall scriptlet (using /bin/sh):
+
+systemctl daemon-reload >/dev/null 2>&1 || :
 ```
 
 ## インストール
