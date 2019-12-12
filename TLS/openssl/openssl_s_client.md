@@ -482,3 +482,20 @@ SSL-Session:
 ```
 
 
+### セッション情報を出力する
+sess_outでセッション情報を保存する
+```
+$ echo | openssl s_client -connect www.yahoo.co.jp:443 -sess_out session.txt
+```
+
+利用したセッション情報を指定する。出力にNewとあればセッション情報を無視して新規セッションとなり、Reusedと出力されていれば再利用されています。
+```
+$ echo | openssl s_client -connect www.yahoo.co.jp:443 -ess_in session.txt
+```
+
+### セッションチケットを使わないようにする
+以下のように指定することでセッションチケットを使わないようにすることができます。セッション情報を出力、利用したければsess_out, sess_inオプションは利用できます。
+```
+$ echo | openssl s_client -connect www.yahoo.co.jp:443 -no_ticket
+```
+
