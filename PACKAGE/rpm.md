@@ -83,17 +83,6 @@ $ rpm -qd screen
 /usr/share/man/man1/screen.1.gz
 ```
 
-### そのパッケージが依存するすべてのファイルを表示したい
-たとえば、httpdパッケージの場合は以下の様にする。
-```
-$ rpm -qR httpd
-```
-
-### カレントディレクトリにあるインストール前のパッケージファイルの依存関係を表示したい。
-```
-$ rpm -qRp alien-7.24-3.noarch.rpm
-```
-
 ### パッケージの変更履歴を表示したい
 ```
 $ rpm -q --changlog apache
@@ -112,8 +101,10 @@ openssl = 0.9.8b-8.3.el5
 ```
 
 ### そのパッケージが必要とするライブラリ等を表示します
+--requiresは-Rと同じです。
+yumコマンドでもyum -q deplistでも依存情報を確認することができます。
 ```
-$ rpm -q --requires lv
+$ rpm -q --requires lv        // $ rpm -qR lv  と同じ
 libc.so.6
 libc.so.6(GLIBC_2.0)
 libc.so.6(GLIBC_2.1)
@@ -127,7 +118,8 @@ rpmlib(PayloadFilesHavePrefix) <= 4.0-1
 rtld(GNU_HASH)
 ```
 
-yum -q deplistでも依存情報を確認することができます。
+上記で表示されるファイルがすべて存在しなければインストール（アップデート）ができないので、その点は覚えておく必要があります。
+上記の出力はファイル名やパッケージ名(バージョン指定)などが含まれています。
 
 ### 指定したパッケージを使っているパッケージリストを表示します
 ```
@@ -144,8 +136,58 @@ nagios-3.2.3-3.el5.rf
 - http://www.rpmfind.net
 
 ### rpmが使用する全てのオプション・システム変数を表示したい
+rpmに関する設定は定義やマクロは以下で可能です
 ```
-$ rpm --showrc
+[rpmrc設定]
+/usr/lib/rpm/rpmrc
+/usr/lib/rpm/redhat/rpmrc
+/etc/rpmrc
+~/.rpmrc
+
+[マクロ設定]
+/usr/lib/rpm/macros
+/usr/lib/rpm/redhat/macros
+/etc/rpm/macros
+~/.rpmmacros
+```
+- 上記参考
+  - https://linuxjm.osdn.jp/html/rpm/man8/rpm.8.html
+
+
+システムとしてどのような設定になっているのかはshowrcオプションで確認できます。
+大量に出力されるので出力をtailで絞っているが、上記で設定された内容を出力している。
+```
+$ rpm --showrc | tail -30
+%{nil}
+-14: sysusers_create	
+systemd-sysusers %{?*} >/dev/null 2>&1 || : 
+%{nil}
+-14: sysusers_create_inline	
+echo %{?*} | systemd-sysusers - >/dev/null 2>&1 || : 
+%{nil}
+-14: tests_req	%{expand:
+BuildRequires: %*
+%%tests_subpackage_requires %*
+}
+-14: tests_subpackage_provides	%{expand: 
+%global __tests_spkg_prov %{?__tests_spkg_prov} %* 
+}
+-14: tests_subpackage_requires	%{expand: 
+%global __tests_spkg_req %{?__tests_spkg_req} %* 
+}
+-14: tmpfiles_create	
+systemd-tmpfiles --create %{?*} >/dev/null 2>&1 || : 
+%{nil}
+-14: udev_hwdb_update	
+udevadm hwdb --update >/dev/null 2>&1 || : 
+%{nil}
+-14: udev_rules_update	
+udevadm control --reload >/dev/null 2>&1 || : 
+%{nil}
+-14: undefined	%{expand:%%{?%{1}:0}%%{!?%{1}:1}}
+-14: with	%{expand:%%{?with_%{1}:1}%%{!?with_%{1}:0}}
+-14: without	%{expand:%%{?with_%{1}:0}%%{!?with_%{1}:1}}
+======================== active 427 empty 0
 ```
 
 また、現在の値を知りたい場合には下記コマンド例の様にして確認することもできます。
@@ -283,23 +325,6 @@ $ rpm -qpd httpd-2.2.23-1.fc17.x86_64.rpm | tail -5
 /usr/share/man/man8/suexec.8.gz
 ```
 
-### rpmの依存情報を確認する
-```
-$ rpm -qpR httpd-2.2.23-1.fc17.x86_64.rpm | tail -10
-rpmlib(CompressedFileNames) <= 3.0.4-1
-rpmlib(FileCaps) <= 4.6.1-1
-rpmlib(FileDigests) <= 4.6.0-1
-rpmlib(PayloadFilesHavePrefix) <= 4.0-1
-rtld(GNU_HASH)  
-system-logos >= 7.92.1-1
-systemd-units  
-systemd-units  
-systemd-units  
-rpmlib(PayloadIsXz) <= 5.2-1
-```
-
-この辺はおそらくspecファイル中のRequiresなどから指定される!?
-
 ### パッケージファイルが正常かどうかを確認する
 ```
 $ rpm -K httpd-2.2.23-1.fc17.x86_64.rpm 
@@ -381,6 +406,36 @@ $ rpm -q --changelog nagios
 
 * 火 10月 05 2010 Dag Wieers <dag@wieers.com> - 3.2.2-1
 - Updated to release 3.2.2.
+```
+
+
+### rpm周りのデバッグ情報を合わせて出力する(vvオプション)
+
+どのようなコマンドに対してでも-vvオプションを付与することでrpmコマンドのデバッグ出力を表示することができるようです。
+```
+$ rpm -q -vv redis
+D: loading keyring from pubkeys in /var/lib/rpm/pubkeys/*.key
+D: couldn't find any keys in /var/lib/rpm/pubkeys/*.key
+D: loading keyring from rpmdb
+D: serialize failed, using private dbenv
+D: opening  db environment /var/lib/rpm cdb:private:0x401
+D: opening  db index       /var/lib/rpm/Packages 0x400 mode=0x0
+D: locked   db index       /var/lib/rpm/Packages
+D: opening  db index       /var/lib/rpm/Name 0x400 mode=0x0
+D:  read h#     307 Header SHA1 digest: OK (489efff35e604042709daf46fb78611fe90a75aa)
+D: added key gpg-pubkey-f4a80eb5-53a7ff4b to keyring
+D:  read h#     409 Header SHA1 digest: OK (3c2f0e6784751b2e7879528410f408de6a6deb1e)
+D: added key gpg-pubkey-34fa74dd-540237d4 to keyring
+D:  read h#     421 Header SHA1 digest: OK (da1e8a96678f04aee5107687ba95bccb3105cbf7)
+D: added key gpg-pubkey-f2ee9d55-560cfc0a to keyring
+D:  read h#     443 Header SHA1 digest: OK (dd737a402556b7653c2bc971f343532046e26384)
+D: added key gpg-pubkey-352c64e5-52ae6884 to keyring
+D: Using legacy gpg-pubkey(s) from rpmdb
+D:  read h#     445 Header V3 RSA/SHA256 Signature, key ID 352c64e5: OK
+redis-3.2.12-2.el7.x86_64
+D: closed   db index       /var/lib/rpm/Name
+D: closed   db index       /var/lib/rpm/Packages
+D: closed   db environment /var/lib/rpm
 ```
 
 # 参考URL

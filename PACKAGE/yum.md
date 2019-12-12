@@ -147,8 +147,8 @@ kernel-debuginfo-3.9.10-100.fc17.x86_64
 $ sudo yum downgrade kernel-debuginfo-common-x86_64-3.3.4-5.fc17.x86_64 kernel-debuginfo-3.3.4-5.fc17.x86_64
 ```
 
-### ファイル名やコマンド名からそのファイルを提供しているパッケージを確認する
-該当のパッケージを表示してくれます。
+### ファイル名やコマンド名からそのファイルを提供しているレポジトリを確認する
+該当のパッケージを指定してレポジトリや利用できるバージョン情報を表示してくれます。
 ```
 $ yum provides php
 Loaded plugins: auto-update-debuginfo, fastestmirror, langpacks, presto, refresh-packagekit
@@ -168,6 +168,37 @@ Repo        : updates
 
 php-5.4.17-2.fc17.x86_64 : PHP scripting language for creating dynamic web sites
 Repo        : @updates
+```
+
+次の例ではファイルパスを指定しています。
+```
+$ yum provides "/etc/sudoers"
+Loaded plugins: fastestmirror
+Loading mirror speeds from cached hostfile
+ * base: ftp.riken.jp
+ * centos-sclo-rh: ftp.riken.jp
+ * centos-sclo-sclo: ftp.riken.jp
+ * epel: ftp.riken.jp
+ * extras: ftp.riken.jp
+ * updates: ftp.riken.jp
+sudo-1.8.23-4.el7.x86_64 : Allows restricted root access for specified users
+Repo        : base
+Matched from:
+Filename    : /etc/sudoers
+
+
+
+sudo-1.8.23-4.el7_7.1.x86_64 : Allows restricted root access for specified users
+Repo        : updates
+Matched from:
+Filename    : /etc/sudoers
+
+
+
+sudo-1.8.23-3.el7.x86_64 : Allows restricted root access for specified users
+Repo        : @anaconda
+Matched from:
+Filename    : /etc/sudoers
 ```
 
 たとえば、*statという名称のコマンドやファイルを含むパッケージを抽出するのであれば次のように正規表現も使えます。
