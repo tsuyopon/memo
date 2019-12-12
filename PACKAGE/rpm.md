@@ -121,6 +121,14 @@ rtld(GNU_HASH)
 上記で表示されるファイルがすべて存在しなければインストール（アップデート）ができないので、その点は覚えておく必要があります。
 上記の出力はファイル名やパッケージ名(バージョン指定)などが含まれています。
 
+### コンフリクトするパッケージのリストを表示します
+```
+$ rpm -q --conflicts yum
+pirut < 1.1.4
+rpm >= 5-0
+zif <= 0.1.3-3.fc15
+```
+
 ### 指定したパッケージを使っているパッケージリストを表示します
 ```
 $ rpm -q --whatrequires httpd
@@ -438,7 +446,25 @@ D: closed   db index       /var/lib/rpm/Packages
 D: closed   db environment /var/lib/rpm
 ```
 
-# 参考URL
+# Normative Ref
+- RPM Documentation
+  - 参考資料となるポインタへのリファレンスが多い
+  - https://rpm.org/documentation.html
+- Maximum RPM
+  - rpmに関してはこれが一番良い資料かも
+  - http://ftp.rpm.org/max-rpm/index.html
+- Fedora Packaging/Guideline/ja(日本語)
+  - https://fedoraproject.org/wiki/Packaging/Guidelines/ja
+- Fedora draft Documentati0n
+  - https://docs.fedoraproject.org/en-US/Fedora_Draft_Documentation/0.1/html/RPM_Guide/index.html
+- RPM Packaging Guide
+  - https://rpm-packaging-guide.github.io/
+- RPM Packging Guide(SPHINX)
+  - https://rpm-guide.readthedocs.io/en/latest/rpm-guide.html
+- rpmコマンドソースコード(github)
+  - https://github.com/rpm-software-management/rpm/blob/master/rpm.c
+
+# Informative Ref
 - RPMパッケージの管理に使うRPMコマンド使えるオプション一覧
   - http://jp.layer8.sh/reference/entry/show/id/662
 - RPM Tips
