@@ -18,6 +18,13 @@ $ cat /proc/2190/comm
 mysqld_safe
 ```
 
+### 実行しているコマンドのフルパスを表示する
+exeファイルの参照先がコマンドのフルパスになっています。
+```
+$ sudo ls -alt  /proc/2767/exe
+lrwxrwxrwx. 1 root root 0 Dec 15 23:02 /proc/2767/exe -> /usr/bin/dbus-daemon
+```
+
 ### プロセスが実行されている環境変数を確認する
 覗いてみると「@^」でセパレートされていることがわかる。
 ```
@@ -104,19 +111,6 @@ p = private (copy on write)
 - pathname: 通常そのマッピングに対応するファイルである。ELFの場合にはreadelf -lなどで簡単にoffsetと対応付けをすることができる。
 
 
-### /proc/uptime
-1つめのフィールドがOSが起動してからの合計時間(秒)、２つめのフィールドがアイドルだった際の合計時間(秒)
-```
-$ cat /proc/uptime 
-114900.22 112903.48
-```
-
-1番目のフィールドをわかりやすい形式に次のようにして変換することができる。
-```
-$ cat /proc/uptime | awk '{print $1 / 60 /60 /24 "days (" $1 "sec)"}'
-1.3068days (114904.66sec)
-```
-
 ### AUXV
 Auxiliary Vectorsを表示する。
 VDSOなどの位置を特定するための
@@ -178,6 +172,67 @@ $ ls -alt /proc/2190/mem
 ```
 
 このファイルにはopen, read, lseekなどのシステムコールを使ってアクセスするようです。
+
+
+### stat
+CPUの割り当て時間やメモリ使用率などを取得できるらしい
+```
+$ sudo cat /proc/2767/stat
+2767 (dbus-daemon) S 1 2767 2767 0 -1 4202752 849 0 4 0 3 5 0 0 20 0 2 0 546 68050944 649 18446744073709551615 94810177757184 94810177964540 140723335830512 140723335828384 140546944574979 0 0 4096 16385 18446744073709551615 0 0 17 0 0 0 2 0 0 94810180062568 94810180068432 94810183118848 140723335831331 140723335831422 140723335831422 140723335831523 0
+```
+
+### status
+プロセスの状態を取得することができます。
+```
+$ sudo cat /proc/2767/status 
+Name:	dbus-daemon
+Umask:	0022
+State:	S (sleeping)
+Tgid:	2767
+Ngid:	0
+Pid:	2767
+PPid:	1
+TracerPid:	0
+Uid:	81	81	81	81
+Gid:	81	81	81	81
+FDSize:	64
+Groups:	
+VmPeak:	   66460 kB
+VmSize:	   66456 kB
+VmLck:	       0 kB
+VmPin:	       0 kB
+VmHWM:	    2596 kB
+VmRSS:	    2596 kB
+RssAnon:	     704 kB
+RssFile:	    1892 kB
+RssShmem:	       0 kB
+VmData:	    8792 kB
+VmStk:	     132 kB
+VmExe:	     204 kB
+VmLib:	    5948 kB
+VmPTE:	     124 kB
+VmSwap:	       0 kB
+Threads:	2
+SigQ:	0/15063
+SigPnd:	0000000000000000
+ShdPnd:	0000000000000000
+SigBlk:	0000000000000000
+SigIgn:	0000000000001000
+SigCgt:	0000000180004001
+CapInh:	0000000000000000
+CapPrm:	0000000020000000
+CapEff:	0000000020000000
+CapBnd:	0000001fffffffff
+CapAmb:	0000000000000000
+Seccomp:	0
+Speculation_Store_Bypass:	vulnerable
+Cpus_allowed:	1
+Cpus_allowed_list:	0
+Mems_allowed:	00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001
+Mems_allowed_list:	0
+voluntary_ctxt_switches:	843
+nonvoluntary_ctxt_switches:	106
+```
 
 ### /proc/self/, /proc/net, /proc/mounts
 このディレクトリは現在実行中のプロセスへのリンクです。
