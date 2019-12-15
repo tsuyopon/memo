@@ -45,12 +45,6 @@
 - オプションについては以下を参考のこと
   - http://d.hatena.ne.jp/rx7/20110822/p0
 
-## perf + Flame Graphs
-- http://d.hatena.ne.jp/yohei-a/20150706/1436208007
-```
-$ echo 0 > /proc/sys/kernel/kptr_restrict も実行必要
-```
-
 ## Asan
 - https://github.com/google/sanitizers
 - http://d.hatena.ne.jp/tkng/20110419/1303176182
