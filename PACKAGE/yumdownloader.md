@@ -1,58 +1,58 @@
-# $B35MW(B
-yumdownloader$B$O(Brpm$B%Q%C%1!<%8$r%@%&%s%m!<%I$9$k:]$KJXMx$J%D!<%k$G$9!#(B
-$B%3%^%s%I$,F~$C$F$$$J$$>l9g$K$O0J2<$N%3%^%s%I$G%$%s%9%H!<%k$7$^$7$g$&!#(B
+# 概要
+yumdownloaderはrpmパッケージをダウンロードする際に便利なツールです。
+コマンドが入っていない場合には以下のコマンドでインストールしましょう。
 ```
 $ sudo yum install yum-utils
 ```
 
-yum$B$G$b(Bdownloadonly$B%*%W%7%g%s$J$I$,$"$j$^$9$,!"(Byum$B$G$N%@%&%s%m!<%I$N>l9g$K$O0MB8$r>!<j$K2r7h$7$F$/$l$F$7$^$&$N$G(Bcurl-1.0.0, openssl-0.98.0$B$N$h$&$K;XDj$r$7$?$H$7$F(Bcurl-1.0.0$B$,(Bopenssl-1.0.1$B0J>e$rMW5a$7$F$$$k$H>!<j$K(Bcurl-1.0.0$B$H(Bopenssl-1.0.1$B$r<hF@$7$h$&$H$9$k$N$G$3$N$h$&$J;H$$>!<j$G$O$h$m$7$/$"$j$^$;$s!#(B
+yumでもdownloadonlyオプションなどがありますが、yumでのダウンロードの場合には依存を勝手に解決してくれてしまうのでcurl-1.0.0, openssl-0.98.0のように指定をしたとしてcurl-1.0.0がopenssl-1.0.1以上を要求していると勝手にcurl-1.0.0とopenssl-1.0.1を取得しようとするのでこのような使い勝手ではよろしくありません。
 
 
-# $B>\:Y(B
+# 詳細
 
-### $B4pK\%@%&%s%m!<%IJ}K!(B
+### 基本ダウンロード方法
 ```
-$ yumdownloader curl          # $B:G?7HG$r%@%&%s%m!<%I$7$h$&$H$9$k(B
-$ yumdownloader curl-1.0.0    # 1.0.0$BHG$r%@%&%s%m!<%I$7$h$&$H$9$k(B
-$ yumdownloader --enablerepo=updates-base  curl  # $B%l%]%8%H%j$r;XDj$7$F%@%&%s%m!<%I$9$k(B
-$ yumdownloader --disablerepo=updates-base curl  # $BITMW$J%l%]%8%H%j$r;XDj$7$F%@%&%s%m!<%I$9$k(B
-$ yumdownloader --enablerepo=updates-base --disablerepo=* curl  # updates-base$B$N$_0J30$N%l%]%8%H%j0J30$+$i$O(Bcurl$B$N%@%&%s%m!<%I$r5v2D$7$J$$(B
+$ yumdownloader curl          # 最新版をダウンロードしようとする
+$ yumdownloader curl-1.0.0    # 1.0.0版をダウンロードしようとする
+$ yumdownloader --enablerepo=updates-base  curl  # レポジトリを指定してダウンロードする
+$ yumdownloader --disablerepo=updates-base curl  # 不要なレポジトリを指定してダウンロードする
+$ yumdownloader --enablerepo=updates-base --disablerepo=* curl  # updates-baseのみ以外のレポジトリ以外からはcurlのダウンロードを許可しない
 ```
 
-$B%=!<%9%3!<%I$r;XDj$9$k>l9g$K$O(Bsource$B%*%W%7%g%s$r;XDj$7$^$9!#(B 
+ソースコードを指定する場合にはsourceオプションを指定します。 
 ```
 $ yumdownloader --source curl
 ```
-$B>e5-$K$h$j!"(B($BNc(B) curl-7.29.0-51.el7.src.rpm $B$N$h$&$J(Bsrc.rpm$B%U%!%$%k$r%@%&%s%m!<%I$G$-$^$9!#(Bsrc.rpm$B$NE83+J}K!$O8e=R$7$^$9!#(B
+上記により、(例) curl-7.29.0-51.el7.src.rpm のようなsrc.rpmファイルをダウンロードできます。src.rpmの展開方法は後述します。
 
 
-### rpm$B%Q%C%1!<%8$r<hF@$7$F!"E83+$9$k(B
-rpm$B$r%@%&%s%m!<%I$9$k>l9g$K$O<!$N$h$&$K$7$^$9!#(Bdestdir$B$G%@%&%s%m!<%I@h$r;XDj$7$^$9!#3HD%;R$,(B.rpm$BNY$C$F$$$k$3$H$KCm0U$9$k$3$H(B
+### rpmパッケージを取得して、展開する
+rpmをダウンロードする場合には次のようにします。destdirでダウンロード先を指定します。拡張子が.rpm隣っていることに注意すること
 ```
 $ yumdownloader --destdir=/tmp httpd 
 httpd-2.2.23-1.fc17.x86_64.rpm
 ```
 
-rpm$B$rE83+$9$k$K$O(B
+rpmを展開するには
 ```
 $ mkdir xxxx; cp *.rpm xxx; cd xxxx
 $ rpm2cpio httpd-2.2.23-1.fc17.x86_64.rpm | cpio -idv
 ```
 
-### $B%=!<%9%3!<%I$r<hF@$7$?$$(B
-$B$?$H$($P!"(Bmysql$B$N%=!<%9%3!<%I$r<hF@$7$?$$>l9g(B
+### ソースコードを取得したい
+たとえば、mysqlのソースコードを取得したい場合
 ```
 $ yumdownloader --source mysql-server-5.5.32-1.fc17.x86_64
 $ ls
 mysql-5.5.32-1.fc17.src.rpm
 ```
 
-src.rpm$B$K4^$^$l$k%U%!%$%k0lMw$rI=<($9$k>l9g$O<!$N%3%^%s%I$G3NG'$G$-$k!#(B
+src.rpmに含まれるファイル一覧を表示する場合は次のコマンドで確認できる。
 ```
 $ rpm2cpio mysql-5.5.32-1.fc17.src.rpm | cpio --list
 ```
 
-src.rpm$B$rE83+$9$k$K$O<!$N$h$&$K$9$k!#(B
+src.rpmを展開するには次のようにする。
 ```
 $ mkdir work
 $ cd work/
@@ -70,6 +70,6 @@ mysql-5.5.32-nodocs.tar.gz  mysql-file-contents.patch    mysql-s390-tsc.patch   
 $ tar zxvf mysql-5.5.32-nodocs.tar.gz
 $ cd mysql
 ```
-$B$"$H$O$3$NCf$K%=!<%9%3!<%I$,4^$^$l$F$$$k$N$GE,59;2>H$9$l$P$h$$!#(B
+あとはこの中にソースコードが含まれているので適宜参照すればよい。
 
 
