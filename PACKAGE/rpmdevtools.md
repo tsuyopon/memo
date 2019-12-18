@@ -1,3 +1,5 @@
+TODO: 時間があれば、不足しているコマンドを追加する
+
 # 概要
 rpmdevtools関連のパッケージについて
 このパッケージに包括されるコマンドとしてはrpmdev-xxxxという名称となっていることが多いです。
@@ -33,6 +35,13 @@ $ rpm -ql rpmdevtools | grep bin | xargs file
 /usr/bin/rpminfo:            Bourne-Again shell script, ASCII text executable
 /usr/bin/rpmls:              POSIX shell script, ASCII text executable
 /usr/bin/spectool:           Perl script, UTF-8 Unicode text executable
+```
+
+なお、以下のパスにrpmdevtools用の設定フィアルが存在しているようです。
+```
+$ ls  /etc/rpmdevtools/
+devscripts.conf  rmdevelrpms.conf     spectemplate-dummy.spec  spectemplate-minimal.spec  spectemplate-perl.spec      spectemplate-python.spec  template.init
+newspec.conf     spectemplate-R.spec  spectemplate-lib.spec    spectemplate-ocaml.spec    spectemplate-php-pear.spec  spectemplate-ruby.spec
 ```
 
 # 詳細
@@ -371,6 +380,36 @@ testx.rpm
 ```
 
 
+### パッケージ自身とその中身のsum値を取得する(rpmdev-sum)
+パッケージ自身とそれに含まれるファイルのsumを取得することができます。
+```
+$ /usr/bin/rpmdev-sum hello-1.0-1.i386.rpm 
+27332     5
+21477     3 usr/local/bin/hello
+12603     1 usr/share/doc/hello-1.0/FAQ
+```
+
+試しにsumした以下のrpmと一致していることが確認できます。
+```
+$ sum hello-1.0-1.i386.rpm 
+27332     5
+```
+
+### パッケージ自身とその中身のcksum値を取得する(rpmdev-cksum)
+パッケージ自身とそれに含まれるファイルのcksumを取得することができます。 rpmdev-sumと使い方は同じ
+```
+$ /usr/bin/rpmdev-cksum hello-1.0-1.i386.rpm 
+4135240491 4410 hello-1.0-1.i386.rpm
+1476200091 2880 usr/local/bin/hello
+2093171843 36 usr/share/doc/hello-1.0/FAQ
+```
+
+試しにcksumした以下のrpmと一致していることが確認できます。
+```
+$ cksum hello-1.0-1.i386.rpm
+4135240491 4410 hello-1.0-1.i386.rpm
+```
+
 ### パッケージ自身とその中身のmd5値を取得する(rpmdev-md5)
 パッケージ自身とそれに含まれるファイルのmd5を取得することができます。
 ```
@@ -388,7 +427,7 @@ f7575e557d64f2a9530ec86fc1dcd0b9  capstest-1.0-1.noarch.rpm
 ```
 
 ### パッケージ自身とその中身のsha値を取得する(rpmdev-sha1, rpmdev-sha224, rpmdev-sha256  rpmdev-sha384  rpmdev-sha512)
-rpmdev-md5と同じです。出力例だけ添付しておきます。
+rpmdev-cksum, rpmdev-md5と同じです。出力例だけ添付しておきます。
 
 - rpmdev-sha1
 ```
@@ -437,6 +476,325 @@ hello-1.0-1.i386.rpm > foo-1.0-1.noarch.rpm
 $ rpmdev-vercmp hello-1.0-1.i386.rpm hello-1.0-1.i386.rpm 
 hello-1.0-1.i386.rpm == hello-1.0-1.i386.rpm
 ```
+
+### specファイルの雛形を生成する(rpmdev-newspec)
+引数なしでrpmdev-newspecを実行するとnewpackage.specが生成されます。たとえば、hogeと引数を入れるとhoge.specが生成されます。
+```
+$ rpmdev-newspec 
+newpackage.spec created; type minimal, rpm version >= 4.11.
+$ ls
+newpackage.spec
+```
+
+中身を見てみます。
+```
+$ cat newpackage.spec 
+Name:           
+Version:        
+Release:        1%{?dist}
+Summary:        
+
+License:        
+URL:            
+Source0:        
+
+BuildRequires:  
+Requires:       
+
+%description
+
+
+%prep
+%setup -q
+
+
+%build
+%configure
+make %{?_smp_mflags}
+
+
+%install
+rm -rf $RPM_BUILD_ROOT
+%make_install
+
+
+%files
+%doc
+
+
+
+%changelog
+```
+
+### サービス起動用の雛形のスクリプトファイルを作成する(rpmdev-init)
+以下のサンプルをinitスクリプトの雛形として生成してくれるようです。
+```
+/etc/rpmdevtools/template.init
+```
+
+たとえば、mytestと引数を指定するとmytest.initが生成されます。
+```
+$ rpmdev-newinit mytest
+Skeleton init script has been created to "mytest.init".
+$ ls mytest.init 
+mytest.init
+```
+
+中身を見てみます。出力量が多いので一部snipしています。
+```
+$ cat mytest.init
+(snip)
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+exec="/usr/sbin/mytest"
+(snip)
+
+[ -e /etc/sysconfig/$prog ] && . /etc/sysconfig/$prog
+
+lockfile=/var/lock/subsys/$prog
+
+start() {
+    echo -n $"Starting $prog: "
+    # if not running, start it up here, usually something like "daemon $exec"
+    retval=$?
+    echo
+    [ $retval -eq 0 ] && touch $lockfile
+    return $retval
+}
+
+stop() {
+    echo -n $"Stopping $prog: "
+    # stop it here, often "killproc $prog"
+    retval=$?
+    echo
+    [ $retval -eq 0 ] && rm -f $lockfile
+    return $retval
+}
+
+restart() {
+    stop
+    start
+}
+
+case "$1" in
+    start|stop|restart)
+        $1
+        ;;
+    force-reload)
+        restart
+        ;;
+    status)
+(snip)
+```
+
+- manpage
+  - https://linux.die.net/man/1/rpmdev-newinit
+
+### specへrpmバージョン番号およびChangeLog情報を追加する(rpmdev-bumpspec)
+
+あらかじめspecを保存しておいて、rpmdev-bumpspec実行前と実行後でspecファイルの差分を確認してみます。
+バージョン番号をインクリメントして、ChangeLogへのコメント追加も勝手に行ってくれるようです。ユーザー名は何もオプションが指定されないとrpmdev-packagerから取得しているようです。
+```
+$ cp test.spec test.spec.orig
+$ rpmdev-bumpspec test.spec 
+$ diff test.spec test.spec.orig 
+3c3
+< Release:    4.1
+---
+> Release:    3.1
+27,29d26
+< * Wed Dec 18 2019 tsuyoshi - 1-4.1
+< - rebuilt
+< 
+```
+
+ChangeLogへのコメントはもちろん変更できます。
+- https://docs.fedoraproject.org/en-US/Fedora_Draft_Documentation/0.1/html-single/Packagers_Guide/index.html
+```
+$ rpmdev-bumpspec --comment="Initial RPM release" --userstring="John Doe <jdoe@example.com>" test.spec
+$ diff test.spec test.spec.orig
+3c3
+< Release:    5.1
+---
+> Release:    4.1
+27,29d26
+< * Wed Dec 18 2019 John Doe <jdoe@example.com> - 1-5.1
+< - Initial RPM release
+< 
+```
+
+上記の例では4.1から5.1とmajorバージョンが挙げられていますが、これをminor部分を変更するには-rオプションを追加します。。以下は4.1からの差分です。
+```
+$ rpmdev-bumpspec --comment="This is minor version change" --userstring="Tsuyoshi <tsuyoshi@example.com>" -r test.spec
+$ diff test.spec test.spec.orig
+3c3
+< Release:    4.2
+---
+> Release:    4.1
+27,29d26
+< * Wed Dec 18 2019 Tsuyoshi <tsuyoshi@example.com> - 1-4.2
+< - This is minor version change
+< 
+```
+
+次はstringオプションを見る。このオプションは覚えておく価値がある。
+```
+$ rpmdev-bumpspec --comment="--string option test" --userstring="tsuyoshi <tsuyoshi@example.com>" --string="XXXXX" test.spec
+$ diff test.spec test.spec.orig
+3c3
+< Release:    3.1.XXXXX1
+---
+> Release:    3.1
+27,29d26
+< * Wed Dec 18 2019 tsuyoshi <tsuyoshi@example.com> - 1-3.1.XXXXX1
+< - --string option test
+< 
+```
+
+上記の出力結果を保存して、次は--stringを除いて実行してみる。3.1から4.1にメジャーはインクリメントされるが、XXXXX1は変わらない。
+```
+$ cp test.spec test.spec.orig2
+$ rpmdev-bumpspec --comment="continue without string option test" --userstring="tsuyoshi <tsuyoshi@example.com>" test.spec
+$ diff test.spec test.spec.orig2 
+3c3
+< Release:    4.1.XXXXX1
+---
+> Release:    3.1.XXXXX1
+27,29d26
+< * Wed Dec 18 2019 tsuyoshi <tsuyoshi@example.com> - 1-4.1.XXXXX1
+< - continue without string option test
+< 
+```
+
+再度先ほどと同じ--string="XXXXX"を付与して実行する。4.1から4.1のままメジャーは変わらず、XXXXX1からXXXXX2にインクリメントしている。
+```
+$ cp test.spec test.spec.orig3
+$ rpmdev-bumpspec --comment="continue --string again" --userstring="tsuyoshi <tsuyoshi@example.com>" --string="XXXXX" test.spec
+$ diff test.spec test.spec.orig3 
+3c3
+< Release:    4.1.XXXXX2
+---
+> Release:    4.1.XXXXX1
+27,29d26
+< * Wed Dec 18 2019 tsuyoshi <tsuyoshi@example.com> - 1-4.1.XXXXX2
+< - continue --string again
+< 
+```
+
+今度は、上記のspecに対して、--string="YYYYY"という別の文字列を付与してみる。4.1.XXXXX2の後にYYYYY1が付与されたことがわかる。
+```
+$ cp test.spec test.spec.orig4
+$ rpmdev-bumpspec --comment="continue --string again" --userstring="tsuyoshi <tsuyoshi@example.com>" --string="YYYYY" test.spec
+$ diff test.spec test.spec.orig4 
+3c3
+< Release:    4.1.XXXXX2.YYYYY1
+---
+> Release:    4.1.XXXXX2
+27,29d26
+< * Wed Dec 18 2019 tsuyoshi <tsuyoshi@example.com> - 1-4.1.XXXXX2.YYYYY1
+< - continue --string again
+< 
+```
+
+- manpage
+  - https://linux.die.net/man/1/rpmdev-bumpspec
+
+### 開発用パッケージの操作を行う(rpmdev-rmdevelrpms)
+lオプションでインストールされている開発用パッケージの表示を行う。
+デフォルトで表示されるのは-devel, -sdk, -static, --debuginfoなどで、これらに追加しようとするのであれば/etc/rpmdevtools/rmdevelrpms.confを修正すればよいようです。
+```
+$ rpmdev-rmdevelrpms -l
+autoconf-2.69-11.el7.noarch
+automake-1.13.4-3.el7.noarch
+bison-3.0.4-2.el7.x86_64
+cmake-2.8.12.2-2.el7.x86_64
+devtoolset-8-libstdc++-devel-8.3.1-3.1.el7.x86_64
+expat-devel-2.1.0-10.el7_3.x86_64
+flex-2.5.37-6.el7.x86_64
+gettext-0.19.8.1-2.el7.x86_64
+keyutils-libs-devel-1.5.8-3.el7.x86_64
+krb5-devel-1.15.1-37.el7_6.x86_64
+libcom_err-devel-1.42.9-13.el7.x86_64
+libgo-devel-4.8.5-36.el7_6.2.x86_64
+libselinux-devel-2.5-14.1.el7.x86_64
+libsepol-devel-2.5-10.el7.x86_64
+libtool-2.4.2-22.el7_3.x86_64
+libverto-devel-0.2.5-4.el7.x86_64
+libxml2-devel-2.9.1-6.el7_2.3.x86_64
+m4-1.4.16-10.el7.x86_64
+nasm-2.10.07-7.el7.x86_64
+openssl-devel-1.0.2k-16.el7_6.1.x86_64
+pcre-devel-8.32-17.el7.x86_64
+perl-Test-Harness-3.28-3.el7.noarch
+pkgconfig-0.27.1-4.el7.x86_64
+tcl-devel-8.5.13-8.el7.x86_64
+texinfo-5.1-5.el7.x86_64
+xz-devel-5.2.2-1.el7.x86_64
+zlib-devel-1.2.7-18.el7.x86_64
+```
+
+実行したことは無いが、以下で不要な開発用パッケージを削除できる(root権限が必要)。
+```
+$ rpmdev-rmdevelrpms -y
+```
+
+- 参考
+  - https://www.systutorials.com/docs/linux/man/8-rpmdev-rmdevelrpms/
+
+### rpm開発者を推測する (rpmdev-packager)
+rpm開発者と思われる情報を出力してくれます。基本的に引数なしで実行します。
+```
+$ rpmdev-packager
+tsuyoshi
+```
+
+内部ロジックでは次のような複数の情報をチェックして開発者を推測しているようです。
+```
+$ rpmdev-packager -h
+rpmdev-packager guesses rpm packager info from various sources:
+
+  $RPM_PACKAGER   from environment (full name + email address)
+  %packager       from rpm configuration (full name + email address)
+  /etc/passwd     gecos (full name)
+  certificates    ~/.fedora.cert (email address)
+  $MAILTO         from environment (email address)
+
+Usage: rpmdev-packager [option]...
+
+Options:
+  -h, --help      Show help message and exit.
+  -v, --version   Print version information and exit.
+
+Report bugs at <https://bugzilla.redhat.com/>, component rpmdevtools,
+or at <https://fedorahosted.org/rpmdevtools/>.
+```
+
+### rpmの署名のgpgが登録されているかどうかを確認する(rpmdev-checksig)
+署名が設定されていて、gpg鍵
+```
+$ rpmdev-checksig vim-8.0.1568-lp150.3.1.x86_64.rpm
+vim-8.0.1568-lp150.3.1.x86_64.rpm: MISSING KEY - 3dbdc284
+```
+
+登録されているgpgの公開鍵は次で確認できます。
+```
+$ rpm -qa gpg-pubkey*
+gpg-pubkey-f4a80eb5-53a7ff4b
+gpg-pubkey-352c64e5-52ae6884
+gpg-pubkey-34fa74dd-540237d4
+gpg-pubkey-f2ee9d55-560cfc0a
+```
+
+gpg鍵はrpmfindだと以下の場所に配置されているので、インポートする必要があります。
+- http://rpmfind.net/linux/centos/
+
+なお、署名が設定されていないパッケージの場合にはNoneと表示されます。
+```
+$ rpmdev-checksig hello-2.0-1.i686.rpm
+hello-2.0-1.i686.rpm: MD5 - None - <None>
+```
+
 
 # 参考URL
 - ソースコード
