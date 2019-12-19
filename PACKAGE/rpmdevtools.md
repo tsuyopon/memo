@@ -46,6 +46,89 @@ newspec.conf     spectemplate-R.spec  spectemplate-lib.spec    spectemplate-ocam
 
 # 詳細
 
+### shがbashの記法に依存していないかどうかを確認する(checkbashisms)
+以下のshスクリプトがあるとします。
+```
+$ cat hogehoge.sh 
+#!/bin/sh
+source hogehoge
+```
+
+checkbashismsでshファイルがbashに依存した記述になっていないかどうかをチェックできます。
+```
+$ checkbashisms hogehoge.sh
+possible bashism in hogehoge.sh line 2 (should be '.', not 'source'):
+source hogehoge
+```
+
+### 出力にannotationを付与する(annotate-output)
+以下の例ではvmstatを3秒ごとに5回実行しているが、出力に時刻が付与されていることが確認できる。またシンボルも表示される。
+```
+$ annotate-output vmstat -n 3 5
+09:48:43 I: Started vmstat -n 3 5
+09:48:43 O: procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----
+09:48:43 O: r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st
+09:48:43 O: 1  0      0 3496404   2108 176516    0    0   299    10   88  224  0  1 99  0  0
+09:48:46 O: 0  0      0 3496156   2108 176548    0    0     0     0   34   62  0  0 100  0  0
+09:48:49 O: 1  0      0 3496156   2108 176548    0    0     0     0   31   59  0  0 100  0  0
+09:48:52 O: 0  0      0 3496156   2108 176548    0    0     0     0   33   60  0  0 100  0  0
+09:48:55 O: 0  0      0 3496156   2108 176548    0    0     0     0   32   59  0  0 100  0  0
+09:48:55 I: Finished with exitcode 0
+```
+
+上記で出力されるシンボルには次のような意味があります。
+- I: おそらく最初と最後
+- O: stdout
+- E: stderr
+
+- 参考
+  - https://linux.die.net/man/1/annotate-output
+
+
+### ディレクトリを指定してコマンドにmanpageが存在するかを確認する(manpage-alert)
+引数にはディレクトリを指定します。
+以下の例では/usr/sbin中には440個のコマンドがあるが、34個のマニュアルが見つからないということでそのコマンドも表示してくれています。
+```
+$ ls /usr/sbin/* | wc -l
+440
+$ manpage-alert /usr/sbin/
+No manual entry for /usr/sbin/build-locale-archive
+No manual entry for /usr/sbin/ebtables-restore
+No manual entry for /usr/sbin/ebtables-save
+No manual entry for /usr/sbin/glibc_post_upgrade.x86_64
+No manual entry for /usr/sbin/grub2-get-kernel-settings
+No manual entry for /usr/sbin/gss-server
+No manual entry for /usr/sbin/iconvconfig
+No manual entry for /usr/sbin/iconvconfig.x86_64
+No manual entry for /usr/sbin/ldconfig
+No manual entry for /usr/sbin/mkdict
+No manual entry for /usr/sbin/nl-class-add
+No manual entry for /usr/sbin/nl-class-delete
+No manual entry for /usr/sbin/nl-class-list
+No manual entry for /usr/sbin/nl-cls-add
+No manual entry for /usr/sbin/nl-cls-delete
+No manual entry for /usr/sbin/nl-cls-list
+No manual entry for /usr/sbin/nl-link-list
+No manual entry for /usr/sbin/packer
+No manual entry for /usr/sbin/pdata_tools
+No manual entry for /usr/sbin/sasldblistusers2
+No manual entry for /usr/sbin/saslpasswd2
+No manual entry for /usr/sbin/selabel_digest
+No manual entry for /usr/sbin/selabel_lookup
+No manual entry for /usr/sbin/selabel_lookup_best_match
+No manual entry for /usr/sbin/selabel_partial_match
+No manual entry for /usr/sbin/selinux_restorecon
+No manual entry for /usr/sbin/sim_server
+No manual entry for /usr/sbin/sln
+No manual entry for /usr/sbin/sshd-keygen
+No manual entry for /usr/sbin/uuserver
+No manual entry for /usr/sbin/weak-modules
+No manual entry for /usr/sbin/xtables-multi
+No manual entry for /usr/sbin/zdump
+No manual entry for /usr/sbin/zic
+Of 440 commands, found manpages for 406 (34 missing).
+```
+
 ### rpmパッケージ生成に必要なディレクトリを一括で自動生成する(rpmdev-setuptree)
 rpmdev-setuptreeを引数なしで実行すると、$HOME配下にrpmbuildというディレクトリとその中に必要なディレクトリを作成します。
 ```
@@ -359,103 +442,6 @@ $ rpmdev-diff -m hello-1.0-1.i386.rpm capstest-1.0-1.noarch.rpm
 (snip)
 ```
 
-### rpmパッケージバージョンをソートする(rpmdev-sort)
-パッケージ名が複数ありバージョン番号のソートを確認したいときに使えるツールのようです。
-rpmdev-sortを引数なしで実行して、その後rpm名を入力します(存在しないrpmでもok)。そして、最後にCtrl + Dを押下します。
-```
-$ rpmdev-sort          // 引数なしで実行した後に判定したい文字名を入力する
-test1.rpm
-test99.rpm
-testx.rpm
-test43.rpm
-(ここでCtrl + Dを押す)
-```
-
-Ctrl + Dでソートが開始され、次の順番で出力されました。
-```
-test1.rpm
-test43.rpm
-test99.rpm
-testx.rpm
-```
-
-
-### パッケージ自身とその中身のsum値を取得する(rpmdev-sum)
-パッケージ自身とそれに含まれるファイルのsumを取得することができます。
-```
-$ /usr/bin/rpmdev-sum hello-1.0-1.i386.rpm 
-27332     5
-21477     3 usr/local/bin/hello
-12603     1 usr/share/doc/hello-1.0/FAQ
-```
-
-試しにsumした以下のrpmと一致していることが確認できます。
-```
-$ sum hello-1.0-1.i386.rpm 
-27332     5
-```
-
-### パッケージ自身とその中身のcksum値を取得する(rpmdev-cksum)
-パッケージ自身とそれに含まれるファイルのcksumを取得することができます。 rpmdev-sumと使い方は同じ
-```
-$ /usr/bin/rpmdev-cksum hello-1.0-1.i386.rpm 
-4135240491 4410 hello-1.0-1.i386.rpm
-1476200091 2880 usr/local/bin/hello
-2093171843 36 usr/share/doc/hello-1.0/FAQ
-```
-
-試しにcksumした以下のrpmと一致していることが確認できます。
-```
-$ cksum hello-1.0-1.i386.rpm
-4135240491 4410 hello-1.0-1.i386.rpm
-```
-
-### パッケージ自身とその中身のmd5値を取得する(rpmdev-md5)
-パッケージ自身とそれに含まれるファイルのmd5を取得することができます。
-```
-$ rpmdev-md5 capstest-1.0-1.noarch.rpm 
-f7575e557d64f2a9530ec86fc1dcd0b9  capstest-1.0-1.noarch.rpm
-401b30e3b8b5d629635a5c613cdb7919  a/emptyCaps1
-401b30e3b8b5d629635a5c613cdb7919  a/emptyCaps2
-401b30e3b8b5d629635a5c613cdb7919  a/noCaps
-```
-
-試しにmd5sumした以下のrpmと一致していることが確認できます。
-```
-$ md5sum capstest-1.0-1.noarch.rpm 
-f7575e557d64f2a9530ec86fc1dcd0b9  capstest-1.0-1.noarch.rpm
-```
-
-### パッケージ自身とその中身のsha値を取得する(rpmdev-sha1, rpmdev-sha224, rpmdev-sha256  rpmdev-sha384  rpmdev-sha512)
-rpmdev-cksum, rpmdev-md5と同じです。出力例だけ添付しておきます。
-
-- rpmdev-sha1
-```
-$ rpmdev-sha1 capstest-1.0-1.noarch.rpm 
-d4d444aa13062f1898b89763ef696eb06ef5a339  capstest-1.0-1.noarch.rpm
-6fcf9dfbd479ed82697fee719b9f8c610a11ff2a  a/emptyCaps1
-6fcf9dfbd479ed82697fee719b9f8c610a11ff2a  a/emptyCaps2
-6fcf9dfbd479ed82697fee719b9f8c610a11ff2a  a/noCaps
-$ sha1sum capstest-1.0-1.noarch.rpm 
-d4d444aa13062f1898b89763ef696eb06ef5a339  capstest-1.0-1.noarch.rpm
-```
-
-- rpmdev-sha224
-```
-$ rpmdev-sha224 capstest-1.0-1.noarch.rpm
-06b39468a3b01c43ff09f9980b9bbb007efcbb018ab3141dae853ded  capstest-1.0-1.noarch.rpm
-f18276755ba8725bfe0e6bff764621dc562fdaba9d60308327ad55a2  a/emptyCaps1
-f18276755ba8725bfe0e6bff764621dc562fdaba9d60308327ad55a2  a/emptyCaps2
-f18276755ba8725bfe0e6bff764621dc562fdaba9d60308327ad55a2  a/noCaps
-$ sha224sum capstest-1.0-1.noarch.rpm
-06b39468a3b01c43ff09f9980b9bbb007efcbb018ab3141dae853ded  capstest-1.0-1.noarch.rpm
-```
-
-以下の３つも同じなので載せません
-- rpmdev-sha256 
-- rpmdev-sha384
-- rpmdev-sha512 
-
 ### バージョン番号を比較する(rpmdev-vercmp)
 バージョン番号の比較を行います。
 ```
@@ -476,6 +462,27 @@ hello-1.0-1.i386.rpm > foo-1.0-1.noarch.rpm
 $ rpmdev-vercmp hello-1.0-1.i386.rpm hello-1.0-1.i386.rpm 
 hello-1.0-1.i386.rpm == hello-1.0-1.i386.rpm
 ```
+
+### rpmパッケージバージョンをソートする(rpmdev-sort)
+パッケージ名が複数ありバージョン番号のソートを確認したいときに使えるツールのようです。
+rpmdev-sortを引数なしで実行して、その後rpm名を入力します(存在しないrpmでもok)。そして、最後にCtrl + Dを押下します。
+```
+$ rpmdev-sort          // 引数なしで実行した後に判定したい文字名を入力する
+test1.rpm
+test99.rpm
+testx.rpm
+test43.rpm
+(ここでCtrl + Dを押す)
+```
+
+Ctrl + Dでソートが開始され、次の順番で出力されました。
+```
+test1.rpm
+test43.rpm
+test99.rpm
+testx.rpm
+```
+
 
 ### specファイルの雛形を生成する(rpmdev-newspec)
 引数なしでrpmdev-newspecを実行するとnewpackage.specが生成されます。たとえば、hogeと引数を入れるとhoge.specが生成されます。
@@ -771,7 +778,7 @@ or at <https://fedorahosted.org/rpmdevtools/>.
 ```
 
 ### rpmの署名のgpgが登録されているかどうかを確認する(rpmdev-checksig)
-署名が設定されていて、gpg鍵
+署名が設定されていて、gpg鍵が署名が入っているかどうかは次のコマンドで確認することができます。
 ```
 $ rpmdev-checksig vim-8.0.1568-lp150.3.1.x86_64.rpm
 vim-8.0.1568-lp150.3.1.x86_64.rpm: MISSING KEY - 3dbdc284
@@ -795,6 +802,82 @@ $ rpmdev-checksig hello-2.0-1.i686.rpm
 hello-2.0-1.i686.rpm: MD5 - None - <None>
 ```
 
+### パッケージ自身とその中身のsum値を取得する(rpmdev-sum)
+パッケージ自身とそれに含まれるファイルのsumを取得することができます。
+```
+$ /usr/bin/rpmdev-sum hello-1.0-1.i386.rpm 
+27332     5
+21477     3 usr/local/bin/hello
+12603     1 usr/share/doc/hello-1.0/FAQ
+```
+
+試しにsumした以下のrpmと一致していることが確認できます。
+```
+$ sum hello-1.0-1.i386.rpm 
+27332     5
+```
+
+### パッケージ自身とその中身のcksum値を取得する(rpmdev-cksum)
+パッケージ自身とそれに含まれるファイルのcksumを取得することができます。 rpmdev-sumと使い方は同じ
+```
+$ /usr/bin/rpmdev-cksum hello-1.0-1.i386.rpm 
+4135240491 4410 hello-1.0-1.i386.rpm
+1476200091 2880 usr/local/bin/hello
+2093171843 36 usr/share/doc/hello-1.0/FAQ
+```
+
+試しにcksumした以下のrpmと一致していることが確認できます。
+```
+$ cksum hello-1.0-1.i386.rpm
+4135240491 4410 hello-1.0-1.i386.rpm
+```
+
+### パッケージ自身とその中身のmd5値を取得する(rpmdev-md5)
+パッケージ自身とそれに含まれるファイルのmd5を取得することができます。
+```
+$ rpmdev-md5 capstest-1.0-1.noarch.rpm 
+f7575e557d64f2a9530ec86fc1dcd0b9  capstest-1.0-1.noarch.rpm
+401b30e3b8b5d629635a5c613cdb7919  a/emptyCaps1
+401b30e3b8b5d629635a5c613cdb7919  a/emptyCaps2
+401b30e3b8b5d629635a5c613cdb7919  a/noCaps
+```
+
+試しにmd5sumした以下のrpmと一致していることが確認できます。
+```
+$ md5sum capstest-1.0-1.noarch.rpm 
+f7575e557d64f2a9530ec86fc1dcd0b9  capstest-1.0-1.noarch.rpm
+```
+
+### パッケージ自身とその中身のsha値を取得する(rpmdev-sha1, rpmdev-sha224, rpmdev-sha256  rpmdev-sha384  rpmdev-sha512)
+rpmdev-cksum, rpmdev-md5と同じです。出力例だけ添付しておきます。
+
+- rpmdev-sha1
+```
+$ rpmdev-sha1 capstest-1.0-1.noarch.rpm 
+d4d444aa13062f1898b89763ef696eb06ef5a339  capstest-1.0-1.noarch.rpm
+6fcf9dfbd479ed82697fee719b9f8c610a11ff2a  a/emptyCaps1
+6fcf9dfbd479ed82697fee719b9f8c610a11ff2a  a/emptyCaps2
+6fcf9dfbd479ed82697fee719b9f8c610a11ff2a  a/noCaps
+$ sha1sum capstest-1.0-1.noarch.rpm 
+d4d444aa13062f1898b89763ef696eb06ef5a339  capstest-1.0-1.noarch.rpm
+```
+
+- rpmdev-sha224
+```
+$ rpmdev-sha224 capstest-1.0-1.noarch.rpm
+06b39468a3b01c43ff09f9980b9bbb007efcbb018ab3141dae853ded  capstest-1.0-1.noarch.rpm
+f18276755ba8725bfe0e6bff764621dc562fdaba9d60308327ad55a2  a/emptyCaps1
+f18276755ba8725bfe0e6bff764621dc562fdaba9d60308327ad55a2  a/emptyCaps2
+f18276755ba8725bfe0e6bff764621dc562fdaba9d60308327ad55a2  a/noCaps
+$ sha224sum capstest-1.0-1.noarch.rpm
+06b39468a3b01c43ff09f9980b9bbb007efcbb018ab3141dae853ded  capstest-1.0-1.noarch.rpm
+```
+
+以下の３つも同じなので載せません
+- rpmdev-sha256 
+- rpmdev-sha384
+- rpmdev-sha512 
+
 
 # 参考URL
 - ソースコード
@@ -802,3 +885,6 @@ hello-2.0-1.i686.rpm: MD5 - None - <None>
 - Package rpmdevtools
   - rpmdev-xxx関連等のコマンドのmanpage
   - https://www.mankier.com/package/rpmdevtools
+
+# TODO
+- licensecheckコマンドの使い方だけまだ不明
