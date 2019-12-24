@@ -300,5 +300,14 @@ deployment "sample-deployment" rolled back
 # 参考URL
 - 今こそ始めよう！　Kubernetes入門
   - https://thinkit.co.jp/series/7342
+- 青山さんスライド
+  - https://speakerdeck.com/masayaaoyama/devsumi2019-amsy810-k8s
+
+
+# Official
+- Kubernetes公式ドキュメント
+  - https://kubernetes.io/docs/home/
+- bootcamp
+  - https://kubernetesbootcamp.github.io/kubernetes-bootcamp/index.html
 
 
