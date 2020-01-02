@@ -26,6 +26,13 @@ machdep.cpu.features: FPU VME DE PSE TSC MSR PAE MCE CX8 APIC SEP MTRR PGE MCA C
 
 # 一般操作
 
+
+### アップロードするときなどに、1つ上の階層に移動する
+アップロードする画面で1つ上の階層に移動する方法のやり方がわからなかったのでメモしておく
+```
+Command + ↑
+```
+
 ### ページの先頭・最後尾に移動する。
 先頭に移動する。
 ```
