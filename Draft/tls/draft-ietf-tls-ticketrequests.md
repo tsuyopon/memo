@@ -10,6 +10,7 @@ TLS1.3で導入されたNewSessionTicketメッセージには次の２つの制�
 - コネクション競合の場合: 複数のインターフェースやプロトコル(IPv4, IPv6)などによる競合がある場合など
 - 中央集権的に管理されているようなシステム: サーバが代替してチケットを受け取りクライアントに渡すような場合(?)
 - いくつかのチケットは接続のたびに発行されるという無駄を少なくしたい。
+- リザンプションの拒否: チケット枚数が0であることを送付して、リザンプションの意思がないことを通知する場合
 
 # 解決方法
 クライアントはサーバ側にticket_request拡張を付与することで何枚のチケットを発行してほしいか伝えることができる。
@@ -21,10 +22,11 @@ struct {
 ```
 
 サーバ側はTicketRequestContents.countで指定された枚数よりも多くの枚数をクライアント側に送付すべきではない(SHOULD NOT)
-サーバは255を超えるチケットを送付してはならない(MUST NOT)
 ticket_request拡張をサポートするサーバはEncryptedExtensions中にticket_requestをechoとして返してはならない(MUST NOT)
+クライアントはEncryptedExtensionsメッセージ中にticket_requestが存在していたらillegal_parameterでアボートしなければならない(MUST)
+クライアントはHRRへの応答の２度目のClientHelloでTicketRequestContents.countを変更してはならない(MUST NOT)
 
 # 参考URL
-- https://tools.ietf.org/html/draft-ietf-tls-ticketrequests-01
+- https://tools.ietf.org/rfcdiff?url2=draft-ietf-tls-ticketrequests-04.txt
 - IETF102スライド
   - https://datatracker.ietf.org/meeting/102/materials/slides-102-tls-ticket-requests-00
