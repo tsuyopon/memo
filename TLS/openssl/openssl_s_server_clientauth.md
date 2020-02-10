@@ -3,6 +3,7 @@ opensslコマンドを利用したクライアント認証のテスト方法に�
 
 # 詳細
 
+
 まずはサーバ証明書とその秘密鍵を作成します。
 genrsaでパスフレーズ設定を求められますが以下ではtestを指定しています。そして、req, x509サブオプションではパスフレーズの入力を求められるのでtestを入力しています。
 ```
@@ -31,7 +32,20 @@ CAfileには本来クライアント認証を許可する上位トラストア�
 $ openssl s_client -connect localhost:443 -cert CLIENT_CERT-ca.crt -key CLIENT_CERT.key -CAfile CLIENT_CERT-ca.crt -msg -state
 ```
 
+なお、TLS1.3の場合にはcertificate_authorities拡張になりましたので、次のようにrequestCAfileでクライアント証明書を要求するDistinguishedNameが記載されたX509証明書を指定しないと、認証に失敗します。
+```
+$ /opt/openssl-1.1.1c/bin/openssl s_client -connect localhost:443 -cert CLIENT_CERT-ca.crt -key CLIENT_CERT.key -CAfile CLIENT_CERT-ca.crt -msg -state -requestCAfile CLIENT_CERT-ca.crt
+```
+
+無事に接続できていればサーバ側に以下のログが出力されています。
+```
+Acceptable server certificate CA names
+```
+
 s_serverでもs_clientでもmsgやstateオプションを付与することでどのようなメッセージが来ているかを確認することができます。
 
 # 参考URL
-- http://blog.808inorganic.com/2017/01/using-openssl-sserver-and-openssl.html
+- s_serverとs_clientはこの辺を参考にした
+  - http://blog.808inorganic.com/2017/01/using-openssl-sserver-and-openssl.html
+- クライアント証明書作成の参考
+  - https://pig-log.com/server-client-certificate/
