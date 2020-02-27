@@ -58,6 +58,20 @@ struct sysinfo {
 $ cc -P -E tlbflush.h -I/home/tsuyoshi/SOURCE/linux-2.6.32.65/include/ -I/home/tsuyoshi/SOURCE/linux-2.6.32.65/arch/x86/include/
 ```
 
+
+### ファイル中に含まれているincludeファイルを除外する
+
+includeが含まれていてそのヘッダファイルが失敗しないとPオプションでプリプロセッサ処理しても失敗することがある。
+この場合には、良い方法がないのでincludeを無視してよければ次のようにすることで代替できる。
+```
+$ grep '^\s*#\s*include' $file_name > /tmp/test.c
+$ gcc -E /tmp/test.c | grep -v ^# 
+```
+
+- 参考
+  - https://stackoverflow.com/questions/8713336/run-preprocessor-only-but-with-only-for-certain-statements?rq=1
+
+
 ### プリプロセッサのdefineを設定してプリプロセッサの処理を確認する
 次のようにして定義変数を指定してプリプロセッサの処理を確認することができる。
 ```
