@@ -1,4 +1,4 @@
-
+### 単純なサンプル
 ```
 TLSv1.3 Record Layer: Handshake Protocol: Client Hello
     Content Type: Handshake (22)
@@ -161,4 +161,100 @@ TLSv1.3 Record Layer: Handshake Protocol: Client Hello
             Type: padding (21)
             Length: 191
             Padding Data: 000000000000000000000000000000000000000000000000...
+```
+
+
+### クライアントがクライアント認証に対するリクエストを出す(certificate_authorities拡張を含む)
+これはopensslコマンドのrequestCAfileオプションを指定してcertificate_authoritiesを出力した例である。
+
+```
+Frame 4: 502 bytes on wire (4016 bits), 502 bytes captured (4016 bits)
+Ethernet II, Src: 00:00:00_00:00:00 (00:00:00:00:00:00), Dst: 00:00:00_00:00:00 (00:00:00:00:00:00)
+Internet Protocol Version 6, Src: ::1, Dst: ::1
+Transmission Control Protocol, Src Port: 42780, Dst Port: 443, Seq: 1, Ack: 1, Len: 416
+Transport Layer Security
+    TLSv1.3 Record Layer: Handshake Protocol: Client Hello
+        Content Type: Handshake (22)
+        Version: TLS 1.0 (0x0301)
+        Length: 411
+        Handshake Protocol: Client Hello
+            Handshake Type: Client Hello (1)
+            Length: 407
+            Version: TLS 1.2 (0x0303)
+            Random: 337e8cd948e1591bb0f1e913c31bf8e229afd4f24bde2a2d…
+            Session ID Length: 32
+            Session ID: 45e36ce4675ede9ded5f0afe2a0c669e2a46474fc3b0b8aa…
+            Cipher Suites Length: 62
+            Cipher Suites (31 suites)
+            Compression Methods Length: 1
+            Compression Methods (1 method)
+            Extensions Length: 272
+            Extension: ec_point_formats (len=4)
+            Extension: supported_groups (len=12)
+            Extension: session_ticket (len=0)
+            Extension: encrypt_then_mac (len=0)
+            Extension: extended_master_secret (len=0)
+            Extension: signature_algorithms (len=48)
+            Extension: supported_versions (len=9)
+            Extension: psk_key_exchange_modes (len=2)
+            Extension: key_share (len=38)
+            Extension: certificate_authorities (len=119)
+                Type: certificate_authorities (47)
+                Length: 119
+                Distinguished Names Length: 117
+                Distinguished Names (117 bytes)
+                    Distinguished Name Length: 115
+                    Distinguished Name: (id-at-commonName=client.co.jp,id-at-organizationalUnitName=organizationunit,id-at-organizationName=client,id-at-localityName=city,id-at-stateOrProvinceName=Saitama,id-at-countryName=JP)
+                        RDNSequence item: 1 item (id-at-countryName=JP)
+                            RelativeDistinguishedName item (id-at-countryName=JP)
+                                Id: 2.5.4.6 (id-at-countryName)
+                                CountryName: JP
+                        RDNSequence item: 1 item (id-at-stateOrProvinceName=Saitama)
+                            RelativeDistinguishedName item (id-at-stateOrProvinceName=Saitama)
+                                Id: 2.5.4.8 (id-at-stateOrProvinceName)
+                                DirectoryString: uTF8String (4)
+                                    uTF8String: Saitama
+                        RDNSequence item: 1 item (id-at-localityName=city)
+                            RelativeDistinguishedName item (id-at-localityName=city)
+                                Id: 2.5.4.7 (id-at-localityName)
+                                DirectoryString: uTF8String (4)
+                                    uTF8String: city
+                        RDNSequence item: 1 item (id-at-organizationName=client)
+                            RelativeDistinguishedName item (id-at-organizationName=client)
+                                Id: 2.5.4.10 (id-at-organizationName)
+                                DirectoryString: uTF8String (4)
+                                    uTF8String: client
+                        RDNSequence item: 1 item (id-at-organizationalUnitName=organizationunit)
+                            RelativeDistinguishedName item (id-at-organizationalUnitName=organizationunit)
+                                Id: 2.5.4.11 (id-at-organizationalUnitName)
+                                DirectoryString: uTF8String (4)
+                                    uTF8String: organizationunit
+                        RDNSequence item: 1 item (id-at-commonName=client.co.jp)
+                            RelativeDistinguishedName item (id-at-commonName=client.co.jp)
+                                Id: 2.5.4.3 (id-at-commonName)
+                                DirectoryString: uTF8String (4)
+```
+
+上記のcertificate_authorities拡張が含まれたClientHelloを発行する際にopensslコマンドへのrequestCAfileオプションとして指定したX509証明書は次の通り。
+本来requestCAfileにはトラストアンカーを指定する。
+```
+$ openssl x509 -in CLIENT_CERT-ca.crt -text
+Certificate:
+    Data:
+        Version: 1 (0x0)
+        Serial Number:
+            b7:9c:98:7d:3b:85:92:ab
+    Signature Algorithm: sha256WithRSAEncryption
+        Issuer: C=JP, ST=Saitama, L=city, O=client, OU=organizationunit, CN=client.co.jp
+        Validity
+            Not Before: Feb 10 16:03:59 2020 GMT
+            Not After : Feb  7 16:03:59 2030 GMT
+        Subject: C=JP, ST=Saitama, L=city, O=client, OU=organizationunit, CN=client.co.jp
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                Public-Key: (2048 bit)
+                Modulus:
+                    00:ea:ff:ad:4e:5d:b3:88:17:7d:96:4e:70:82:04:
+                    6c:d5:1a:6e:b6:8a:7b:8c:a7:75:b8:cf:46:1d:f7:
+(snip)
 ```
