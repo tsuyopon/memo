@@ -62,10 +62,10 @@ $ cc -P -E tlbflush.h -I/home/tsuyoshi/SOURCE/linux-2.6.32.65/include/ -I/home/t
 ### ファイル中に含まれているincludeファイルを除外する
 
 includeが含まれていてそのヘッダファイルが失敗しないとPオプションでプリプロセッサ処理しても失敗することがある。
-この場合には、良い方法がないのでincludeを無視してよければ次のようにすることで代替できる。
+この場合には、良い方法がないのでincludeを無視してよければ次のようにすることで代替できる。 cat -sすると連続する空行を1行にまとめてくれる。
 ```
 $ grep '^\s*#\s*include' $file_name > /tmp/test.c
-$ gcc -E /tmp/test.c | grep -v ^# 
+$ gcc -E /tmp/test.c | grep -v ^#  | cat -s
 ```
 
 - 参考
