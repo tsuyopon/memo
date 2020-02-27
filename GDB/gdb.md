@@ -105,6 +105,11 @@ breakポイントに到達しても何回か飛ばしたい場合
 (gdb) ignore <Bnum> <num>      // <Bnum>はinfo bで表示される番号。<num>は無視する回数を表します。
 ```
 
+条件付きでブレークポイントを設定する例(glibcのdl-close.c)
+```
+(gdb) b dl-close.c:196 if ((int)strcmp(lp->l_name, "lib64/libc.so.6") == 0)
+```
+
 ### 条件付きbreakpointの例
 
 ```
