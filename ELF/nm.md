@@ -758,6 +758,41 @@ $ nm --debug-syms /lib64/libc.so.6 | grep -i " i "
 0000000000089760 i __libc_memset
 000000000009fbc0 i __libc_strstr
 (snip)
+000000000008ea40 i bcmp
+00000000000b4d80 i gettimeofday
+000000000008a9c0 i index
+000000000008ea40 i memcmp
+0000000000094220 i memcpy@@GLIBC_2.14
+000000000008f010 i memcpy@GLIBC_2.2.5
+000000000008f010 i memmove
+000000000008f1c0 i mempcpy
+000000000008f060 i memset
+00000000000958d0 i rawmemchr
+000000000008dfb0 i rindex
+000000000008f6e0 i stpcpy
+000000000008f800 i stpncpy
+000000000008f880 i strcasecmp
+000000000008f840 i strcasecmp_l
+00000000000a6140 i strcasestr
+000000000008a7c0 i strcat
+000000000008a9c0 i strchr
+000000000008aa80 i strcmp
+000000000008bf10 i strcpy
+000000000008c030 i strcspn
+000000000008c4d0 i strlen
+0000000000091b50 i strncasecmp
+0000000000091b10 i strncasecmp_l
+000000000008c6a0 i strncat
+000000000008c6e0 i strncmp
+000000000008df70 i strncpy
+000000000008c600 i strnlen
+000000000008e090 i strpbrk
+000000000008dfb0 i strrchr
+000000000008e420 i strspn
+00000000000a5630 i strstr
+00000000000b4d30 i time
+00000000000a76a0 i wcscpy
+00000000000a8270 i wmemcmp
 ```
 
 
@@ -765,7 +800,7 @@ $ nm --debug-syms /lib64/libc.so.6 | grep -i " i "
   - https://github.com/lattera/glibc/blob/a2f34833b1042d5d8eeb263b4cf4caaea138c4ad/sysdeps/unix/sysv/linux/x86_64/gettimeofday.c#L42-L43
 
 ### Nオプション
-- gオプションを付与した際に付与されるシンボルのようです。 (TODO: 入っているシンボルの意味については今後確認する)
+gオプションを付与した際に付与されるシンボルで、デバッグシンボルのようです。
 ```
 $ cat test.c 
 #include<stdio.h>
@@ -826,7 +861,6 @@ $ nm --debug-syms /opt/openssl-1.0.2m/lib/libcrypto.so | grep " U " | tail -5
 ```
 
 ### Vシンボル
-- 自分が確認した限りだとlibc.soしかこのシンボルが発見されなかった
 ```
 $ nm --debug-syms /lib64/libc.so.6 | grep -i " V "
 00000000003bea20 V __after_morecore_hook
@@ -849,6 +883,59 @@ $ nm --debug-syms /lib64/libc.so.6 | grep -i " V "
 // glibc/stdlib/errno.h
 extern char *program_invocation_name;
 extern char *program_invocation_short_name;
+```
+
+また、trafficserverだと次のような場合があった
+```
+$ nm -C /opt/trafficserver-7.1.8/lib/libatscppapi.so | grep -w V
+00000000002436b0 V typeinfo for atscppapi::AsyncTimer
+0000000000243ab0 V typeinfo for atscppapi::RemapPlugin
+0000000000243830 V typeinfo for atscppapi::noncopyable
+00000000002437d0 V typeinfo for atscppapi::GlobalPlugin
+0000000000243640 V typeinfo for atscppapi::AsyncProvider
+0000000000243620 V typeinfo for atscppapi::AsyncHttpFetch
+0000000000243a60 V typeinfo for atscppapi::InterceptPlugin
+00000000002438c0 V typeinfo for atscppapi::transformations::GzipDeflateTransformation
+0000000000243960 V typeinfo for atscppapi::transformations::GzipInflateTransformation
+0000000000243b90 V typeinfo for atscppapi::TransactionPlugin
+0000000000243c40 V typeinfo for atscppapi::TransformationPlugin
+0000000000243800 V typeinfo for atscppapi::Plugin
+0000000000243670 V typeinfo for std::_Mutex_base<(__gnu_cxx::_Lock_policy)2>
+00000000002439c0 V typeinfo for std::_Sp_counted_ptr<atscppapi::MLocContainer*, (__gnu_cxx::_Lock_policy)2>
+0000000000243b70 V typeinfo for std::_Sp_counted_ptr<atscppapi::Mutex*, (__gnu_cxx::_Lock_policy)2>
+0000000000243600 V typeinfo for std::_Sp_counted_ptr<atscppapi::Request*, (__gnu_cxx::_Lock_policy)2>
+0000000000243650 V typeinfo for std::_Sp_counted_base<(__gnu_cxx::_Lock_policy)2>
+0000000000034f10 V typeinfo name for atscppapi::AsyncTimer
+00000000000377f0 V typeinfo name for atscppapi::RemapPlugin
+00000000000352d0 V typeinfo name for atscppapi::noncopyable
+0000000000035290 V typeinfo name for atscppapi::GlobalPlugin
+0000000000034bf0 V typeinfo name for atscppapi::AsyncProvider
+0000000000034bd0 V typeinfo name for atscppapi::AsyncHttpFetch
+0000000000036e70 V typeinfo name for atscppapi::InterceptPlugin
+0000000000035ac0 V typeinfo name for atscppapi::transformations::GzipDeflateTransformation
+00000000000360a0 V typeinfo name for atscppapi::transformations::GzipInflateTransformation
+0000000000038c60 V typeinfo name for atscppapi::TransactionPlugin
+0000000000039fc0 V typeinfo name for atscppapi::TransformationPlugin
+00000000000352b0 V typeinfo name for atscppapi::Plugin
+0000000000034c60 V typeinfo name for std::_Mutex_base<(__gnu_cxx::_Lock_policy)2>
+0000000000036100 V typeinfo name for std::_Sp_counted_ptr<atscppapi::MLocContainer*, (__gnu_cxx::_Lock_policy)2>
+0000000000038c00 V typeinfo name for std::_Sp_counted_ptr<atscppapi::Mutex*, (__gnu_cxx::_Lock_policy)2>
+0000000000034b80 V typeinfo name for std::_Sp_counted_ptr<atscppapi::Request*, (__gnu_cxx::_Lock_policy)2>
+0000000000034c20 V typeinfo name for std::_Sp_counted_base<(__gnu_cxx::_Lock_policy)2>
+0000000000243680 V vtable for atscppapi::AsyncTimer
+0000000000243a80 V vtable for atscppapi::RemapPlugin
+00000000002436e0 V vtable for atscppapi::GlobalPlugin
+0000000000243580 V vtable for atscppapi::AsyncProvider
+0000000000243540 V vtable for atscppapi::AsyncHttpFetch
+00000000002439e0 V vtable for atscppapi::InterceptPlugin
+0000000000243840 V vtable for atscppapi::transformations::GzipDeflateTransformation
+00000000002438e0 V vtable for atscppapi::transformations::GzipInflateTransformation
+0000000000243b00 V vtable for atscppapi::TransactionPlugin
+0000000000243bc0 V vtable for atscppapi::TransformationPlugin
+0000000000243760 V vtable for atscppapi::Plugin
+0000000000243980 V vtable for std::_Sp_counted_ptr<atscppapi::MLocContainer*, (__gnu_cxx::_Lock_policy)2>
+0000000000243ac0 V vtable for std::_Sp_counted_ptr<atscppapi::Mutex*, (__gnu_cxx::_Lock_policy)2>
+0000000000243500 V vtable for std::_Sp_counted_ptr<atscppapi::Request*, (__gnu_c
 ```
 
 ### Wシンボル
