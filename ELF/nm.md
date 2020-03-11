@@ -609,10 +609,9 @@ $ man nm
   - http://www.yosbits.com/opensonar/rest/man/freebsd/man/ja/man1/nm.1.html
 
 
-### シンボルの意味をライブラリなどから理解する
+## シンボルの意味をライブラリなどから理解する
 
-- A
-  - Aシンボルは自分が確認した限りではlibc.so以外では確認できませんでした。
+### Aオプション
 ```
 $ nm /lib64/libc.so.6 | grep " A "
 0000000000000000 A GLIBC_2.10
@@ -638,7 +637,15 @@ $ nm /lib64/libc.so.6 | grep " A "
 0000000000000000 A GLIBC_PRIVATE
 ```
 
-- B
+```
+$ nm -C -s /opt/openssl-1.1.1c/lib/libssl.so | grep -w A
+0000000000000000 A OPENSSL_1_1_0
+0000000000000000 A OPENSSL_1_1_0d
+0000000000000000 A OPENSSL_1_1_1
+0000000000000000 A OPENSSL_1_1_1a
+```
+
+### Bオプション
 ```
 $ nm --debug-syms /opt/openssl-1.0.2m/lib/libcrypto.so | grep " B "
 000000000042a3c8 B OPENSSL_NONPIC_relocated
@@ -653,10 +660,10 @@ $ nm --debug-syms /opt/openssl-1.0.2m/lib/libcrypto.so | grep " B "
 000000000042db50 B sigx_app
 ```
 
-- C
-  - 次のようなコードを実行するとオブジェクトコード上ではCシンボルがあることを確認した。
-  - ただし、一般的なlibやgccで生成された実行コードからはCシンボルが存在することを確認できなかった。
-  - (参考) https://www.linuxquestions.org/questions/programming-9/using-nm-command-to-get-symbol-information-571162/
+### Cオプション
+- 次のようなコードを実行するとオブジェクトコード上ではCシンボルがあることを確認した。
+- ただし、一般的なlibやgccで生成された実行コードからはCシンボルが存在することを確認できなかった。
+- (参考) https://www.linuxquestions.org/questions/programming-9/using-nm-command-to-get-symbol-information-571162/
 ```
 $ cat test2.c 
 #include <stdio.h>
@@ -722,8 +729,8 @@ $ nm a.out                 // バイナリで生成されるとCシンボルが�
 0000000000601050 d s
 ```
 
-- D
-  - 以下に示されるような構造体の定義が入っている。
+### Dオプション
+- 以下に示されるような構造体の定義が入っている。
   - https://github.com/openssl/openssl/blob/master/crypto/x509/by_dir.c#L49-L60
   - https://github.com/openssl/openssl/blob/master/crypto/x509/by_file.c#L22-L33
 ```
@@ -732,11 +739,11 @@ $ nm --debug-syms /opt/openssl-1.0.2m/lib/libcrypto.so | grep " D " | grep -ie x
 0000000000425c60 D x509_file_lookup
 ```
 
-- G
-  - 未確認
+### Gオプション
+- 未確認
 
-- I
-  - libc.soでiシンボル(小文字)は利用されているようだ
+### Iオプション
+- libc.soでiシンボル(小文字)は利用されているようだ
 ```
 $ nm --debug-syms /lib64/libc.so.6 | grep -i " i "
 00000000000af140 i __GI___gettimeofday
@@ -752,11 +759,13 @@ $ nm --debug-syms /lib64/libc.so.6 | grep -i " i "
 000000000009fbc0 i __libc_strstr
 (snip)
 ```
-  - 例えば、__GI_gettimeofdayの場合には次の箇所でしか利用されていない
-    - https://github.com/lattera/glibc/blob/a2f34833b1042d5d8eeb263b4cf4caaea138c4ad/sysdeps/unix/sysv/linux/x86_64/gettimeofday.c#L42-L43
 
-- N
-  - gオプションを付与した際に付与されるシンボルのようです。 (TODO: 入っているシンボルの意味については今後確認する)
+
+- 例えば、__GI_gettimeofdayの場合には次の箇所でしか利用されていない
+  - https://github.com/lattera/glibc/blob/a2f34833b1042d5d8eeb263b4cf4caaea138c4ad/sysdeps/unix/sysv/linux/x86_64/gettimeofday.c#L42-L43
+
+### Nオプション
+- gオプションを付与した際に付与されるシンボルのようです。 (TODO: 入っているシンボルの意味については今後確認する)
 ```
 $ cat test.c 
 #include<stdio.h>
@@ -772,7 +781,7 @@ $ nm --debug-syms a.out | grep " N "
 0000000000000000 N .debug_str
 ```
 
-- R
+### Rオプション
 ```
 $ nm --debug-syms /opt/openssl-1.0.2m/lib/libcrypto.so | grep " R " | grep -ie TXT_DB_version -ie X509_version
 00000000001cd5a0 R TXT_DB_version
@@ -784,24 +793,25 @@ const char TXT_DB_version[]="TXT_DB" OPENSSL_VERSION_PTEXT;
 const char X509_version[] = "X.509" OPENSSL_VERSION_PTEXT;
 ```
 
-- S
-  - 未確認
 
-- T
-  - 関数などが含まれていることがわかります。
+### Sオプション
+- 未確認
+
+### Tオプション
+- 関数などが含まれていることがわかります。
 ```
 $ nm --debug-syms /opt/openssl-1.0.2m/lib/libssl.so | grep " T " | grep -ie SSL_accept -ie SSL_write
 00000000000504c0 T SSL_accept
 0000000000050658 T SSL_write
 ```
 
-- U
-  - 以下はただのhello worldのa.outから未定義シンボルを抽出したり、opensslから一部抜粋した例です。
-  - 出力される@@の意味については以下のリンクを参照のこと
-    - StackOverflow: What does the '@@' symbol mean in the output of nm command?
-      - https://stackoverflow.com/questions/39507830/what-does-the-symbol-mean-in-the-output-of-nm-command
-    - 公式サイト
-      - https://sourceware.org/binutils/docs/ld/VERSION.html
+### Uオプション
+- 以下はただのhello worldのa.outから未定義シンボルを抽出したり、opensslから一部抜粋した例です。
+- 出力される@@の意味については以下のリンクを参照のこと
+  - StackOverflow: What does the '@@' symbol mean in the output of nm command?
+    - https://stackoverflow.com/questions/39507830/what-does-the-symbol-mean-in-the-output-of-nm-command
+  - 公式サイト
+    - https://sourceware.org/binutils/docs/ld/VERSION.html
 ```
 $ nm a.out  | grep -i " U "
                  U __libc_start_main@@GLIBC_2.2.5
@@ -815,8 +825,8 @@ $ nm --debug-syms /opt/openssl-1.0.2m/lib/libcrypto.so | grep " U " | tail -5
                  U write@@GLIBC_2.2.5
 ```
 
-- V
-  - 自分が確認した限りだとlibc.soしかこのシンボルが発見されなかった
+### Vオプション
+- 自分が確認した限りだとlibc.soしかこのシンボルが発見されなかった
 ```
 $ nm --debug-syms /lib64/libc.so.6 | grep -i " V "
 00000000003bea20 V __after_morecore_hook
@@ -841,8 +851,8 @@ extern char *program_invocation_name;
 extern char *program_invocation_short_name;
 ```
 
-- W
-  - opensslをデバッグオプション付きでビルドしたときのsoでw(小文字)が次のように表示された
+### Wオプション
+- opensslをデバッグオプション付きでビルドしたときのsoでw(小文字)が次のように表示された
 ```
 $ nm --debug-syms /opt/openssl-1.0.2m/lib/libssl.so | grep -i " W "
                  w _ITM_deregisterTMCloneTable
@@ -851,9 +861,10 @@ $ nm --debug-syms /opt/openssl-1.0.2m/lib/libssl.so | grep -i " W "
                  w __cxa_finalize@@GLIBC_2.2.5
                  w __gmon_start__
 ```
-  - W(大文字)シンボルはlibc.soを見ると多く使われているようだ。
-    - 例えば、__ctype_get_mb_cur_maxの定義を見ると次の通り
-    - https://github.com/lattera/glibc/blob/a2f34833b1042d5d8eeb263b4cf4caaea138c4ad/locale/mb_cur_max.c#L27-L32
+
+- W(大文字)シンボルはlibc.soを見ると多く使われているようだ。
+  - 例えば、__ctype_get_mb_cur_maxの定義を見ると次の通り
+  - https://github.com/lattera/glibc/blob/a2f34833b1042d5d8eeb263b4cf4caaea138c4ad/locale/mb_cur_max.c#L27-L32
 ```
 $ nm --debug-syms /lib64/libc.so.6 | grep -i " W "
 00000000000bf4f0 W _Exit
@@ -876,5 +887,6 @@ $ nm --debug-syms /lib64/libc.so.6 | grep -i " W "
 0000000000038970 W __secure_getenv@GLIBC_2.2.5
 ```
 
-- ?やハイフンのシンボルについても未確認
+### ハイフン(-)やクェスチョンマーク(?)のシンボル
+未確認
 
