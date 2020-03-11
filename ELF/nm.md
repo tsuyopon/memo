@@ -4,37 +4,10 @@ nmコマンドは与えられたオブジェクトファイル中に存在する
 
 # 詳細
 
-### 共有ライブラリの作成方法と確認方法
-- 共有ライブラリの作成方法
-  - 次のようにすると、test1.oとtest2.oの静的共有ライブラリ(libcustomize.so)が作成される。
-```
-$ gcc -shared -o libcustomize.so  test1.o test2.o
-※一般的には、拡張子がso(shared object)ファイルは慣用的にlibname.so.x.yと書かれる。xは共有ライブラリのmajor番号、yはminor番号表す。
-soファイルはcygwinなどにおけるdllと同じ働きをする。
-```
-
-- 共有ライブラリの確認方法
-次のようにすればよい
-```
-$ nm libname.so
-```
-
-なお、C++の場合にはマングリングされていて読みにくいのでdemangleオプションを付与するとよい。
-```
-$ nm --demangle libname.so
-```
-
-または以下のようにc++filtコマンドを利用することも可能
-```
-$ nm -o libname.so | c++filt
-```
-
-シンボルがあるかどうかはfileコマンドで確認することができる「not stripped」や「stripped」といった情報が表示される。
-
 ### オブジェクトファイルのシンボルを確認する
 以下のようなhello.cをオブジェクトファイルにします。
 ```
-#include
+#include<stdio.h>
 int main(){ printf("Hello World\n"); }
 ```
 上記を保存してオブジェクトファイルにします。
@@ -53,7 +26,7 @@ $ nm hello.o
 ```
 
 ### 先頭にファイル名を表示する
-
+Aオプションを付与すると先頭にファイル名を表示します。用途としては複数のELFを指定した場合のため?
 ```
 $ nm -A a.out 
 a.out:0000000000600e28 d _DYNAMIC
@@ -424,6 +397,157 @@ $ diff normal g_option
 < 0000000000400530 t frame_dummy
 34d19
 < 00000000004004d0 t register_tm_clones
+```
+
+### シンボルの数値によってソートする
+通常はアルファベット順に指定されているが、nオプションを付与することでアドレスの数値によってソートします。
+```
+$ nm -n a.out 
+                 w __gmon_start__
+                 U __libc_start_main@@GLIBC_2.2.5
+                 U printf@@GLIBC_2.2.5
+                 U puts@@GLIBC_2.2.5
+0000000000400400 T _init
+0000000000400470 T _start
+00000000004004a0 t deregister_tm_clones
+00000000004004d0 t register_tm_clones
+0000000000400510 t __do_global_dtors_aux
+0000000000400530 t frame_dummy
+000000000040055d T testfunc1
+0000000000400572 T main
+0000000000400590 T __libc_csu_init
+0000000000400600 T __libc_csu_fini
+0000000000400604 T _fini
+0000000000400610 R _IO_stdin_used
+0000000000400618 R __dso_handle
+0000000000400638 r __GNU_EH_FRAME_HDR
+0000000000400788 r __FRAME_END__
+0000000000600e10 t __frame_dummy_init_array_entry
+0000000000600e10 t __init_array_start
+0000000000600e18 t __do_global_dtors_aux_fini_array_entry
+0000000000600e18 t __init_array_end
+0000000000600e20 d __JCR_END__
+0000000000600e20 d __JCR_LIST__
+0000000000600e28 d _DYNAMIC
+0000000000601000 d _GLOBAL_OFFSET_TABLE_
+0000000000601030 D __data_start
+0000000000601030 W data_start
+0000000000601034 B __bss_start
+0000000000601034 D _edata
+0000000000601034 b completed.6355
+0000000000601038 D __TMC_END__
+0000000000601038 B globalvar
+0000000000601040 B _end
+```
+
+### シンボルをまったくソートさせない
+何も指定しないとアルファベット順に表示しますが、pオプションを付与すると全くソートしません
+```
+$ nm -p a.out 
+0000000000600e20 d __JCR_LIST__
+00000000004004a0 t deregister_tm_clones
+00000000004004d0 t register_tm_clones
+0000000000400510 t __do_global_dtors_aux
+0000000000601034 b completed.6355
+0000000000600e18 t __do_global_dtors_aux_fini_array_entry
+0000000000400530 t frame_dummy
+0000000000600e10 t __frame_dummy_init_array_entry
+0000000000400788 r __FRAME_END__
+0000000000600e20 d __JCR_END__
+0000000000600e18 t __init_array_end
+0000000000600e28 d _DYNAMIC
+0000000000600e10 t __init_array_start
+0000000000400638 r __GNU_EH_FRAME_HDR
+0000000000601000 d _GLOBAL_OFFSET_TABLE_
+0000000000400600 T __libc_csu_fini
+0000000000601030 W data_start
+                 U puts@@GLIBC_2.2.5
+0000000000601038 B globalvar
+0000000000601034 D _edata
+000000000040055d T testfunc1
+0000000000400604 T _fini
+                 U printf@@GLIBC_2.2.5
+                 U __libc_start_main@@GLIBC_2.2.5
+0000000000601030 D __data_start
+                 w __gmon_start__
+0000000000400618 R __dso_handle
+0000000000400610 R _IO_stdin_used
+0000000000400590 T __libc_csu_init
+0000000000601040 B _end
+0000000000400470 T _start
+0000000000601034 B __bss_start
+0000000000400572 T main
+0000000000601038 D __TMC_END__
+0000000000400400 T _init
+```
+
+### ソート順を逆にする
+```
+$ nm -r a.out 
+000000000040055d T testfunc1
+00000000004004d0 t register_tm_clones
+                 U puts@@GLIBC_2.2.5
+                 U printf@@GLIBC_2.2.5
+0000000000400572 T main
+0000000000601038 B globalvar
+0000000000400530 t frame_dummy
+00000000004004a0 t deregister_tm_clones
+0000000000601030 W data_start
+0000000000601034 b completed.6355
+0000000000400470 T _start
+0000000000400400 T _init
+0000000000400604 T _fini
+0000000000601040 B _end
+0000000000601034 D _edata
+                 U __libc_start_main@@GLIBC_2.2.5
+0000000000400590 T __libc_csu_init
+0000000000400600 T __libc_csu_fini
+0000000000600e10 t __init_array_start
+0000000000600e18 t __init_array_end
+                 w __gmon_start__
+0000000000600e10 t __frame_dummy_init_array_entry
+0000000000400618 R __dso_handle
+0000000000600e18 t __do_global_dtors_aux_fini_array_entry
+0000000000400510 t __do_global_dtors_aux
+0000000000601030 D __data_start
+0000000000601034 B __bss_start
+0000000000601038 D __TMC_END__
+0000000000600e20 d __JCR_LIST__
+0000000000600e20 d __JCR_END__
+0000000000400638 r __GNU_EH_FRAME_HDR
+0000000000400788 r __FRAME_END__
+0000000000400610 R _IO_stdin_used
+0000000000601000 d _GLOBAL_OFFSET_TABLE_
+0000000000600e28 d _DYNAMIC
+```
+
+### アドレスの表記方法を8進数、10進数、16進数で表示する
+
+基数はtオプションの後に文字を指定することで、8進数(o)、10進数(t)、16進数(x)を指定する。
+```
+// 10進数の場合にはdを指定する
+$ nm -t d a.out | tail -5
+0000000004195698 T main
+                 U printf@@GLIBC_2.2.5
+                 U puts@@GLIBC_2.2.5
+0000000004195536 t register_tm_clones
+0000000004195677 T testfunc1
+
+// 8進数の場合にはoを指定する
+$ nm -t o a.out | tail -5
+0000000020002562 T main
+                 U printf@@GLIBC_2.2.5
+                 U puts@@GLIBC_2.2.5
+0000000020002320 t register_tm_clones
+0000000020002535 T testfunc1
+
+// 16進数の場合にはxを指定する
+$ nm -t x a.out | tail -5
+0000000000400572 T main
+                 U printf@@GLIBC_2.2.5
+                 U puts@@GLIBC_2.2.5
+00000000004004d0 t register_tm_clones
+000000000040055d T testfunc1
 ```
 
 ### シンボルサイズ順で表示する
