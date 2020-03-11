@@ -611,7 +611,7 @@ $ man nm
 
 ## シンボルの意味をライブラリなどから理解する
 
-### Aオプション
+### Aシンボル
 ```
 $ nm /lib64/libc.so.6 | grep " A "
 0000000000000000 A GLIBC_2.10
@@ -645,7 +645,7 @@ $ nm -C -s /opt/openssl-1.1.1c/lib/libssl.so | grep -w A
 0000000000000000 A OPENSSL_1_1_1a
 ```
 
-### Bオプション
+### Bシンボル
 ```
 $ nm --debug-syms /opt/openssl-1.0.2m/lib/libcrypto.so | grep " B "
 000000000042a3c8 B OPENSSL_NONPIC_relocated
@@ -660,7 +660,7 @@ $ nm --debug-syms /opt/openssl-1.0.2m/lib/libcrypto.so | grep " B "
 000000000042db50 B sigx_app
 ```
 
-### Cオプション
+### Cシンボル
 - 次のようなコードを実行するとオブジェクトコード上ではCシンボルがあることを確認した。
 - ただし、一般的なlibやgccで生成された実行コードからはCシンボルが存在することを確認できなかった。
 - (参考) https://www.linuxquestions.org/questions/programming-9/using-nm-command-to-get-symbol-information-571162/
@@ -729,7 +729,7 @@ $ nm a.out                 // バイナリで生成されるとCシンボルが�
 0000000000601050 d s
 ```
 
-### Dオプション
+### Dシンボル
 - 以下に示されるような構造体の定義が入っている。
   - https://github.com/openssl/openssl/blob/master/crypto/x509/by_dir.c#L49-L60
   - https://github.com/openssl/openssl/blob/master/crypto/x509/by_file.c#L22-L33
@@ -739,10 +739,10 @@ $ nm --debug-syms /opt/openssl-1.0.2m/lib/libcrypto.so | grep " D " | grep -ie x
 0000000000425c60 D x509_file_lookup
 ```
 
-### Gオプション
+### Gシンボル
 - 未確認
 
-### Iオプション
+### Iシンボル
 - libc.soでiシンボル(小文字)は利用されているようだ
 ```
 $ nm --debug-syms /lib64/libc.so.6 | grep -i " i "
@@ -794,10 +794,10 @@ const char X509_version[] = "X.509" OPENSSL_VERSION_PTEXT;
 ```
 
 
-### Sオプション
+### Sシンボル
 - 未確認
 
-### Tオプション
+### Tシンボル
 - 関数などが含まれていることがわかります。
 ```
 $ nm --debug-syms /opt/openssl-1.0.2m/lib/libssl.so | grep " T " | grep -ie SSL_accept -ie SSL_write
@@ -805,7 +805,7 @@ $ nm --debug-syms /opt/openssl-1.0.2m/lib/libssl.so | grep " T " | grep -ie SSL_
 0000000000050658 T SSL_write
 ```
 
-### Uオプション
+### Uシンボル
 - 以下はただのhello worldのa.outから未定義シンボルを抽出したり、opensslから一部抜粋した例です。
 - 出力される@@の意味については以下のリンクを参照のこと
   - StackOverflow: What does the '@@' symbol mean in the output of nm command?
@@ -825,7 +825,7 @@ $ nm --debug-syms /opt/openssl-1.0.2m/lib/libcrypto.so | grep " U " | tail -5
                  U write@@GLIBC_2.2.5
 ```
 
-### Vオプション
+### Vシンボル
 - 自分が確認した限りだとlibc.soしかこのシンボルが発見されなかった
 ```
 $ nm --debug-syms /lib64/libc.so.6 | grep -i " V "
@@ -851,7 +851,7 @@ extern char *program_invocation_name;
 extern char *program_invocation_short_name;
 ```
 
-### Wオプション
+### Wシンボル
 - opensslをデバッグオプション付きでビルドしたときのsoでw(小文字)が次のように表示された
 ```
 $ nm --debug-syms /opt/openssl-1.0.2m/lib/libssl.so | grep -i " W "
@@ -887,6 +887,9 @@ $ nm --debug-syms /lib64/libc.so.6 | grep -i " W "
 0000000000038970 W __secure_getenv@GLIBC_2.2.5
 ```
 
-### ハイフン(-)やクェスチョンマーク(?)のシンボル
+### ハイフン(-)シンボル
+未確認
+
+### クェスチョンマーク(?)シンボル
 未確認
 
