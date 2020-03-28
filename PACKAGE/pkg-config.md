@@ -202,6 +202,26 @@ Libs.private: -ldl -lz -lgssapi_krb5 -lkrb5 -lcom_err -lk5crypto
 Cflags: -I${includedir} -I/usr/include
 ```
 
+これらの値は次のようにして取得できる。
+
+```
+$ pkg-config libssl --libs
+-lssl -lcrypto  
+```
+
+```
+$ pkg-config --modversion libssl
+1.0.2k
+```
+
+```
+$ pkg-config --variable=libdir libssl
+/usr/lib64
+```
+
+詳細は以下のmanpageを参照にすること
+- https://linux.die.net/man/1/pkg-config
+
 ### pkg-configコマンド自体のデバッグ情報を出力する
 読み込みんでいる.pcファイルなどのデバッグ情報を出力しますが、あまり使わないかもしれません。
 ```

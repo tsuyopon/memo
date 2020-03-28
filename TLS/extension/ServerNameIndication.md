@@ -51,6 +51,13 @@ Extension: server_name
 詳細仕様はこちらを参考にしています。
 - https://tools.ietf.org/html/rfc6066#section-3
 
+サーバはこの拡張を受け取ってそのserver_nameが識別できない場合には次の２つのうちどちらかのアクションを取るべき(SHOULD)
+- unrecognized_name(112)によるfatalアラート。このアラートをwarningレベルのアラートで送付するのはすべきではない(NOT RECOMMENDED)
+- ハンドシェイクの継続
+
+
+
+
 ClientHelloではserver_name_listのリスト構造としてクライアントが送付してくる可能性がある。
 IPv4やIPv6のアドレスが指定されるのは許可されていません。ホスト名は末尾のドットが付与されないASCIIエンコーディングの文字列とします。
 

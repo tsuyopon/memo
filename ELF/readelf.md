@@ -379,9 +379,34 @@ Histogram for `.gnu.hash' bucket list length (total of 3 buckets):
 $ readelf -a hellopecl.so
 ```
 
+### 1行80文字表示の制限を取っ払う
 
-### ELF仕様書
-- http://www.skyfree.org/linux/references/ELF_Format.pdf
-- https://github.com/warabanshi/binstudy/blob/master/memo/ELF-memo.txt
-- readelf
+通常だと1行80文字制限で出力が打ち切られてしまいます。 コマンド実行例で比較してみます。
+
+以下はWを付与しない場合の例です。
+```
+$  readelf -s  /usr/lib64/libcrypt.so | tail -5
+   142: 0000000000000000     0 NOTYPE  WEAK   DEFAULT  UND _ITM_registerTMCloneTable
+   143: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND __libc_alloca_cutoff@@GLI
+   144: 0000000000000000     0 FUNC    WEAK   DEFAULT  UND __cxa_finalize@@GLIBC_2.2
+   145: 0000000000001210   390 FUNC    WEAK   DEFAULT   14 fcrypt
+   146: 0000000000000000     0 OBJECT  GLOBAL DEFAULT  ABS GLIBC_2.2.5
+```
+
+Wオプションを付与することでシンボルが途中で打ち切られていないことを確認できます。
+```
+$  readelf -Ws  /usr/lib64/libcrypt.so | tail -5
+   142: 0000000000000000     0 NOTYPE  WEAK   DEFAULT  UND _ITM_registerTMCloneTable
+   143: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND __libc_alloca_cutoff@@GLIBC_PRIVATE
+   144: 0000000000000000     0 FUNC    WEAK   DEFAULT  UND __cxa_finalize@@GLIBC_2.2.5
+   145: 0000000000001210   390 FUNC    WEAK   DEFAULT   14 fcrypt
+   146: 0000000000000000     0 OBJECT  GLOBAL DEFAULT  ABS GLIBC_2.2.5
+```
+
+
+# 参考資料
+- readelf manpage
   - http://sourceware.org/binutils/docs-2.16/binutils/readelf.html
+- StackOverflow: How do I list the symbols in a .so file
+  - https://stackoverflow.com/questions/34732/how-do-i-list-the-symbols-in-a-so-file?noredirect=1&lq=1
+

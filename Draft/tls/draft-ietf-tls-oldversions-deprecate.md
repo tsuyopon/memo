@@ -27,5 +27,5 @@ TLS1.0とTLS1.1を廃止する
 2018年6月にはTLS1.1のサポートも打ち切られるようになります。
 
 # 参考URL
-- https://tools.ietf.org/html/draft-moriarty-tls-oldversions-diediedie-00
+- https://tools.ietf.org/html/draft-ietf-tls-oldversions-deprecate-04
 
