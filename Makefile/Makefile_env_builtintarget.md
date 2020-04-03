@@ -61,7 +61,13 @@ LINK.cc = $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS) $(TARGET_ARCH)
 ```
 
 ### .PHONY
-Makefile中にcleanというターゲットが存在していて、万が一そのディレクトリにcleanファイルが存在していると以下のエラーになる。
+Makefileでは以下のようなファイル名のターゲットが存在する場合には(.PHONYは定義されていないものとする)、ファイル名のファイルが存在していない場合に限りターゲットを実行します。
+```
+clean:
+	echo "filename clean does not exists"
+```
+
+上記の例のようにMakefile中にcleanというターゲットが存在していて、万が一そのディレクトリにcleanファイルが存在していると以下のエラーとなってしまう。
 ```
 $ touch clean
 $ make clean
@@ -69,7 +75,7 @@ make: `clean' is up to date.
 ```
 
 これを回避できるのが.PHONYである。
-cleanファイルを作りたいのではなくてcleanというターゲットを実行したいということを明示する。
+cleanファイルを作りたいのではなくてcleanというターゲットを実行したいということを明示するための仕組みである。
 ```
 .PHONY: clean
 clean:
