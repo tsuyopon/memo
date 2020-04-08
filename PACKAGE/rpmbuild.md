@@ -225,6 +225,12 @@ AutoReq: 0
 %define debug_package %{nil}
 ```
 
+- debuginfoパッケージを作成する場合
+  - rpmbuildでも作ってくれない場合には明示的に以下の設定を入れます。debug_packageの後ろに1の値は不要です(あると解釈してくれません)
+```
+%define debug_package
+```
+
 
 ### descriptionセクション
 

@@ -88,3 +88,24 @@ $ gcc -print-search-dirs
 ライブラリ: =/usr/lib/gcc/x86_64-redhat-linux/4.8.5/:/usr/lib/gcc/x86_64-redhat-linux/4.8.5/../../../../x86_64-redhat-linux/lib/x86_64-redhat-linux/4.8.5/:/usr/lib/gcc/x86_64-redhat-linux/4.8.5/../../../../x86_64-redhat-linux/lib/../lib64/:/usr/lib/gcc/x86_64-redhat-linux/4.8.5/../../../x86_64-redhat-linux/4.8.5/:/usr/lib/gcc/x86_64-redhat-linux/4.8.5/../../../../lib64/:/lib/x86_64-redhat-linux/4.8.5/:/lib/../lib64/:/usr/lib/x86_64-redhat-linux/4.8.5/:/usr/lib/../lib64/:/usr/lib/gcc/x86_64-redhat-linux/4.8.5/../../../../x86_64-redhat-linux/lib/:/usr/lib/gcc/x86_64-redhat-linux/4.8.5/../../../:/lib/:/usr/lib/
 ```
 
+### 入力ファイルをldが処理するごとに、ファイル名を出力する
+```
+$ gcc -t test.c 
+/usr/bin/ld: mode elf_x86_64
+/usr/lib/gcc/x86_64-redhat-linux/4.8.5/../../../../lib64/crt1.o
+/usr/lib/gcc/x86_64-redhat-linux/4.8.5/../../../../lib64/crti.o
+/usr/lib/gcc/x86_64-redhat-linux/4.8.5/crtbegin.o
+/tmp/cchsOWCp.o
+-lgcc_s (/usr/lib/gcc/x86_64-redhat-linux/4.8.5/libgcc_s.so)
+/lib64/libc.so.6
+(/usr/lib64/libc_nonshared.a)elf-init.oS
+/lib64/ld-linux-x86-64.so.2
+/lib64/ld-linux-x86-64.so.2
+-lgcc_s (/usr/lib/gcc/x86_64-redhat-linux/4.8.5/libgcc_s.so)
+/usr/lib/gcc/x86_64-redhat-linux/4.8.5/crtend.o
+/usr/lib/gcc/x86_64-redhat-linux/4.8.5/../../../../lib64/crtn.o
+```
+
+これは、ldコマンドのtオプションの機能だと思われる
+- https://linuxjm.osdn.jp/html/GNU_binutils/man1/ld.1.html
+

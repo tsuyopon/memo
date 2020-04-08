@@ -189,6 +189,11 @@ $ tcpdump dst port [port_num]
 $ tcpdump port [port_num]
 ```
 
+### IPアドレスをドメイン解決せずにそのまま表示する
+```
+$ tcpdump -i eth0 -A -nn
+```
+
 ### 条件を組み合わせる
 and
 ```

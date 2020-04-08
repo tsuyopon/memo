@@ -6,14 +6,36 @@ dockerについてのメモ
 
 # 詳細
 
-### インストール
+### インストールして、とりあえず使ってみる
 dockerコマンドを使うには次のpackageをインストールするだけ
 ```
 $ sudo apt-get install docker.io
 ```
 
 dockerコマンドを実行する際にはsudoコマンドを付与する必要があります。
-- - https://qiita.com/DQNEO/items/da5df074c48b012152ee
+- https://qiita.com/DQNEO/items/da5df074c48b012152ee
+
+
+今回、適当にdevtoolsetで検索してみました。
+```
+$ docker search devtoolset
+$ docker pull centos/devtoolset-6-toolchain-centos7
+```
+
+取得したイメージを確認する
+```
+$ sudo docker images
+REPOSITORY                              TAG                 IMAGE ID            CREATED             SIZE
+nginx                                   latest              5a3221f0137b        9 months ago        126MB
+centos/devtoolset-6-toolchain-centos7   latest              f1b031cdb220        14 months ago       436MB
+dockcross/windows-x64                   latest              ec59f2aa4229        14 months ago       2GB
+```
+
+コンテナの作成、起動、アタッチを以下のコマンドで実施する。
+```
+$ docker run -i -t f1b031cdb220 /bin/bash
+bash-4.2$
+```
 
 ### dockerコマンドのコマンドライン
 以下を参考にするとよさそう
@@ -38,6 +60,11 @@ $ docker pull ubuntu:12.04
 ### dockerイメージの検索をする
 ```
 $ docker search kernel
+```
+
+検索時に特定のタグを指定することもできます。
+```
+$ docker search centos:latest | more
 ```
 
 dockerhubからレポジトリを検索することもできます。
@@ -78,6 +105,7 @@ $ docker container rm webserver
 - hオプションは名前を付与します。以下では適当に「spam」という名称を付与します。指定しないとdockerが適当に決定します。
 - iオプションはそのdocker内でシェルを続行したい場合に付与します。
 - tにはイメージを指定します。「docer images」などで指定した「<REPOSITORY>:<IMAGE ID>」を指定します。
+- dオプション(daemon)をつけなければ、フォアグランドの実行となる。コンテナを抜けるとコンテナは停止する。
 ```
 $ sudo docker run -h spam -i -t ubuntu:b44ce450cb60 /bin/bash 
 ```
@@ -85,16 +113,37 @@ $ sudo docker run -h spam -i -t ubuntu:b44ce450cb60 /bin/bash
 起動時に環境変数を指定するeオプションもある。実行時の初期ディレクトリを変更するにはwオプションがある。詳しくは以下を参照のこと
 - https://qiita.com/shimo_yama/items/d0c42394689132fcb4b6
 
+
+### コンテナを停止させずにコンテナから抜けたい場合
+```
+Ctrl + P + Q
+```
+
+### dockerコンテナの作成(runと違い起動はしない)
+
+```
+書式
+$ sudo docker create -p ホスト(Ubuntu)側のポート:コンテナ側のポート --name 任意のコンテナ名 元にするイメージ名またはイメージID
+
+例
+$ sudo docker create -p 8080:3000 --name centos_container_test tera_shin/centos_test:latest
+```
+
 ### dockerをコンテナバックグラウンドで起動する
 dオプションによってバックグラウンドで起動させることができます。
 ```
 $ docker run -i -t -d ubuntu /bin/bash
 ```
 
+### ホスト名を指定する
+```
+$ docker run --hostname kaeru -i -t ubuntu /bin/bash
+```
+
 ### dockerの停止後に破棄する
 rmオプションを付与するとコンテナ停止後にコンテナが破棄されます。
 ```
-$ docker run -rm -t -i tsuyopon/hello /bin/bash
+$ docker run --rm -t -i tsuyopon/hello /bin/bash
 ```
 
 ### dockerのstartとattach
@@ -110,6 +159,32 @@ $ sudo docker attach fdb376b21eaf
 [root@fdb376b21eaf /]# 
 ```
 
+### コンテナの中に入る
+attachコマンドをもちいる方法とexecコマンドをもちいる方法の２つが存在する。
+
+- attach
+attachはバックグラウンドで実行しているコンテナをフォアグラウンドにして、コンテナ中で/bin/bashを実行する。  
+このコマンドでコンテナに入った場合、コンテナから抜けるとコンテナは停止する。
+```
+書式
+$ sudo docker attach コンテナ名またはコンテナID
+
+例
+$ sudo docker attach centos_container_test
+```
+
+
+- exec
+execはbash以外にも任意のコマンドをコンテナ内で実行させることができる。  
+このコマンドでコンテナに入った場合、コンテナから抜けてもコンテナは停止しない。
+```
+書式
+$ sudo docker exec -i -t コンテナ名またはコンテナID bash
+
+例
+$ sudo docker exec -i -t centos_container_test bash  
+```
+
 ### dockerの停止
 ```
 $ docker stop dbb4bbe0f470
@@ -118,6 +193,22 @@ $ docker stop dbb4bbe0f470
 以下は２秒後に停止させる
 ```
 $ docker stop -t 2 dbb4bbe0f470
+```
+
+### dockerの再起動
+```
+$ docker restart dbb4bbe0f470
+```
+
+### dockerの一時停止と再開
+pauseオプションの引数にコンテナ名を指定すると一時停止できる。
+```
+$ docker pause dbb4bbe0f470
+```
+
+再開するにはunpauseオプションを指定する
+```
+$ docker unpause dbb4bbe0f470
 ```
 
 ### 稼働しているコンテナに関するプロセスを表示する
@@ -129,6 +220,22 @@ b3d815c72f6f        library/node        "sleep 20"           6 minutes ago      
 52932027642a        library/node        "/bin/bash"          6 minutes ago       Exited (0) 6 minutes ago                             amazing_newton
 07398e077972        library/node        "/bin/bash"          56 minutes ago      Exited (127) About an hour ago                       trusting_nash
 47490b2b0efc        busybox             "echo hello world"   About an hour ago   Exited (0) About an hour ago                         pensive_elion
+```
+
+### 最後に起動したコンテナから数えてN個のコンテナを表示する。
+以下は２つの場合の例です。
+```
+$ docker ps -n=2
+```
+
+### 情報をフルで表示する
+```
+$ docker ps --no-trunc
+```
+
+### サイズを確認する
+```
+$ docker ps -s
 ```
 
 ### 不要なコンテナのプロセスを削除する
@@ -380,6 +487,91 @@ $ docker inspect node
     }
 ]
 ```
+
+渡されている環境変数を調べる
+```
+$ docker inspect 6572058effff |jq '.[].Config.Env'
+```
+
+どのイメージが起動したかを調べる
+```
+$ docker inspect 6572058effff |jq '.[].Image'
+```
+
+### コンテナ内部からコンテナIDを取得する
+/etc/hostnameをcatすればいけるらしい
+```
+$ cat /etc/hostname
+7b9fc2c0bc4f
+```
+
+### コンテナなどの使用容量を調べる
+```
+$ docker system df
+TYPE                TOTAL               ACTIVE              SIZE                RECLAIMABLE
+Images              2                   0                   2.121GB             2.121GB (100%)
+Containers          0                   0                   0B                  0B
+Local Volumes       0                   0                   0B                  0B
+Build Cache         0                   0                   0B                  0B
+```
+
+### dockerのログ履歴を確認する
+実行したコマンドやその出力結果が表示される
+```
+$ docker logs -f 73c79dda19b7 -t
+2020-05-21T18:46:03.559197332Z bash-4.2$ cat /etc/host
+2020-05-21T18:46:03.560659106Z cat: /etc/host: No such file or directory
+2020-05-21T18:46:04.822444767Z bash-4.2$ cat /etc/hostname 
+2020-05-21T18:46:04.823714199Z 73c79dda19b7
+2020-05-21T18:46:40.879520861Z bash-4.2$ exit
+```
+
+### docker イメージの履歴を確認する
+```
+$ docker history centos/devtoolset-6-toolchain-centos7
+IMAGE               CREATED             CREATED BY                                      SIZE                COMMENT
+f1b031cdb220        14 months ago       /bin/sh -c #(nop)  LABEL io.openshift.builde…   0B                  
+<missing>           14 months ago       /bin/sh -c #(nop)  CMD ["usage"]                0B                  
+<missing>           14 months ago       /bin/sh -c #(nop)  ENTRYPOINT ["container-en…   0B                  
+<missing>           14 months ago       /bin/sh -c #(nop)  ENV BASH_ENV=/opt/app-roo…   0B                  
+<missing>           14 months ago       /bin/sh -c #(nop) WORKDIR /opt/app-root/src     0B                  
+<missing>           14 months ago       /bin/sh -c #(nop)  USER [1001]                  0B                  
+<missing>           14 months ago       /bin/sh -c mkdir -p ${HOME} &&     groupadd …   1.77MB              
+<missing>           14 months ago       /bin/sh -c #(nop)  ENV HOME=/opt/app-root/sr…   0B                  
+<missing>           14 months ago       /bin/sh -c #(nop) COPY dir:0019f546c45991eaa…   4.13kB              
+<missing>           14 months ago       /bin/sh -c yum install -y centos-release-scl…   199MB               
+<missing>           14 months ago       /bin/sh -c #(nop)  LABEL com.redhat.componen…   0B                  
+<missing>           14 months ago       /bin/sh -c #(nop)  ENV SUMMARY=Red Hat Devel…   0B                  
+<missing>           14 months ago       /bin/sh -c #(nop)  LABEL MAINTAINER=Marek Po…   0B                  
+<missing>           14 months ago       /bin/sh -c #(nop)  LABEL io.openshift.builde…   0B                  
+<missing>           14 months ago       /bin/sh -c rpm-file-permissions &&   useradd…   2.06MB              
+<missing>           14 months ago       /bin/sh -c #(nop)  CMD ["base-usage"]           0B                  
+<missing>           14 months ago       /bin/sh -c #(nop)  ENTRYPOINT ["container-en…   0B                  
+<missing>           14 months ago       /bin/sh -c #(nop) WORKDIR /opt/app-root/src     0B                  
+<missing>           14 months ago       /bin/sh -c #(nop) COPY dir:4444f29cffa8c7c79…   10.2kB              
+<missing>           14 months ago       /bin/sh -c rpmkeys --import file:///etc/pki/…   31.5MB              
+<missing>           14 months ago       /bin/sh -c #(nop)  ENV BASH_ENV=/opt/app-roo…   0B                  
+<missing>           14 months ago       /bin/sh -c #(nop)  ENV STI_SCRIPTS_URL=image…   0B                  
+<missing>           14 months ago       /bin/sh -c #(nop)  LABEL summary=Base image …   0B                  
+<missing>           14 months ago       /bin/sh -c #(nop)  ENV SUMMARY=Base image wh…   0B                  
+<missing>           14 months ago       /bin/sh -c #(nop)  CMD ["/bin/bash"]            0B                  
+<missing>           14 months ago       /bin/sh -c #(nop)  LABEL org.label-schema.sc…   0B                  
+<missing>           14 months ago       /bin/sh -c #(nop) ADD file:074f2c974463ab38c…   202MB               
+```
+
+### docker で Ctrl-p ２回押し問題
+
+デフォルトでは Ctrl-p は、detachKeys の一部として認識されていて、コンテナにこのキーを送るには、 Ctrl-p を２度押しする必要がある。
+docker v.1.10.0 から、 detachKeys を変更する機能が実装されたので、これを回避するには次の設定を配置すれば良い。
+```
+// ~/.docker/config.json
+{
+    "detachKeys": "ctrl-\\"
+}
+```
+
+- 参考
+  - https://qiita.com/Yuki-Inoue/items/60ec916383025160fbb8#_reference-a2d9244a6c4496f4df05
 
 ### ブラウザ上でdocker runを試すことができるサービス
 - https://docker-run.com/

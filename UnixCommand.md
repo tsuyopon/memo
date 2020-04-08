@@ -2,6 +2,17 @@
 コマンドラインに関するTIPS
 
 # 詳細
+
+### catやmoreなどでタブを8桁以外に設定する方法
+標準ではcatやmoreをすると8桁でvimでtabwidthを4に設定しているとmoreやlessだとずれることがあります。
+これを回避するにはtabsコマンドで設定します。
+```
+tabs -4
+```
+
+- 参考: https://qiita.com/miyu/items/06d04ea961fd8ae67a0d
+
+
 ### dateコマンド関連
 - 現在のunixtime
 ```

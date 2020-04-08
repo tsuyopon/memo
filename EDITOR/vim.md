@@ -2,6 +2,21 @@
 vimについて
 
 
+# ソースコードからのビルド
+あらかじめソースコードを取得したら、ncurses-develを入れておかないとエラーメッセージが表示されます。
+```
+$ git clone https://github.com/vim/vim.git --depth 1
+$ yum install ncurses-devel -y
+$ ./configure --prefix /opt/vim8.2.0813
+$ make
+$ sudo make install
+```
+
+一時的にパスを通す
+```
+$ export PATH=/opt/vim8.2.0813/bin:$PATH
+```
+
 # ディレクトリ構成
 ```
 ├─ _vimrc もしくは .vimrc       vimエディタ設定ファイル（共通）
@@ -418,6 +433,15 @@ augroup END
 ```
 でよい。以下にtargetcolorを示す。 これは[TAB]により、引数候補が出るので覚える必要はない。 blue, darkblue, default, elford, evening, koehler morning, murphy, pablo, peachpuff, ron, shinetorte, zellner
 ↑
+
+### 起動時に前回のファイルのカーソル位置に移動したい
+前回起動時のファイルのカーソル位置に移動するには次を.vimrcに追加する。
+```
+augroup vimrcEx
+  au BufRead * if line("'\"") > 0 && line("'\"") <= line("$") |
+  \ exe "normal g`\"" | endif
+augroup END
+```
 
 ### カラースキームファイルで何が利用できるか知りたい。
 ```

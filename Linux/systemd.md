@@ -436,6 +436,7 @@ Transient=no
 
 
 ### 依存関係を表示する
+サービスの依存関係を表示します。
 ```
 $ sudo systemctl list-dependencies redis.service
 redis.service
@@ -503,6 +504,66 @@ redis.service
 * |   `-systemd-tmpfiles-clean.timer
 * `-network-online.target
 *   `-NetworkManager-wait-online.service
+```
+
+サービスを引数として指定しなければ、default.targetの依存関係を表示する。
+```
+$ sudo systemctl list-dependencies
+default.target
+* |-auditd.service
+* |-chronyd.service
+* |-crond.service
+* |-dbus.service
+* |-firewalld.service
+(snip)
+
+```
+
+
+### 実際に起動時の様子を確認する(実際の起動処理は行わない)
+```
+$ /lib/systemd/systemd --test --system
+systemd 219 running in test system mode. (+PAM +AUDIT +SELINUX +IMA -APPARMOR +SMACK +SYSVINIT +UTMP +LIBCRYPTSETUP +GCRYPT +GNUTLS +ACL +XZ +LZ4 -SECCOMP +BLKID +ELFUTILS +KMOD +IDN)
+Detected virtualization kvm.
+Detected architecture x86-64.
+Failed to open /dev/tty0: Permission denied
+-> By units:
+        -> Unit lvm2-lvmpolld.socket:
+                Description: LVM2 poll daemon socket
+                Instance: n/a
+                Unit Load State: loaded
+                Unit Active State: inactive
+                Inactive Exit Timestamp: n/a
+                Active Enter Timestamp: n/a
+                Active Exit Timestamp: n/a
+                Inactive Enter Timestamp: n/a
+                GC Check Good: no
+                Need Daemon Reload: no
+                Transient: no
+                Slice: n/a
+                CGroup: n/a
+                CGroup realized: no
+                CGroup mask: 0x0
+                CGroup members mask: 0x0
+                Name: lvm2-lvmpolld.socket
+                Documentation: man:lvmpolld(8)
+                Fragment Path: /usr/lib/systemd/system/lvm2-lvmpolld.socket
+                Wants: -.slice
+                RequiredBy: lvm2-lvmpolld.service
+                WantedBy: sysinit.target
+                Conflicts: shutdown.target
+                Before: lvm2-lvmpolld.service
+                After: -.slice
+                After: -.mount
+                Triggers: lvm2-lvmpolld.service
+                References: shutdown.target
+                References: lvm2-lvmpolld.service
+                References: -.slice
+                References: -.mount
+                ReferencedBy: lvm2-lvmpolld.service
+                ReferencedBy: sysinit.target
+                RequiresMountsFor: /run/lvm/lvmpolld.socket
+(snip: 非常に大量の出力になります)
 ```
 
 ## ログ周り
@@ -607,6 +668,7 @@ $ systemd-analyze plot > systemd.sequence.svg
 ```
 $ systemd-analyze dot | dot -Tsvg > systemd.dependencies.svg`
 ```
+
 
 ## 環境
 

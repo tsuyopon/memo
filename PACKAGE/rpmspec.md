@@ -49,7 +49,7 @@ Requires: %{name} = %{version}-%{release}
 %files sub
 ```
 
-specァイルをparseするにはPオプションを利用します。
+specァイルをparseするにはPオプションを利用します。defineオプションもあります。
 ```
 $ rpmspec -P foo.spec 
 Summary: foo

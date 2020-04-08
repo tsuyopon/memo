@@ -37,6 +37,41 @@ $ git grep test -- "*.h" "*.cc"
 $ git grep test -- '*.[ch]'
 ```
 
+### 特定のディレクトリを除外したい
+--オプションでディレクトリの指定に':!'を付与することで特定のディレクトリだけ除外することができる。
+「:!」の代わりに「:^」を使うこともできるらしい
+```
+$ git grep 'hoge' -- ':!app/assets/'
+```
+
+「:^」の場合の例
+```
+$ git grep hoge -- :^test/
+```
+
+### リポジトリに追加されていない対象のファイルも含める。ただし、.gitignoreで無視対象となっているものを除く
+--untrackedまたは--no-exclude-standardオプションを利用します。
+```
+$ git grep --untracked hoge
+CHANGES:     [Tomas Hoger <thoger@redhat.com>]
+hogehoge:hogehoge
+```
+
+### working treeの代わりにindexを探索する
+```
+$ git grep --cached hoge
+```
+
+### 特定のリビジョンで探索する
+```
+$ git grep hoge HEAD~100
+```
+
+### 指定した単語を含むファイル名のみ出力する
+```
+$ git grep -l hoge
+```
+
 ### word, igreno, numberオプションを使う
 ```
 $ git grep -winH v8
@@ -67,6 +102,19 @@ git grep -e anything --and \( -e moccur --or -e ctags \)
 $ git grep --all-match -e hoge -e fuga 
 ```
 
+### 前、後、前後の行を表示する
+```
+# 後の5行
+$ git grep -A 5 hoge
+
+# 前の5行
+$ git grep -B 5 hoge
+
+# 前後の5行
+$ git grep -C 5 hoge
+```
+
+
 ### POSIX extended regexでマッチ
 次のようにすることで数字にマッチした行を取得できるようになる。
 ```
@@ -77,6 +125,43 @@ $ git grep --extended-regexp -e "[0-9]+"
 オプションを付与せずに常に付与したい場合次のようにします
 ```
 git config --global grep.lineNumber true
+```
+
+### ファイル毎に空行を入れてみやすくする
+```
+$ git grep --break test
+```
+
+### ファイルで何個指定した文字列がマッチしたかを表示する
+```
+$ git grep -c openssl
+.github/PULL_REQUEST_TEMPLATE.md:1
+.gitignore:14
+ACKNOWLEDGEMENTS:1
+CHANGES:162
+CONTRIBUTING:5
+(snip)
+```
+
+### ヒットした文字行の前にある関数名を出力する
+```
+$ git grep -p reuse apps/*
+apps/s_client.c=static int ssl_servername_cb(SSL *s, int *ad, void *arg)
+apps/s_client.c:        p->ack = !SSL_session_reused(s) && hn != NULL;
+apps/s_client.c=static void print_stuff(BIO *bio, SSL *s, int full)
+apps/s_client.c:        if (peer != NULL && !SSL_session_reused(s) && SSL_ct_is_enabled(s)) {
+apps/s_client.c:    BIO_printf(bio, (SSL_session_reused(s) ? "---\nReused, " : "---\nNew, "));
+apps/s_server.c=static void print_connection_info(SSL *con)
+apps/s_server.c:    if (SSL_session_reused(con))
+apps/s_server.c=static int www_body(int s, int stype, int prot, unsigned char *context)
+apps/s_server.c:            BIO_printf(io, (SSL_session_reused(con)
+apps/s_time.c=const OPTIONS s_time_options[] = {
+apps/s_time.c:    {"reuse", OPT_REUSE, '-', "Just time connection reuse"},
+apps/s_time.c=int s_time_main(int argc, char **argv)
+apps/s_time.c:        if (SSL_session_reused(scon)) {
+apps/s_time.c:    printf("\n\nNow timing with session id reuse.\n");
+apps/s_time.c:    /* Get an SSL object so we can reuse the session id */
+apps/s_time.c:        if (SSL_session_reused(scon)) {
 ```
 
 ### grepでマッチした行番号やファイル名の色を変更したい
@@ -93,6 +178,7 @@ filename = yellow
 ```
 $ git grep -winH v8
 ```
+
 
 # 参考
 - git-grep(1) Manual Page 

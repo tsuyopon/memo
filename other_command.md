@@ -4,6 +4,18 @@
 
 # 詳細
 
+### 指定されたプロセスIDのプロセスにリンクされている動的共有オブジェクトのリストを表示する
+```
+$ pldd 3895
+3895:	/usr/bin/cscope
+linux-vdso.so.1
+/lib64/libncurses.so.5
+/lib64/libtinfo.so.5
+/lib64/libc.so.6
+/lib64/libdl.so.2
+/lib64/ld-linux-x86-64.so.2
+```
+
 ### IPアドレスを取得する
 簡単にIFのIPアドレスを取得できるコマンドがあった。 ただし、ipconfig(ifconfigではない)ことに注意
 ```
