@@ -529,6 +529,202 @@ sock = 0x7f9b5ce9eaf8
 connection_context = 0x7f9b5d1a0c88
 ```
 
+### アドレス情報を表示する
+関数や変数などのアドレスを表示する
+```
+(gdb) info address printf
+Symbol "printf" is at 0x7ffff7845350 in a file compiled without debugging.
+(gdb) info address thread_main
+Symbol "thread_main" is a function at address 0x4006bd.
+(gdb) info address i
+Symbol "i" is a complex DWARF expression:
+     0: DW_OP_fbreg -20
+.
+```
+
+### OS情報を表示する
+表示できる情報は次の様にして取得できます。
+```
+(gdb) info os
+Type       Description 
+processes  Listing of all processes 
+procgroups Listing of all process groups 
+threads    Listing of all threads 
+files      Listing of all file descriptors 
+sockets    Listing of all internet-domain sockets 
+shm        Listing of all shared-memory regions 
+semaphores Listing of all semaphores 
+msg        Listing of all message queues 
+modules    Listing of all loaded kernel modules 
+```
+
+上記を参考にして値を表示してみます。
+
+
+
+現在OSで稼働中のプロセスを全て表示します。
+```
+(gdb) info os processes
+pid        user       command    cores      
+1          root       /usr/lib/systemd/systemd --switched-root --system --deserialize 22 0          
+2          root       [kthreadd] 0          
+3          root       [ksoftirqd/0] 0          
+5          root       [kworker/0:0H] 0          
+7          root       [migration/0] 0          
+8          root       [rcu_bh]   0          
+9          root       [rcu_sched] 0          
+10         root       [lru-add-drain] 0          
+11         root       [watchdog/0] 0          
+13         root       [kdevtmpfs] 0          
+14         root       [netns]    0          
+15         root       [khungtaskd] 0          
+16         root       [writeback] 0          
+17         root       [kintegrityd] 0          
+18         root       [bioset]   0  
+(snip)
+```
+
+OSのプロセスグループ一覧を表示する
+```
+(gdb) info os procgroups
+pgid       leader command pid        command line 
+1          systemd    1          /usr/lib/systemd/systemd --switched-root --system --deserialize 22 
+1489       systemd-journal 1489       /usr/lib/systemd/systemd-journald 
+1510       lvmetad    1510       /usr/sbin/lvmetad -f 
+1520       systemd-udevd 1520       /usr/lib/systemd/systemd-udevd 
+1564       sshd       1564       sshd: tsuyoshi [priv] 
+1564       sshd       1568       sshd: tsuyoshi@pts/3 
+1569       bash       1569       -bash      
+2517       sshd       2517       sshd: tsuyoshi [priv] 
+2517       sshd       2521       sshd: tsuyoshi@pts/4 
+2522       bash       2522       -bash      
+2738       auditd     2738       /sbin/auditd 
+2760       systemd-logind 2760       /usr/lib/systemd/systemd-logind 
+2765       polkitd    2765       /usr/lib/polkit-1/polkitd --no-debug 
+2768       dbus-daemon 2768       /usr/bin/dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation 
+2771       2771       2773       /usr/sbin/chronyd 
+2814       crond      2814       /usr/sbin/crond -n 
+2815       firewalld  2815       /usr/bin/python -Es /usr/sbin/firewalld --nofork --nopid 
+2818       agetty     2818       /sbin/agetty --noclear tty1 linux 
+(snip)
+```
+
+スレッド一覧を表示する
+```
+(gdb) info os threads
+pid        command    tid        core       
+1          systemd    1          0          
+2          kthreadd   2          0          
+3          ksoftirqd/0 3          0          
+5          kworker/0:0H 5          0          
+7          migration/0 7          0          
+8          rcu_bh     8          0          
+9          rcu_sched  9          0          
+10         lru-add-drain 10         0          
+11         watchdog/0 11         0          
+13         kdevtmpfs  13         0          
+14         netns      14         0          
+15         khungtaskd 15         0          
+16         writeback  16         0          
+17         kintegrityd 17         0          
+18         bioset     18         0          
+19         bioset     19         0          
+20         bioset     20         0          
+21         kblockd    21         0          
+22         md         22         0          
+23         edac-poller 23         0          
+24         watchdogd  24         0          
+30         kswapd0    30         0          
+31         ksmd       31         0          
+32         khugepaged 32         0          
+33         crypto     33         0          
+41         kthrotld   41         0          
+42         kworker/u2:1 42         0          
+43         kmpath_rdacd 43         0   
+(snip)
+```
+
+OSが開いているファイル一覧を表示する
+```
+(gdb) info os files
+pid        command    file descriptor name       
+1          systemd    0          /dev/null  
+1          systemd    1          /dev/null  
+1          systemd    2          /dev/null  
+1          systemd    3          anon_inode:[timerfd] 
+1          systemd    4          anon_inode:[eventpoll] 
+1          systemd    5          anon_inode:[signalfd] 
+1          systemd    6          /sys/fs/cgroup/systemd 
+1          systemd    7          anon_inode:[timerfd] 
+1          systemd    8          socket:[14978] 
+1          systemd    9          /proc/1/mountinfo 
+1          systemd    10         anon_inode:inotify 
+1          systemd    11         /proc/swaps 
+1          systemd    12         socket:[14979] 
+1          systemd    14         socket:[78209] 
+1          systemd    15         anon_inode:inotify 
+1          systemd    16         anon_inode:inotify 
+1          systemd    19         socket:[14984] 
+1          systemd    22         socket:[7440] 
+1          systemd    23         socket:[7442] 
+(snip)
+```
+
+OSが開いているソケット一覧を表示する
+```
+(gdb) info os sockets
+local address local port remote address remote port state      user       family     protocol   
+0.0.0.0    80         0.0.0.0    0          LISTEN     root       INET       STREAM     
+127.0.0.1  8083       0.0.0.0    0          LISTEN     nobody     INET       STREAM     
+127.0.0.1  8084       0.0.0.0    0          LISTEN     nobody     INET       STREAM     
+0.0.0.0    22         0.0.0.0    0          LISTEN     root       INET       STREAM     
+127.0.0.1  25         0.0.0.0    0          LISTEN     root       INET       STREAM     
+0.0.0.0    443        0.0.0.0    0          LISTEN     root       INET       STREAM     
+127.0.0.1  8084       127.0.0.1  55070      ESTABLISHED root       INET       STREAM     
+10.0.2.15  22         10.0.2.2   53063      ESTABLISHED root       INET       STREAM     
+127.0.0.1  55070      127.0.0.1  8084       ESTABLISHED root       INET       STREAM     
+10.0.2.15  22         10.0.2.2   63435      ESTABLISHED root       INET       STREAM     
+10.0.2.15  22         10.0.2.2   53213      ESTABLISHED root       INET       STREAM     
+10.0.2.15  22         10.0.2.2   52722      ESTABLISHED root       INET       STREAM     
+10.0.2.15  52679      192.168.3.1 53         ESTABLISHED nobody     INET       DGRAM      
+0.0.0.0    68         0.0.0.0    0          CLOSE      root       INET       DGRAM      
+127.0.0.1  323        0.0.0.0    0          CLOSE      root       INET       DGRAM      
+::         22         ::         0          LISTEN     root       INET6      STREAM     
+::1        25         ::         0          LISTEN     root       INET6      STREAM     
+::1        323        ::         0          CLOSE      root       INET6      DGRAM   
+```
+
+OSがロードしたカーネルモジュールを表示します
+```
+(gdb) info os modules
+name       size       num uses   dependencies status     address    
+ip6t_rpfilter 12595      1          -          Live       ffffffffc0832000 
+ipt_REJECT 12541      2          -          Live       ffffffffc068a000 
+nf_reject_ipv4 13373      1          ipt_REJECT, Live       ffffffffc0685000 
+ip6t_REJECT 12625      2          -          Live       ffffffffc0680000 
+nf_reject_ipv6 13717      1          ip6t_REJECT, Live       ffffffffc067b000 
+xt_conntrack 12760      11         -          Live       ffffffffc0631000 
+ip_set     45644      0          -          Live       ffffffffc0837000 
+nfnetlink  14490      1          ip_set,    Live       ffffffffc0826000 
+ebtable_nat 12807      1          -          Live       ffffffffc0821000 
+ebtable_broute 12731      1          -          Live       ffffffffc082d000 
+bridge     151336     1          ebtable_broute, Live       ffffffffc07fb000 
+stp        12976      1          bridge,    Live       ffffffffc07f6000 
+llc        14552      2          bridge,stp, Live       ffffffffc07ed000 
+ip6table_nat 12864      1          -          Live       ffffffffc07e8000 
+nf_conntrack_ipv6 18935      7          -          Live       ffffffffc07e2000 
+nf_defrag_ipv6 35104      1          nf_conntrack_ipv6, Live       ffffffffc07d4000 
+nf_nat_ipv6 14131      1          ip6table_nat, Live       ffffffffc07cb000 
+(snip)
+```
+
+TODO: 以下の３つは手元の環境では何も出力されなかったので未確認
+```
+(gdb) info os semaphores
+(gdb) info os shm
+(gdb) info os msg
+```
+
 ### 環境変数を設定する
 ```
 (gdb) set environment LD_LIBRARY_PATH=/usr/lib/debug
@@ -790,7 +986,43 @@ int ap_regexec(const ap_regex_t *, const char *, apr_size_t, ap_regmatch_t *, in
 ```
 
 
-### バックトレース取得する
+### レジスタ情報を取得する
+レジスタ情報を閲覧するには以下のようにします。
+```
+(gdb) info registers
+rax            0x7afbf0	8059888
+rbx            0x0	0
+rcx            0x0	0
+rdx            0x0	0
+rsi            0x0	0
+rdi            0x7afbf0	8059888
+rbp            0x7fffffffe400	0x7fffffffe400
+rsp            0x7fffffffe340	0x7fffffffe340
+r8             0x7afe70	8060528
+r9             0x7afe80	8060544
+r10            0x7afbf0	8059888
+r11            0x7ffff7ba40f0	140737349566704
+r12            0x424c90	4344976
+r13            0x7fffffffe4e0	140737488348384
+r14            0x0	0
+r15            0x0	0
+rip            0x4260bf	0x4260bf <main+2785>
+eflags         0x202	[ IF ]
+cs             0x33	51
+ss             0x2b	43
+ds             0x0	0
+es             0x0	0
+fs             0x0	0
+gs             0x0	0
+```
+
+各レジスタの値は$を付加することでprintで閲覧することができるようです。
+```
+(gdb) print $rax
+$1 = 140737488347680
+```
+
+## バックトレース取得する
 btとbt fullがあります。btの方が簡易版です。
 ```
 (gdb) bt
@@ -851,41 +1083,6 @@ btとbt fullがあります。btの方が簡易版です。
         configtestonly = 0
 ```
 
-### レジスタ情報を取得する
-レジスタ情報を閲覧するには以下のようにします。
-```
-(gdb) info registers
-rax            0x7afbf0	8059888
-rbx            0x0	0
-rcx            0x0	0
-rdx            0x0	0
-rsi            0x0	0
-rdi            0x7afbf0	8059888
-rbp            0x7fffffffe400	0x7fffffffe400
-rsp            0x7fffffffe340	0x7fffffffe340
-r8             0x7afe70	8060528
-r9             0x7afe80	8060544
-r10            0x7afbf0	8059888
-r11            0x7ffff7ba40f0	140737349566704
-r12            0x424c90	4344976
-r13            0x7fffffffe4e0	140737488348384
-r14            0x0	0
-r15            0x0	0
-rip            0x4260bf	0x4260bf <main+2785>
-eflags         0x202	[ IF ]
-cs             0x33	51
-ss             0x2b	43
-ds             0x0	0
-es             0x0	0
-fs             0x0	0
-gs             0x0	0
-```
-
-各レジスタの値は$を付加することでprintで閲覧することができるようです。
-```
-(gdb) print $rax
-$1 = 140737488347680
-```
 
 ## .gdbinit
 以下はサンプル
