@@ -171,6 +171,32 @@ $(マクロ名)
 ${マクロ名}
 ```
 
+### ターゲット中で変数を定義したい
+evalを使う必要があります。Makefile_function.mdに記載されています。
+
+### VPATH変数、vpathディレクティブ
+
+target や prerequisites の検索パスを追加したい時は、VPATH 変数にディレクトリのパスを設定します。 複数のパスを指定したい場合は、コロン (:) かスペースで区切って指定します
+なお、カレントディレクトリはデフォルトで探索するので指定する必要はありません。
+```
+VPATH = src:../headers
+```
+
+また、vpathディレクティブを指定すると、ファイル名に応じて別々の検索パスを設定することができます。
+```
+vpath %.h   ../headers
+vpath %.cpp src
+vpath %     hoge
+```
+
+### .LIBPATTERNS変数について
+prerequisites に -l<name> と指定した場合に、どんな名前のファイルを検索するかは、.LIBPATTERNS 変数に設定されたパターンによって決められます。 デフォルトでは次のような値に設定されています。
+```
+.LIBPATTERNS = lib%.so lib%.a
+```
+
+上記の変数への指定によって、-lcurses と指定したときにはlibcurses.so と libcurses.a ファイルが検索されることになります。
+
 ## make記述
 ### マクロ変数の利用
 ```
@@ -223,6 +249,21 @@ targetA:: targetC
 all: ;
 ```
 
+### ターゲットと同一のファイル名(ディレクトリ)が存在しない場合にのみターゲットに定義された内容を実行させる
+次のようにMakefileに定義されたターゲット名前と同一のファイルやディレクトリが存在しない場合にのみ実行させる。
+注意点としては、以下の場合にはそのターゲットの.PHONYは定義してはならない。
+```
+$ cat Makefile 
+testfile:
+	-echo "testfile does not exists"
+$ make
+echo "testfile does not exists"
+testfile does not exists
+$ touch testfile
+$ make
+make: `testfile' is up to date.
+```
+
 ### ファイルが無いと実行させないようにするには
 例えば、test.txtというファイルが存在しなければエラーにするにはMakefileがコマンド実行してエラーになる性質を利用します。
 ```
@@ -238,7 +279,7 @@ test: test.cc
 「ターゲット」(上記ではtest)が「依存するファイル」(test.cc)よりも新しいか新しくないかでターゲットを実行するかどうか判断する。
 ターゲットが存在していて依存するファイルよりも更新時刻が新しい場合には次のように表示されます。
 ```
-% make test
+$ make test
 make: `test' is up to date.
 ```
 
@@ -267,6 +308,14 @@ $ make
 3
 ```
 
+変数に登録された値を出力する例も記載しておきます。
+```
+LIST = one two three
+all:
+	for i in $(LIST); do \
+         echo $$i; \
+	done
+```
 
 ### 各種マクロについて(応用編)
 
@@ -310,7 +359,7 @@ $ make
   - http://www.unixuser.org/~euske/doc/makefile/#cascade
 
 
-### %のみのターゲットについて
+### どんなターゲットにも一致する%について
 例えば、以下のように記述されているとします。 
 ```
 foo:
@@ -323,18 +372,21 @@ force: ;
 この場合にはmake fooとfooターゲットを実行した場合には「frobnicate > foo」が実行されます。
 make barとfoo以外のターゲットを実行した場合には「make -f Makefile bar」を実行します。
 
+実は「hoge-hoge/fuga」といったスラッシュがはいったターゲットだと%だけでは効かないことがある。この場合には「hoge-%/%:」と%を2度記述する必要がある。
+- http://stackoverflow.com/questions/21182990/makefile-is-it-possible-to-have-stem-with-slash
+
 ### hoge-%などのターゲットで%を取得したい
 ```
- test-%:
+test-%:
     echo $*                         <=   $*により「test-%」の%部分を表示する。
     echo $@                         <=   $@によりターゲット名全てを表示する。
 ```
 
 上記の様なMakefileで「make test-tsuyoshi」と実行すると
 ```
- $ make test-tsuyoshi
- tsuyoshi
- test-tsuyoshi
+$ make test-tsuyoshi
+tsuyoshi
+test-tsuyoshi
 ```
 上記の様にtsuyoshiとして、ターゲット名の一部を利用することができます。
 
@@ -374,13 +426,73 @@ else
 endif
 ```
 
+実用的な例も記載しておく。
+```
+ifeq ($(CC),gcc)
+        $(CC) -o foo $(objects) $(libs_for_gcc)
+else
+        $(CC) -o foo $(objects) $(normal_libs)
+endif
+```
+
+```
+ifeq ($(DEBUG), 1)
+  LIBS = $(LIBS_FOR_DEBUG)
+else
+  LIBS = $(LIBS_FOR_RELEASE)
+endif
+```
+
+### defineによって複数のコマンドを一括で定義する(Canned Command Sequences)
+defineによって複数のコマンドを一括で定義できます。
+```
+define greet-and-print-target
+	echo Hello.
+	@echo Target is $@.
+endef
+
+all:
+	$(greet-and-print-target)
+```
+
+Canned Command Sequencesの呼び出し時に@などのプレフィックスを付与すると全てのコマンド行にそれを付与した場合と同様の効果があります。
+```
+all:
+	@($greet-and-print-target)
+
+$ make
+Hello.
+Target is all.
+```
+
 ### includeの前のハイフンについて
 例えば、次のようにincludeの前にハイフン(-)が付与されている場合には、そのファイルが存在しなくてもエラーになりません。
 ```
 -include optional.mk
 ```
 
+### includeで別ファイルとして読み込むMakefileを指定する
+ファイル名の中で変数 (variable) や関数 (function) を参照すると、展開されてからファイルを検索します。
+```
+HOGE = foo.mk bar.mk
+include $(HOGE)
+```
+
+includeされるMakefileを相対パスで指定すると次の探索順となります。
+- 1. カレントディレクトリ
+- 2. -I または --include-dir オプションで指定したディレクトリ
+- 3. <prefix>/include（通常は /usr/local/include）
+- 4. /usr/gnu/include
+- 5. /usr/local/include
+- 6. /usr/include
+
 ### コマンド実行結果を変数に格納する
+以下のバッククォートによるコマンド実行の場合だとその変数が実行されるまで、pwdの実行結果が処理されません。
+```
+MYPWD = `shell pwd`
+```
+
+Makefile中でコマンド展開してほしい場合にはshellを使うのが正しい記法であると思われます。
 ```
 MYPWD = $(shell pwd)
 
@@ -473,6 +585,69 @@ $(SUBDIRS):
 foo: baz
 ```
 
+### 何階層目のMakefileかを調べる
+次のように３つのファイルを用意します。 MAKELEVELによって何階層かわかります。
+```
+$ cat Makefile 
+all:
+	echo $(MAKELEVEL)
+	$(MAKE) -f sub.mk
+$ cat sub.mk 
+all:
+	@echo $(MAKELEVEL)
+	$(MAKE) -f sub2.mk
+$ cat sub2.mk 
+all:
+	@echo $(MAKELEVEL)
+```
+
+実行してみると親の場合には0、そこから深くなるにつれてレベルが1ずつ上がっていることが確認できます。
+```
+$ make
+echo 0
+0
+make -f sub.mk
+make[1]: Entering directory `/home/tsuyoshi/git/memo/Makefile/test'
+1
+make -f sub2.mk
+make[2]: Entering directory `/home/tsuyoshi/git/memo/Makefile/test'
+2
+make[2]: Leaving directory `/home/tsuyoshi/git/memo/Makefile/test'
+make[1]: Leaving directory `/home/tsuyoshi/git/memo/Makefile/test'
+```
+
+### 再帰make実行時に親側で定義された変数を、親側から実行されたMakefile内部でも参照したい
+デフォルトでは、呼び出し側の Makefile で定義した変数の値は、sub-make 側に渡されません。
+この場合にはexportディレクティブを使う必要があります。
+
+次の2つのファイルを用意します。
+```
+$ cat Makefile 
+export HOGE = 100
+all:
+	$(MAKE) -f sub.mk
+```
+```
+$ cat sub.mk 
+all:
+	@echo $(HOGE)
+```
+
+ではmakeを実行してみます。
+```
+$ make
+make -f sub.mk
+make[1]: Entering directory `/home/tsuyoshi/git/memo/Makefile/test'
+100
+make[1]: Leaving directory `/home/tsuyoshi/git/memo/Makefile/test'
+```
+
+なお、Makefile中で定義された全ての変数をsub-make側に渡すには引数を指定せずにexportを記述します。
+このとき、特定の変数だけ除外したい場合にはunexportで定義しておく必要があります。
+```
+export
+unexport FOO BAR
+```
 
 ### デバッグ方法
 
@@ -506,6 +681,9 @@ errorの場合には必ずその行で停止します。
    $ make --debug 
 ```
 
+### 全てのコマンドエラーを無視させたい場合
+すべてのコマンドのエラーを無視するようにするには、make を実行するときのパラメータに -i (--ignore-erros) を指定するか、スペシャルターゲットの .IGNOREを prerequisites を指定せずに Makefile の中に記述します。
+なお、上記は一時的な対処であって、本来は"-"でコマンド毎の振る舞いにより判断することが推奨されています。
 
 ### 依存ファイル(拡張子: .d)とその読み込み
 
@@ -550,7 +728,6 @@ SOURCES = $(notdir $(shell find . -name '*.cpp'))
 ```
 OBJECTS = $(SOURCES:.cpp=.o)
 ```
-
 
 # FAQ
 
