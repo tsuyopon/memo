@@ -6,14 +6,36 @@ dockerについてのメモ
 
 # 詳細
 
-### インストール
+### インストールして、とりあえず使ってみる
 dockerコマンドを使うには次のpackageをインストールするだけ
 ```
 $ sudo apt-get install docker.io
 ```
 
 dockerコマンドを実行する際にはsudoコマンドを付与する必要があります。
-- - https://qiita.com/DQNEO/items/da5df074c48b012152ee
+- https://qiita.com/DQNEO/items/da5df074c48b012152ee
+
+
+今回、適当にdevtoolsetで検索してみました。
+```
+$ docker search devtoolset
+$ docker pull centos/devtoolset-6-toolchain-centos7
+```
+
+取得したイメージを確認する
+```
+$ sudo docker images
+REPOSITORY                              TAG                 IMAGE ID            CREATED             SIZE
+nginx                                   latest              5a3221f0137b        9 months ago        126MB
+centos/devtoolset-6-toolchain-centos7   latest              f1b031cdb220        14 months ago       436MB
+dockcross/windows-x64                   latest              ec59f2aa4229        14 months ago       2GB
+```
+
+コンテナの作成、起動、アタッチを以下のコマンドで実施する。
+```
+$ docker run -i -t f1b031cdb220 /bin/bash
+bash-4.2$
+```
 
 ### dockerコマンドのコマンドライン
 以下を参考にするとよさそう
@@ -171,6 +193,22 @@ $ docker stop dbb4bbe0f470
 以下は２秒後に停止させる
 ```
 $ docker stop -t 2 dbb4bbe0f470
+```
+
+### dockerの再起動
+```
+$ docker restart dbb4bbe0f470
+```
+
+### dockerの一時停止と再開
+pauseオプションの引数にコンテナ名を指定すると一時停止できる。
+```
+$ docker pause dbb4bbe0f470
+```
+
+再開するにはunpauseオプションを指定する
+```
+$ docker unpause dbb4bbe0f470
 ```
 
 ### 稼働しているコンテナに関するプロセスを表示する
@@ -450,11 +488,75 @@ $ docker inspect node
 ]
 ```
 
+渡されている環境変数を調べる
+```
+$ docker inspect 6572058effff |jq '.[].Config.Env'
+```
+
+どのイメージが起動したかを調べる
+```
+$ docker inspect 6572058effff |jq '.[].Image'
+```
+
 ### コンテナ内部からコンテナIDを取得する
 /etc/hostnameをcatすればいけるらしい
 ```
 $ cat /etc/hostname
 7b9fc2c0bc4f
+```
+
+### コンテナなどの使用容量を調べる
+```
+$ docker system df
+TYPE                TOTAL               ACTIVE              SIZE                RECLAIMABLE
+Images              2                   0                   2.121GB             2.121GB (100%)
+Containers          0                   0                   0B                  0B
+Local Volumes       0                   0                   0B                  0B
+Build Cache         0                   0                   0B                  0B
+```
+
+### dockerのログ履歴を確認する
+実行したコマンドやその出力結果が表示される
+```
+$ docker logs -f 73c79dda19b7 -t
+2020-05-21T18:46:03.559197332Z bash-4.2$ cat /etc/host
+2020-05-21T18:46:03.560659106Z cat: /etc/host: No such file or directory
+2020-05-21T18:46:04.822444767Z bash-4.2$ cat /etc/hostname 
+2020-05-21T18:46:04.823714199Z 73c79dda19b7
+2020-05-21T18:46:40.879520861Z bash-4.2$ exit
+```
+
+### docker イメージの履歴を確認する
+```
+$ docker history centos/devtoolset-6-toolchain-centos7
+IMAGE               CREATED             CREATED BY                                      SIZE                COMMENT
+f1b031cdb220        14 months ago       /bin/sh -c #(nop)  LABEL io.openshift.builde…   0B                  
+<missing>           14 months ago       /bin/sh -c #(nop)  CMD ["usage"]                0B                  
+<missing>           14 months ago       /bin/sh -c #(nop)  ENTRYPOINT ["container-en…   0B                  
+<missing>           14 months ago       /bin/sh -c #(nop)  ENV BASH_ENV=/opt/app-roo…   0B                  
+<missing>           14 months ago       /bin/sh -c #(nop) WORKDIR /opt/app-root/src     0B                  
+<missing>           14 months ago       /bin/sh -c #(nop)  USER [1001]                  0B                  
+<missing>           14 months ago       /bin/sh -c mkdir -p ${HOME} &&     groupadd …   1.77MB              
+<missing>           14 months ago       /bin/sh -c #(nop)  ENV HOME=/opt/app-root/sr…   0B                  
+<missing>           14 months ago       /bin/sh -c #(nop) COPY dir:0019f546c45991eaa…   4.13kB              
+<missing>           14 months ago       /bin/sh -c yum install -y centos-release-scl…   199MB               
+<missing>           14 months ago       /bin/sh -c #(nop)  LABEL com.redhat.componen…   0B                  
+<missing>           14 months ago       /bin/sh -c #(nop)  ENV SUMMARY=Red Hat Devel…   0B                  
+<missing>           14 months ago       /bin/sh -c #(nop)  LABEL MAINTAINER=Marek Po…   0B                  
+<missing>           14 months ago       /bin/sh -c #(nop)  LABEL io.openshift.builde…   0B                  
+<missing>           14 months ago       /bin/sh -c rpm-file-permissions &&   useradd…   2.06MB              
+<missing>           14 months ago       /bin/sh -c #(nop)  CMD ["base-usage"]           0B                  
+<missing>           14 months ago       /bin/sh -c #(nop)  ENTRYPOINT ["container-en…   0B                  
+<missing>           14 months ago       /bin/sh -c #(nop) WORKDIR /opt/app-root/src     0B                  
+<missing>           14 months ago       /bin/sh -c #(nop) COPY dir:4444f29cffa8c7c79…   10.2kB              
+<missing>           14 months ago       /bin/sh -c rpmkeys --import file:///etc/pki/…   31.5MB              
+<missing>           14 months ago       /bin/sh -c #(nop)  ENV BASH_ENV=/opt/app-roo…   0B                  
+<missing>           14 months ago       /bin/sh -c #(nop)  ENV STI_SCRIPTS_URL=image…   0B                  
+<missing>           14 months ago       /bin/sh -c #(nop)  LABEL summary=Base image …   0B                  
+<missing>           14 months ago       /bin/sh -c #(nop)  ENV SUMMARY=Base image wh…   0B                  
+<missing>           14 months ago       /bin/sh -c #(nop)  CMD ["/bin/bash"]            0B                  
+<missing>           14 months ago       /bin/sh -c #(nop)  LABEL org.label-schema.sc…   0B                  
+<missing>           14 months ago       /bin/sh -c #(nop) ADD file:074f2c974463ab38c…   202MB               
 ```
 
 ### ブラウザ上でdocker runを試すことができるサービス
