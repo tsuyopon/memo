@@ -40,6 +40,11 @@ $ docker pull ubuntu:12.04
 $ docker search kernel
 ```
 
+検索時に特定のタグを指定することもできます。
+```
+$ docker search centos:latest | more
+```
+
 dockerhubからレポジトリを検索することもできます。
 - https://hub.docker.com/explore/
 
@@ -78,6 +83,7 @@ $ docker container rm webserver
 - hオプションは名前を付与します。以下では適当に「spam」という名称を付与します。指定しないとdockerが適当に決定します。
 - iオプションはそのdocker内でシェルを続行したい場合に付与します。
 - tにはイメージを指定します。「docer images」などで指定した「<REPOSITORY>:<IMAGE ID>」を指定します。
+- dオプション(daemon)をつけなければ、フォアグランドの実行となる。コンテナを抜けるとコンテナは停止する。
 ```
 $ sudo docker run -h spam -i -t ubuntu:b44ce450cb60 /bin/bash 
 ```
@@ -85,16 +91,37 @@ $ sudo docker run -h spam -i -t ubuntu:b44ce450cb60 /bin/bash
 起動時に環境変数を指定するeオプションもある。実行時の初期ディレクトリを変更するにはwオプションがある。詳しくは以下を参照のこと
 - https://qiita.com/shimo_yama/items/d0c42394689132fcb4b6
 
+
+### コンテナを停止させずにコンテナから抜けたい場合
+```
+Ctrl + P + Q
+```
+
+### dockerコンテナの作成(runと違い起動はしない)
+
+```
+書式
+$ sudo docker create -p ホスト(Ubuntu)側のポート:コンテナ側のポート --name 任意のコンテナ名 元にするイメージ名またはイメージID
+
+例
+$ sudo docker create -p 8080:3000 --name centos_container_test tera_shin/centos_test:latest
+```
+
 ### dockerをコンテナバックグラウンドで起動する
 dオプションによってバックグラウンドで起動させることができます。
 ```
 $ docker run -i -t -d ubuntu /bin/bash
 ```
 
+### ホスト名を指定する
+```
+$ docker run --hostname kaeru -i -t ubuntu /bin/bash
+```
+
 ### dockerの停止後に破棄する
 rmオプションを付与するとコンテナ停止後にコンテナが破棄されます。
 ```
-$ docker run -rm -t -i tsuyopon/hello /bin/bash
+$ docker run --rm -t -i tsuyopon/hello /bin/bash
 ```
 
 ### dockerのstartとattach
@@ -108,6 +135,32 @@ fdb376b21eaf
 ```
 $ sudo docker attach fdb376b21eaf
 [root@fdb376b21eaf /]# 
+```
+
+### コンテナの中に入る
+attachコマンドをもちいる方法とexecコマンドをもちいる方法の２つが存在する。
+
+- attach
+attachはバックグラウンドで実行しているコンテナをフォアグラウンドにして、コンテナ中で/bin/bashを実行する。  
+このコマンドでコンテナに入った場合、コンテナから抜けるとコンテナは停止する。
+```
+書式
+$ sudo docker attach コンテナ名またはコンテナID
+
+例
+$ sudo docker attach centos_container_test
+```
+
+
+- exec
+execはbash以外にも任意のコマンドをコンテナ内で実行させることができる。  
+このコマンドでコンテナに入った場合、コンテナから抜けてもコンテナは停止しない。
+```
+書式
+$ sudo docker exec -i -t コンテナ名またはコンテナID bash
+
+例
+$ sudo docker exec -i -t centos_container_test bash  
 ```
 
 ### dockerの停止
@@ -129,6 +182,22 @@ b3d815c72f6f        library/node        "sleep 20"           6 minutes ago      
 52932027642a        library/node        "/bin/bash"          6 minutes ago       Exited (0) 6 minutes ago                             amazing_newton
 07398e077972        library/node        "/bin/bash"          56 minutes ago      Exited (127) About an hour ago                       trusting_nash
 47490b2b0efc        busybox             "echo hello world"   About an hour ago   Exited (0) About an hour ago                         pensive_elion
+```
+
+### 最後に起動したコンテナから数えてN個のコンテナを表示する。
+以下は２つの場合の例です。
+```
+$ docker ps -n=2
+```
+
+### 情報をフルで表示する
+```
+$ docker ps --no-trunc
+```
+
+### サイズを確認する
+```
+$ docker ps -s
 ```
 
 ### 不要なコンテナのプロセスを削除する
@@ -379,6 +448,13 @@ $ docker inspect node
         }
     }
 ]
+```
+
+### コンテナ内部からコンテナIDを取得する
+/etc/hostnameをcatすればいけるらしい
+```
+$ cat /etc/hostname
+7b9fc2c0bc4f
 ```
 
 ### ブラウザ上でdocker runを試すことができるサービス
