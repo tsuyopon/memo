@@ -87,6 +87,8 @@ CapAmb:	0000000000000000
 
 
 # 参考URL
+- いますぐ実践! Linux システム管理
+  - http://www.usupi.org/sysad/183.html
 - manpage: capability
   - https://linuxjm.osdn.jp/html/LDP_man-pages/man7/capabilities.7.html
 - 第42回　Linuxカーネルのケーパビリティ［1］
