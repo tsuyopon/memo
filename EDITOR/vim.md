@@ -2,6 +2,21 @@
 vimについて
 
 
+# ソースコードからのビルド
+あらかじめソースコードを取得したら、ncurses-develを入れておかないとエラーメッセージが表示されます。
+```
+$ git clone https://github.com/vim/vim.git --depth 1
+$ yum install ncurses-devel -y
+$ ./configure --prefix /opt/vim8.2.0813
+$ make
+$ sudo make install
+```
+
+一時的にパスを通す
+```
+$ export PATH=/opt/vim8.2.0813/bin:$PATH
+```
+
 # ディレクトリ構成
 ```
 ├─ _vimrc もしくは .vimrc       vimエディタ設定ファイル（共通）
