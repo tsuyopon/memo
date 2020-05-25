@@ -75,7 +75,7 @@ git logの後にブランチ名を指定するだけ
 ```
 $ git log remotes/origin/gh-pages
 commit 5ec35039942bfde47b7feef7a080fa04f1137a04
-Author: helloworld <tsuyoshiooishi@yahoo.co.jp>
+Author: helloworld <azarashi@yahoo.co.jp>
 Date:   Tue May 5 09:54:47 2015 +0900
 
     Create gh-pages branch via GitHub
@@ -118,6 +118,36 @@ $ git reflog | tail -5
 b454c0b HEAD@{155}: clone: from https://github.com/tsuyopon/memo.git
 ```
 
+### コミットログにファイルと変更量を表示する
+```
+$ git log --stat
+commit 072334d95f6b0a7d4aad03bd226d83ac8af59d24 (HEAD -> master, origin/master, origin/HEAD)
+Merge: e8565aa dc79ece
+Author: Azarashi <azarashi@yahoo.co.jp>
+Date:   Thu May 14 21:08:36 2020 +0900
+
+    Merge branch 'master' of https://github.com/tsuyopon/memo
+
+commit e8565aae1141b62ee569e5405ccf57cd07f7d764
+Author: Azarashi <azarashi@yahoo.co.jp>
+Date:   Thu May 14 21:08:28 2020 +0900
+
+    update for git
+
+ GIT/git-grep.md | 86 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ GIT/git.md      | 12 ++++++++++++
+ 2 files changed, 98 insertions(+)
+
+commit 8c880d5eb6b4eb4141c3341a0e839a869ac12440
+Author: Azarashi <azarashi@yahoo.co.jp>
+Date:   Thu May 7 06:22:16 2020 +0900
+
+    add PSK.md
+
+ TLS/PSK.md | 122 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 122 insertions(+)
+```
+
 ### サブツリーのネットワーク情報も含めて表示
 ```
 $ git log --graph
@@ -154,7 +184,7 @@ $ git log --graph testbranch
 | |     
 | *   commit bd3dc5d24d39196359d952168e5382fbcba2739c
 | |\  Merge: 6cf200f f77ff34
-| | | Author: Tsuyoshi Ooishi <tsuyoshiooishi@yahoo.co.jp>
+| | | Author: Azarashi <azarashi@yahoo.co.jp>
 | | | Date:   Tue Mar 5 01:45:31 2019 +0900
 | | | 
 | | |     Merge pull request #2 from tsuyopon/mas2
@@ -180,7 +210,7 @@ $ git log --graph testbranch
 |       added test.txt
 |  
 * commit 6cf200f99d4ef50596dad07ab78141dbcc981b7e
-  Author: Tsuyoshi Ooishi <tsuyoshiooishi@yahoo.co.jp>
+  Author: Azarashi <azarashi@yahoo.co.jp>
   Date:   Tue Mar 5 01:29:41 2019 +0900
   
       Initial commit
