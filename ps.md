@@ -85,6 +85,14 @@ START                   プロセスが生成された時刻。
 
 ### メモリ使用量でソートする
 
+- メモリ使用率ベスト2を表示する。 
+```
+$ ps aux --sort=-%mem  | awk 'NR<=3 {print $0}'
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root      2818  0.0  0.7 358640 29416 ?        Ssl  Mar28   0:01 /usr/bin/python -Es /usr/sbin/firewalld --nofork --nopid
+root      3309  0.0  0.4 573932 19128 ?        Ssl  Mar28   1:05 /usr/bin/python2 -Es /usr/sbin/tuned -l -P
+```
+
 - CPUでソートする
 ```
 $ ps auxww --sort -pcpu | head -4
@@ -223,6 +231,29 @@ systemd-+-NetworkManager-+-dhclient
         |            `-{gdm-binary}
         |-gnome-keyring-d---7*[{gnome-keyring-d}]
 (省略)
+```
+
+
+### psコマンドでもプロセスの木構造を確認することができます
+```
+$ ps x --forest
+  PID TTY      STAT   TIME COMMAND
+10370 ?        S      0:00 sshd: tsuyoshi@pts/1
+10371 pts/1    Ss     0:00  \_ -bash
+10440 pts/1    S      0:00      \_ scl enable devtoolset-8 rh-python36 bash
+10441 pts/1    S      0:00          \_ /bin/bash /var/tmp/sclXM8AF8
+10449 pts/1    S      0:00              \_ bash
+10603 pts/1    R+     0:00                  \_ ps x --forest
+ 9352 ?        S      0:00 sshd: tsuyoshi@pts/0
+ 9353 pts/0    Ss+    0:00  \_ -bash
+ 7831 ?        S      0:01 sshd: tsuyoshi@pts/5
+ 7832 pts/5    Ss+    0:00  \_ -bash
+ 7705 ?        S      0:01 sshd: tsuyoshi@pts/2
+ 7706 pts/2    Ss+    0:00  \_ -bash
+ 5840 ?        S      0:02 sshd: tsuyoshi@pts/4
+ 5841 pts/4    Ss+    0:00  \_ -bash
+ 5788 ?        S      0:01 sshd: tsuyoshi@pts/3
+ 5789 pts/3    Ss+    0:00  \_ -bash
 ```
 
 ### プロセスが起動した時刻を調べたいとき
