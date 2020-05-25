@@ -8,6 +8,19 @@ python関連の文法についての基本的な事項についてまとめま�
 - Python 3 Installation & Setup Guide
   - https://realpython.com/installing-python/
 
+# 環境変数
+- PYTHONPATH
+  - 恒久的にモジュールを実行できるようにするには、対象のモジュール格納場所をPYTHONPATHに指定します。
+  - プログラム内部でも追加が可能です。以下に例を示す。
+```
+sys.path.append('/tmp/hoge/lib/python2.7/site-packages')
+```
+- PATH
+  - pythonコマンドへのパスを指定します。
+
+
+このほかにも様々な環境変数一覧についてはpythonのドキュメントにも記載されている。
+- https://docs.python.org/ja/3/using/cmdline.html#environment-variables
 
 # 詳細
 
