@@ -6,7 +6,8 @@ TLS理解度チェックリスト
 覚えるのではなく理解することを優先する。
 
 ### 基礎知識
-- 暗号学的ハッシュの３大要素は何か?
+- TLSが提供する4大機能は何か?
+- 暗号学的ハッシュの３大要素は何か? 
 - レコードレイヤ5byteを記述せよ
 - Handshakeタイプを4種類記述せよ。それぞれのデータ構造も記せ。
 - 署名情報としてclient_randomとserver_randomを含んでいるのはなぜか?
@@ -60,10 +61,14 @@ TLS理解度チェックリスト
 - TLS1.3の鍵交換でMUST, SHOULDを述べよ
 - CCMとGCMの違いは何か?
 
+### 拡張(OCSP)
+- CRLとOCSPの違いについて述べよ
+- OCSP, OCSP Stapling, OCSP Must Staplingの役割について述べよ
+- TLS1.2以前のOCSPとTLS1.3のOCSPの違いについて述べよ
+
 ### 拡張
 - SNIの仕組みの利用用途について述べよ
 - TLS1.2未満、TLS1.2、TLS1.3の観点で整理して、signature_algorithmsについて簡潔に述べよ 
-- OCSP, OCSP Stapling, OCSP Must Staplingの役割について述べよ
 - exporterとは何か? TLS1.2、TLS1.3について述べよ。
 - extended_master_secret拡張の役割 (この拡張が出来た攻撃, ハッシュ計算, TLS1.3)
 
@@ -73,6 +78,7 @@ TLS理解度チェックリスト
 - 0-RTTリクエストによる攻撃可能性
 
 ### 攻撃
+- 伸長攻撃とはどのような攻撃か
 - 圧縮することによって発生する攻撃手法の方法について述べよ
 - 強制切断攻撃について述べよ(close_notify, Cookieカッター)
 
