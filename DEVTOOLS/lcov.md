@@ -15,8 +15,15 @@ LCOVがやっていることはgcovデータを集めて、カバレッジレポ
 $ sudo yum install lcov
 ```
 
+以下にサンプルを配置済み
+- https://github.com/tsuyopon/cpp/tree/master/cppunit
+
 ### クィックスタート
-- 1. gccへのコンパイラやリンカへのフラグとして--coverageを付与してコンパイルしてから、実行をする。
+- 1. gccへのコンパイラやリンカへ以下のフラグを付与してコンパイルしてから、実行をする。
+```
+CXXFLAGS = -fprofile-arcs -ftest-coverage
+LDFLAGS = -lgcov --coverage
+```
 - 2. 次のコマンドでgcovデータを集めて、coverage.infoファイルへと変換します。directoryにはgcovファイルがある対象のディレクトリを指定します。
 ```
 $ lcov --capture --directory ./ --output-file coverage.info
