@@ -270,13 +270,112 @@ var myarr [10]int
 ```
 
 ### 配列のスライス
-スライスを指定することで必要な配列のみを取り出すことができます。
+スライスを指定することで必要な配列のみを取り出すことができます。これは参照のようなものなので、値の変更には注意してください。
 ```
 func main() {
 	primes := [6]int{2, 3, 5, 7, 11, 13}
 
 	var s []int = primes[1:4]
 	fmt.Println(s)
+}
+```
+
+### スライスリテラル
+[]の中に値を指定しないことも可能です。
+```
+func main() {
+	q := []int{2, 3, 5, 7, 11, 13}
+	fmt.Println(q)
+
+	r := []bool{true, false, true, true, false, true}
+	fmt.Println(r)
+
+	s := []struct {
+		i int
+		b bool
+	}{
+		{2, true},
+		{3, false},
+		{5, true},
+		{7, true},
+		{11, false},
+		{13, true},
+	}
+	fmt.Println(s)
+}
+```
+
+スライスの上限や下限は省略することができます。
+```
+	s := []int{2, 3, 5, 7, 11, 13}
+
+	s = s[1:4]
+	fmt.Println(s)
+
+	s = s[:2]
+	fmt.Println(s)
+
+	s = s[1:]
+	fmt.Println(s)
+}
+```
+
+スライスの長さの変更、要素の切り詰め、伸張について
+```
+func main() {
+	s := []int{2, 3, 5, 7, 11, 13}
+	printSlice(s)
+
+	// Slice the slice to give it zero length.
+	s = s[:0]
+	printSlice(s)
+
+	// Extend its length.
+	s = s[:4]
+	printSlice(s)
+
+	// Drop its first two values.
+	s = s[2:]
+	printSlice(s)
+}
+```
+
+スライスに何も値が入っていない場合にはnilになります。
+```
+func main() {
+	var s []int
+	fmt.Println(s, len(s), cap(s))
+	if s == nil {
+		fmt.Println("nil!")
+	}
+}
+```
+
+### スライスとRange文
+for ループに利用する range は、スライスや、マップ( map )をひとつずつ反復処理するために使います。
+rangeでは最初にindexを、次にインデックスが指定する値を返します。
+```
+var pow = []int{1, 2, 4, 8, 16, 32, 64, 128}
+
+func main() {
+	for i, v := range pow {                // iはindex, vは要素の値
+		fmt.Printf("2**%d = %d\n", i, v)
+	}
+}
+```
+
+
+### rangeで不要な要素をアンダーバーで捨てる
+indexや値は不要であればアンダーバーで捨てることができます。
+```
+func main() {
+	pow := make([]int, 10)
+	for i := range pow {
+		pow[i] = 1 << uint(i) // == 2**i
+	}
+	for _, value := range pow {
+		fmt.Printf("%d\n", value)
+	}
 }
 ```
 
