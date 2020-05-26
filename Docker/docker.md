@@ -559,6 +559,20 @@ f1b031cdb220        14 months ago       /bin/sh -c #(nop)  LABEL io.openshift.bu
 <missing>           14 months ago       /bin/sh -c #(nop) ADD file:074f2c974463ab38c…   202MB               
 ```
 
+### docker で Ctrl-p ２回押し問題
+
+デフォルトでは Ctrl-p は、detachKeys の一部として認識されていて、コンテナにこのキーを送るには、 Ctrl-p を２度押しする必要がある。
+docker v.1.10.0 から、 detachKeys を変更する機能が実装されたので、これを回避するには次の設定を配置すれば良い。
+```
+// ~/.docker/config.json
+{
+    "detachKeys": "ctrl-\\"
+}
+```
+
+- 参考
+  - https://qiita.com/Yuki-Inoue/items/60ec916383025160fbb8#_reference-a2d9244a6c4496f4df05
+
 ### ブラウザ上でdocker runを試すことができるサービス
 - https://docker-run.com/
 
