@@ -434,6 +434,15 @@ augroup END
 でよい。以下にtargetcolorを示す。 これは[TAB]により、引数候補が出るので覚える必要はない。 blue, darkblue, default, elford, evening, koehler morning, murphy, pablo, peachpuff, ron, shinetorte, zellner
 ↑
 
+### 起動時に前回のファイルのカーソル位置に移動したい
+前回起動時のファイルのカーソル位置に移動するには次を.vimrcに追加する。
+```
+augroup vimrcEx
+  au BufRead * if line("'\"") > 0 && line("'\"") <= line("$") |
+  \ exe "normal g`\"" | endif
+augroup END
+```
+
 ### カラースキームファイルで何が利用できるか知りたい。
 ```
 /usr/share/vim/vim63/colors/
