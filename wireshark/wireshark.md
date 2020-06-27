@@ -11,6 +11,13 @@ MACなどではウェブサイトからdmgをダウンロードしてインス�
 
 # フィルタ
 
+### 設定がおかしくなってしまった。
+MACだと以下のように設定を変更することで対応
+```
+$ cd /Users/tsuyoshi/.config
+$ mv -iv wireshark wireshark.bak
+```
+
 ### フィルタリングに入力されるとサジェストされる一覧
 次の文字列まで入力するとwiresharkのfiltering部分でsuggestされるので、該当名称がよくわからない時などに便利
 ```
