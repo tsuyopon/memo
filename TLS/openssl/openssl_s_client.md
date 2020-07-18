@@ -4,6 +4,19 @@ TLS接続先に対してXXしたいといった内容でまとめている
 
 # 詳細
 
+### HTTP/1.1やHTTP/1.0でtelnetのようにアクセスしたい
+以下のようにしてopensslコマンドの後にGETやHostヘッダを入力した後に2度改行を入力します。
+ポイントは次の2つです
+- OpenSSLのコマンドラインからエンターキーを使って、CR+LFを送信するには、-crlfオプションを利用する
+- ユーザーから入力させるよう-quietオプションを利用する
+```
+$ openssl s_client -crlf -connect www.yahoo.co.jp:443 -quiet
+GET / HTTP/1.1
+Host: www.yahoo.co.jp
+
+(結果が表示される)
+```
+
 ### 接続した先の証明書の内容を表示する
 showcertsを付与する
 ```
@@ -499,3 +512,8 @@ $ echo | openssl s_client -connect www.yahoo.co.jp:443 -ess_in session.txt
 $ echo | openssl s_client -connect www.yahoo.co.jp:443 -no_ticket
 ```
 
+
+### ALPNを指定する
+```
+$ echo | openssl s_client -alpn h2,http/1.1 -connect www.yahoo.co.jp:443 
+```
