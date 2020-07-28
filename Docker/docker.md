@@ -222,6 +222,12 @@ b3d815c72f6f        library/node        "sleep 20"           6 minutes ago      
 47490b2b0efc        busybox             "echo hello world"   About an hour ago   Exited (0) About an hour ago                         pensive_elion
 ```
 
+### dockerにディレクトリやファイルをコピーしたい
+以下はtestdockerという名称で名前をつけたdockerに対するコピーです。
+```
+$ docker cp directory testdocker:/home/tsuyoshi/directory
+```
+
 ### 最後に起動したコンテナから数えてN個のコンテナを表示する。
 以下は２つの場合の例です。
 ```

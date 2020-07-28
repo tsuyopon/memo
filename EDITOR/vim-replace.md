@@ -24,6 +24,13 @@ vim に関する置換操作について纏めます。
 - 参考
   - http://d.hatena.ne.jp/stylist/20120422/1335094553
 
+試してみた感じだと以下だけでもいけた。
+```
+:set noexpandtab
+:retab!
+```
+- 参考: https://t-umino-nit.hatenablog.com/entry/2016/11/29/151336
+
 ### 指定した行だけ置換したい 
 例えば、130行目、150行目の「test」という文字列を「beta」に置換する場合、以下の指定を行います。
 ```
