@@ -245,6 +245,15 @@ amendオプションを使います。
 $ git commit -m '修正版コメント' --amend
 ```
 
+authorを変更する場合には次のようにします。
+```
+$ git commit --amend --author="azarashi <azarashi@example.com>"
+```
+
+### 過去のコミットにおけるcommiter, authorを全て変更したい
+以下を参考のこと
+- https://qiita.com/sea_mountain/items/d70216a5bc16a88ed932
+
 ### トラッキングされていないファイルを削除したい。
 次のコマンドでgitでトラッキングされないファイルを削除する場合、
 ```
