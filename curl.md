@@ -183,6 +183,12 @@ Connection: keep-alive
 Via: http/1.1 edge1123.img.bbt.yahoo.co.jp (ApacheTrafficServer [c sSf ])
 ```
 
+### Unix Domain Socketにアクセスする
+以下のように--unix-socketオプションでunix domain socketにアクセスすることができるようになります。
+```
+$ curl --unix-socket /var/run/app.sock http:/index.html
+```
+
 # HTTPSに関する利用
 
 ### HTTPバージョンを指定する
