@@ -1,8 +1,50 @@
 # 概要
 docker imageを作成する際のコマンドやDockerfileについてまとめる
 
-
 # 詳細
+
+### 現在のサポートするストレージドライバを確認する
+docker infoで確認することができます。
+```
+$ docker info | grep 'Storage Driver'
+ Storage Driver: overlay2
+```
+
+なお、dockerでは以下のストレージドライバがサポートされていて、利用している環境や用途に応じてベストなドライバを選択できます。
+```
+overlay2, overlay
+aufs
+btrfs
+devicemapper
+vfs
+zfs
+```
+
+### Dockerイメージ内部のレイヤ構造を確認する
+以下の例ではdocker imageで出力されるnginxのイメージの履歴を表示しています。
+以下の例では11個のレイヤが重なっていることが確認できます。
+```
+$ docker history nginx
+IMAGE               CREATED             CREATED BY                                      SIZE                COMMENT
+5a3221f0137b        11 months ago       /bin/sh -c #(nop)  CMD ["nginx" "-g" "daemon…   0B                  
+<missing>           11 months ago       /bin/sh -c #(nop)  STOPSIGNAL SIGTERM           0B                  
+<missing>           11 months ago       /bin/sh -c #(nop)  EXPOSE 80                    0B                  
+<missing>           11 months ago       /bin/sh -c ln -sf /dev/stdout /var/log/nginx…   22B                 
+<missing>           11 months ago       /bin/sh -c set -x     && addgroup --system -…   56.8MB              
+<missing>           11 months ago       /bin/sh -c #(nop)  ENV PKG_RELEASE=1~buster     0B                  
+<missing>           11 months ago       /bin/sh -c #(nop)  ENV NJS_VERSION=0.3.5        0B                  
+<missing>           11 months ago       /bin/sh -c #(nop)  ENV NGINX_VERSION=1.17.3     0B                  
+<missing>           11 months ago       /bin/sh -c #(nop)  LABEL maintainer=NGINX Do…   0B                  
+<missing>           11 months ago       /bin/sh -c #(nop)  CMD ["bash"]                 0B                  
+<missing>           11 months ago       /bin/sh -c #(nop) ADD file:330bfb91168adb4a9…   69.2MB   
+```
+
+### イメージレイヤのゴミ問題
+RUNに1行でapt-get updateとcleanを一緒に書かないと実は削除の上書きをしているだけで、レイヤにゴミが残ってしまう問題。
+詳細は以下を参考のこと
+
+- 参考
+  - https://www.techscore.com/blog/2018/12/10/docker-images-and-layers/
 
 ### コンテナからイメージを作成する
 
