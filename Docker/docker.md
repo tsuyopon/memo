@@ -1,12 +1,38 @@
 # 概要
-dockerについてのメモ
+dockerについての基本的な内容についてのメモ
+
+dockerのオプションおよび環境変数については以下を参考のこと
+- https://docs.docker.jp/engine/reference/commandline/cli.html
 
 基本コマンドについては以下を参考にすること
 - https://gist.github.com/tcnksm/7700047
 
 # 詳細
 
-### インストールして、とりあえず使ってみる
+### dockerコマンドの環境変数
+```
+DOCKER_CONFIG クライアントの設定ファイルの場所。
+DOCKER_CERT_PATH 認証鍵ファイルの場所。
+DOCKER_DRIVER 使用するグラフドライバ。
+DOCKER_HOST デーモンのソケット接続先。
+DOCKER_NOWARN_KERNEL_VERSION Docker に対応していない Linux カーネルで警告を出さない。
+DOCKER_RAMDISK 'pivot_root' を無効に設定。
+DOCKER_TLS_VERIFY Docker で TLS とリモート認証を使う。
+DOCKER_CONTENT_TRUST Docker でイメージの署名・確認用のために Notary 使用時に設定。これは、build、create、pull、push、run で --disable-content-trust=false を実行するのと同等
+DOCKER_CONTENT_TRUST_SERVER Notary サーバが使う URL を指定。デフォルトはレジストリと同じ URL 。
+DOCKER_TMPDIR 一時 Docker ファイルの場所。
+```
+
+「Go」ランタイムが利用する環境変数も使えます。特に次のものは便利です。
+```
+HTTP_PROXY
+HTTPS_PROXY
+NO_PROXY
+```
+
+- 参考: https://docs.docker.jp/engine/reference/commandline/cli.html
+
+### とりあえずdockerを使ってみる
 dockerコマンドを使うには次のpackageをインストールするだけ
 ```
 $ sudo apt-get install docker.io
@@ -36,6 +62,14 @@ dockcross/windows-x64                   latest              ec59f2aa4229        
 $ docker run -i -t f1b031cdb220 /bin/bash
 bash-4.2$
 ```
+
+### sudoを使わずにdockerコマンドを使う
+この方法はグループに所属するユーザーが事実上のroot権限を持つことになるため、セキュリティには十分配慮が必要です。
+```
+$ sudo usermod -aG docker <ユーザー名前>
+```
+
+上記にしているのは、dockerクライアントは/var/run/docker.sockにアクセスし、docker.sockの所有者はrootでグループはdockerのためです。
 
 ### dockerコマンドのコマンドライン
 以下を参考にするとよさそう
@@ -78,8 +112,16 @@ REPOSITORY          TAG                 IMAGE ID            CREATED             
 ubuntu              latest              4c8b3daeb158        2 weeks ago         121.6 MB
 ubuntu              14.04               b44ce450cb60        3 weeks ago         188 MB
 ```
+
+qオプションを付与するとIMAGE IDだけ抽出してくれるようです。
+```
+$ sudo docker images -q
+4c8b3daeb158
+b44ce450cb60
+```
+
 上記のubuntuは以下の公式レポジトリから確認することができます。
-- https://hub.docker.com/_/ubuntu/
+- https://hub.docker.com/\_/ubuntu/
 
 digestsを引数に追加すればDIGEST値も表示してくれるようです。
 ```
@@ -87,36 +129,6 @@ $ docker images --digests
 
 REPOSITORY          TAG                 DIGEST                                                                    IMAGE ID            CREATED
 alpine              3.2                 sha256:21e69d5899e4865b647f6a7aeaba3ddf0d0f17c0016b03ed716322c855533ccd   7bed0150ea37        4 weeks ago         5.265 MB
-```
-
-### 80ポートでデーモンとして起動する
-```
-$ docker run -d -p 80:80 --name {コンテナ名} nginx
-```
-
-終わったら後片付けをしておきましょう。以下の例ではwebserverというコンテナ名にしています。
-```
-$ docker container stop webserver
-$ docker container rm webserver
-```
-
-### dockerを起動する
-次のようにしてdockerを起動します。オプションは省略できるものもあります。
-- hオプションは名前を付与します。以下では適当に「spam」という名称を付与します。指定しないとdockerが適当に決定します。
-- iオプションはそのdocker内でシェルを続行したい場合に付与します。
-- tにはイメージを指定します。「docer images」などで指定した「<REPOSITORY>:<IMAGE ID>」を指定します。
-- dオプション(daemon)をつけなければ、フォアグランドの実行となる。コンテナを抜けるとコンテナは停止する。
-```
-$ sudo docker run -h spam -i -t ubuntu:b44ce450cb60 /bin/bash 
-```
-
-起動時に環境変数を指定するeオプションもある。実行時の初期ディレクトリを変更するにはwオプションがある。詳しくは以下を参照のこと
-- https://qiita.com/shimo_yama/items/d0c42394689132fcb4b6
-
-
-### コンテナを停止させずにコンテナから抜けたい場合
-```
-Ctrl + P + Q
 ```
 
 ### dockerコンテナの作成(runと違い起動はしない)
@@ -127,23 +139,6 @@ $ sudo docker create -p ホスト(Ubuntu)側のポート:コンテナ側のポ�
 
 例
 $ sudo docker create -p 8080:3000 --name centos_container_test tera_shin/centos_test:latest
-```
-
-### dockerをコンテナバックグラウンドで起動する
-dオプションによってバックグラウンドで起動させることができます。
-```
-$ docker run -i -t -d ubuntu /bin/bash
-```
-
-### ホスト名を指定する
-```
-$ docker run --hostname kaeru -i -t ubuntu /bin/bash
-```
-
-### dockerの停止後に破棄する
-rmオプションを付与するとコンテナ停止後にコンテナが破棄されます。
-```
-$ docker run --rm -t -i tsuyopon/hello /bin/bash
 ```
 
 ### dockerのstartとattach
@@ -163,8 +158,8 @@ $ sudo docker attach fdb376b21eaf
 attachコマンドをもちいる方法とexecコマンドをもちいる方法の２つが存在する。
 
 - attach
-attachはバックグラウンドで実行しているコンテナをフォアグラウンドにして、コンテナ中で/bin/bashを実行する。  
-このコマンドでコンテナに入った場合、コンテナから抜けるとコンテナは停止する。
+  - attachはバックグラウンドで実行しているコンテナをフォアグラウンドにして、コンテナ中で/bin/bashを実行する。  
+  - このコマンドでコンテナに入った場合、コンテナから抜けるとコンテナは停止する。
 ```
 書式
 $ sudo docker attach コンテナ名またはコンテナID
@@ -173,10 +168,9 @@ $ sudo docker attach コンテナ名またはコンテナID
 $ sudo docker attach centos_container_test
 ```
 
-
 - exec
-execはbash以外にも任意のコマンドをコンテナ内で実行させることができる。  
-このコマンドでコンテナに入った場合、コンテナから抜けてもコンテナは停止しない。
+  - execはbash以外にも任意のコマンドをコンテナ内で実行させることができる。  
+  - このコマンドでコンテナに入った場合、コンテナから抜けてもコンテナは停止しない。
 ```
 書式
 $ sudo docker exec -i -t コンテナ名またはコンテナID bash
@@ -211,6 +205,30 @@ $ docker pause dbb4bbe0f470
 $ docker unpause dbb4bbe0f470
 ```
 
+### 動作中のコンテナの強制終了
+killを使うことで動作中のコンテナを強制終了できるようです。(自分はまだこれを使う場面に遭遇したことない)
+```
+$ docker kill dbb4bbe0f470
+```
+
+なお、sオプションでシグナルを指定することができるようです。
+```
+-s, --signal="KILL": コンテナに送るシグナル
+```
+
+### docker psのオプションについて
+色々なオプションがあります。
+```
+-a, --all=false: すべてのコンテナを表示する。デフォルトでは動作中のものだけが表示される。
+--before="": IDまたは名前で指定されたコンテナより前に作られたコンテナだけを表示する。停止中のものも表示される。
+-l, --latest=false: 最後に作られたコンテナだけを表示する。停止中のものも表示される。
+-n=-1: 最後からｎ番目に作られたコンテナだけを表示する。停止中のものも表示される。
+--no-trunc=false: 出力を切り詰めない
+-q, --quiet=false: 数字のIDのみを表示する
+-s, --size=false: サイズを表示する。-q といっしょには指定できない。
+--since="": IDまたは名前で指定されたコンテナより後に作られたコンテナだけを表示する。停止中のものも表示される。
+```
+
 ### 稼働しているコンテナに関するプロセスを表示する
 aオプションを付与すると起動していないコンテナも合わせて表示してくれます。
 ```
@@ -222,20 +240,39 @@ b3d815c72f6f        library/node        "sleep 20"           6 minutes ago      
 47490b2b0efc        busybox             "echo hello world"   About an hour ago   Exited (0) About an hour ago                         pensive_elion
 ```
 
+### dockerにディレクトリやファイルをコピーしたい
+以下はtestdockerという名称で名前をつけたdockerに対するコピーです。
+ディレクトリでもrなどのオプションは付与する必要はないようです。
+```
+$ docker cp directory testdocker:/home/tsuyoshi/directory
+```
+
 ### 最後に起動したコンテナから数えてN個のコンテナを表示する。
 以下は２つの場合の例です。
 ```
 $ docker ps -n=2
 ```
 
-### 情報をフルで表示する
+### CONTAINERIDの情報を切り詰めずに表示する
 ```
 $ docker ps --no-trunc
+CONTAINER ID                                                       IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+1fb337af7fce551181dcc8b4470bb76b45e3c9e69ecc7cb58d0625d74782c742   golang              "/bin/sh"           25 hours ago        Up 25 hours                             attack
 ```
 
 ### サイズを確認する
+ps -sの出力は右側にSIZEが追加されていることを確認できます。
 ```
 $ docker ps -s
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES               SIZE
+1fb337af7fce        golang              "/bin/sh"           25 hours ago        Up 25 hours                             attack              0B (virtual 810MB)
+```
+
+### 最後に作られたコンテナのみを表示する
+```
+$ docker ps -l
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+1fb337af7fce        golang              "/bin/sh"           25 hours ago        Up 25 hours                             attack
 ```
 
 ### 不要なコンテナのプロセスを削除する
@@ -268,6 +305,25 @@ Untagged: busybox:latest
 Untagged: busybox@sha256:7964ad52e396a6e045c39b5a44438424ac52e12e4d5a25d94895f2058cb863a0
 Deleted: sha256:3a093384ac306cbac30b67f1585e12b30ab1a899374dabc3170b9bca246f1444
 Deleted: sha256:683f499823be212bf04cb9540407d8353803c25d0d9eb5f2fdb62786d8b95ead
+```
+
+### コンテナが停止するまで待つ
+引数にはコンテナを指定します。
+```
+$ docker wait e0c1f3850bd7
+```
+
+### コンテナとの差分を確認する
+diffオプションにコンテナIDを指定することで既存のコンテナとの差分ファイルを表示してくれます。
+```
+$ docker diff e0c1f3850bd7
+C /root
+A /root/.vim
+A /root/.vim/pack
+A /root/.vim/pack/plugins
+A /root/.vim/pack/plugins/start
+A /root/.vim/pack/plugins/start/vim-go
+A /root/.vim/pack/plugins/start/vim-go/.editorconfig
 ```
 
 ### 指定したコンテナIDの統計情報を表示する
@@ -312,54 +368,6 @@ Labels:
  provider=virtualbox
 ```
 
-### Dockerfileからイメージを作成する
-```
-$ echo -e "FROM base\nRUN apt-get install hello\nCMD hello" > Dockerfile
-$ docker build tsuyopon/hello .
-```
-
-### 利用可能なリモートにあるdocker image一覧
-
-
-### docker hubにpushする
-- https://qiita.com/umi/items/d4b5a68263ad0444693b#docker-hub-%E3%81%ABpush-%E3%81%97%E3%81%A6%E3%81%BF%E3%82%8B
-
-
-試したわけではないが流れだけ記載しておく
-- 1. 以下のdocker hubからアカウントを作成します。
-  - https://hub.docker.com/explore/
-- 2. ログインする
-```
-$ sudo docker login
-```
-- 3. タグ付けをする
-```
-$ sudo docker tag 18247f8cdbc4 ubuntu/mysql:latest
-$ sudo docker images
-```
-- 4.リモートレポジトリにプッシュする
-```
-$ sudo docker push ubuntu/mysql:latest
-```
-- 5. docker hubを確認してレポジトリが作成されたことを確認する。
-
-### dockerイメージの履歴を表示する
-```
-$ docker history node
-IMAGE               CREATED             CREATED BY                                      SIZE                COMMENT
-72ff1a4450d9        22 hours ago        /bin/sh -c #(nop)  CMD ["node"]                 0 B                 
-<missing>           22 hours ago        /bin/sh -c set -ex   && for key in     6A010C   5.057 MB            
-<missing>           22 hours ago        /bin/sh -c #(nop)  ENV YARN_VERSION=1.12.3      0 B                 
-<missing>           22 hours ago        /bin/sh -c ARCH= && dpkgArch="$(dpkg --print-   59.17 MB            
-<missing>           22 hours ago        /bin/sh -c #(nop)  ENV NODE_VERSION=11.6.0      0 B                 
-<missing>           22 hours ago        /bin/sh -c groupadd --gid 1000 node   && user   333.4 kB            
-<missing>           24 hours ago        /bin/sh -c set -ex;  apt-get update;  apt-get   560.2 MB            
-<missing>           12 days ago         /bin/sh -c apt-get update && apt-get install    141.8 MB            
-<missing>           12 days ago         /bin/sh -c set -ex;  if ! command -v gpg > /d   7.812 MB            
-<missing>           12 days ago         /bin/sh -c apt-get update && apt-get install    23.23 MB            
-<missing>           12 days ago         /bin/sh -c #(nop)  CMD ["bash"]                 0 B                 
-<missing>           12 days ago         /bin/sh -c #(nop) ADD file:da71baf0d22cb2ede9   100.6 MB     
-```
 
 ### dockerのバージョン
 以下は、MacOS上のVirtualBoxのdocker-machineを利用したdocker versionの出力結果です。
@@ -383,6 +391,7 @@ Server:
 ```
 
 ### イメージの詳細を確認する
+docker inspectの引数はコンテナまたはIMAGEを指定することができます。
 ```
 $ docker inspect node
 [
@@ -515,8 +524,11 @@ Local Volumes       0                   0                   0B                  
 Build Cache         0                   0                   0B                  0B
 ```
 
-### dockerのログ履歴を確認する
-実行したコマンドやその出力結果が表示される
+### 標準出力の内容をコンテナの外部から確認する
+
+logという名称ですが、標準出力の内容をコンテナ外から確認するためのものです。
+
+実行したコマンドやその出力結果が表示されます。
 ```
 $ docker logs -f 73c79dda19b7 -t
 2020-05-21T18:46:03.559197332Z bash-4.2$ cat /etc/host
@@ -526,37 +538,18 @@ $ docker logs -f 73c79dda19b7 -t
 2020-05-21T18:46:40.879520861Z bash-4.2$ exit
 ```
 
-### docker イメージの履歴を確認する
+他にもオプションがあります。
 ```
-$ docker history centos/devtoolset-6-toolchain-centos7
-IMAGE               CREATED             CREATED BY                                      SIZE                COMMENT
-f1b031cdb220        14 months ago       /bin/sh -c #(nop)  LABEL io.openshift.builde…   0B                  
-<missing>           14 months ago       /bin/sh -c #(nop)  CMD ["usage"]                0B                  
-<missing>           14 months ago       /bin/sh -c #(nop)  ENTRYPOINT ["container-en…   0B                  
-<missing>           14 months ago       /bin/sh -c #(nop)  ENV BASH_ENV=/opt/app-roo…   0B                  
-<missing>           14 months ago       /bin/sh -c #(nop) WORKDIR /opt/app-root/src     0B                  
-<missing>           14 months ago       /bin/sh -c #(nop)  USER [1001]                  0B                  
-<missing>           14 months ago       /bin/sh -c mkdir -p ${HOME} &&     groupadd …   1.77MB              
-<missing>           14 months ago       /bin/sh -c #(nop)  ENV HOME=/opt/app-root/sr…   0B                  
-<missing>           14 months ago       /bin/sh -c #(nop) COPY dir:0019f546c45991eaa…   4.13kB              
-<missing>           14 months ago       /bin/sh -c yum install -y centos-release-scl…   199MB               
-<missing>           14 months ago       /bin/sh -c #(nop)  LABEL com.redhat.componen…   0B                  
-<missing>           14 months ago       /bin/sh -c #(nop)  ENV SUMMARY=Red Hat Devel…   0B                  
-<missing>           14 months ago       /bin/sh -c #(nop)  LABEL MAINTAINER=Marek Po…   0B                  
-<missing>           14 months ago       /bin/sh -c #(nop)  LABEL io.openshift.builde…   0B                  
-<missing>           14 months ago       /bin/sh -c rpm-file-permissions &&   useradd…   2.06MB              
-<missing>           14 months ago       /bin/sh -c #(nop)  CMD ["base-usage"]           0B                  
-<missing>           14 months ago       /bin/sh -c #(nop)  ENTRYPOINT ["container-en…   0B                  
-<missing>           14 months ago       /bin/sh -c #(nop) WORKDIR /opt/app-root/src     0B                  
-<missing>           14 months ago       /bin/sh -c #(nop) COPY dir:4444f29cffa8c7c79…   10.2kB              
-<missing>           14 months ago       /bin/sh -c rpmkeys --import file:///etc/pki/…   31.5MB              
-<missing>           14 months ago       /bin/sh -c #(nop)  ENV BASH_ENV=/opt/app-roo…   0B                  
-<missing>           14 months ago       /bin/sh -c #(nop)  ENV STI_SCRIPTS_URL=image…   0B                  
-<missing>           14 months ago       /bin/sh -c #(nop)  LABEL summary=Base image …   0B                  
-<missing>           14 months ago       /bin/sh -c #(nop)  ENV SUMMARY=Base image wh…   0B                  
-<missing>           14 months ago       /bin/sh -c #(nop)  CMD ["/bin/bash"]            0B                  
-<missing>           14 months ago       /bin/sh -c #(nop)  LABEL org.label-schema.sc…   0B                  
-<missing>           14 months ago       /bin/sh -c #(nop) ADD file:074f2c974463ab38c…   202MB               
+$ docker logs <containerID>
+$ docker logs -f <containerID>
+$ docker logs -tail 10 <containerID>
+$ docker logs -tail 10 -f <containerID>
+```
+
+以下のオプションと意味を記載します。
+```
+-f, --follow=false: 表示が終わっても終了せず、ログファイルを開いたままにする
+-t, --timestamps=false: タイムスタンプを表示する
 ```
 
 ### docker で Ctrl-p ２回押し問題

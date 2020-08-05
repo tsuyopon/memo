@@ -1,6 +1,12 @@
 # 概要
 nghttpコマンドを使うことで、nghttp2ライブラリを利用してHTTP/2クライアントとしてリクエストを実行させることができます。
 
+以下のドキュメントも参考のこと
+- https://nghttp2.org/documentation/nghttp.1.html
+
+nghttp2用のhttpbinも提供されるエントリポイントが存在します。
+- https://nghttp2.org/httpbin/
+
 # 詳細
 
 ### HTTP2でリクエストを行う
@@ -14,6 +20,10 @@ The document has moved
 <A HREF="https://www.google.co.jp/">here</A>.
 </BODY></HTML>
 ```
+
+### HTTP/2用のhttpbinエントリポイントを利用したい
+以下にあります。
+- https://nghttp2.org/httpbin/
 
 ### 送受信している内容を詳細に表示する。ただし、レスポンスボディは出力のノイズになるので省略する。
 送受信しているデータを表示するのであればnvオプションを付与することで確認できます。
@@ -91,6 +101,16 @@ $ nghttp -v https://www.yahoo.co.jp -H ':method: HEAD' -H 'user-agent: hogeua' -
 [  0.116] send GOAWAY frame <length=8, flags=0x00, stream_id=0>
           (last_stream_id=0, error_code=NO_ERROR(0x00), opaque_data(0)=[])
 ```
+
+### POSTを指定してDATAフレームに値を指定する。
+```
+$ cat hoge.txt 
+HOGE=FUGA
+$ nghttp -u -v -a https://localhost/ -H':method: POST' -d hoge.txt
+```
+
+上記の場合には、DATAフレームには「HOGE=FUGA」が送付される。
+
 
 ### POST時にデータを送付したい
 dオプションの後に"-"を付与すると標準入力から読み込んでDATAとして扱ってくれるらしい。
@@ -175,6 +195,19 @@ The negotiated protocol: h2
 [  4.708] send GOAWAY frame <length=8, flags=0x00, stream_id=0>
           (last_stream_id=0, error_code=NO_ERROR(0x00), opaque_data(0)=[])
 ```
+
+
+### continuatinフレームを送付する
+オプションとして--continuationがありますが、これを付与すると、テスト用にcontinuationフレームで追加ヘッダを送付してくれる仕組みがあります。
+```
+$ cat hoge.txt 
+HOGE=FUGA
+$ nghttp -u -v -a https://localhost/ -H':method: POST' -H "content-type: application/x-www-form-urlencoded" -d hoge.txt --continuation
+```
+
+HEADERS (END_HEADERなし) + CONTINUATION + DATAが送付されるようになる。
+( 自分が試した限りでは他のヘッダ(-H)やデータ(-d)も必要そう。 )
+
 
 ### HTTPで接続してUpgradeリクエストを送る
 ```

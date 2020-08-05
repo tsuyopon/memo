@@ -1,3 +1,18 @@
+# 環境構築
+たいていのLinuxディストリビューションにはこれらのツールの パッケージがある。たとえばDebianやUbuntuなら
+```
+$ sudo apt-get install autoconf automake libtool autoconf-doc libtool-doc
+```
+でインストールできる。Mac OS X で Mac Ports https://www.macports.org を使っているなら
+
+```
+$ sudo port install automake autoconf
+```
+でインストールできる。
+
+- 参考
+  - http://loto.sourceforge.net/feram/Autotools-memo.ja.html
+
 # 参考URL
 - Debianパッケージングチュートリアル(Slide Share)
   - 概要がつかめる
