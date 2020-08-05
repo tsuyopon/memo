@@ -1,10 +1,36 @@
 # 概要
 dockerについての基本的な内容についてのメモ
 
+dockerのオプションおよび環境変数については以下を参考のこと
+- https://docs.docker.jp/engine/reference/commandline/cli.html
+
 基本コマンドについては以下を参考にすること
 - https://gist.github.com/tcnksm/7700047
 
 # 詳細
+
+### dockerコマンドの環境変数
+```
+DOCKER_CONFIG クライアントの設定ファイルの場所。
+DOCKER_CERT_PATH 認証鍵ファイルの場所。
+DOCKER_DRIVER 使用するグラフドライバ。
+DOCKER_HOST デーモンのソケット接続先。
+DOCKER_NOWARN_KERNEL_VERSION Docker に対応していない Linux カーネルで警告を出さない。
+DOCKER_RAMDISK 'pivot_root' を無効に設定。
+DOCKER_TLS_VERIFY Docker で TLS とリモート認証を使う。
+DOCKER_CONTENT_TRUST Docker でイメージの署名・確認用のために Notary 使用時に設定。これは、build、create、pull、push、run で --disable-content-trust=false を実行するのと同等
+DOCKER_CONTENT_TRUST_SERVER Notary サーバが使う URL を指定。デフォルトはレジストリと同じ URL 。
+DOCKER_TMPDIR 一時 Docker ファイルの場所。
+```
+
+「Go」ランタイムが利用する環境変数も使えます。特に次のものは便利です。
+```
+HTTP_PROXY
+HTTPS_PROXY
+NO_PROXY
+```
+
+- 参考: https://docs.docker.jp/engine/reference/commandline/cli.html
 
 ### とりあえずdockerを使ってみる
 dockerコマンドを使うには次のpackageをインストールするだけ
