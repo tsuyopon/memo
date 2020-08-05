@@ -37,14 +37,14 @@ myvol
 
 ### ボリューム一覧を表示する
 ```
-$  docker volume ls
+$ docker volume ls
 DRIVER              VOLUME NAME
 local               myvol
 ```
 
 ### ボリュームの情報を確認する
 ```
-$  docker volume inspect myvol
+$ docker volume inspect myvol
 [
     {
         "CreatedAt": "2020-08-03T18:08:55Z",

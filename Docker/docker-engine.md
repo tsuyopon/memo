@@ -39,6 +39,12 @@ Server: Docker Engine - Community
   GitCommit:        fec3683
 ```
 
+unix domain socketを通じて上記の情報を取得することもできます。
+```
+$ curl --unix-socket /var/run/docker.sock http:/localhost/version
+{"Platform":{"Name":"Docker Engine - Community"},"Components":[{"Name":"Engine","Version":"19.03.12","Details":{"ApiVersion":"1.40","Arch":"amd64","BuildTime":"2020-06-22T15:49:27.000000000+00:00","Experimental":"false","GitCommit":"48a66213fe","GoVersion":"go1.13.10","KernelVersion":"4.19.76-linuxkit","MinAPIVersion":"1.12","Os":"linux"}},{"Name":"containerd","Version":"v1.2.13","Details":{"GitCommit":"7ad184331fa3e55e52b890ea95e65ba581ae3429"}},{"Name":"runc","Version":"1.0.0-rc10","Details":{"GitCommit":"dc9208a3303feef5b3839f4323d9beb36df0a9dd"}},{"Name":"docker-init","Version":"0.18.0","Details":{"GitCommit":"fec3683"}}],"Version":"19.03.12","ApiVersion":"1.40","MinAPIVersion":"1.12","GitCommit":"48a66213fe","GoVersion":"go1.13.10","Os":"linux","Arch":"amd64","KernelVersion":"4.19.76-linuxkit","BuildTime":"2020-06-22T15:49:27.000000000+00:00"}
+```
+
 ### コンテナに関する情報を取得する
 「http:/localhost」や「http://v1.40」のようにバージョンを指定する方法でもいいようです。
 ```
@@ -81,3 +87,50 @@ CONTAINER ID        IMAGE                 COMMAND             CREATED           
 
 - 参考
   - https://docs.docker.com/engine/api/v1.40/#operation/ContainerCreate
+
+
+### 作成したコンテナを起動する
+作成した状態だとSTATUSが「Created」となっています。
+```
+$ docker ps -a
+CONTAINER ID        IMAGE                 COMMAND             CREATED             STATUS                      PORTS               NAMES
+1fb337af7fce        golang                "/bin/sh"           18 minutes ago      Created                                         attack
+```
+
+「attack」を起動してみて、STATUSを確認すると「Up」と変化してることが確認できます。
+```
+$ curl -X POST --unix-socket /var/run/docker.sock http://localhost/containers/attack/start
+$ docker ps -a
+CONTAINER ID        IMAGE                 COMMAND             CREATED             STATUS                      PORTS               NAMES
+1fb337af7fce        golang                "/bin/sh"           18 minutes ago      Up 2 seconds                                    attack
+```
+
+### コンテナにアタッチする
+詳細は引用元の参考URLを参照した方がいいですが、インタラクティブ操作をしようとするとcurlだとうまい方法がないので、socatで試せます。
+```
+(cat <<EOF
+POST /containers/attack/attach?stream=1&stdin=1&stdout=1&stderr=1 HTTP/1.1
+Host:
+Connection: Upgrade
+Upgrade: tcp
+EOF
+cat - ) | socat - UNIX-CONNECT:/var/run/docker.sock
+```
+
+- 参考: https://knqyf263.hatenablog.com/entry/2018/11/01/113508
+
+
+### コンテナのログを確認する
+以下はname「attack」の操作ログを出力しています。
+```
+$ curl --unix-socket /var/run/docker.sock http:/localhost/containers/attack/logs?stdout=1
+root@golang2:/go# ls
+bin  src
+root@golang2:/go# vim src/
+bash: vim: command not found
+root@golang2:/go# ls sr
+ls: cannot access 'sr': No such file or directory
+root@golang2:/go# ls src/
+root@golang2:/go# ls
+bin  src
+```

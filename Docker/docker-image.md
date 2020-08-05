@@ -1,5 +1,6 @@
 # 概要
 docker imageを作成する際のコマンドやDockerfileについてまとめる
+主にimage作成に関する操作で必要なものについてはこちらでまとめる。その他についてはdocker.mdなども別途参照のこと
 
 # 詳細
 
@@ -71,3 +72,58 @@ REPOSITORY                              TAG                 IMAGE ID            
 hoge                                    test                c8386525d3bd        6 seconds ago       817MB
 golang                                  latest              a794da9351a3        11 days ago         810MB
 ```
+
+
+### Dockerfileからイメージを作成する(非常に簡単な例)
+以下は非常に簡単な例です。
+```
+$ echo -e "FROM base\nRUN apt-get install hello\nCMD hello" > Dockerfile
+$ docker build tsuyopon/hello .
+```
+
+### Dockerfileについて
+
+- FROM: ベースイメージを指定する
+- RUN: コマンドを実行する
+- CMD:
+- ENTRYPOINT: 
+- MAINTAINER: 管理者の情報を指定する
+
+
+
+CMDとENTRYPOINTは1つのDockerfileに1つしか指定されたものが実行されないようです。
+- 参考: https://qiita.com/hihihiroro/items/d7ceaadc9340a4dbeb8f
+
+
+### dockerイメージの履歴を表示する
+dockerは1つ1つのコマンドの階層で表されています。
+これらのログは階層を表すコマンド1つ１つを表しています。
+```
+$ docker history node
+IMAGE               CREATED             CREATED BY                                      SIZE                COMMENT
+72ff1a4450d9        22 hours ago        /bin/sh -c #(nop)  CMD ["node"]                 0 B                 
+<missing>           22 hours ago        /bin/sh -c set -ex   && for key in     6A010C   5.057 MB            
+<missing>           22 hours ago        /bin/sh -c #(nop)  ENV YARN_VERSION=1.12.3      0 B                 
+<missing>           22 hours ago        /bin/sh -c ARCH= && dpkgArch="$(dpkg --print-   59.17 MB            
+<missing>           22 hours ago        /bin/sh -c #(nop)  ENV NODE_VERSION=11.6.0      0 B                 
+<missing>           22 hours ago        /bin/sh -c groupadd --gid 1000 node   && user   333.4 kB            
+<missing>           24 hours ago        /bin/sh -c set -ex;  apt-get update;  apt-get   560.2 MB            
+<missing>           12 days ago         /bin/sh -c apt-get update && apt-get install    141.8 MB            
+<missing>           12 days ago         /bin/sh -c set -ex;  if ! command -v gpg > /d   7.812 MB            
+<missing>           12 days ago         /bin/sh -c apt-get update && apt-get install    23.23 MB            
+<missing>           12 days ago         /bin/sh -c #(nop)  CMD ["bash"]                 0 B                 
+<missing>           12 days ago         /bin/sh -c #(nop) ADD file:da71baf0d22cb2ede9   100.6 MB     
+```
+
+### docker save+load とdocker export+importの違いについて
+
+以下の記事が参考になります。
+- https://qiita.com/leomaro7/items/e5474e67a8e41536f0ff
+
+次の違いがあるようです。
+- saveはイメージを保存
+- exportはコンテナを保存
+
+saveはレイヤの情報なども含めた状態で保存されます。しかし、exportではDockerとしての構造やメタ情報は保存されず、ファイルシステムだけが保存されます。
+
+
