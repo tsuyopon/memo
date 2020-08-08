@@ -48,6 +48,14 @@ hello, world
 - 参考
   - https://qiita.com/okatai/items/4beaf74d284f5bdfae4b
 
+### MACでgo言語の設定をする
+```
+$ brew install go
+$ echo 'export GOPATH=$(go env GOPATH)' >> ~/.bash_profile
+$ echo 'export PATH=$PATH:$(go env GOPATH)/bin' >> ~/.bash_profile
+$ source ~/.bash_profile
+```
+
 ### ソースコードからのインストール
 以下の資料を参考にする
 - https://golang.org/doc/install
