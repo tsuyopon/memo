@@ -491,6 +491,13 @@ func main() {
 }
 ```
 
+### 受信演算子
+次のような記法を受信演算子と呼ぶ
+```
+v1 := <-ch
+```
+
+
 # 参考URL
 - Tour of Go
   - https://go-tour-jp.appspot.com/welcome/1
