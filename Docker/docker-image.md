@@ -127,3 +127,17 @@ IMAGE               CREATED             CREATED BY                              
 saveはレイヤの情報なども含めた状態で保存されます。しかし、exportではDockerとしての構造やメタ情報は保存されず、ファイルシステムだけが保存されます。
 
 
+### docker hubにアップロードする
+コンテナからImageIDをcommitによって生成して、その時生成されたImageIDからタグを生成する。
+タグを使ってdocker hubにpushする
+```
+$ docker commit test_container                                   // test_containerの箇所はコンテナ名かコンテナIDを指定する
+$ docker images -a                                               // 生成したImageIDを確認する
+$ docker tag 057cb8323f88 tsuyopon1981/openssl111trace:latest    //  057cb8323f88はImage IDの例です。 
+$ docker login                                                   // docker hubのIDとパスワードでログインする
+$ docker push tsuyopon1981/openssl111trace:latest                // docker hubにpushする
+```
+
+以上によりdocker hubにアップロードされる。
+- https://hub.docker.com/repository/docker/tsuyopon1981/openssl111trace
+
