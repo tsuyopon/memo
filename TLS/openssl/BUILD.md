@@ -12,8 +12,9 @@ $ git checkout OpenSSL_1_1_1b
 ```
 
 通常だと-gビルドしかされませんので、g3や00を付与して徹底的にデバッグに特化させましょう。
+enable-ssl-traceオプションを付与することでs_clientのtraceオプションでデバッグ時に有用な情報が落ちるようになったりOSSL_trace_cbコールバックが利用できるようになるようです。
 ```
-$ ./config --prefix=/opt/openssl-1.1.1 -d shared no-asm no-ssl2 -g3 -ggdb -gdwarf-4 -fno-inline -O0 -fno-omit-frame-pointer
+$ ./config --prefix=/opt/openssl-1.1.1 -d shared no-asm no-ssl2 -g3 -ggdb -gdwarf-4 -fno-inline -O0 -fno-omit-frame-pointer enable-ssl-trace
 ```
 - d: configへのオプションでデバッグを有効にします。
 - g3: プログラムに存在するすべてのマクロ定義が含まれます。
