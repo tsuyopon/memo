@@ -1,7 +1,16 @@
 # 概要
-inspecはChefが開発したテスト用フレームワークです。
+inspecはChefが開発したテスト用フレームワークで、環境構築が正しく行われているかをテストするためのフレームワークです。
+Rubyで記述されており環境構築ツールで有名なChefが開発しています。
 
-# 使ってみる
+
+InSpec と同系のツールに serverspec というフレームワークがあります。
+もともと InSpec は serverspec の拡張として作られていたため、テストコードの記述の仕方もよく似ています。しかし InSpec の方がセキュリティやコンプライアンスのテストなど serverspec よりも幅広いテストが可能となっています。
+
+- 参考: マイグレーションガイド
+  - https://docs.chef.io/inspec/migration/
+
+
+# inspecを使ってみる
 以下のコマンドで雛形を作成することができます。
 ```
 $ inspec init profile server01 
@@ -68,3 +77,24 @@ Profile Summary: 1 successful control, 0 control failures, 0 controls skipped
 Test Summary: 2 successful, 0 failures, 0 skipped
 ```
 
+
+# inspecコマンドについて
+
+### inspecテストを実行する
+ファイルを指定する場合
+```
+$ inspec exec xxxx.rb -t ssh://<user>:<pass>@<host>:<port>
+```
+
+テストディレクトリを指定する場合(再帰的にテストが実行される)
+```
+$ inspec exec testdir/ -t ssh://<user>:<pass>@<host>:<port>
+```
+
+
+# 公式資料
+- github: 本家ソースコード
+  - https://github.com/inspec/inspec
+- InSpec Resources Reference
+  - 基本的にはここを参照すること
+  - https://docs.chef.io/inspec/resources/
