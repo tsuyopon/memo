@@ -2,7 +2,7 @@
 chefを始める際のメモです。
 セットアップ手順やスタンドアローンの実行などchefの基本事項についてのメモです。
 
-# MAC環境でのセットアップ
+# MAC環境でのセットアップ 〜 利用してみる
 以下から環境からChefDK(Development Kit)をダウンロードします。
 - https://downloads.chef.io/products/chefdk
 
@@ -328,4 +328,24 @@ Chef Infra Client finished, 1/1 resources updated in 05 seconds
 ```
 $ ls -alt /tmp/sample 
 -rw-------  1 root  wheel  0  8 19 05:38 /tmp/sample
+```
+
+### Cookbookをlocalmodeで実行させる
+oオプション(override-runlist)
+```
+$ chef-client -z -o "recipe[sample_cb::default]"
+```
+
+もしくは、以下のようにしてjson形式で指定することも可能です。
+```
+$ cat local.json
+{
+  "sample_cb": {
+    "echo": "HelloWorld!!"
+  },
+  "run_list": [
+    "recipe[sample_cb::default]"
+  ]
+}
+chef-client -z -j local.json
 ```
