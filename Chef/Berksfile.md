@@ -99,6 +99,31 @@ Cookbooks installed by your Berksfile:
   * yum (5.1.0)
 ```
 
+### 依存先も含めたcookbookをダウンロードする
+berks venderコマンドはBerkshelfファイルの内容に従い、オプションで指定したディレクトリにcookbookをインストールします。
+
+
+以下の例ではcookbooksディレクトリ配下にインストールします。
+```
+$ berks vendor cookbooks
+```
+
+以下の例ではディレクトリが指定されていません。
+```
+$ berks vendor
+Resolving cookbook dependencies...
+Using mysql (8.7.3)
+Using yum (5.1.0)
+Vendoring mysql (8.7.3) to /Users/tsuyoshi/git/test/chef-repo/berks-cookbooks/mysql
+Vendoring yum (5.1.0) to /Users/tsuyoshi/git/test/chef-repo/berks-cookbooks/yum
+```
+
+上記のように、保存先ディレクトリを指定しないとberks-cookbooksディレクトリに保存されます。
+```
+$ ls berks-cookbooks/
+mysql yum
+```
+
 ### コミュニティクックブックを検索する
 
 以下の例ではredisについて探索しています。
@@ -120,6 +145,38 @@ redis-test (0.2.0)
 redis2 (0.5.1)
 redis_2_cookbook (0.3.3)
 redisio (4.1.1)
+```
+
+### Cookbookのメタ情報を表示する
+berks infoの引数にcookbook名を指定することでそのcookbookのメタ情報を表示することができます。
+```
+$ berks info yum
+        Name: yum
+     Version: 5.1.0
+ Description: Configures various yum components on Red Hat-like systems
+      Author: Chef Software, Inc.
+       Email: cookbooks@chef.io
+     License: Apache-2.0
+   Platforms: amazon (>= 0.0.0)
+              centos (>= 0.0.0)
+              fedora (>= 0.0.0)
+              oracle (>= 0.0.0)
+              redhat (>= 0.0.0)
+              scientific (>= 0.0.0)
+              zlinux (>= 0.0.0)
+```
+
+### 現在使っているCookbookの実際のサーバ上での位置を表示する
+```
+$ berks show yum
+/Users/tsuyoshi/.berkshelf/cookbooks/yum-5.1.0
+```
+
+### CookbookをChef Serverへアップデートする
+Berkshelfで使ったCookbookをChef Serverへとアップロードしたい場合には、berks uploadコマンドを利用します。
+Cookbookの管理にBerkshelfを使って、実行はchef client経由でしたい。バージョン管理はChef-server側で行いたい、等の場合はberks uploadするようにします。
+```
+$ berks upload
 ```
 
 # 公式URL
