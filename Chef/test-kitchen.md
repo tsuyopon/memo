@@ -299,6 +299,155 @@ Test Summary: 1 successful, 0 failures, 2 skipped
 以上が簡単なtest-kitchenの使い方です。
 
 
+### attributeとtemplate機能を使って、設定ファイルを作成する
+ここでは「使ってみる」までの処理が終わっていて、run_listへの追加が完了していることを仮定しています。
+
+サンプルとして/tmp/ntp.confに設定ファイルを配置することを考えてみます。その設定ファイルはattributesで指定した値が入っています。
+
+attributeディレクトリが存在しない場合には、以下で雛形を作れます。
+```
+$ chef generate attribute . default
+Recipe: code_generator::attribute
+  * directory[././attributes] action create
+    - create new directory ././attributes
+  * template[././attributes/default.rb] action create
+    - create new file ././attributes/default.rb
+    - update content in file ././attributes/default.rb from none to e3b0c4
+    (diff output suppressed by config)
+
+$ tree attributes/
+attributes/
+└── default.rb
+
+0 directories, 1 file
+```
+
+動的に変更できるように次のように値を入れておきます。
+```
+$ vim attributes/default.rb
+$ cat attributes/default.rb 
+default["test_cookbook"]["servers"] = [ 'ntp1.jst.mfeed.ad.jp', 'ntp2.jst.mfeed.ad.jp', 'ntp3.jst.mfeed.ad.jp' ]
+```
+
+続いて、レシピを追加します。
+今回は/tmp/へのntp.confの配置なのでntpdの再起動部分についてはコメントにしておきます。もし/etc/ntp.confに配置するのであればここはコメントを外す必要があります。
+```
+$ vim recipes/default.rb 
+$ cat recipes/default.rb 
+template "/tmp/ntp.conf" do
+  source "ntp.conf.erb"
+#  notifies :restart, "service[ntpd]"
+  action :create
+  variables({
+    :ntp_servers => node["test_cookbook"]["servers"]
+  })  
+end
+```
+
+続いて、templateディレクトリが存在しない場合には、以下で雛形を作れます。
+```
+$ chef generate template . ntp.conf.erb
+Recipe: code_generator::template
+  * directory[././templates] action create
+    - create new directory ././templates
+  * template[././templates/ntp.conf.erb] action create
+    - create new file ././templates/ntp.conf.erb
+    - update content in file ././templates/ntp.conf.erb from none to e3b0c4
+    (diff output suppressed by config)
+
+$ tree templates/
+templates/
+└── ntp.conf.erb
+
+0 directories, 1 file
+```
+
+続いて、テンプレートを配置します。
+```
+$ vim templates/ntp.conf.erb 
+$ cat templates/ntp.conf.erb 
+<% @ntp_servers.each do |ntp_server| %>
+server <%= ntp_server %>
+<% end %>
+```
+
+ではレシピを実行してみます。
+```
+$ kitchen converge
+```
+
+仮想インスタンスでファイルが正しく生成されたかどうかを確認します。
+```
+$ kitchen list                                       // instanceを確認
+$ kitchen login default-ubuntu-1804                  // instanceを指定してログイン
+vagrant@default-ubuntu-1804:~$ cat /tmp/ntp.conf 
+server ntp1.jst.mfeed.ad.jp
+server ntp2.jst.mfeed.ad.jp
+server ntp3.jst.mfeed.ad.jp
+```
+
+### テストを実行する
+これを実行すると、 作成、Chefレシピ反映、InSpecテストを通して全てを実行するらしい。
+```
+$ kitchen test
+```
+
+オプションとしてはtestはcreate, setup, converage, verify, destroyの一連のライフサイクルが全て実行される。
+```
+- kitchen create:   インスタンスを作成する
+- kitchen setup:    chefとbusserをインストールしてChef-repoをアップロード、初回のconvergenceを行う。
+- kitchen converge: chef-reposが再度アップロードされ、Chef-Solo(またはローカルモード)を実行する。 繰り返し実行可能。
+- kitchen verify:   testディレクトリがアップロードされ、busser経由でテストスイートをインストールし、テストを実行する。 繰り返し実行可能。
+- kitchen destroy:  インスタンスを破棄する。
+- kitchen test:     上記テストのライフサイクルを一括で行う。 実行時にインスタンスがすでに存在する場合は初手でもDestroyが実行される。
+```
+
+### 不要になったインスタンスを削除する
+一覧を確認します。
+```
+$ kitchen list
+Instance             Driver   Provisioner  Verifier  Transport  Last Action  Last Error
+default-ubuntu-1804  Vagrant  ChefZero     Inspec    Ssh        Converged    Kitchen::ActionFailed
+default-centos-7     Vagrant  ChefZero     Inspec    Ssh        Converged    <None>
+```
+
+不要になったので一旦綺麗にします。
+```
+$ kitchen destroy
+-----> Starting Test Kitchen (v2.5.4)
+-----> Destroying <default-ubuntu-1804>...
+       ==> default: Forcing shutdown of VM...
+       ==> default: Destroying VM and associated drives...
+       Vagrant instance <default-ubuntu-1804> destroyed.
+       Finished destroying <default-ubuntu-1804> (0m8.18s).
+-----> Destroying <default-centos-7>...
+       ==> default: Forcing shutdown of VM...
+       ==> default: Destroying VM and associated drives...
+       Vagrant instance <default-centos-7> destroyed.
+       Finished destroying <default-centos-7> (0m6.23s).
+-----> Test Kitchen is finished. (0m17.41s)
+```
+
+一覧には表示されますが、Last Actionが変わったことが確認できます。
+```
+$ kitchen list
+Instance             Driver   Provisioner  Verifier  Transport  Last Action    Last Error
+default-ubuntu-1804  Vagrant  ChefZero     Inspec    Ssh        <Not Created>  <None>
+default-centos-7     Vagrant  ChefZero     Inspec    Ssh        <Not Created>  <None>
+```
+
+試しにログインしてみようとするとエラーになります。
+```
+$ kitchen login default-ubuntu-1804
+>>>>>> ------Exception-------
+>>>>>> Class: Kitchen::UserError
+>>>>>> Message: Instance <default-ubuntu-1804> has not yet been created
+>>>>>> ----------------------
+>>>>>> Please see .kitchen/logs/kitchen.log for more details
+>>>>>> Also try running `kitchen diagnose --all` for configuration
+```
+
+
 ### kitchenコマンドヘルプ
 ```
 $ kitchen 
@@ -321,7 +470,6 @@ Commands:
   kitchen version                                 # Print Kitchen's version information
 ```
 
-
 ### kitchenコマンドの概要
 
 テスト実行に必要なコマンド
@@ -334,7 +482,6 @@ Commands:
 
 
 なお、kitchen testには --destroy=neverというオプションをつけて実行するとインスタンスが破棄されずに保持される。
-
 
 
 構成確認、デバッグ
@@ -350,3 +497,9 @@ Commands:
 # 公式URL
 - github test-kitchen/test-kitchen
   - https://github.com/test-kitchen/test-kitchen
+
+仮想サーバ関連プラグイン
+- github test-kitchen/kitchen-vagrant
+  - https://github.com/test-kitchen/kitchen-vagrant
+- github test-kitchen/kitchen-docker
+  - https://github.com/test-kitchen/kitchen-docker
