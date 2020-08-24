@@ -5,6 +5,7 @@ knifeコマンドについての基本事項についてまとめます。
 
 knifeコマンドの各サブコマンドに「-z (--local-mode)」オプションを付与して実行することで、Node Objectのみならず、このchef-repoディレクトリ内の情報を操作できます。これはレポジトリ直下の.repo/knife.rbに「local_mode true」を設定することで回避できます。
 
+---
 # helpについて
 knifeのヘルプオプションを参考にすることができます
 ```
@@ -103,6 +104,7 @@ knife node status [<node> <node> ...]
 サブコマンドの概要については以下のドキュメントに表形式で記載されています。
 - https://docs.chef.io/workstation/knife/
 
+---
 # nodeに関する操作
 
 ### node一覧を表示する
@@ -152,12 +154,27 @@ $ knife node run_list remove localhost 'recipe['fuga_recipe']'
 ```
 
 
+---
 # roleに関する操作
+
+### roleの情報を確認する
+```
+$ knife role show linux
+chef_type:           role
+default_attributes:
+description:         
+env_run_lists:
+json_class:          Chef::Role
+name:                linux
+override_attributes:
+run_list:            recipe[default]
+```
 
 ### role一覧を表示する
 ```
 $ knife role list
-linux-server
+freebsd
+linux
 ```
 
 ### roleを作成する
@@ -170,13 +187,41 @@ $ knife role create role_test
 $ knife role edit role_test
 ```
 
+### roleを削除する
+```
+$ knife role delete role_test
+```
+
+### roleに該当するnodeを全て表示する
+```
+$ knife search role:linux
+1 items found
+
+Node Name:   localhost.local
+Environment: \_default
+FQDN:        
+IP:          
+Run List:    role[linux]
+Roles:       
+Recipes:     
+Platform:     
+Tags:        
+```
+
+---
 # cookbookに関する操作
+
+### cookbookに指定したcookbookが存在することを確認する
+```
+$ knife cookbook show hello-chef
+hello-chef   0.1.0
+```
 
 ### cookbook一覧を表示する
 ```
 $ knife cookbook list
-example     1.0.0
-test-cook   0.1.0
+hello-chef   0.1.0
+ntp          3.7.0
 ```
 
 ### cookbookを作成する
@@ -195,9 +240,57 @@ $ knife cookbook create sample -o ./site-cookbook/
 $ knife cookbook upload sample
 ```
 
+### cookbookを全てuploadする
+```
+$ knife cookbook upload --all
+Uploading hello-chef     [0.1.0]
+Uploading ntp            [3.7.0]
+Uploaded all cookbooks.
+
+```
+
+oオプションを指定してパスを指定することも可能です
+```
+$ knife cookbook upload -a -o ./cookbooks
+```
+
 ### uploadしたcookbookを削除する
 ```
-$ knife cookbook delete sample
+// cookbookのリストを確認する
+$ knife cookbook list
+hello-chef   0.1.0
+ntp          3.7.0
+
+// ntpを削除する
+$ knife cookbook delete ntp
+Do you really want to delete ntp version 3.7.0? (Y/N) y
+Deleted cookbook[ntp version 3.7.0]
+
+// 削除されたことを確認する
+$ knife cookbook list
+hello-chef   0.1.0
+```
+
+---
+# sshに関する操作
+
+### 特定のnodeに対してchef-clientを実行する。
+```
+$ knife ssh 'name:hoge' 'sudo chef-client' -x username -P pass
+```
+
+### 全てのnodeに対してchef-clientを実行する
+```
+$ knife ssh 'name:\*' 'sudo chef-client'
+```
+
+---
+
+# clientに関する操作
+### クライアント一覧を表示する
+```
+$ knife client list
+tsuyopon-validator
 ```
 
 
