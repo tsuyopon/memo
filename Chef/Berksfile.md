@@ -84,11 +84,11 @@ $ berks update webserver
 ### cookbookをtar.gz形式で出力したい
 
 ```
-$ ls *.tar.gz
-ls: *.tar.gz: No such file or directory
+$ ls \*.tar.gz
+ls: \*.tar.gz: No such file or directory
 $ berks package
 Cookbook(s) packaged to /Users/tsuyoshi/git/test/chef-repo/cookbooks-1598089458.tar.gz
-$ ls *.tar.gz
+$ ls \*.tar.gz
 cookbooks-1598089458.tar.gz
 ```
 
@@ -106,6 +106,12 @@ berks venderコマンドはBerkshelfファイルの内容に従い、オプシ�
 以下の例ではcookbooksディレクトリ配下にインストールします。
 ```
 $ berks vendor cookbooks
+Resolving cookbook dependencies...
+Fetching 'hello-chef' from source at .
+Using hello-chef (0.1.0) from source at .
+Using ntp (3.7.0)
+Vendoring hello-chef (0.1.0) to cookbooks/hello-chef
+Vendoring ntp (3.7.0) to cookbooks/ntp
 ```
 
 以下の例ではディレクトリが指定されていません。
@@ -178,6 +184,12 @@ Cookbookの管理にBerkshelfを使って、実行はchef client経由でした�
 ```
 $ berks upload
 ```
+
+つまり、cookbookのアップロードはberkshelfを使っているものと、使っていないもので異なる。なお、berksを使わない場合には次のコマンドでアップロードできます。
+```
+$ knife cookbook upload mycookbook
+```
+
 
 # 公式URL
 - ドキュメント

@@ -493,6 +493,26 @@ Commands:
 - 参考
   - https://qiita.com/sawanoboly/items/9f560bd63ad0712b17ba
 
+### test-kitchen実行に必要な雛形を作成する
+kitchen initで必要な雛形を作成することができます。
+```
+$ kitchen init
+      create  kitchen.yml
+    conflict  chefignore
+Overwrite /Users/tsuyoshi/git/chef-repo/chefignore? (enter "h" for help) [Ynaqdhm] ls
+        Y - yes, overwrite
+        n - no, do not overwrite
+        a - all, overwrite this and all others
+        q - quit, abort
+        d - diff, show the differences between the old and the new
+        h - help, show this help
+        m - merge, run merge tool
+Overwrite /Users/tsuyoshi/git/chef-repo/chefignore? (enter "h" for help) [Ynaqdhm] n
+        skip  chefignore
+      create  test/integration/default
+      append  .gitignore
+      append  .gitignore
+```
 
 # 公式URL
 - github test-kitchen/test-kitchen

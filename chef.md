@@ -170,28 +170,6 @@ end
 account.pemはChefServerのWebUI上で取得した秘密鍵を登録します。
 
 
-### cookbookテンプレートの作成
-以下はsample_bookというcookbookの雛形テンプレートを作成します。
-```
-$ knife cookbook create sample_book
-$ tree cookbooks/sample_book
-cookbooks/sample_book
-├── CHANGELOG.md
-├── README.md
-├── attributes
-├── definitions
-├── files
-│   └── default
-├── libraries
-├── metadata.rb
-├── providers
-├── recipes
-│   └── default.rb
-├── resources
-└── templates
-    └── default
-```
-
 ### Cookbookを公式レポジトリからダウンロード・展開する
 事前に~/chef-repo/cookbook以下をGit管理下に置く必要があります。Git管理下にない場合、
 ```
@@ -220,20 +198,6 @@ getting-started 0.4.0
 ```
 $ knife cookbook list
 getting-started   0.4.0
-```
-
-### nodeの情報を取得する
-```
-$ knife node show chef-client
-Node Name:   chef-client
-Environment: _default
-FQDN:        chef-client
-IP:          10.0.2.15
-Run List:    recipe[getting-started]
-Roles:
-Recipes:     getting-started, getting-started::default
-Platform:    centos 6.6
-Tags:
 ```
 
 ### ユーザーリストを表示する
