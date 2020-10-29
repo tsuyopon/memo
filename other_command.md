@@ -82,6 +82,20 @@ $ echo "field1,123456789,field3,field4,field5" | cut -d , -f2- | awk -F',' '{pri
 1973年11月30日 06時33分09秒 123456789,field3,field4,field5
 ```
 
+- 指定したdelimiterで区切って、特定のフィールドを指定した出力delimiterを使って表示する
+```
+$ cat access | cut -d $'\x1A' -f 1,2,3 --output-delimiter $'\t'
+
+or 
+
+$ cat access | cut -d ^Z -f 1,2,3             // ^Zは制御文字で入力すること
+```
+制御文字の0x1Aについては^Zの制御文字を表しています。詳細は以下を参考のこと
+- https://ja.wikipedia.org/wiki/%E5%88%B6%E5%BE%A1%E6%96%87%E5%AD%97
+
+
+
+
 ### 制御文字を表示する
 vオプションで制御オプションもターミナル上に見えるように出力することができます(通常はlessなどをすると制御文字も見れる)
 ```
