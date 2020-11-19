@@ -144,7 +144,9 @@ Last login: Tue Feb 17 09:08:54 2019 from 10.0.1.2
 実際に試したわけではないので、参考URLだけ載せておく。
 - https://qiita.com/ryurock/items/91df14537512c03488ac
 - https://qiita.com/centipede/items/64e8f7360d2086f4764f
+- https://qiita.com/pugiemonn/items/bcd95a35c3ec7624cd61
 
 # 公式資料
 - Vagrant公式ドキュメント
   - https://www.vagrantup.com/docs/index
+

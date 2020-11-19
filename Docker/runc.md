@@ -7,6 +7,8 @@ runC はコンテナの定義情報が書かれたJSONファイルに従いコ�
 
 # 詳細
 
+- https://github.com/opencontainers/runtime-spec/blob/master/principles.md
+
 ### runc経由でコンテナを作成してみる
 
 あらかじめROOT配下にファイルシステムを生成しておく必要があります。
@@ -62,8 +64,16 @@ $ sudo runc run mycontainer
 /tmp
 ```
 
-
 - 参考: https://blog.selectel.com/managing-containers-runc/
+
+### デタッチモードで起動する
+```
+$ sudo runc run --detach mycontainer
+```
+
+
+- 参考: https://iximiuz.com/en/posts/implementing-container-runtime-shim/
+
 
 ### runc specで作成したデフォルトのconfig.json
 参考までにデフォルトで生成されるrunc specの雛形を添付しておきます。

@@ -370,6 +370,24 @@ hello-chef   0.1.0
 ```
 
 --- 
+# tagに関する操作
+
+### タグを追加する
+```
+$ knife tag create node1.co.jp testtag
+```
+
+### タグを削除する
+```
+$ knife tag delete node1.co.jp testtag
+```
+
+### nodeに紐づくタグを表示する
+```
+knife tag list NODE
+```
+
+--- 
 # supermarketに関する操作
 
 ### ダウンロードしたいcookbookの情報を表示する

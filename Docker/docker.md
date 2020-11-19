@@ -169,6 +169,7 @@ $ sudo docker attach centos_container_test
 ```
 
 - exec
+  - execを使うことで稼働中のコンテナにコマンドを実行させることができます。
   - execはbash以外にも任意のコマンドをコンテナ内で実行させることができる。  
   - このコマンドでコンテナに入った場合、コンテナから抜けてもコンテナは停止しない。
 ```
@@ -177,6 +178,12 @@ $ sudo docker exec -i -t コンテナ名またはコンテナID bash
 
 例
 $ sudo docker exec -i -t centos_container_test bash  
+```
+
+### コンテナでちょっとした簡単なコマンドを実行する
+例えばtestcontainerコンテナ中でtopコマンドを実行したいといった場合には以下のコマンドを実行します。
+```
+$ sudo docker exec -it testcontainer /bin/bash -c 'top'
 ```
 
 ### dockerの停止
@@ -327,6 +334,7 @@ A /root/.vim/pack/plugins/start/vim-go/.editorconfig
 ```
 
 ### 指定したコンテナIDの統計情報を表示する
+CPUはコア数によるので100%を超えることがあることに注意です。コア数が2ならば最大200%となるようです。
 ```
 $ docker stats 52932027642a   // コンテナIDを指定する
 CONTAINER           CPU %               MEM USAGE / LIMIT     MEM %               NET I/O             BLOCK I/O           PIDS
