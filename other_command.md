@@ -139,3 +139,14 @@ aoqFRhJkNAi5ZBKXM9JSL7EyLhL7o4xxKELuS60CYAEky6UWX9A2g2xtINKlayAMgsRcsmrxVeufFuhO
 
 - 参考
   - https://qiita.com/Vit-Symty/items/5be5326c9db9de755184
+
+
+### 文字列のsha256を取得する
+いくつかの出力方法がある。
+```
+$ echo -n "Sample Message" | sha256sum 
+94288261ce666acc2cb2d0992d0decbdcf2b952abc75a650f88323800a13793d  -
+$ echo -n "Sample Message" | shasum -a 256
+94288261ce666acc2cb2d0992d0decbdcf2b952abc75a650f88323800a13793d  -
+$ echo -n "Sample Message" | openssl dgst -sha256
+(stdin)= 94288261ce666acc2cb2d0992d0decbdcf2b952abc75a650f88323800a13793d
