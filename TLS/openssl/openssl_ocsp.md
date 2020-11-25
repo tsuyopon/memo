@@ -8,7 +8,7 @@ Create3TierWithOCSP.mdにはサーバ証明書及びOCSPレスポンダの情報
 
 # 詳細
 
-### OCSPレスポンスが問題ないかどうかを確認する
+### OCSP Staplingのレスポンスが問題ないかどうかを確認する
 - OCSPレスポンスが存在する場合
 ```
 $ echo Q | openssl s_client -connect rdsig.yahoo.co.jp:443 -status 
@@ -58,6 +58,73 @@ $ openssl s_client -connect hoge.com:443 -tls1 -status
 (snip)
 OCSP response: no response sent
 ```
+
+### OCSPレスポンスの検証をする
+statusオプションはOCSPステープリングですが、OCSPを手元で検証する場合
+
+以下でリクエストして出力されたサーバ証明書をserver.crt, 中間証明書をintermediate.crtとして保存します。
+```
+$ openssl s_client -connect www.yahoo.co.jp:443
+```
+
+そして、以下のようなOCSP URLを取得します。
+```
+$ cat server.crt | openssl x509 -text | grep OCSP
+      OCSP - URI:http://ssocsp.cybertrust.ne.jp/OcspServer
+```
+
+あとは、OCSP検証リクエストを出します
+```
+$ openssl ocsp -no_nonce -issuer intermediate.crt -cert server.crt -url http://ssocsp.cybertrust.ne.jp/OcspServer -text
+OCSP Request Data:
+    Version: 1 (0x0)
+    Requestor List:
+        Certificate ID:
+          Hash Algorithm: sha1
+          Issuer Name Hash: 9D03142BB365B9356AF6400FDAF88541DA8B134D
+          Issuer Key Hash: 62A7D2DADE85B692F185BCF6E8959D75A0FA4E1F
+          Serial Number: 3010F9A5C61E551D54AB190ADEDF438BB548D082
+OCSP Response Data:
+    OCSP Response Status: successful (0x0)
+    Response Type: Basic OCSP Response
+    Version: 1 (0x0)
+    Responder Id: C4B033127CBA3DFDB81BB07BE928CDE23BA5E1B5
+    Produced At: Nov 25 14:42:34 2020 GMT
+    Responses:
+    Certificate ID:
+      Hash Algorithm: sha1
+      Issuer Name Hash: 9D03142BB365B9356AF6400FDAF88541DA8B134D
+      Issuer Key Hash: 62A7D2DADE85B692F185BCF6E8959D75A0FA4E1F
+      Serial Number: 3010F9A5C61E551D54AB190ADEDF438BB548D082
+    Cert Status: good
+    This Update: Nov 25 14:42:34 2020 GMT
+    Next Update: Nov 30 14:42:34 2020 GMT
+
+    Signature Algorithm: sha256WithRSAEncryption
+         86:12:81:b6:9c:31:43:a8:5f:5b:de:44:6a:37:56:fb:af:d2:
+         83:47:cf:2f:a7:a3:dc:e3:97:12:ee:3f:c7:ad:a1:df:0a:b3:
+         8b:a9:00:45:f2:99:2c:11:5f:15:5f:a2:aa:50:f1:c8:a0:8f:
+         37:d6:a3:c2:b7:05:f5:e8:e4:c3:cd:71:cf:ec:92:fb:f7:45:
+         21:51:0c:0e:0e:ab:6b:e7:a8:86:99:e8:e3:1e:d5:27:48:1c:
+         00:e2:1b:ac:6a:2d:2d:3c:08:47:a0:1b:e3:a1:03:1c:7b:bb:
+         d1:58:f2:01:1b:d0:ec:72:96:10:d8:85:e6:ac:81:0c:94:b7:
+         34:7d:45:27:48:62:bd:e7:a3:db:40:39:11:e0:90:79:6a:97:
+         17:fc:23:16:5c:7c:96:e4:dc:10:5e:64:7c:70:15:2a:99:45:
+         ea:75:44:50:68:4d:7d:31:15:dc:a9:ef:85:b8:d2:87:0f:20:
+         50:d7:74:e2:14:c6:11:8c:f9:a6:0c:c8:1a:06:b5:bd:b2:e9:
+         22:06:aa:de:05:5b:19:0c:9d:fe:50:49:df:f5:33:b6:f9:38:
+         1d:aa:37:26:68:91:37:f8:c8:60:c6:46:01:e6:d6:32:1c:4f:
+         58:49:f6:fe:e3:8e:1e:b7:ae:68:30:a2:ab:4d:28:82:03:95:
+         6d:90:40:28
+
+(snip)
+
+Response verify OK
+server.crt: good
+	This Update: Nov 25 14:42:34 2020 GMT
+	Next Update: Nov 30 14:42:34 2020 GMT
+```
+最後にgoodと記述されていればOCSPの検証は問題ないことがわかる。
 
 ### OCSPサーバを起動する
 次のようなコマンドでOCSPサーバを起動する事ができます。
