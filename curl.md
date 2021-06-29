@@ -390,6 +390,14 @@ $ curl ifconfig.me/all.json
 次のページにアクセスするとどのようなエントリポイントで何を表示してくれるかといったことも確認することができます。
 - http://ifconfig.me/
 
+### http_codeのみを表示したい
+```
+$ cat server.txt
+hoge1.co.jp
+hoge2.co.jp
+$ for server in `cat server.txt`; do curl -k -s -o /dev/null -w '%{http_code}\n' -H "Host: hoge.co.jp" "https://${server}/" ;done
+```
+
 ### curlを使ってボトルネックを調査する
 
 次のコマンドを実行してtemplate.txtを準備します。

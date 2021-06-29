@@ -173,6 +173,13 @@ disabled
 - enabled
 - disabled
 
+プログラムとしてコマンドの戻り値を利用する場合
+```
+$ systemctl is-enabled --quiet docker.service
+tsuyoshi@tsuyoshi-ubuntu:~$ echo $?
+0
+```
+
 ### サービスとして登録されているタイプの詳細を確認することする
 typeでタイプ情報を指定することができます。
 ```

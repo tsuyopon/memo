@@ -384,8 +384,16 @@ $ knife tag delete node1.co.jp testtag
 
 ### nodeに紐づくタグを表示する
 ```
-knife tag list NODE
+$ knife tag list node1.co.jp
 ```
+
+### nodeに紐づく条件をタグとして指定する
+tags, roles, fqdnなどを指定できる。以下は複数でOR検索する場合の例
+```
+$ knife search node1.co.jp "tags:*ubuntu* OR roles:*ubuntu* OR fqdn:*ubuntu* (etc.)"
+```
+
+see: https://docs.chef.io/workstation/knife_search/
 
 --- 
 # supermarketに関する操作
