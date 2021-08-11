@@ -59,6 +59,8 @@ $ go get github.com/hoge/fuga@latest
 $ go get github.com/hoge/fuga@latest
 ```
 
+ただし、 Go バージョン 1.15 までは go build や go test といったコマンドの実行時に go.mod および go.sum ファイルが更新されていたが， 1.16 からはこれができなくなったので注意点として抑えておく必要がある
+
 ### パッケージのインストールや不要なパッケージの削除を行う
 ```
 $ go mod tidy -v
@@ -66,6 +68,15 @@ $ go mod tidy -v
 vオプションを付与すると不要なパッケージも表示するらしい(なくても可能)
 
 上記コマンドを実行するとgo.sumが生成される。
+
+
+Go1.16では以下の動作になる (参考資料: https://ifritjp.github.io/blog2/public/posts/2020/2020-11-28-golang-module/ )
+- go のコードを解析し、 import しているモジュール情報を取得し go.mod に反映する。
+  - このとき、import しているモジュールにタグが付いていれば、最新タグのモジュールを取得する。
+- importしているモジュールにタグが付いていなければ、最新のコミットを取得する
+- go.mod に、既にモジュール情報、バージョン情報が記載されていれば、 その情報は更新しない。
+- バージョン情報にブランチ名を書いていると、そのブランチの最新コミットを取得する
+  - これは、モジュールにタグが付いている場合でも、最新コミットを取得する
 
 
 ### Goモジュールの初期化を行う
@@ -79,6 +90,11 @@ module go-example
 
 go 1.14
 ```
+
+go.modはgo getやgo mod tidyなどを実行した際に動的に更新される。
+下記サイトによるとgo getではなく、go mod tidyにより一括管理する方が好ましいとのこと。
+- https://zenn.dev/spiegel/articles/20210223-go-module-aware-mode
+
 
 ### モジュールが依存するパッケージ一覧を表示する
 

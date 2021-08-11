@@ -501,3 +501,5 @@ v1 := <-ch
 # 参考URL
 - Tour of Go
   - https://go-tour-jp.appspot.com/welcome/1
+- ソースコードのサンプル集
+  - https://oohira.github.io/gobyexample-jp/
