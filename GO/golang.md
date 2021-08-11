@@ -1,6 +1,17 @@
 # 概要
 go言語について
 
+# 詳細
+
+### 開発の流れ
+
+- 1. 『go mod init』でGo Modulesの初期化
+- 2. 実装をする
+- 3. 『go get』もしくは『go mod tidy』で必要なパッケージをインストール
+- 4. パッケージが不要になったら『go mod tidy』で削除
+- 5. 『go build』でコンパイル後、、バイナリファイルを実行。あるいは『go run』でコンパイル&実行
+
+
 ### macでの設定 
 もともとの目的としては以下のパッケージを実行したかったのでgoを入れてみた。
 https://github.com/demouth/mario-go
