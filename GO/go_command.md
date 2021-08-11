@@ -6,7 +6,66 @@ goコマンドについて
 
 # 詳細
 
+### GO環境変数の確認を行う
+```
+$ go env
+GO111MODULE="on"
+GOARCH="amd64"
+GOBIN=""
+GOCACHE="/Users/tsuyoshi/Library/Caches/go-build"
+GOENV="/Users/tsuyoshi/Library/Application Support/go/env"
+GOEXE=""
+GOFLAGS=""
+GOHOSTARCH="amd64"
+GOHOSTOS="darwin"
+GOINSECURE=""
+GONOPROXY=""
+GONOSUMDB=""
+GOOS="darwin"
+GOPATH="/Users/tsuyoshi/go"
+GOPRIVATE=""
+GOPROXY="https://proxy.golang.org,direct"
+GOROOT="/usr/local/Cellar/go/1.14.7/libexec"
+GOSUMDB="sum.golang.org"
+GOTMPDIR=""
+GOTOOLDIR="/usr/local/Cellar/go/1.14.7/libexec/pkg/tool/darwin_amd64"
+GCCGO="gccgo"
+AR="ar"
+CC="clang"
+CXX="clang++"
+CGO_ENABLED="1"
+GOMOD="/Users/tsuyoshi/git/gowebapi/go.mod"
+CGO_CFLAGS="-g -O2"
+CGO_CPPFLAGS=""
+CGO_CXXFLAGS="-g -O2"
+CGO_FFLAGS="-g -O2"
+CGO_LDFLAGS="-g -O2"
+PKG_CONFIG="pkg-config"
+GOGCCFLAGS="-fPIC -m64 -pthread -fno-caret-diagnostics -Qunused-arguments -fmessage-length=0 -fdebug-prefix-map=/var/folders/f7/q7tp90ld44v9dw8y61t3h0gh0000gn/T/go-build362513466=/tmp/go-build -gno-record-gcc-switches -fno-common"
+```
+
+なお、設定変更は以下のようにして行います。
+```
+$ go env -w GO111MODULE=on
+```
+
 ### 指定したパッケージのインストールを行う
+
+```
+// 一般的な指定
+$ go get github.com/hoge/fuga@latest
+
+// latestを指定
+$ go get github.com/hoge/fuga@latest
+```
+
+### パッケージのインストールや不要なパッケージの削除を行う
+```
+$ go mod tidy -v
+```
+vオプションを付与すると不要なパッケージも表示するらしい(なくても可能)
+
+上記コマンドを実行するとgo.sumが生成される。
 
 
 ### Goモジュールの初期化を行う
