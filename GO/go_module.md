@@ -102,7 +102,42 @@ $ go clean -cache
 $ go clean -modcache
 ```
 
+### github上にあるレポジトリのソースコードを参照する
 
+参照したいソースコードが存在するgithub上のレポジトリパスをgo buildに指定します。
+```
+$ go build github.com/hoge/gosample
+```
+
+なお。上記レポジトリの直下にはgosample.goとして以下のようなファイルが配置されている想定です。
+```
+package gosample
+
+import "fmt"
+
+func Hello(name string) {
+	fmt.Printf("Hello, %s!\n", name)
+}
+```
+
+参照する側では以下のコードを記述します。
+```
+package main
+
+import "github.com/hoge/gosample"
+
+func main() {
+	gosample.Hello("Hoge")
+}
+```
+
+実行します。非常に簡単に取得できました。
+```
+$ go run sample.go
+Hello, Hoge!
+```
+
+- 参考: https://maku77.github.io/hugo/go/github.html
 
 
 # 参考URL
