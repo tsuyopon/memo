@@ -144,7 +144,22 @@ func main() {
 }
 ```
 
-変数は:=を使って暗黙的な型宣言ができます。
+初期化せずとも型を宣言してから使うこともできます
+```
+var str string
+str = "hello"
+fmt.Println(str)//=>hello
+fmt.Println(reflect.TypeOf(str))//=>string
+```
+
+初期化時に指定すると型は推論されます。
+```
+var str = "hello"
+fmt.Println(str) //=>hello
+fmt.Println(reflect.TypeOf(str)) //=>string
+```
+
+変数宣言と初期化を行う場合に、var と型宣言を省略して「:=」演算子を用いることができます。
 なお、関数の外では、キーワードではじまる宣言( var, func, など)が必要で、 := での暗黙的な宣言は利用できません。
 ```
 func main() {
@@ -162,6 +177,8 @@ i := 42           // int
 f := 3.142        // float64
 g := 0.867 + 0.5i // complex128
 ```
+
+
 
 ### キャスト(型変換)
 go言語のキャストは非常にシンプルです。float64()やuint()で囲むことで該当の型へと簡単にキャストしてくれます。
