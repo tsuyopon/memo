@@ -72,6 +72,10 @@ complex64   float32 の実数部と虚数部を持つ複素数
 complex128  float64 の実数部と虚数部を持つ複素数
 ```
 
+### Exported Name
+Goでは最初の文字が大文字で始まるものは、外部パッケージから参照できるExported namesです。
+小文字の関数名や変数名などは外部から参照することはできません。
+
 ### 関数
 この例では、add関数は変数名の後ろに型名を記述します。また、戻り値の型は最後のintで表されています。
 ```
@@ -193,6 +197,7 @@ func main() {
 
 ### 定数
 定数はconstを使って表現できます。constは:=では宣言できません。
+文字(character)、文字列(string)、boolean、数値(numeric)のみで使用可能。
 ```
 	const World = "世界"
 	fmt.Println("Hello", World)
@@ -267,19 +272,37 @@ var (
 
 
 ### 配列
-配列は次の例で示します。
-```
-func main() {
-	var a [2]string
-	a[0] = "Hello"
-	a[1] = "World"
-	fmt.Println(a[0], a[1])
-	fmt.Println(a)
+配列は初期化例をいくつか示します。
 
-	primes := [6]int{2, 3, 5, 7, 11, 13}
-	fmt.Println(primes)
-}
+1つの要素ずつ初期化する例です
 ```
+初期化例1)
+    var a [2]string
+    a[0] = "Hello"
+    a[1] = "World"
+    fmt.Println(a[0], a[1])
+    fmt.Println(a)
+
+    primes := [6]int{2, 3, 5, 7, 11, 13}
+    fmt.Println(primes)
+```
+
+配列でそのまま指定します。
+```
+初期化例2)
+   var arr[2] string = [2]string {"Hello", "World"}
+       fmt.Println(arr[0], arr[1]) //=> Hello World
+       fmt.Println(arr) //=> [Hello World]
+```
+
+以下の宣言方法では要素数は省略が可能です。しかし、後ろに書いた要素の数を自動でカウントしてくれているだけで、要素数を明記した場合と実態に違いはありません。
+```
+初期化例3)
+     arr := [...] string{"Hello", "World"}
+     fmt.Println(arr[0], arr[1]) //=> Hello World
+     fmt.Println(arr) //=> [Hello World]
+```
+
 
 intで10個の配列であるmyarrを宣言するには次のようにします。
 ```
@@ -425,7 +448,7 @@ func main() {
 
 ### switch文
 switch文は通常と変わらないように見えますが、大きな注意点があります。
-それは、「Go では選択された case だけを実行してそれに続く全ての case は実行されません。 」ということです。必ず覚えておきましょう。
+それは、「Go では選択された case だけを実行してそれに続く全ての case は実行されません。 」ということです。他の言語と異なるので必ず覚えておきましょう。
 ```
 func main() {
 	fmt.Print("Go runs on ")
@@ -454,6 +477,24 @@ func main() {
 	default:
 		fmt.Println("Good evening.")
 	}
+}
+```
+
+### for文
+for使用時に条件式等を囲む()は必要ありませんが処理を囲む{}は必要。
+```
+sum := 0
+for i := 0; i < 10; i++ {
+   sum += i
+   fmt.Println(sum)  //=> 0 1 3 6 10
+}
+```
+
+初期化ステートメントと、後処理ステートメントは省略可能です
+```
+sum := 1
+for sum < 1000 {
+    sum += sum
 }
 ```
 
@@ -508,6 +549,31 @@ func main() {
 }
 ```
 
+GOのポインタのポイントは以下
+- ポインタはメモリのアドレス情報のこと。
+- Goでは&を用いることで変数のアドレスの取得が可能。(ex1)
+- *を使用する事でポインタを値にとったポインタ変数の宣言が可能。(ex2)
+- ポインタ型変数名の前に*をつけることで変数の中身へのアクセスが可能。(ex3)
+
+```
+func main(){
+    var lang string 
+    lang = "Go" 
+    //ex1:`&`を用いることで変数のアドレスの取得が可能
+    fmt.Println(&lang) //=> 0x1040c128
+
+    //ex2:`*`を使用する事でポインタを値にとったポインタ変数の宣言が可能
+    var langP *string 
+    langP = &lang
+    fmt.Println(langP)//=> 0x1040c128
+
+    //ex3:ポインタ型変数名の前に`*`をつけることで変数の中身へのアクセスが可能
+    fmt.Println(*langP) //=> Go
+}
+```
+
+### Structs構造体
+
 ### 受信演算子
 次のような記法を受信演算子と呼ぶ
 ```
@@ -520,3 +586,6 @@ v1 := <-ch
   - https://go-tour-jp.appspot.com/welcome/1
 - ソースコードのサンプル集
   - https://oohira.github.io/gobyexample-jp/
+- Qiita: 【Go】基本文法①(基礎)
+  - 合計8回に分かれていてわかりやすく記述している
+  - https://qiita.com/k-penguin-sato/items/1d0e1c6b4bf937996cd3
