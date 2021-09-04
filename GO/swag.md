@@ -9,6 +9,10 @@ SwagはGo言語(1.13 or newer)のアノテーションをSwaggerドキュメン�
 - fiber
 - atreugo
 
+swagger とは RESTful API の仕様を定義したオープンソースのフレームワークです
+マイクロソフト, Google, IBM などが参加する 「OPEN API Initiative」 という団体が The Linux Foundation の協力のもと推進しています
+サーバ, クライアントのコード以外にもテストやドキュメントの生成もすることができます
+
 # 導入方法
 以下を参考にしてください。
 - https://gavin-zhou.medium.com/go-gin%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB-part7-db5a13795bf3
@@ -32,13 +36,16 @@ swag initコマンドによって、アノテーションを参照にdocsディ�
 
 
 # 公式ドキュメント
-Getting Startedや記述方法については以下を参考にすること
+swaggoに関するGetting Startedやアノテーション記述方法については以下を参考にすること
 - https://github.com/swaggo/swag#general-api-info
 - https://github.com/swaggo/swag#declarative-comments-format
 - https://swaggo.github.io/swaggo.io/
 
 swagger公式ドキュメント
 - https://swagger.io/specification/
+
+go-swaggerドキュメント
+- https://goswagger.io/
 
 # 参考ドキュメント
 - Swaggerの記法まとめ
