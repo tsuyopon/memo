@@ -250,6 +250,24 @@ authorを変更する場合には次のようにします。
 $ git commit --amend --author="azarashi <azarashi@example.com>"
 ```
 
+### 修正したファイルを取り消したい
+たとえば、以下のtest.txtの修正をなかったことにするには
+```
+$ git diff
+diff --git a/test.txt b/test.txt
+index e965047..4f34f18 100644
+--- a/test.txt
++++ b/test.txt
+@@ -1 +1,2 @@
+ Hello
++hogehoge
+```
+
+restoreオプションの引数にファイル名を指定します。
+```
+$ git restore test.txt
+```
+
 ### 過去のコミットにおけるcommiter, authorを全て変更したい
 以下を参考のこと
 - https://qiita.com/sea_mountain/items/d70216a5bc16a88ed932
