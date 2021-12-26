@@ -1,6 +1,7 @@
 # 概要
-証明書を圧縮するための方法をサーバに伝える仕組みのドラフトがあります。compress_certificate拡張を以下のドラフトで定義しています。
-- https://tools.ietf.org/html/draft-ietf-tls-certificate-compression-04
+証明書を圧縮するための方法をサーバに伝える仕組みのが拡張として定義されています。
+この仕組みはTLS1.3以上で機能し、TLS1.2以下では無視されます。
+- https://datatracker.ietf.org/doc/html/rfc8879
 
 # 解決したい課題
 証明書は送付されるTLSデータの大部分を占めています。これらの問題によるレイテンシやパフォーマンス悪化の問題がもたらされています。
@@ -8,9 +9,15 @@ RFC7924のCachedInfo拡張を使うことによってクライアントとサー
 
 # 解決方法
 フルハンドシェイク中にクライアント側からサーバ側に証明書を圧縮してほしい旨を伝える仕組みを提供します。
-具体的にはClientHelloの拡張を定義します。拡張経由でCertificateメッセージを圧縮可能なアルゴリズムをサーバ側に明示します。これを受け取ったサーバ側は、クライアント側はCertificateメッセージが圧縮可能であり、その圧縮アルゴリズムで何が利用できるのかを理解します。サーバ側によるServerHelloによるecho backは不要です。
+以下の拡張を新規で定義します。
+- compress_certificate(27)
 
-注意点として、この拡張は「Middlebox Compatibility」(section5)で定義されているように、ミドルボックスが意図しないメッセージをドロップする可能性があるので、TLS1.3以上のバージョンのみで有効な拡張としての扱いとなります。TLS1.2以下では無視されます。
+具体的にはClientHello, CertificateRequewst拡張でこの新規拡張を付与することができます。
+拡張経由でCertificateメッセージを圧縮可能なアルゴリズムによって圧縮して欲しい旨をpeerに伝えます。
+これを受け取ったpeer側は、Certificateメッセージは圧縮して送付しても良いことを知り、その圧縮アルゴリズムで何が利用可能かを理解します。
+この拡張は一方通行なのでpeerからの対応したecho backレスポンスは不要です。
+
+注意点として、この拡張は「Middlebox Compatibility」(section6)で定義されているように、ミドルボックスが意図しないメッセージをドロップする可能性があるので、TLS1.3以上のバージョンのみで有効な拡張としての扱いとなります。TLS1.2以下では無視されます。
 
 # データ構造
 
@@ -21,17 +28,18 @@ CertificateCompressionAlgorithmsという構造体を定義しています。
 enum {
     zlib(1),
     brotli(2),
+    zstd(3),
     (65535)
 } CertificateCompressionAlgorithm;
 
 struct {
-    CertificateCompressionAlgorithm algorithms<1..2^8-1>;
+    CertificateCompressionAlgorithm algorithms<2..2^8-2>;
 } CertificateCompressionAlgorithms;
 ```
 
-
 ### CompressedCertificateメッセージ
-CompressedCertificateメッセージはCertificateメッセージを置き換えます。
+もしpeerが圧縮をサポートしているということを示してきて、サーバとクライアントは一致するCertificateメッセージを圧縮しても良い。
+以下に示すCompressedCertificateメッセージはCertificateメッセージを置き換えます。
 ```
 struct {
      CertificateCompressionAlgorithm algorithm;
@@ -46,9 +54,13 @@ struct {
   - uncompressedなCertificateメッセージの長さを表します。圧縮後にこの値と一致しなければ、bad_certificateアラートで中断しなければならない(MUST)
 - compressed_certificate_message:
   - Certificateメッセージの圧縮されたボディが入ります。
-    - zlibならば https://tools.ietf.org/html/rfc1950 に従って圧縮し、brotliならば https://tools.ietf.org/html/rfc7932 に従って圧縮しなければならない(MUST)
+    - 下記それぞれのアルゴリズムに従って圧縮しなければならない(MUST)
+      - zlibならば https://tools.ietf.org/html/rfc1950 に従う
+      - brotliならば https://tools.ietf.org/html/rfc7932 に従う
+      - zstdならば https://datatracker.ietf.org/doc/html/rfc8478 に従う
 
 受信したCompressedCertificateメッセージが解答できなければ、bad_certificateアラートで中断しなければならない(MUST)
+
 
 # パケットサンプル
 ClientHelloに次に示すようなデータが付与されます。
@@ -62,4 +74,4 @@ Extension: compress_certificate (len=3)
 
 # SeeAlso
 - TLS Certificate Compression
-  - https://tools.ietf.org/html/draft-ietf-tls-certificate-compression-04
+  - https://datatracker.ietf.org/doc/html/rfc8879
