@@ -160,6 +160,20 @@ buildFile: /Users/tsuyoshi/GraddleApp/build.gradle
 (snip)
 ```
 
+### 現在のプロジェクト構成を調べる
+```
+$ gradle -q projects
+
+------------------------------------------------------------
+Root project 'GraddleApp'
+------------------------------------------------------------
+
+Root project 'GraddleApp'
+\--- Project ':app'
+
+To see a list of the tasks of a project, run gradle <project-path>:tasks
+For example, try running gradle :app:tasks
+```
 
 # Gradle Wrapper(gradlew)の使い方
 
