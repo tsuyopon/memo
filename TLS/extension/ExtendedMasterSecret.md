@@ -5,7 +5,10 @@
 
 # 背景
 通常master_secretはClientHello.Random, ServerHello.Random, pre_master_secret, labelから算出されます。
-この拡張が有効となる場合には、ハンドシェイクのClientHelloからClientKeyExchangeまでの平文をハッシュとして、それとpre_master_secretを元にしてmaster secretを生成します。つまり、セッションハッシュが使われることになります。
+この拡張が有効となる場合には、ハンドシェイクのClientHelloからClientKeyExchangeまでの平文をハッシュとして、それとpre_master_secretを元にしてmaster secretを生成します。つまり、セッションハッシュ(session_hash)が使われることになります。
+```
+session_hash = Hash(handshake_messages)        ※ handshake_messagesはClientHelloからClientKeyExchangeまでを含める
+```
 
 この算出方法の違いが意味することとしては、Triple Handshakeに対する驚異への対策となるようです。(詳細はSeeAlsoを参考のこと)
 
