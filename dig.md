@@ -60,6 +60,55 @@ gns12.yahoo.co.jp.	205	IN	A	124.83.255.100
 - AUTHORITY SECTION: 応答した権威サーバを含む権威サーバ群(権威サーバのNSレコード)
 - ADDITIONAL SECTION: 権威サーバのAレコード(権威サーバのSOAレコードに登録されるグルーレコード)
 
+### flagsに表示される意味について
+
+```
+$ dig www.yahoo.co.jp
+
+; <<>> DiG 9.8.3-P1 <<>> www.yahoo.co.jp
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 8526
+;; flags: qr rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 2, ADDITIONAL: 2
+(snip)
+```
+
+DNSサーバからの応答内容を表しています。
+RFC1036に以下が定義されています。
+- QR:  specifies whether this message is a query (0), or a response (1)
+  - メッセージがサーバからの回答 (response) の場合は QR が表示されます。 dig コマンド実行結果は「サーバからの回答」ですので QR は必ず表示されます。
+- OPCODE A four bit field, only valid values: 0,1,2
+- AA (Authoritative Answer)
+  - 回答したネームサーバが、問い合わせたドメイン名について 権威を持っている場合は AA が表示されます。
+- TC TrunCation (truncated due to length greater than that permitted on the transmission channel)
+  - メッセージの切り詰めが行われた場合 (メッセージが UDP の 制限である 512byte 超過) TC が表示されます。
+- RD (Recursion Desired)
+  - 再帰的問い合わせを要求の場合に表示されますが、 RD は常に表示されるようです。
+- RA (Recursion Available)
+  - サーバが再帰的問い合わせをサポートしている場合は RA が表示されます。
+- Z Reserved for future use. Must be zero
+
+なお、RFC4036にはDNSSECに関連あるフラグも定義されています
+- CD (Checking Disabled)
+  - 署名のチェックを行なっていない
+- AD (Authentic Data)
+  - 署名が検証できた正しいデータである
+
+
+参考: https://serverfault.com/questions/729025/what-are-all-the-flags-in-a-dig-response/729121
+
+
+### digコマンドのレスポンスコードについて
+RFC1035 4.1.1 Header section formatに下記内容で定義されています。
+```
+0 = NOERR, no error
+1 = FORMERR, format error (unable to understand the query)
+2 = SERVFAIL, name server problem
+3 = NXDOMAIN, domain name does not exist
+4 = NOTIMPL, not implemented
+5 = REFUSED (e.g., refused zone transfer requests)
+```
+
 ### 特定のセクションだけ取得する
 幾つか例を示す
 
@@ -270,6 +319,18 @@ $ dig www.yahoo.co.jp +vc
 ### DNSSECで問い合わせを行う
 ```
 $ dig www.yahoo.co.jp +dnssec
+```
+
+### DNSSEC対応ゾーンを確認する
+```
+dig @127.0.0.1 +dnssec ホスト名 soa
+```
+
+### 署名の検証を行わない
+
+cd(checking disabled)フラグをセットする
+```
+$ dig @127.0.0.1 +cd ホスト名 soa
 ```
 
 ### 再起問い合わせを行わない
