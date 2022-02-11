@@ -11,7 +11,7 @@
 
 # 詳細
 
-次のA.txt, B.txtの２つのファイルがあることを仮定します
+特に説明がなければ、次のsample1.txt, sample2.txtの２つのファイルがあることを仮定します
 
 ```
 $ cat sample1.txt
@@ -58,6 +58,40 @@ $ join sample1.txt sample2.txt
 02 bbbbb fghij BBBBB FGHIJ
 03 ccccc klmno CCCCC KLMNO
 04 ddddd pqrst DDDDD PQRST
+```
+
+ただし、TSVやCSVなどの場合には上記だと結合できません。
+
+### セパレータを指定を指定する
+以下の2つのファイルが存在することを仮定します。
+```
+$ cat sample1.csv 
+01,AAAAA,abcde
+02,bbbbb,fghij
+03,ccccc,klmno
+04,ddddd,pqrst
+05,eeeee,uvwxy
+
+$ cat sample2.csv 
+01,AAAAA,ABCDE
+02,BBBBB,FGHIJ
+03,CCCCC,KLMNO
+04,DDDDD,PQRST
+```
+
+この場合には、セパレータをしないと結合を意図した出力が返ってきません。
+```
+$ join sample1.csv sample2.csv 
+$
+```
+
+-tオプションの後にセパレータを明示的に指定することでCSVファイルでの結合が可能です。
+```
+$ join -t, sample1.csv sample2.csv 
+01,AAAAA,abcde,AAAAA,ABCDE
+02,bbbbb,fghij,BBBBB,FGHIJ
+03,ccccc,klmno,CCCCC,KLMNO
+04,ddddd,pqrst,DDDDD,PQRST
 ```
 
 ### 結合カラムを指定してjoinする
