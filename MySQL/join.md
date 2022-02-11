@@ -140,11 +140,11 @@ mysql> SELECT * FROM city LEFT JOIN country USING(country_id) LIMIT 3;
 以下を参考にする
 - http://www.zentut.com/sql-tutorial/sql-self-join/
 
-```
 employees data
 
 - INNER JOIN
   - employeeテーブル上に名前のリストがある。そのテーブルの従業員にレポートすべき上司が存在していて、従業員とその上司を出力する場合
+
 ```
 SELECT 
     concat(e.firstname, e.lastname) employee,
