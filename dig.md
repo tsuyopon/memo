@@ -472,6 +472,146 @@ yahoo.co.jp.		900	IN	NS	ns11.yahoo.co.jp.
 ;; Received 276 bytes from 124.83.255.101#53(ns12.yahoo.co.jp) in 13 ms
 ```
 
+### ルートから非再起問い合わせをしてみる。
+まずはルートを確認します。
+```
+$ dig -t NS . +short
+f.root-servers.net.
+h.root-servers.net.
+e.root-servers.net.
+g.root-servers.net.
+k.root-servers.net.
+c.root-servers.net.
+i.root-servers.net.
+b.root-servers.net.
+l.root-servers.net.
+j.root-servers.net.
+a.root-servers.net.
+m.root-servers.net.
+d.root-servers.net.
+``` 
+
+続いて、ルートサーバを1つ適当に選択して、www.yahoo.co.jpに非再起で問い合わせると以下の応答が返ってきます。
+```
+$ dig @d.root-servers.net www.yahoo.co.jp +norecurse 
+
+(snip)
+
+;; AUTHORITY SECTION:
+jp.			172800	IN	NS	a.dns.jp.
+jp.			172800	IN	NS	b.dns.jp.
+jp.			172800	IN	NS	c.dns.jp.
+jp.			172800	IN	NS	d.dns.jp.
+jp.			172800	IN	NS	e.dns.jp.
+jp.			172800	IN	NS	f.dns.jp.
+jp.			172800	IN	NS	g.dns.jp.
+jp.			172800	IN	NS	h.dns.jp.
+
+;; ADDITIONAL SECTION:
+a.dns.jp.		172800	IN	AAAA	2001:dc4::1
+b.dns.jp.		172800	IN	AAAA	2001:dc2::1
+c.dns.jp.		172800	IN	AAAA	2001:502:ad09::5
+d.dns.jp.		172800	IN	AAAA	2001:240::53
+e.dns.jp.		172800	IN	AAAA	2001:200:c000::35
+f.dns.jp.		172800	IN	AAAA	2001:2f8:0:100::153
+h.dns.jp.		172800	IN	AAAA	2a01:8840:1bc::25
+a.dns.jp.		172800	IN	A	203.119.1.1
+b.dns.jp.		172800	IN	A	202.12.30.131
+c.dns.jp.		172800	IN	A	156.154.100.5
+d.dns.jp.		172800	IN	A	210.138.175.244
+e.dns.jp.		172800	IN	A	192.50.43.53
+f.dns.jp.		172800	IN	A	150.100.6.8
+g.dns.jp.		172800	IN	A	203.119.40.1
+h.dns.jp.		172800	IN	A	161.232.72.25
+
+(snip)
+```
+
+続いて、「jp」ゾーンのネームサーバは8つあることがわかりました。
+どれか1つを選択して、再び非再起で問い合わせます。
+```
+$ dig @a.dns.jp www.yahoo.co.jp +norecurse 
+
+(snip)
+
+;; AUTHORITY SECTION:
+yahoo.co.jp.		86400	IN	NS	ns02.yahoo.co.jp.
+yahoo.co.jp.		86400	IN	NS	ns11.yahoo.co.jp.
+yahoo.co.jp.		86400	IN	NS	ns12.yahoo.co.jp.
+yahoo.co.jp.		86400	IN	NS	ns01.yahoo.co.jp.
+
+;; ADDITIONAL SECTION:
+ns12.yahoo.co.jp.	86400	IN	A	124.83.255.101
+ns11.yahoo.co.jp.	86400	IN	A	124.83.255.37
+ns02.yahoo.co.jp.	86400	IN	A	118.151.254.149
+ns01.yahoo.co.jp.	86400	IN	A	118.151.254.133
+
+(snip)
+```
+
+「jp」ゾーンに問い合わせを行うと、次に「yahoo.co.jp」ゾーンのネームサーバの応答が返ってきました。
+yahoo.co.jpのネームサーバがnsXX.yahoo.co.jpの4台であることがわかります。
+このうち1台を指定して試してみます。
+www.yahoo.co.jpはedge12.g.yimg.jpのCNAMEとなっていることがわかりました。
+AUTHORITY SECTIONには上記の権威サーバのNSが含まれています。
+合わせてADDITIONAL SECTIONにはそのNSのIPがあります。
+```
+$ dig @ns02.yahoo.co.jp  www.yahoo.co.jp +norecurse 
+
+; <<>> DiG 9.10.6 <<>> @ns02.yahoo.co.jp www.yahoo.co.jp +norecurse
+; (1 server found)
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 37923
+;; flags: qr aa; QUERY: 1, ANSWER: 1, AUTHORITY: 2, ADDITIONAL: 3
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 4096
+;; QUESTION SECTION:
+;www.yahoo.co.jp.		IN	A
+
+;; ANSWER SECTION:
+www.yahoo.co.jp.	900	IN	CNAME	edge12.g.yimg.jp.
+
+;; AUTHORITY SECTION:
+g.yimg.jp.		900	IN	NS	gns02.yahoo.co.jp.
+g.yimg.jp.		900	IN	NS	gns12.yahoo.co.jp.
+
+;; ADDITIONAL SECTION:
+gns02.yahoo.co.jp.	900	IN	A	118.151.254.148
+gns12.yahoo.co.jp.	900	IN	A	124.83.255.100
+
+;; Query time: 6 msec
+;; SERVER: 118.151.254.149#53(118.151.254.149)
+;; WHEN: Sat Feb 12 20:32:19 JST 2022
+;; MSG SIZE  rcvd: 144
+```
+
+以上によりAレコードがもとまります。
+@gdn02.yahoo.co.jpとしてしてもいいですし、IPがわかっているので以下の例のようにIP指定でも問題ありません。
+
+```
+$ dig @118.151.254.148 edge12.g.yimg.jp  +norecurse 
+
+; <<>> DiG 9.10.6 <<>> @118.151.254.148 edge12.g.yimg.jp +norecurse
+; (1 server found)
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 45159
+;; flags: qr aa ad; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 0
+
+;; QUESTION SECTION:
+;edge12.g.yimg.jp.		IN	A
+
+;; ANSWER SECTION:
+edge12.g.yimg.jp.	60	IN	A	183.79.217.124
+
+;; Query time: 10 msec
+;; SERVER: 118.151.254.148#53(118.151.254.148)
+;; WHEN: Sat Feb 12 20:35:35 JST 2022
+;; MSG SIZE  rcvd: 50
+```
+
 
 ### ~/.digrcに毎回付与するオプションを定義する
 毎回オプションを付与するのが面倒という場合には~/.digrcに記述することでタイプを省略することが可能です。
