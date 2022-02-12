@@ -109,8 +109,72 @@ RFC1035 4.1.1 Header section formatに下記内容で定義されています。
 5 = REFUSED (e.g., refused zone transfer requests)
 ```
 
+### 指定したタイプを取得する
+いくつか具体例を示します。ヤフーやgoogleの例です。 (出力を抑制するために+shortの簡易表示にしています)
+```
+$ dig -t A www.yahoo.co.jp +short
+edge12.g.yimg.jp.
+182.22.25.252
+
+$ dig -t AAAA www.yahoo.co.jp +short
+edge12.g.yimg.jp.
+
+$ dig -t SOA yahoo.co.jp +short
+yahoo.co.jp. postmaster.yahoo.co.jp. 2202100015 1800 900 86400 900
+```
+
+```
+$ dig -t TXT google.com +short
+"MS=E4A68B9AB2BB9670BCE15412F62916164C0B20BB"
+"google-site-verification=TV9-DBe4R80X4v0M4U_bd_J9cpOJM0nikft0jAgjmsQ"
+"google-site-verification=wD8N7i1JTNTkezJ49swvWW48f8_9xveREV4oB-0Hf5o"
+"docusign=05958488-4752-4ef2-95eb-aa7ba8a3bd0e"
+"globalsign-smime-dv=CDYX+XFHUw2wml6/Gb8+59BsH31KzUr6c1l2BPvqKX8="
+"v=spf1 include:_spf.google.com ~all"
+"apple-domain-verification=30afIBcvSuDV2PLX"
+"facebook-domain-verification=22rm551cu4k0ab0bxsw536tlds4h95"
+"docusign=1b0a6754-49b1-4db5-8540-d2c12664b289"
+```
+
+```
+$ dig -t MX google.com +short
+30 alt2.aspmx.l.google.com.
+50 alt4.aspmx.l.google.com.
+20 alt1.aspmx.l.google.com.
+40 alt3.aspmx.l.google.com.
+10 aspmx.l.google.com.
+```
+
+
+### 全てのリソースレコードを取得する(ANY)
+```
+$ dig -t ANY yahoo.co.jp +short
+"v=spf1 include:spf.yahoo.co.jp ~all"
+"google-site-verification=GvbYgNin-mY73VbS4IJK2D8nI3tHEf2NpRdy76VYqBU"
+10 mx2.mail.yahoo.co.jp.
+10 mx3.mail.yahoo.co.jp.
+10 mx5.mail.yahoo.co.jp.
+10 mx1.mail.yahoo.co.jp.
+0 issue "globalsign.com"
+0 issue "cybertrust.ne.jp"
+0 issue "digicert.com;cansignhttpexchanges=yes"
+0 iodef "mailto:nic-admin@mail.yahoo.co.jp"
+yahoo.co.jp. postmaster.yahoo.co.jp. 2202100015 1800 900 86400 900
+183.79.217.124
+183.79.250.251
+183.79.219.252
+183.79.250.123
+182.22.25.252
+182.22.16.251
+ns11.yahoo.co.jp.
+ns01.yahoo.co.jp.
+ns02.yahoo.co.jp.
+ns12.yahoo.co.jp.
+```
+
 ### 特定のセクションだけ取得する
-幾つか例を示す
+
++noallをつけると全ての出力が抑制されます。そして +ansを同時に付与することでANSWERセクションだけ表示するなど表示したいセクションを絞ることが可能です。
 
 - ANSWER SECTION
 ```
@@ -132,6 +196,17 @@ $ dig +noall +cmd www.yahoo.co.jp
 
 ; <<>> DiG 9.8.3-P1 <<>> +noall +cmd www.yahoo.co.jp
 ;; global options: +cmd
+```
+
+- HEADER部分など
+```
+$  dig +noall +comments www.yahoo.co.jp
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 9976
+;; flags: qr rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 2, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
 ```
 
 ### 回答結果を短く得る
@@ -339,3 +414,77 @@ $ dig @127.0.0.1 +cd ホスト名 soa
 $ dig www.yahoo.co.jp +norecurse
 ```
 
+### TLD DNSからトレースする
++traceオプションで表示してくれます。ServFailなどの時にルートゾーンから辿ってどこでコケているかなど探る時に便利です。
+```
+$ dig yahoo.co.jp +trace
+
+; <<>> DiG 9.10.6 <<>> yahoo.co.jp +trace
+;; global options: +cmd
+.			317867	IN	NS	l.root-servers.net.
+.			317867	IN	NS	d.root-servers.net.
+.			317867	IN	NS	e.root-servers.net.
+.			317867	IN	NS	m.root-servers.net.
+.			317867	IN	NS	i.root-servers.net.
+.			317867	IN	NS	k.root-servers.net.
+.			317867	IN	NS	j.root-servers.net.
+.			317867	IN	NS	h.root-servers.net.
+.			317867	IN	NS	b.root-servers.net.
+.			317867	IN	NS	c.root-servers.net.
+.			317867	IN	NS	f.root-servers.net.
+.			317867	IN	NS	a.root-servers.net.
+.			317867	IN	NS	g.root-servers.net.
+.			516109	IN	RRSIG	NS 8 0 518400 20220225050000 20220212040000 9799 . Utn1eft4h1tcM/snPYO6CoZm6p3kEdOnXOr3k8TAZnbmpRgiLvUBlH9Q VcizqoJLs402MVujO2wBOGQ/ONNn99POsqa4q16nXcHX0orzql9IFyjH /JtFlPMBsbgbN4CbpIptD7QG+JA9qPbzqZfGMPq9pAhWry3X01duw8cl UJQS2zHvQ+QvLKjFpMba6RMz9YaJ2WIaucUso5TPTN84JRg5I4q8Cjxn G9G9+YuvNZY2GnqUmTwEdRo70VDkOcQIxZxUCUwrwuPf+U/0VasY2HtB tmV3ha9KPhddRwl5JqVh4NZnXTCwLdDu8EXofzUBBhzqvqZaK64kfT44 ryKckQ==
+;; Received 1097 bytes from 2400:2412:ec0:9d00:1111:1111:1111:1111#53(2400:2412:ec0:9d00:1111:1111:1111:1111) in 25 ms
+
+jp.			172800	IN	NS	a.dns.jp.
+jp.			172800	IN	NS	b.dns.jp.
+jp.			172800	IN	NS	c.dns.jp.
+jp.			172800	IN	NS	d.dns.jp.
+jp.			172800	IN	NS	e.dns.jp.
+jp.			172800	IN	NS	f.dns.jp.
+jp.			172800	IN	NS	g.dns.jp.
+jp.			172800	IN	NS	h.dns.jp.
+jp.			86400	IN	DS	18100 8 2 C5242231AB0B249800926B3D700349CC76374B7505DD4101FEF8C54B BB464C6B
+jp.			86400	IN	RRSIG	DS 8 1 86400 20220225050000 20220212040000 9799 . Pa6nh3O49Ptz/RaTC8Ft42+Ypkp0g5wO4bkZqGkD8sSZ+tqiuRtIrQkU x0wNUNGkSfJDtqdWtcO9arkxW4o1wU2aI/ruiqWD1+tab2+tq/wJPqYu tvb51fcXD0lWXlvVatnwgUQX+TfahjHicVJKno5M7AWy2P0aoxWroD3d 5dlF1amxDkDe+glXPs0+iw6zlF0z//6nk9s/E4rNYAyjN9hN1+EgCs2P 3Tu0soEyjh+Kutv6sKyeqJlmwVu4T6Ac0nKjoTYrFiDqV8r3+dRM0Gg0 +A4xH5MKwk5ETIG7XalHFWIQX3zNjTCUS1JBw3fss+NHQA0SZGGVumW7 dM6qQQ==
+;; Received 831 bytes from 192.58.128.30#53(j.root-servers.net) in 83 ms
+
+yahoo.co.jp.		86400	IN	NS	ns02.yahoo.co.jp.
+yahoo.co.jp.		86400	IN	NS	ns11.yahoo.co.jp.
+yahoo.co.jp.		86400	IN	NS	ns01.yahoo.co.jp.
+yahoo.co.jp.		86400	IN	NS	ns12.yahoo.co.jp.
+CC0SS2L0ICPPV6QD9MHOO3L2DT6M9D67.jp. 900 IN NSEC3 1 1 8 473CAF4BBE CC9KFOFEKFJSISR3DR99NAMQN4LIR6F8  TXT RRSIG
+CC0SS2L0ICPPV6QD9MHOO3L2DT6M9D67.jp. 900 IN RRSIG NSEC3 8 2 900 20220307174509 20220205174509 38121 jp. p3oEqf04l3KAASweg0E+v1dOFliXdMVZZQR9Tdl8JqbQf7tvHmx5DRif yst556aqOXosb4lvQNb11Aqv96mx9WC4X7IV+yNoHXYEDAlR4sswgIVl HBlP9T4Mxu7rYuqfgvqtFDO2rP1VjRIMTE6EtGwPlJHTnzgSKNDI4HE1 WsY=
+76S5LROE5MHM7FMTCHUPD8V3TR766SUB.jp. 900 IN NSEC3 1 1 8 473CAF4BBE 771CVVVEGRVOHO7M8H72GFMM5RI3DKU9  TXT RRSIG
+76S5LROE5MHM7FMTCHUPD8V3TR766SUB.jp. 900 IN RRSIG NSEC3 8 2 900 20220307174509 20220205174509 38121 jp. TmUUjmL4FLXFlqG7jUd8mVrDyCMWdFzP4XNuPtZDI6P7F9irfPf6HGzZ FKjWFD0R7RWLN0PbENrj62U51AIUcwxxfiUHvmIWIf3KNjwhkbLx8/te aTxYwdoQIYT5pIbvfsstmaz0z7DDoH58mkZd4qGEcLgmF4bYNUusaNOy Kz4=
+;; Received 672 bytes from 2a01:8840:1bc::25#53(h.dns.jp) in 107 ms
+
+yahoo.co.jp.		300	IN	A	183.79.219.252
+yahoo.co.jp.		300	IN	A	183.79.250.251
+yahoo.co.jp.		300	IN	A	183.79.217.124
+yahoo.co.jp.		300	IN	A	183.79.250.123
+yahoo.co.jp.		300	IN	A	182.22.16.251
+yahoo.co.jp.		300	IN	A	182.22.25.252
+yahoo.co.jp.		900	IN	NS	ns02.yahoo.co.jp.
+yahoo.co.jp.		900	IN	NS	ns12.yahoo.co.jp.
+yahoo.co.jp.		900	IN	NS	ns01.yahoo.co.jp.
+yahoo.co.jp.		900	IN	NS	ns11.yahoo.co.jp.
+;; Received 276 bytes from 124.83.255.101#53(ns12.yahoo.co.jp) in 13 ms
+```
+
+
+### ~/.digrcに毎回付与するオプションを定義する
+毎回オプションを付与するのが面倒という場合には~/.digrcに記述することでタイプを省略することが可能です。
+```
+$ cat ~/.digrc 
++noedns
++noall
++answer
+$ dig yahoo.co.jp
+yahoo.co.jp.		92	IN	A	183.79.250.123
+yahoo.co.jp.		92	IN	A	183.79.217.124
+yahoo.co.jp.		92	IN	A	183.79.250.251
+yahoo.co.jp.		92	IN	A	182.22.16.251
+yahoo.co.jp.		92	IN	A	182.22.25.252
+yahoo.co.jp.		92	IN	A	183.79.219.252
+```
