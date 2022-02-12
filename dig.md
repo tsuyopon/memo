@@ -109,8 +109,17 @@ RFC1035 4.1.1 Header section formatに下記内容で定義されています。
 5 = REFUSED (e.g., refused zone transfer requests)
 ```
 
+### 回答結果を短く得る
+```
+$ dig www.yahoo.co.jp +short
+edge.g.yimg.jp.
+183.79.249.124
+```
+
 ### 指定したタイプを取得する
 いくつか具体例を示します。ヤフーやgoogleの例です。 (出力を抑制するために+shortの簡易表示にしています)
+
+
 ```
 $ dig -t A www.yahoo.co.jp +short
 edge12.g.yimg.jp.
@@ -119,11 +128,21 @@ edge12.g.yimg.jp.
 $ dig -t AAAA www.yahoo.co.jp +short
 edge12.g.yimg.jp.
 
+$ dig -t NS yahoo.co.jp +short
+ns11.yahoo.co.jp.
+ns02.yahoo.co.jp.
+ns01.yahoo.co.jp.
+ns12.yahoo.co.jp.
+
+$ dig -t MX yahoo.co.jp +short
+10 mx5.mail.yahoo.co.jp.
+10 mx1.mail.yahoo.co.jp.
+10 mx2.mail.yahoo.co.jp.
+10 mx3.mail.yahoo.co.jp.
+
 $ dig -t SOA yahoo.co.jp +short
 yahoo.co.jp. postmaster.yahoo.co.jp. 2202100015 1800 900 86400 900
-```
 
-```
 $ dig -t TXT google.com +short
 "MS=E4A68B9AB2BB9670BCE15412F62916164C0B20BB"
 "google-site-verification=TV9-DBe4R80X4v0M4U_bd_J9cpOJM0nikft0jAgjmsQ"
@@ -144,7 +163,6 @@ $ dig -t MX google.com +short
 40 alt3.aspmx.l.google.com.
 10 aspmx.l.google.com.
 ```
-
 
 ### 全てのリソースレコードを取得する(ANY)
 ```
@@ -174,7 +192,28 @@ ns12.yahoo.co.jp.
 
 ### 特定のセクションだけ取得する
 
+DNSパケットはHEADER, QUESTION, ANSWER, AUTHORITY, ADDTIONALの5つのセクションから構成されます。
 +noallをつけると全ての出力が抑制されます。そして +ansを同時に付与することでANSWERセクションだけ表示するなど表示したいセクションを絞ることが可能です。
+
+- HEADER SECTION
+```
+$  dig +noall +comments www.yahoo.co.jp
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 9976
+;; flags: qr rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 2, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+```
+
+- QUESTION SECTION
+```
+$ dig www.yahoo.co.jp +noall +question
+
+; <<>> DiG 9.10.6 <<>> www.yahoo.co.jp +noall +question
+;; global options: +cmd
+;www.yahoo.co.jp.		IN	A
+```
 
 - ANSWER SECTION
 ```
@@ -190,7 +229,23 @@ g.yimg.jp.		333	IN	NS	gns02.yahoo.co.jp.
 g.yimg.jp.		333	IN	NS	gns12.yahoo.co.jp.
 ```
 
-- 最後の行
+- ADDITIONAL SECTION
+```
+$ dig google.com +noall +additional
+
+; <<>> DiG 9.10.6 <<>> google.com +noall +additional
+;; global options: +cmd
+ns1.google.com.		212267	IN	AAAA	2001:4860:4802:32::a
+ns2.google.com.		275259	IN	AAAA	2001:4860:4802:34::a
+ns3.google.com.		139681	IN	AAAA	2001:4860:4802:36::a
+ns4.google.com.		305280	IN	AAAA	2001:4860:4802:38::a
+ns1.google.com.		218218	IN	A	216.239.32.10
+ns2.google.com.		219114	IN	A	216.239.34.10
+ns3.google.com.		275187	IN	A	216.239.36.10
+ns4.google.com.		157675	IN	A	216.239.38.10
+```
+
+- 実行コマンドの表示
 ```
 $ dig +noall +cmd www.yahoo.co.jp
 
@@ -198,22 +253,25 @@ $ dig +noall +cmd www.yahoo.co.jp
 ;; global options: +cmd
 ```
 
-- HEADER部分など
+- 統計情報の表示
 ```
-$  dig +noall +comments www.yahoo.co.jp
-;; Got answer:
-;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 9976
-;; flags: qr rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 2, ADDITIONAL: 1
+$ dig www.yahoo.co.jp +noall +stats
 
-;; OPT PSEUDOSECTION:
-; EDNS: version: 0, flags:; udp: 1232
+; <<>> DiG 9.10.6 <<>> www.yahoo.co.jp +noall +stats
+;; global options: +cmd
+;; Query time: 19 msec
+;; SERVER: 2400:2412:ec0:9d00:1111:1111:1111:1111#53(2400:2412:ec0:9d00:1111:1111:1111:1111)
+;; WHEN: Sat Feb 12 20:52:50 JST 2022
+;; MSG SIZE  rcvd: 128
 ```
 
-### 回答結果を短く得る
+### 対象ドメインの権威DNSサーバを取得する
 ```
-$ dig www.yahoo.co.jp +short
-edge.g.yimg.jp.
-183.79.249.124
+$ dig yahoo.co.jp +nssearch
+SOA yahoo.co.jp. postmaster.yahoo.co.jp. 2202100015 1800 900 86400 900 from server 118.151.254.149 in 7 ms.
+SOA yahoo.co.jp. postmaster.yahoo.co.jp. 2202100015 1800 900 86400 900 from server 118.151.254.133 in 7 ms.
+SOA yahoo.co.jp. postmaster.yahoo.co.jp. 2202100015 1800 900 86400 900 from server 124.83.255.37 in 17 ms.
+SOA yahoo.co.jp. postmaster.yahoo.co.jp. 2202100015 1800 900 86400 900 from server 124.83.255.101 in 16 ms.
 ```
 
 ### IPアドレスの逆引きを行う
@@ -276,6 +334,11 @@ www.google.com.		109	IN	A	216.58.221.4
 ;; MSG SIZE  rcvd: 48
 ```
 
+### ポート番号を指定する
+```
+$ dig xxx.co.jp -p 53
+```
+
 ### レコードを指定して取得する
 以下はNSを指定した例です
 ```
@@ -325,6 +388,16 @@ google.com.		60	IN	SOA	ns1.google.com. dns-admin.google.com. 183448256 900 900 1
 ```
 
 ### 見やすい形式にする
+通常はSOAなどは1行出力ですが
+```
+$ dig google.com soa +noall +answer 
+
+; <<>> DiG 9.10.6 <<>> google.com soa +noall +answer
+;; global options: +cmd
+google.com.		42	IN	SOA	ns1.google.com. dns-admin.google.com. 427960901 900 900 1800 60
+```
+
++multilineを付与すると複数行として表示してくれます。
 ```
 $ dig google.com soa +noall +answer +multiline
 
@@ -337,6 +410,27 @@ google.com.		60 IN SOA ns1.google.com. dns-admin.google.com. (
 				1800       ; expire (30 minutes)
 				60         ; minimum (1 minute)
 				)
+```
+
+### 応答を返すDNSキャッシュサーバを確認する
++identifyを付与することでDNSキャッシュサーバのIPアドレスが確認できます。
+
+以下の例では192.168.3.1とローカルIPになっています。
+```
+$ dig -4 www.yahoo.co.jp +short +identify
+edge12.g.yimg.jp. from server 192.168.3.1 in 14 ms.
+182.22.25.252 from server 192.168.3.1 in 14 ms.
+
+$ dig -6 www.yahoo.co.jp +short +identify
+edge12.g.yimg.jp. from server 2400:2412:ec0:9d00:1111:1111:1111:1111 in 12 ms.
+182.22.25.252 from server 2400:2412:ec0:9d00:1111:1111:1111:1111 in 12 ms.
+```
+
+8.8.8.8のサーバを指定してみると、次のように8.8.8.8であることがわかります。
+```
+$ dig @8.8.8.8 www.yahoo.co.jp +short +identify
+edge12.g.yimg.jp. from server 8.8.8.8 in 14 ms.
+183.79.250.251 from server 8.8.8.8 in 14 ms.
 ```
 
 ### ルートDNSから問い合わせを行い、結果を順番に出力する
@@ -386,9 +480,23 @@ www.google.com.		300	IN	A	216.58.199.228
 ```
 
 ### TCPで問い合わせを行う
-通常はdigはUDPで問い合わせを行っているのだが、応答サイズが512を超える場合にはTCPでの問い合わせに変更するようになっている
+通常はdigはUDPで問い合わせを行っているのだが、応答サイズが512を超える場合にはTCPでの問い合わせに変更するようになっている。
+これを最初からTCPで問合せするためには+vcオプションを付与します。このオプションは+tcpでも同じです。
 ```
 $ dig www.yahoo.co.jp +vc
+または
+$ dig www.yahoo.co.jp +tcp
+```
+
+### TC=1ビットが帰ってきても、TCP問い合わせを行わずに終了する(つまり、TCPフォールバックしない)
+```
+$ dig google.com +ignore
+```
+
+### ENDS0を有効にする
+デフォルトはEDNSは無効であり、BIND9.9付属からはデフォルトで有効。
+```
+$ dig www.yahoo.co.jp +edns=0
 ```
 
 ### DNSSECで問い合わせを行う
@@ -628,3 +736,6 @@ yahoo.co.jp.		92	IN	A	182.22.16.251
 yahoo.co.jp.		92	IN	A	182.22.25.252
 yahoo.co.jp.		92	IN	A	183.79.219.252
 ```
+
+# 参考資料
+- https://hana-shin.hatenablog.com/entry/2021/12/22/201022
