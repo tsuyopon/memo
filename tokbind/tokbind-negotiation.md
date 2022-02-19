@@ -1,6 +1,6 @@
 # 概要
 RFC8472: Transport Layer Security (TLS) Extension for Token Binding Protocol Negotiation
-基本的にRFC8471-8472はセットであり、このRFCはTLS拡張の挙動について規定しているものです。
+基本的にRFC8471-8473はセットであり、このRFCはTLS拡張の挙動について規定しているものです。
 
 # 解決したい課題
 RFC8471のToken bindingを使いたい場合、サーバとクライアント間でToken BindingプロトコルのバージョンとToken Bindingのパラメータ(署名アルゴリズムと長さ )を合意する必要がある。
@@ -9,7 +9,8 @@ RFC8471のToken bindingを使いたい場合、サーバとクライアント間
 # 解決方法
 token_binding拡張を定義することで、TLSメッセージ上でネゴシエートできるようにする。
 TLS1.2やそれ以前で対応しています。なお、TLS1.3以降はこのドキュメントのスコープ外となっています。
-TLS1.3は以下で規定していると書かれているが期限ぎれになっている
+
+余談だがTLS1.3は以下で規定していると書かれているが期限切れになっている
 - https://datatracker.ietf.org/doc/html/draft-ietf-tokbind-tls13-03
 
 
@@ -65,8 +66,6 @@ TokenBindingをサポートしていて、ClientHelloにtoken_binding拡張が�
 
 もしクライアントがサーバによって選択されたバージョンをサポートしてない場合、Token Bindingなしで接続を進めます。
 クライアントは、クライアントが提示したtoken_bindingバージョン以上の多くのバージョンをサポートしているという要件はない。
-
-
 
 # 参考
 - https://datatracker.ietf.org/doc/html/rfc8472
