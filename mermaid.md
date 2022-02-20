@@ -1,6 +1,8 @@
 # 概要
 mermaidはgithubに採用されたJavascriptの描画ライブラリです。
 
+記法の詳細は手元のスライドをみること
+
 # VSCodeプラグイン
 - mermaid preview
   - https://marketplace.visualstudio.com/items?itemName=vstirbu.vscode-mermaid-preview
