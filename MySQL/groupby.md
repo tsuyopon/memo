@@ -1,9 +1,9 @@
 # 概要
-
 GROUP BY構文の簡単なサンプルです
 sakillaデータベースから抽出しています。
 
 
+# 詳細
 ### 特定の顧客が支払った最大値を表示したい。
 paymentテーブルには特定の顧客 (customer_id)ごとに支払った金額のレコードが全て記録されています。
 顧客ごとに最大の支払い金額を表示します。
@@ -46,4 +46,22 @@ mysql> SELECT COUNT(amount), SUM(amount), MAX(amount), customer_id FROM payment 
 |            25 |       99.75 |        8.99 |          10 |
 +---------------+-------------+-------------+-------------+
 10 rows in set (0.01 sec)
+```
+
+### CURRENT_DATEの形式を年月だけ切り出して、レコード数を集計する
+GROUP BYで指定した値で集計して、それを表示するにはGROUP BYで指定したものと同様に「DATE_FORMAT(return_date,'%Y-%m')」と全く同じものを指定しないとエラーになります。
+なお、COUNTの場合にはCOUNT(\*)と指定しないとNULLの値が正しく取得できないのでNULLがあるケースは特に注意が必要です。COUNT(DATE_FORMAT(return_date,'%Y-%m'))とするとNULLの件数が正しく表示されません。
+```
+mysql> SELECT COUNT(*), DATE_FORMAT(return_date,'%Y-%m') FROM rental GROUP BY DATE_FORMAT(return_date,'%Y-%m');
++----------+----------------------------------+
+| COUNT(*) | DATE_FORMAT(return_date,'%Y-%m') |
++----------+----------------------------------+
+|      183 | NULL                             |
+|      395 | 2005-05                          |
+|     3071 | 2005-06                          |
+|     4188 | 2005-07                          |
+|     8145 | 2005-08                          |
+|       62 | 2005-09                          |
++----------+----------------------------------+
+6 rows in set (0.02 sec)
 ```

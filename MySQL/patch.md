@@ -4,7 +4,10 @@ mysqlのパッチファイルの作り方に関するTIPSなど
 # 詳細
 
 ### 安全にパッチの適用を行う
-START TRANSACTIONを最初に実行して、最後にROLLBACKを実行することによって実行前に確認を行うことができます。
+START TRANSACTIONを最初に実行して確認します。
+最初はCOMMITは実行せずに、期待通りの結果かを確認するSELECT文などを表示するようにするのが良いでしょう。
+
+問題ないことを確認出来次第、最後のROLLBACKを外して実行します。
 ```
 USE mydatabase
 

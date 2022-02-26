@@ -46,5 +46,15 @@ mysql> SELECT * from actor where FIND_IN_SET(actor_id, '1,3,4') ;
 3 rows in set (0.00 sec)
 ```
 
+### デバッグ方法について
+prepared statementはMySQLサーバ側で解釈しているので、tcpdumpで表示できないし、stack overflowにもこれといった回答はない。
+- https://stackoverflow.com/questions/30094724/php-mysql-prepared-statements-debugging
+
+PDOの場合にはPDOStatement::debugDumpParamsというメソッドが存在する
+- https://www.php.net/manual/ja/pdostatement.debugdumpparams.php
+
+なお、MySQLサーバ側でgeneral_logをonにすればリクエストがあったSQLを見ることは確認することは可能であると思われる。
+
+
 # 参考URL
 - https://dev.mysql.com/doc/refman/5.6/ja/sql-syntax-prepared-statements.html
