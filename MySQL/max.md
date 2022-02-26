@@ -45,6 +45,7 @@ mysql> SELECT MAX(city_id), country_id FROM city GROUP BY city_id;
 |          600 |         83 |
 +--------------+------------+
 600 rows in set (0.00 sec)
+```
 
 最大となるcity_id=600の場合のcountry_idが欲しいのですが、この場合は上記のSQLを昇順でソートして1件だけ取得でも可能ですが、次のように
 最大値を取得して求めることもできます。
