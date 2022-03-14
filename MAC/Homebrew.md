@@ -47,6 +47,18 @@ pkg-config
 $ brew uninstall emacs
 ```
 
+### インストール後にパスを通す
+例えば、mysql-clientですが
+```
+$ brew install mysql-client
+```
+
+インストール後にmysqlコマンドのパスが通っていないためにパスを通す必要があります。
+```
+$ echo 'export PATH="/usr/local/opt/mysql-client/bin:$PATH"' >> ~/.bash_profile
+$ source ~/.bash_profile
+```
+
 ### パッケージを探す
 ```
 $ brew search vim
