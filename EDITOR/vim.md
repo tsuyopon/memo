@@ -397,6 +397,11 @@ set fileencodings=iso-2022-jp,utf-8,euc-jp,ucs-2le,ucs-2,cp932p
 :set hlsearch
 ```
 
+なお、以下の設定を入れることでESCが２度押下されることでハイライトを削除することができます。
+```
+nnoremap <ESC><ESC> :nohl<CR>
+```
+
 # syntax関連
 
 ### syntax関連の設定について
