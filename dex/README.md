@@ -45,14 +45,25 @@ Login With Emailから
 - password
 でログインすることでデフォルトで設定されたIDとパスワードで認可を行うことができます。
 
-
-### 設定ファイル
+### dex設定ファイル
 設定できる値などは以下を参照にすること
 - https://github.com/dexidp/dex/blob/v2.31.1/cmd/dex/config.go
 
 ### エンドポイント起点
 エンドポイントの定義は以下
 - https://github.com/dexidp/dex/blob/v2.31.1/server/server.go#L346-L389
+
+### GRPC APIエンドポイント起点
+grpcurlでリクエスト可能なエンドポイント一覧
+- https://github.com/dexidp/dex/blob/v2.28.1/api/api.pb.go#L1707-L1758
+
+GRPC APIエンドポイントによりClientID・Secretを発行可能ですが、クライアント証明書の指定も必要です。
+```
+$ grpcurl -cacert ca.crt -cert client.crt -key client.key -d '{"client": {"id":"test1"}}' -import-path ./api/ -proto api.proto 127.0.0.1:5557 api.Dex/CreateClient
+```
+
+上記以外は下記を参照のこと
+- https://github.com/tsuyopon/study/tree/master/dex
 
 # 参考資料
 - レポジトリ 
