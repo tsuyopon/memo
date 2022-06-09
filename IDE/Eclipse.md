@@ -1,12 +1,7 @@
-# 参考URL
-- エクリプス
--- http://www.eclipsewiki.net/eclipse/
-- Javaの道
--- http://www.javaroad.jp/opensource/js_eclipse1.htm
-- TIPS
--- http://www.h7.dion.ne.jp/~s_wat/eclipse/eclipsetips.html
+# 概要
+Eclipseについてのメモ
 
-
+# 詳細
 ## Eclipseショートカット
 
 ### ソースコード読解操作
@@ -96,4 +91,12 @@ SVNでプロジェクトをチェックアウトを行い、それをEclipseに�
 参考URL
 - Eclipse公式ドキュメント(英語)
   - http://dsdp.eclipse.org/help/latest/index.jsp?topic=%2Forg.eclipse.platform.doc.isv%2Freference%2Fmisc%2Fproject_description_file.html
+
+# 参考URL
+- エクリプス
+  - http://www.eclipsewiki.net/eclipse/
+- Javaの道
+  - http://www.javaroad.jp/opensource/js_eclipse1.htm
+- TIPS
+  - http://www.h7.dion.ne.jp/~s_wat/eclipse/eclipsetips.html
 
