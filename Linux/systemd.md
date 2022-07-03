@@ -24,18 +24,13 @@ systemdには次の5つのタイプが存在します。
 
 ## unit管理
 ### サービスとして登録されている一覧が存在する設定ファイルを確認する
-今までサービス起動スクリプトとして定義されていたものがunitとして扱われることになります。
-
-各種unitは以下のパスに存在しています。
-```
-$ ls /usr/lib/systemd/system/
-```
-
-例えばredisでは次の場所にunitが存在します。
-```
-$ ls /usr/lib/systemd/system/redis.service 
-/usr/lib/systemd/system/redis.service
-```
+2つのパスが存在することに注意してください。
+- /usr/lib/systemd/system
+  - CentOS 7 のデフォルトで設定されているサービスや、yum などで提供されているソフトウェアをインストールした際のデフォルト設定を保存するルールになっています。
+  - サーバーの管理者が編集・変更したファイルをここに配置してはいけません。
+- /etc/systemd/system
+  - サーバーの管理者が独自に変更・編集した設定ファイルは /etc/systemd/system フォルダに配置するルールになっています。 
+  - このフォルダに/usr/lib/systemd/systemと同名のファイルが配置された場合には、こちらの設定が優先となります。
 
 ### unit定義ファイル変更後の読み込み
 上記に配置されているsystemdが読み込むunit定義ファイルは修正した後に読み込ませなければなりません。
@@ -268,6 +263,32 @@ redis     4072  0.5  0.1 142956  5804 ?        Ssl  08:52   0:00 /usr/bin/redis-
 tsuyoshi  4076  0.0  0.0   9088   668 pts/0    R+   08:52   0:00 grep --color=auto -i redis
 ```
 
+### システムステータスを表示する
+```
+$ systemctl status
+● tsuyoshi-Diginnos-PC
+    State: degraded
+     Jobs: 0 queued
+   Failed: 1 units
+    Since: Fri 2022-07-01 09:35:07 JST; 2 days ago
+   CGroup: /
+           ├─user.slice 
+           │ ├─user-127.slice 
+           │ │ ├─session-c1.scope 
+           │ │ │ ├─  836 gdm-session-worker [pam/gdm-launch-environment]
+           │ │ │ ├─  938 /usr/libexec/gdm-wayland-session dbus-run-session -- gnome-session --autostart /usr/share/gdm/greeter/autostart
+           │ │ │ ├─  973 dbus-run-session -- gnome-session --autostart /usr/share/gdm/greeter/autostart
+           │ │ │ ├─  975 dbus-daemon --nofork --print-address 4 --session
+           │ │ │ ├─  985 /usr/libexec/gnome-session-binary --autostart /usr/share/gdm/greeter/autostart
+           │ │ │ ├─ 1036 /usr/bin/gnome-shell
+           │ │ │ ├─ 1313 /usr/libexec/at-spi-bus-launcher
+           │ │ │ ├─ 1320 /usr/bin/dbus-daemon --config-file=/usr/share/defaults/at-spi2/accessibility.conf --nofork --print-address 11 --address=unix:path=/run/user/127/at-spi/bus
+           │ │ │ ├─ 1329 /usr/bin/Xwayland :1024 -rootless -noreset -accessx -core -auth /run/user/127/.mutter-Xwaylandauth.IF79N1 -listen 4 -listen 5 -displayfd 6 -initfd 7
+           │ │ │ ├─ 1333 /usr/libexec/xdg-permission-store
+           │ │ │ ├─ 1345 /usr/bin/gjs /usr/share/gnome-shell/org.gnome.Shell.Notifications
+           │ │ │ ├─ 1347 /usr/libexec/at-spi2-registryd --use-gnome-session
+...
+```
 
 ### サービスのステータス情報を確認する
 ```
