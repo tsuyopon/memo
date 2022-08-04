@@ -12,5 +12,9 @@ MySQLのサンプルテーブル集について
   - https://github.com/datacharmer/test_db.git
   - test\_db.md
 
+# 参考資料
 - SQL Sample Database
- - http://www.zentut.com/sql-tutorial/sql-sample-database/
+  - http://www.zentut.com/sql-tutorial/sql-sample-database/
+- Sakila Sample Database(PDF)
+  - https://downloads.mysql.com/docs/sakila-en.pdf
+
