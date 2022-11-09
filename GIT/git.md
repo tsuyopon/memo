@@ -58,7 +58,7 @@ $ git branch -d issue1
 ```
 $ git push origin :issue1
 または
-$ git push origin --delete issue1
+$ git push --delete origin issue1
 ```
 
 このほかにもHEADにマージしてあるブランチだけ削除したければ--delete、マージに無条件で削除する場合には-Dオプションを利用する。

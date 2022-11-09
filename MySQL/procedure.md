@@ -28,6 +28,22 @@ mysql> DROP PROCEDURE procedure_sqrt;
 Query OK, 0 rows affected (0.00 sec)
 ```
 
+### 変数スコープの理解
+- システム変数(例: @@version)
+  - グローバルスコープ
+  - 宣言:なし、 型:なし、設定:SET GLOBAL/SET SESSION、SELECT INTO不可、EXECUTE USING不可
+- ユーザー変数(例: @var_name)
+  - セッションスコープ
+  - 宣言:なし、 型:なし、設定:SET、SELECT INTO可能、EXECUTE USING可能
+- ローカル変数(例: DECLARE var_name INT: ストアドプロシージャ内で使う事ができる)
+  - ローカルスコープ
+  - 宣言:あり、 型:あり、設定:SET、SELECT INTO可能、EXECUTE USING不可
+  
+
+下記の資料がわかりやすい
+- https://zigorou.hatenablog.com/entry/20110802/1312302137
+
+
 ### 変数宣言する
 DECLARE分はすべてBEGINの直後に記述しなければならず、ルーチンの途中に書くことはできません。
 ```
