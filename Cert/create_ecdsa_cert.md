@@ -184,5 +184,9 @@ Certificate:
 # まとめ
 opensslコマンドでECDSA証明書の発行を試しました
 
+# 公式情報
+- https://www.openssl.org/docs/man1.1.1/man1/openssl-ec.html
+- https://www.openssl.org/docs/man1.1.1/man1/openssl-ecparam.html
+
 # 参考情報
 - https://www.casleyconsulting.co.jp/blog/engineer/3014/
