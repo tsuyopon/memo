@@ -86,6 +86,11 @@ IntelliJの場合、Run -> Edit Configurations -> 画面左上の"+"を指定し
 - javax.net.ssl.trustStorePassword
 
 
+### 意図的にデバッガーから指定した例外を発生させる
+以下で可能らしい
+- https://tech.excite.co.jp/entry/2022/07/07/163117
+
+
 # Spring Boot
 Spring Bootでサポートされている全てのロギングシステムは、logging.level.\*=LEVEL使うことでSpring環境内(例えばapplication.properties等)にログレベルを持つことが出来る。
 LEVELはTRACE、DEBUG、INFO、WARN、ERROR、FATAL、OFFから1つを選択、ルートロガーはlogging.level.rootを使用して設定することができる。
@@ -171,6 +176,8 @@ logging.level.org.apache.http.wire=DEBUG
 公式資料は以下に存在する
 - https://mybatis.org/mybatis-3/logging.html
 
+公式ではないが下記も参考になる
+- https://oboe2uran.hatenablog.com/entry/2015/05/14/124949
 
 # logback
 xml設定の属性として「debug="false"」と指定します。
@@ -181,3 +188,10 @@ xml設定の属性として「debug="false"」と指定します。
  ...
 </configuration>
 ```
+
+# Apache HttpClient
+- org.apache.http.impl.client
+- org.apache.http.wire
+- org.apache.http.headers
+
+
