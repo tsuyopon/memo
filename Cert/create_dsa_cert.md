@@ -64,6 +64,46 @@ Dps=
 -----END PRIVATE KEY-----
 ```
 
+秘密鍵から公開鍵を生成する
+```
+$ openssl dsa -in key.pem -pubout -out public.pem
+read DSA key
+writing DSA key
+```
+
+生成されたpublic.pemをcatする
+```
+$ cat public.pem 
+-----BEGIN PUBLIC KEY-----
+MIIExDCCAzYGByqGSM44BAEwggMpAoIBgQDwD8KDWtuCxrlZ/1/W9kMCTbwmO0sM
+epgMRNLoyF8G2CfNDZzaMXFROB6VVfgmPnfPa9OZ2F0YMor5qv6qzn7pq9aEVuzs
+/xcUaFLnMbMggvAJzi/lXGqvfOz77SIgzGfIoVDA9XxSfIrEpvcRsjdJRZIqGaN6
+GWD+VpI87vZ9ZxyptLXEuFn0JFMmXnO3M/cAiqaz9bx6iCszCIR5N7NQPzDjn4SV
+4dGjNIzF+Qf9gmLbsqCz1Y+Ic4tRAThkIZH/DxrafUOHACZPvGGOP7q+p5+TIxJq
+bi27jJ+HGH2OTKZ5zJUKPmx38mYujPYlR5EXXuBFbo3oZRnqAveZ6ytSqArNR5Hm
+tCTB7pCDEX31f4mJs6AyShCmcGZ22XTRrZHFoS/OALq54OpSq2qQZU62/5r3WOU2
+2y8Ln2MCJnQsvMV99rkaxkoOy6nMxg3ndpkp8XUS27IV6jPkZuQrlK50dm2T7k1s
+DvCvwsTl7k8FWXCEMItxMkqFpHZ7oYaUnlkCHQD5CQkO6AqfBGK6TRFtt2Zd7iRQ
+Of8IrR+p8qOLAoIBgQCiD3i2jbeKtVPWaU2FvQ5oYYDRIYagGxyrvr+z8xich0Hj
+FOQXnSo7DbIYwk5wuCjn+LzyuYy0Cmr2bIwIAFq19YwI0W5V9GtlRsouai4hDKKV
+rySyNfQGVqYRnkFQoXC/UwF2S5ZmFDGxT4fyv1jP3NyqpBHf5+5p/bPboCfG6pnd
+nFPv1/7QWtn79gPHLy2D/kfgYAaSKnOF5GdRnNSeG/rlG7FZreRC4a+0ZttHhUFM
+vKTUKpfg4AiNr+sUoqoAlbwQ0wqlYOU2UK5287cahVsMZf3nuUtnfVP6M+DWAess
+fUlXpNbbNXF2bvz5kuah1vZ5O7Bc9fCqOjyVS3Jsz15XsL3bdUm+X7y7j553HD1b
+I93MK//4DIUd0fle0PSFQ4XEroDXvIHtEMOJDYB1YwWRjk27qUm5aB6qWzMx+Oql
+AG/JbhtpjrZ7m5iwrAAgwhgu7A1BJlpSLUfBOTIV3ItVuvaEY9+j9if2QqCUMO38
+McLhqIZInTQsTjuHxuQDggGGAAKCAYEAkPbwjSjO8daaUj1kwqgR1RkSn8+usPv5
+xB15L50wytk+t9tEWGGlpZtkIoYdBcJuxXdwqV/iF5c/WqjMxhohPfYeSV8tJiY2
+6VOhmiRLS7yuuI0WTwMEBCQLD4gWJ+qGhlpetpHAb7eykts6wPEiJwucSnb8spjs
+5dWfdxr6nikpFkMI3ebziFGtkLQB7fMIcPjBla3qBJ1IStJ2w+ygKTKncx0FqlcL
+pCSwJ6P66tcHnIQp8P3MKM704s/OcMIIuksEio/O0kBPgyjRRYjxn7ymb8FFVefk
+djpfKNJuUnSKGhLziRfu8lg+vVdEYujlTDTNig39KcqU+ndSGTvPDfHe2ZQ6xe9N
+CJm8+gIwdrxd4U6gb1B4L/bNJX+JUQEt2bn/Sn1xLhlmXEgfAw8bmktWAPYRDr/I
+o7zM12hDZmbyEUvdVwpA7QGqfkMBz4oqnqfDEySLzma0ZkVVSjnJZD28HHpBrtPD
+kd+NTfbFIjU49iQD3ElAiJBNVbQYdA0f
+-----END PUBLIC KEY-----
+```
+
 CSRを生成する
 ```
 $ openssl req -new -key key.pem -out localhost.csr
@@ -359,5 +399,6 @@ DSAサーバ証明書を発行しました。
 
 # 参考情報
 - https://superuser.com/questions/644297/parameters-to-create-a-self-signed-dsa-certificate-on-ubuntu-12-04
+- https://kb.swivelsecure.com/w/index.php/Key_and_Certificate_Generation
 
 
