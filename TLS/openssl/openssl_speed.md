@@ -52,3 +52,65 @@ $ openssl speed rsa -multi 2
 $ openssl speed rsa -multi `grep processor /proc/cpuinfo|wc -l`
 ```
 
+### 鍵長を指定してベンチマークを取得する
+特定のベンチマークを測定する場合の例を示す
+```
+$ openssl speed rsa1024
+Doing 1024 bits private rsa's for 10s: 115877 1024 bits private RSA's in 9.84s
+Doing 1024 bits public rsa's for 10s: 1719486 1024 bits public RSA's in 9.95s
+version: 3.0.3
+built on: Tue May  3 13:32:01 2022 UTC
+options: bn(64,64)
+compiler: clang -fPIC -arch x86_64 -O3 -Wall -DL_ENDIAN -DOPENSSL_PIC -D_REENTRANT -DOPENSSL_BUILDING_OPENSSL -DNDEBUG
+CPUINFO: OPENSSL_ia32cap=0x7ffaf3bfffebffff:0x29c67af
+                  sign    verify    sign/s verify/s
+rsa 1024 bits 0.000085s 0.000006s  11776.1 172812.7
+```
+
+```
+$ openssl speed rsa3072
+Doing 3072 bits private rsa's for 10s: 5858 3072 bits private RSA's in 9.88s
+Doing 3072 bits public rsa's for 10s: 284668 3072 bits public RSA's in 9.91s
+version: 3.0.3
+built on: Tue May  3 13:32:01 2022 UTC
+options: bn(64,64)
+compiler: clang -fPIC -arch x86_64 -O3 -Wall -DL_ENDIAN -DOPENSSL_PIC -D_REENTRANT -DOPENSSL_BUILDING_OPENSSL -DNDEBUG
+CPUINFO: OPENSSL_ia32cap=0x7ffaf3bfffebffff:0x29c67af
+                  sign    verify    sign/s verify/s
+```
+
+```
+$ openssl speed ed25519
+Doing 253 bits sign Ed25519's for 10s: 217799 253 bits Ed25519 signs in 9.80s 
+Doing 253 bits verify Ed25519's for 10s: 82870 253 bits Ed25519 verify in 9.63s
+version: 3.0.3
+built on: Tue May  3 13:32:01 2022 UTC
+options: bn(64,64)
+compiler: clang -fPIC -arch x86_64 -O3 -Wall -DL_ENDIAN -DOPENSSL_PIC -D_REENTRANT -DOPENSSL_BUILDING_OPENSSL -DNDEBUG
+CPUINFO: OPENSSL_ia32cap=0x7ffaf3bfffebffff:0x29c67af
+                              sign    verify    sign/s verify/s
+ 253 bits EdDSA (Ed25519)   0.0000s   0.0001s  22224.4   8605.4
+```
+
+複数のアルゴリズムを指定することもできます。
+これによって、どちらの方が早いかを調べる事ができます。
+```
+$ openssl speed rsa3072 ed25519
+Doing 3072 bits private rsa's for 10s: 5543 3072 bits private RSA's in 9.61s
+Doing 3072 bits public rsa's for 10s: 271105 3072 bits public RSA's in 9.73s
+Doing 253 bits sign Ed25519's for 10s: 223845 253 bits Ed25519 signs in 9.87s 
+Doing 253 bits verify Ed25519's for 10s: 83239 253 bits Ed25519 verify in 9.76s
+version: 3.0.3
+built on: Tue May  3 13:32:01 2022 UTC
+options: bn(64,64)
+compiler: clang -fPIC -arch x86_64 -O3 -Wall -DL_ENDIAN -DOPENSSL_PIC -D_REENTRANT -DOPENSSL_BUILDING_OPENSSL -DNDEBUG
+CPUINFO: OPENSSL_ia32cap=0x7ffaf3bfffebffff:0x29c67af
+                  sign    verify    sign/s verify/s
+rsa 3072 bits 0.001734s 0.000036s    576.8  27862.8
+                              sign    verify    sign/s verify/s
+ 253 bits EdDSA (Ed25519)   0.0000s   0.0001s  22679.3   8528.6
+```
+
+上記の例ではRSA3072とEd25519を比較して、署名生成についてはEd25519の方が圧倒的に高速ですが、署名検証の観点ではRSA3072の方が高速であることがわかります。
+
+
