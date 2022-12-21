@@ -3,6 +3,13 @@ chromeについて
 
 # 詳細
 
+## 役に立つプラグイン
+自身が使ったことがある役に立つプラグインを紹介する
+- SeleniumIDE
+  - テスト操作を録画したり、実行することができるプラグイン
+- EditThisCookie
+  - Cookie情報を変更することができるプラグイン
+
 ### chrome://関連URL一覧を表示する
 - chrome://で始まる一覧リンクを表示する
   - chrome://chrome-urls
