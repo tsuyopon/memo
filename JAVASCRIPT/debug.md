@@ -116,6 +116,30 @@ console.profileEnd('c');
 console.profileEnd('a');
 ```
 
+### console.countにより引数が呼び出された回数を記録する。
+例えば、以下のコードを実行したとすると
+```
+function countTest(name, count){
+  for (let i = 0 ; i < count ; i++){
+    console.count(name);
+  }
+}
+
+countTest('Yamada', 2);
+countTest('Suzuki', 3);
+countTest('Yamada', 1);
+```
+
+下記の出力となります。なお、console.countに何も引数を指定しない場合には「default」と表示されます。
+```
+Yamada: 1
+Yamada: 2
+Suzuki: 1
+Suzuki: 2
+Suzuki: 3
+Yamada: 3
+```
+
 ### エラーしたらサーバ側でクライアントのエラーを取得する
 window.onerrorを使って収集することができるようです。
 ```
