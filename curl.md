@@ -339,6 +339,36 @@ $  curl -s https://www.yahoo.co.jps
 $ 
 ```
 
+### プログレスメーターを表示しない
+curlコマンドをパイプでリダイレクトすると必ず「%Total」などの出力が入ります。
+```
+$ curl -k https://localhost/api/4.0/asns | jq
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    69  100    69    0     0   1568      0 --:--:-- --:--:-- --:--:--  1568
+{
+  "alerts": [
+    {
+      "text": "unauthorized, please log in.",
+      "level": "error"
+    }
+  ]
+}
+```
+
+これを回避するためにはsオプションを付与します。
+```
+$ curl -sk https://localhost/api/4.0/asns | jq
+{
+  "alerts": [
+    {
+      "text": "unauthorized, please log in.",
+      "level": "error"
+    }
+  ]
+}
+```
+
 ### アクセスした時にSet-Cookieされた情報を保存したい
 cオプションの後にそのCookie情報を保存するファイル名を指定することにより保存することができる。
 ```
