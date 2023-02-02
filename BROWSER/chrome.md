@@ -18,3 +18,7 @@ chromeブラウザに関するメモなど
 
 - 参考URL
   - https://forest.watch.impress.co.jp/docs/serial/chrometips/1152903.html
+
+### Chromeのコマンドラインオプション
+以下のサイトが非常に役に立ちそう
+- https://peter.sh/experiments/chromium-command-line-switches/

@@ -211,6 +211,64 @@ $ gradlew build
 $ java -jar build/libs/helloworld-0.0.1-SNAPSHOT.jar 
 ```
 
+### 依存関係を表示する
+非常に大量の出力が表示されるので以下は割愛する
+```
+$ ./gradlew dependencies
+
+> Task :dependencies
+
+------------------------------------------------------------
+Root project 'demo'
+------------------------------------------------------------
+
+annotationProcessor - Annotation processors and their dependencies for source set 'main'.
+No dependencies
+
+apiElements - API elements for main. (n)
+No dependencies
+
+archives - Configuration for archive artifacts. (n)
+No dependencies
+
+bootArchives - Configuration for Spring Boot archive artifacts. (n)
+No dependencies
+
+compileClasspath - Compile classpath for source set 'main'.
++--- org.springframework.boot:spring-boot-starter -> 2.6.4
+|    +--- org.springframework.boot:spring-boot:2.6.4
+|    |    +--- org.springframework:spring-core:5.3.16
+|    |    |    \--- org.springframework:spring-jcl:5.3.16
+|    |    \--- org.springframework:spring-context:5.3.16
+...
+     \--- org.xmlunit:xmlunit-core:2.8.4
+
+testCompileOnly - Compile only dependencies for source set 'test'. (n)
+No dependencies
+
+testImplementation - Implementation only dependencies for source set 'test'. (n)
+\--- org.springframework.boot:spring-boot-starter-test (n)
+
+testResultsElementsForTest - Directory containing binary results of running tests for the test Test Suite's test target. (n)
+No dependencies
+```
+
+いくつかのカテゴリに分かれていますので下記を抑えておく必要があります。
+- api: 外部(このライブラリの利用者)に公開する依存関係
+- implementation: 外部(このライブラリの利用者)に公開せず、ライブラリ内の実装でのみ使う依存関係
+- compileOnly: Java プラグインの "compileOnly" 構成は、メイン ソース セットコードをコンパイルするために必要な依存関係を定義しますが、それはランタイム クラスパスの一部であってはなりません。
+- runtimeOnly: Javaプラグインの"runtimeOnly" 構成は、メイン ソース セットコードを実行するために必要な依存関係を定義しますが、コンパイルには必要ありません。
+
+- testImplementation: Javaプラグインの"testImplementation" 構成は、テスト ソース セットコードをコンパイルして実行するために必要な依存関係を定義します。
+- testCompileOnly: Javaプラグインの"testCompileOnly" 構成は、テスト ソース セットのコードをコンパイルするために必要な依存関係を定義しますが、それはランタイム クラスパスの一部であってはなりません。
+- testRuntimeOnly: Javaプラグインの"testRuntimeOnly" 構成は、テスト ソース セットコードを実行するために必要な依存関係を定義しますが、コンパイルには必要ありません。runtimeOnlyを拡張します。runtimeOnlyで利用可能なものはすべて、「testRuntimeOnly」でも利用できます。この構成は、テストJava プラグイン タスクで使用されます。
+
+以下は非推奨になっています
+- compile: implementationに置き換えられるようになった
+- runtime: runtimeOnlyに置き換えられるようになった 
+- testCompile: testImplementationに置き換えられるようになった
+- testRuntime: testImplementationに置き換えられるようになった
+
 
 ### gradlewで実行可能なタスク一覧を表示する
 ```

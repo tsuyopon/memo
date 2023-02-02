@@ -25,6 +25,11 @@ machdep.cpu.features: FPU VME DE PSE TSC MSR PAE MCE CX8 APIC SEP MTRR PGE MCA C
 # MAC関連設定
 
 # 一般操作
+### keynoteなどのファイルが終了時に自動保存されてしまう。
+Mac OS X Lion v10.7以降では自動保存が有効になってしまっているようです。
+システム環境変数 -> 「一般」 -> 「書類を閉じるときに変更内容を保持するかどうかを確認」にチェックする。
+- https://www.too.com/support/faq/mac/22483.html
+
 
 
 ### アップロードするときなどに、1つ上の階層に移動する
@@ -66,6 +71,13 @@ $ cat gdb.txt | pbcopy
 リモートサーバにログインするためにsshを使っているような場合にもpbcopyを使うことができます。
 ```
 $ ssh user@example.com 'cat hello.txt' | pbcopy
+```
+
+### クリップボードにコピーした文字列を貼り付ける
+```
+$ echo "hoge" | pbcopy
+$ pbpaste
+hoge
 ```
 
 ### 必須アプリ

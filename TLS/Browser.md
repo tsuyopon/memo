@@ -75,6 +75,13 @@ $keytool -list -rfc -keystore C:/Java/jre1.8.0_102/lib/security/cacerts -storepa
 - Mozilla Root Store Policy
   - https://www.mozilla.org/en-US/about/governance/policies/security-group/certs/policy/
 
+
+2023/01現在のポリシーについて
+
+- The Chromium Projects
+  - 2022/09より「Chrome Root Program」と呼ばれるものが始まりました。これはルート証明書はそのOSのプラットフォームを信頼していくのではなく、独自で管理していくという方針への変更です。
+    - https://blog.chromium.org/2022/09/announcing-launch-of-chrome-root-program.html
+
 ### go.jpのサイトがmozillaだと安全ではない接続とされる理由
 Mozillaはユーザーの安全を守るために、どのルート証明書を登録するかを独自に判断しており、他社の判断を鵜呑みにはしないというポリシーで証明書ストアを管理しています。
 
