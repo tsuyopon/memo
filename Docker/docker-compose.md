@@ -100,6 +100,7 @@ UID    PID    PPID    C   STIME   TTY     TIME      CMD
 ```
 
 ### docker-composeで立ち上げたコンテナのログを見る
+docker-compose.ymlが存在するディレクトリで実施してください。
 各種コンテナのログがわかるようになっています。以下ではdb_1やapp_1のログがわかります。
 ```
 $ docker-compose logs
@@ -111,6 +112,13 @@ app_1  | AH00558: apache2: Could not reliably determine the server's fully quali
 app_1  | AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 172.22.0.3. Set the 'ServerName' directive globally to suppress this message
 app_1  | [Thu Mar 31 00:10:19.693476 2022] [mpm_prefork:notice] [pid 1] AH00163: Apache/2.4.53 (Debian) PHP/7.4.28 configured -- resuming normal operations
 app_1  | [Thu Mar 31 00:10:19.693544 2022] [core:notice] [pid 1] AH00094: Command line: 'apache2 -D FOREGROUND'
+```
+
+
+デフォルトではカレンとディレクトリにdocker-compose.ymlが配置されているかどうかで、
+ymlに記載されているサービスのログを取得するかどうかを決定します。 ymlファイルを明示的に指定する場合にはfオプションで指定してください。
+```
+$ docker-compose -f option/docker-compose.yml
 ```
 
 ### 各種ファイルを変更した場合に反映するために必要なコマンドについて
