@@ -11,7 +11,8 @@ VSCodeについて
 
 ### デバッガ実行の際のショートカット
 
-- F9:  停止したい行で押下することでブレークポイントを設定できる
+- F5: 続行(continue)
+- F9: 停止したい行で押下することでブレークポイントを設定できる
   - ブレークポイントにはいくつか種類があり、ソースコードの左側を右クリックで選択できます。
 - F10: 現在の行の処理を実行し、次の行で停止する(step over)
 - F11: 現在の行の実行が関数の場合、その関数の中でステップ実行に進む(step in)
@@ -59,6 +60,9 @@ ${fileExtname}: ${file}の拡張子
 ${cwd}: 現在の作業ディレクトリ
 ```
 
+上記の定義値は他にもあります。以下の公式資料を参考にしてください。
+- https://code.visualstudio.com/docs/editor/variables-reference
+
 ### request属性が「launch」の場合にサポートされる属性
 - program: 起動するプログラムのパス
 - args: デバッグ実行時にプログラムに渡す引数
@@ -101,6 +105,12 @@ skipFilesにglob形式でステップインで参照してほしくないファ�
 
 なお、上記で使っている「<node_internals>」はNode.jsの組み込みコアモジュールを参照する「マジックネーム」となっている。
 
+
+# 公式資料
+- Debugging
+  - https://code.visualstudio.com/docs/editor/debugging
+- Variables Reference
+  - https://code.visualstudio.com/docs/editor/variables-reference
 
 # 外部資料参考
 - Visual Studio Codeデバッグ入門
