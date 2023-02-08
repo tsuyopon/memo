@@ -4,11 +4,16 @@ delveはgo言語用のデバッガです。
 go言語用のデバッガにはdelveやgdb, godebugといったいくつかの候補がありますが、go言語の場合には標準のgcコンパイラを使っているのでdelveを使った方が良いらしいです。
 - (参考) https://kazuhira-r.hatenablog.com/entry/2021/02/13/234024
 
+go言語の公式ドキュメント( https://go.dev/doc/gdb ) にもそのように記述されています。
+> Note that Delve is a better alternative to GDB when debugging Go programs built with the standard toolchain.
 
 下記資料が最速でdelveを使う為にわかりやすかった。
 - https://qiita.com/minamijoyo/items/4da68467c1c5d94c8cd7
 
 delveのコマンドラインの使い方もほとんどコマンドの使い方はgdbと同じような感じです。
+
+delveのオプションについては下記githubにドキュメントがあります。
+- https://github.com/go-delve/delve/tree/master/Documentation/usage
 
 # インストール方法
 
@@ -263,6 +268,21 @@ Process 67387 has exited with status 0
 (dlv) q
 ```
 
+### 実行中のプロセスにdlvでアタッチする方法
+```
+デバッグ対象アプリ起動
+$ ./main
+
+プロセス番号を調べる
+$ ps aux 
+
+デバッガをアタッチ。
+$ dlv attach プロセス番号
+(dlv) 
+```
+
+あとはgdbと同じようにbでブレークポイントを貼ってから、cを実行することでブレークポイントになったら止まる。
+
 ### ローカル変数の確認
 ```
 (dlv) locals
@@ -310,7 +330,7 @@ Process restarted with PID 55704
 ### 簡単なテストをデバッグしてみる。
 以下のテストコードをdelveでデバッグすることを考えます。
 ```
-func TestHoge(t *testing.T) {
+func TestHoge(t \*testing.T) {
     tests := []struct {
         in  string
         out string
@@ -338,6 +358,55 @@ $ dlv test -- -test.run TestHoge
 (参考) https://christina04.hatenablog.com/entry/2017/07/16/094140
 
 
+# リモートデバッグ
+
+go言語をリモートデバッグするためにはdlvを別ポートで起動する必要があります。
+dlv execによってgo言語のプログラムを実行し、即座にattachしてくれます。
+なお、デバッグする際には下記フラグを付与して最適化を無効にしなければなりません。
+```
+Go1.10以降: gcflags="all=-N -l" 
+それ以前:   gcflags="-N -l"
+```
+
+### リモートデバッグの起動方法について
+下記のようにしてgo言語の起動とdlvデバッガサーバ(port:2345)を同時に行うことができるようになります。
+```
+dlv --listen=:2345 --headless=true --api-version=2 exec ./myApp
+```
+
+execとプログラム名の位置はdlvの直後に書いても問題ないようです。--listenは-lでかけます。「localhost」と明示的に指定することも可能です。
+```
+$ dlv exec myApp --headless -l localhost:12345
+API server listening at: 127.0.0.1:12345
+```
+
+上記で付与されているオプションを簡単に説明します。
+- listen(-l)はデバッグ用に稼働させるポート番号です。
+- headlessを指定することによって、サーバはJSON-RPCやDAPクライアント接続を受け入れるようになります。
+- api-versionはheadlessの際のJSON-RPC APIのバージョンを指定する。新しいクライアントはv2を使うべき
+
+- 参考: https://github.com/go-delve/delve/blob/master/Documentation/usage/dlv_exec.md
+
+
+### プログラムに引数を与える場合
+下記相当をdlv execから実行させたい場合
+```
+$ ./hello server --config conf/config.toml
+```
+
+「--」の後に記述するようにすれば良い。
+```
+$ dlv exec ./hello -- server --config conf/config.toml
+```
+
+- 参考: https://manpages.ubuntu.com/manpages/kinetic/man1/dlv.1.html
+
+### JSON-RPCやDAPでのリモートデバッグ時に複数のクライアントからの接続を許容する。
+下記のオプションを付与することで、JSON-RPCやDAPで複数のクライアントからの接続を許容する。
+```
+--accept-multiclient=true
+```
+
 # トラブルシュート
 
 ### バイナリに対して実行したら変数が表示されない
@@ -351,9 +420,9 @@ delveはdlv exec <binary>と実行すればバイナリに対してもデバッ�
 
 バイナリ生成のビルド時には最適化を無効にするために下記オプションを付与することで、生成されたELFが最適化されることもありません。
 ```
-$ go build -gcflags '-N -l' 
+$ go build -gcflags '-N -l'    // Go1.10未満
+$ go build -gcflags 'all=-N -l'    // Go1.10未満
 ```
-
 
 # 公式ドキュメント
 - delveソースコード(github) ドキュメントの記載もあり
