@@ -283,6 +283,24 @@ $ dlv attach プロセス番号
 
 あとはgdbと同じようにbでブレークポイントを貼ってから、cを実行することでブレークポイントになったら止まる。
 
+### ブレークポイントを貼る方法
+通常のプログラムは下記のようにセットします。
+```
+(dlv) break ./main.go:10
+```
+
+### ブレークポイントのクリア
+btなどで表示された番号をclearの引数で指定することでブレークポイントを削除できます。
+```
+(dlv) clear 1
+Breakpoint 1 cleared at 0x10d155d for main.main() ./main.go:10
+```
+
+全てのブレークポイントを削除するにはcleanallを使いましょう。
+```
+(dlv) cleanall
+```
+
 ### ローカル変数の確認
 ```
 (dlv) locals
@@ -325,6 +343,30 @@ Process restarted with PID 55704
     11: 
 ```
 
+### 周辺のソースコードの表示
+引数を付与しなければ現在処理している周辺のソースコードを表示します。
+```
+(dlv) list
+> main.main() ./main.go:10 (hits goroutine(1):1 total:1) (PC: 0x10d155d)
+    5: var m = make(map[int]int, 0)
+    6:
+    7: func main() {
+    8:   for _, n := range []int{5, 1, 9, 98, 6} {
+    9:     x := fib(n)
+=> 10:     fmt.Println(n, "fib", x)
+   11:   }
+   12: }
+   13:
+   14: func fib(n int) int {
+   15:   if n < 2 {
+```
+
+ソースコードを指定するとその周辺の情報を表示します。
+```
+(dlv) list ./main.go:10
+```
+
+
 # 単体テストでのデバッグ
 
 ### 簡単なテストをデバッグしてみる。
@@ -355,7 +397,9 @@ $ dlv test -- -test.run TestHoge
 (dlv) 
 ```
 
-(参考) https://christina04.hatenablog.com/entry/2017/07/16/094140
+(参考) 
+- https://christina04.hatenablog.com/entry/2017/07/16/094140
+- https://budougumi0617.github.io/2018/04/08/debug-by-delve/
 
 
 # リモートデバッグ
@@ -364,8 +408,8 @@ go言語をリモートデバッグするためにはdlvを別ポートで起動
 dlv execによってgo言語のプログラムを実行し、即座にattachしてくれます。
 なお、デバッグする際には下記フラグを付与して最適化を無効にしなければなりません。
 ```
-Go1.10以降: gcflags="all=-N -l" 
-それ以前:   gcflags="-N -l"
+Go1.10以降: $ go build -gcflags="all=-N -l" -o myApp
+それ以前:   $ go build -gcflags="-N -l" -o myApp
 ```
 
 ### リモートデバッグの起動方法について
@@ -376,25 +420,34 @@ dlv --listen=:2345 --headless=true --api-version=2 exec ./myApp
 
 execとプログラム名の位置はdlvの直後に書いても問題ないようです。--listenは-lでかけます。「localhost」と明示的に指定することも可能です。
 ```
-$ dlv exec myApp --headless -l localhost:12345
+$ dlv exec myApp --headless=true -l localhost:12345
 API server listening at: 127.0.0.1:12345
 ```
 
 上記で付与されているオプションを簡単に説明します。
 - listen(-l)はデバッグ用に稼働させるポート番号です。
-- headlessを指定することによって、サーバはJSON-RPCやDAPクライアント接続を受け入れるようになります。
+- headless=trueを指定することによって、サーバはJSON-RPCやDAPクライアント接続を受け入れるようになります。
 - api-versionはheadlessの際のJSON-RPC APIのバージョンを指定する。新しいクライアントはv2を使うべき
 
 - 参考: https://github.com/go-delve/delve/blob/master/Documentation/usage/dlv_exec.md
 
 
+### dlvサーバのリモートポートに接続したい場合
+dlv connectによりdlvサーバに接続することができます。
+```
+$ dlv connect localhost:12345
+```
+
+(参考) https://github.com/go-delve/delve/blob/master/Documentation/usage/dlv_connect.md
+
+
 ### プログラムに引数を与える場合
-下記相当をdlv execから実行させたい場合
+下記相当をdlv execから実行させたい場合には
 ```
 $ ./hello server --config conf/config.toml
 ```
 
-「--」の後に記述するようにすれば良い。
+dlv execから起動する際には「--」以降にに引数処理を記述するようにすれば良い。
 ```
 $ dlv exec ./hello -- server --config conf/config.toml
 ```
@@ -406,6 +459,20 @@ $ dlv exec ./hello -- server --config conf/config.toml
 ```
 --accept-multiclient=true
 ```
+
+### プログラムの起動時からデバッグしたい場合
+TBD
+
+# コアダンプからのデバッグ
+コアダンプの出力方法はdebug.mdにも記載していますので別途参照ください。
+```
+$ gcore <PID>
+$ dlv core <binary name> <coredump name>
+```
+
+- 参考
+  - https://princepereira.medium.com/core-dump-analysis-in-golang-using-delve-3c66e0a40e7f
+
 
 # トラブルシュート
 
