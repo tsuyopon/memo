@@ -1,5 +1,8 @@
 # 概要
-GDBに関するデバッグについて
+GDBに関するデバッグについて記載します。
+
+なおgo言語の公式ドキュメント( https://go.dev/doc/gdb ) にはdelveが推奨となっています。
+> Note that Delve is a better alternative to GDB when debugging Go programs built with the standard toolchain.
 
 # デバッグしてみる
 GO言語では基本的に最適化によるビルドが行われる。  

@@ -3,6 +3,25 @@ GO言語のdebugについて
  
 # 詳細
 
+### コアダンプ
+下記環境変数を設定しておくだけでcrash時にコアダンプを出力してくれるようになります。
+```
+export GOTRACEBACK=crash
+```
+
+あとはOS側の設定も確認しておきましょう。
+```
+$ ulimit -c unlimited
+$ ulimit -c
+unlimited
+```
+
+プログラムにコアを吐かせたければSIGABRTを送りましょう。
+```
+$ ps auxww
+$ kill -ABRT <プロセス番号>
+```
+
 ### HTTP/2のデバッグで利用可能な環境変数
 GODEBUG環境変数に次のように指定することでHTTP/2に関するデバッグログが取得できるらしい
 ```
