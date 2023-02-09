@@ -4,19 +4,36 @@ Dockerのnetworkサブコマンドについて
 # 詳細
 
 ### 一覧を表示する
-
 ```
-$ docker network ls
-NETWORK ID     NAME                   DRIVER    SCOPE
-dfc40b018e29   athenz                 bridge    local
-6ac6a5134ca6   bridge                 bridge    local
-dc759496ca65   build_default          bridge    local
-b2760768ff97   cdn-in-a-box_default   bridge    local
-9fb32079cdd1   docker_default         bridge    local
-5041247d2b74   host                   host      local
-1c3326f756c3   none                   null      local
-e8f08ae5251a   sakila_default         bridge    local
-48c10f5d13fd   screwdriver_default    bridge    local
+$ sudo docker network ls 
+NETWORK ID          NAME                DRIVER
+10aa51e2d993        bridge              bridge
+202b87d7b8a4        none                null
+92316fc5522f        host                host
+```
+
+- NAME
+  - (1) none: ネットワークへの接続を必要としないコンテナの場合
+  - (2) host: Docker ホストと同じネットワークにスタックするドライバで、Docker ホストマシンと同じネットワークインタフェース、IP アドレスを持つようになります。
+  - (3) bridge: Linux bridge 機能を使った、Linux 上に別ネットワークを使う方式。 (--netオプションを指定しないとデフォルトはこれになります)
+
+上記の3つはそれぞれbusyboxを立ち上げてifconfigを確認してみましょう。
+
+- (1) none
+```
+```
+
+- (2) none
+```
+```
+
+- (3) bridge
+  - コンテナ側とhost側のifconfigを比較すると
+```
+$ docker run --name bridge_net_busybox -ti busybox /bin/sh
+(docker)$ ifconfig
+(docker)$ exit
+$ ifconfig 
 ```
 
 ### NETWORK IDを指定して利用しているネットワーク情報を確認する

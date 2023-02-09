@@ -59,6 +59,7 @@ $ docker volume inspect myvol
 ```
 
 ### 作成したボリュームを削除する
+コンテナが予期せぬ停止などになった場合で途方に暮れている場合には、ボリュームを最終手段で削除するのが良い。
 ```
 $ docker volume rm myvol
 myvol
