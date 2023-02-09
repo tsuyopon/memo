@@ -79,6 +79,10 @@ docker_app_1   php          7-apache   eca4459c9842   452.3 MB
 docker_db_1    mysql        8          667ee8fb158e   520.7 MB
 ```
 
+終了するにはdownオプションを指定します。
+```
+$ docker-compose down
+```
 
 ### docker-composeで立ち上げたコンテナで稼働するプロセスを確認する
 ```
@@ -97,6 +101,17 @@ docker_db_1
 UID    PID    PPID    C   STIME   TTY     TIME      CMD  
 ---------------------------------------------------------
 999   99509   99482   1   00:10   ?     00:00:03   mysqld
+```
+
+### psコマンドを実行する
+```
+$ docker-compose -f ./docker-compose.yml ps
+            Name                           Command                  State                                                                Ports                                                         
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+cdn-in-a-box_db_1               docker-entrypoint.sh /run- ...   Up             0.0.0.0:5432->5432/tcp                                                                                                 
+cdn-in-a-box_dns_1              /sbin/entrypoint.sh /usr/s ...   Up             0.0.0.0:9353->53/tcp, 0.0.0.0:9353->53/udp                                                                             
+cdn-in-a-box_edge_1             /bin/sh -c /run.sh               Up             0.0.0.0:2347->2347/tcp, 0.0.0.0:9000->80/tcp                                                                           
+cdn-in-a-box_enroller_1         /bin/sh -c /run.sh               Up             0.0.0.0:2343->2343/tcp                                                                                                 
 ```
 
 ### docker-composeで立ち上げたコンテナのログを見る
