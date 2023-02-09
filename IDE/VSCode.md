@@ -106,6 +106,14 @@ skipFilesにglob形式でステップインで参照してほしくないファ�
 なお、上記で使っている「<node_internals>」はNode.jsの組み込みコアモジュールを参照する「マジックネーム」となっている。
 
 
+# 完全アンインストールする
+設定がうまく効かないので途方に暮れてしまって、完全アンインストールしてやり直すことにした。その際のコマンド。
+```
+$ rm -rf /Applications/Visual\ Studio\ Code.app/
+$ rm -rf ~/Library/Application\ Support/Code
+$ rm -rf ~/.vscode/
+```
+
 # 公式資料
 - Debugging
   - https://code.visualstudio.com/docs/editor/debugging
