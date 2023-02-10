@@ -741,6 +741,8 @@ $ ./script.sh
 + exit 0
 ```
 
+
+
 ### 特定の箇所から特定の箇所までをデバッグモードにしたい
 次のようにset -xやset +xを使い分けすれば良い。
 ```
@@ -755,6 +757,34 @@ set -x　←実行状況の出力を開始
 set +x　←実行状況の出力を終了
 
 デバッグが必要ない部分
+```
+
+なお、/usr/bin/envでは「#!/usr/bin/env bash -x」や「#!/usr/bin/env "bash -x"」などとしても効かないで実行時にエラーとなってしまうので、デバッグ時には「set -x」を利用する。
+以下のようなサンプルがある場合
+```
+$ cat test.sh 
+#!/usr/bin/env bash
+
+set -x
+
+hostname="MOGE"
+debug_variable_name="T3C_DEBUG_COMPONENT_${hostname}"
+echo $debug_variable_name
+
+debug_binary="${!debug_variable_name}"
+
+echo $debug_binary
+```
+
+実行すると以下のように変数情報や実行結果が展開されて表示されます。
+```
+$ ./test.sh 
++ hostname=MOGE
++ debug_variable_name=T3C_DEBUG_COMPONENT_MOGE
++ echo T3C_DEBUG_COMPONENT_MOGE
+T3C_DEBUG_COMPONENT_MOGE
++ debug_binary=
++ echo
 ```
 
 ### 間違ってファイルの上書きをしないように禁止する
