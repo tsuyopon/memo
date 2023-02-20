@@ -7,7 +7,37 @@ docker-comoposeはdocker-compose.ymlの存在するディレクトリで実行�
 
 # 詳細
 
-### docker-composeを試してみる
+### docker-composeのオプション
+```
+docker compose build      サービスの構築もしくは再構築
+docker compose convert    ファイルをプラットフォーム固有の形式に変換
+docker compose cp         サービス・コンテナとローカル・ファイルシステム間でファイルやフォルダをコピー
+docker compose create     サービス用のコンテナを作成
+docker compose down       コンテナやネットワークの停止と削除
+docker compose events     コンテナからリアルタイムにイベントを受信
+docker compose exec       実行中のコンテナ内でコマンドを実行
+docker compose images     作成したコンテナが使っているイメージを一覧表示
+docker compose kill       サービスコンテナを強制停止
+docker compose logs       コンテナからの出力を表示
+docker compose ls         実行中の compose プロジェクトを一覧表示
+docker compose pause      サービスの一時停止
+docker compose port       ポートを確保している公開ポートを表示
+docker compose ps         コンテナを一覧表示
+docker compose pull       サービスのイメージを取得
+docker compose push       サービスのイメージを送信
+docker compose restart    コンテナの再起動
+docker compose rm         停止済みのサービス・コンテナを削除
+docker compose run        サービスを一度限りのコマンドとして実行
+docker compose start      サービスの開始
+docker compose stop       サービスの停止
+docker compose top        実行中のプロセスを表示
+docker compose unpause    サービスの一時停止を解除
+docker compose up         コンテナの作成と開始
+```
+
+- 参考: https://docs.docker.jp/engine/reference/commandline/compose_down.html
+
+### docker-composeの起動・終了を試してみる
 以下の内容でdocker-compose.ymlファイルを用意します。
 ```
 $ cat docker-compose.yml
@@ -31,7 +61,7 @@ volumes:
 ```
 
 では、起動してみます。イメージ取得まで自動的にやって、コンテナも起動してくれました。
-upは起動させるオプションで、-dによりバックグラウンド実行させることができます。
+upは起動させるオプションで、-dによりバックグラウンド実行させることができます。-dを付与しないとフォアグラウンドで起動するので、エラーログが表示され、端末の終了と同時にコンテナも終了になります。
 ```
 $ docker-compose up -d
 Docker Compose is now in the Docker CLI, try `docker compose up`
@@ -89,6 +119,11 @@ docker_db_1    mysql        8          667ee8fb158e   520.7 MB
 $ docker-compose down
 ```
 
+起動したコンテナもあわせて削除したい場合には-vオプションを指定する必要があります
+```
+$ docker-compose down -v
+```
+
 ### docker-composeで立ち上げたコンテナで稼働するプロセスを確認する
 ```
 $ docker-compose top
@@ -119,7 +154,7 @@ cdn-in-a-box_edge_1             /bin/sh -c /run.sh               Up             
 cdn-in-a-box_enroller_1         /bin/sh -c /run.sh               Up             0.0.0.0:2343->2343/tcp                                                                                                 
 ```
 
-### docker-composeで立ち上げたコンテナのログを見る
+### docker-composeで立ち上げたコンテナのログを最初から見る
 docker-compose.ymlが存在するディレクトリで実施してください。
 各種コンテナのログがわかるようになっています。以下ではdb_1やapp_1のログがわかります。
 ```
@@ -139,6 +174,16 @@ app_1  | [Thu Mar 31 00:10:19.693544 2022] [core:notice] [pid 1] AH00094: Comman
 ymlに記載されているサービスのログを取得するかどうかを決定します。 ymlファイルを明示的に指定する場合にはfオプションで指定してください。
 ```
 $ docker-compose -f option/docker-compose.yml
+```
+
+### docker-composeで立ち上げたコンテナのログを途中からみる
+tailを付与することで現在の何行前から出力するかを指定できます。これを付与しないと起動時から出力されてしまい表示までに時間がかかってしまうケースがあるので生産性のためにも覚えておくべきコマンドです。
+```
+# 最新5行からtailする
+$ docker-compose logs -f --tail="5"
+
+# 最新5行からタイムスタンプ付きでtailする
+$ docker-compose logs -f --tail="5" -t
 ```
 
 ### docker-composeのコンテナ内で実行されているイベントコマンドを取得する
@@ -432,3 +477,7 @@ Docker Compose is now in the Docker CLI, try `docker compose`
                               Compose ファイルに scale の設定があっても上書きされる
 ```
 - https://docs.docker.jp/compose/reference/up.html
+
+# 公式ドキュメント
+- composeファイル仕様
+  - https://docs.docker.com/compose/compose-file/
