@@ -3,7 +3,7 @@ Makefileについての記述に関してのTIPSについて
 
 # 詳細
 
-### 以下の2つの違い
+### 以下の2つの違いではまったのでメモ
 下記ファイルの違いにはまったのでメモ
 - Makefile1: filterを使って、ifneqで判定する
 - Makefile2: filterを使わずに、ifneqで判定する
@@ -23,7 +23,8 @@ all, %:
 ```
 
 では、ターゲットを変更して色々と実行してみます。
-想像とは異なり、「debug」を指定するとifneqの中に入ってしまいました
+想像とは異なり、「debug」を指定するとifneqの中に入ってしまいました。
+filterされると「debug」に当てはまれば、ifneqなのでelseの方に入ってしまいそうなのに。
 ```
 $ make debug -f Makefile1
 echo "ifneq entered"
@@ -66,3 +67,14 @@ debug
 
 Makefile1とMakefile2で違いがありますが
 filterを使った判定は直感で考えにくい部分があるので要注意です。
+
+これは、実はMakefile1の以下の箇所で$(filter debug,$(MAKECMDGOALS))ではdebugなら「debug」となりますが、よく()を調べてみると解ります。
+```
+ifneq ($(filter debug,$(MAKECMDGOALS)),)
+```
+これは、下記のようにfilterの結果が空の場合以外にifneqとなっているからです。
+```
+ifneq (debug,)
+```
+
+ということで、どの言語でもそうですが特にMakefileではちょっとした文法に気付けないとドツボにはまります。
