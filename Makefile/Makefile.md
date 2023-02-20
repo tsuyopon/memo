@@ -12,6 +12,14 @@ Makefileを検索する際には次の公式マニュアルがおすすめです
   - http://www.gnu.org/software/make/manual/make.html
 
 
+# 終了ステータス
+makeの終了ステータスが決まっています。
+```
+0: makeが成功した場合
+1: "-q"フラグを使ってファイルが最新でないと判断された場合
+2: makeが実行中にいくつかのエラーに遭遇した場合
+```
+
 # 変数
 
 ## @と-の意味について
@@ -669,7 +677,7 @@ all:
 ```
 aaaaa
 Makefile2:2: bbbbb
-Makefile2:2: *** ccccc.  Stop.
+Makefile2:2: \*\*\* ccccc.  Stop.
 ```
 
 errorの場合には必ずその行で停止します。
