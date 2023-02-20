@@ -11,7 +11,21 @@ Makefileで重要となる次のような情報についてまとめています
   - https://www.gnu.org/software/make/manual/html_node/Special-Targets.html
 
 # 詳細
-### GNU MAKEの定義済みマクロ変数
+
+## 環境変数
+
+### MAKECMDGOALS
+- MAKECMDGOALS環境変数はではターゲットに指定された値が入ります。以下のサンプルのように使うことができます。
+```
+ifeq ($(MAKECMDGOALS),debug)
+	HOGE="debug"
+else
+	HOGE="not debug"
+endif
+```
+
+
+# GNU MAKEの定義済みマクロ変数
 ```
 マクロ名    文字列     説明
 AR          ar         アーカイブユーティリティ
@@ -60,6 +74,7 @@ LINK.c = $(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(TARGET_ARCH)
 LINK.cc = $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS) $(TARGET_ARCH)
 ```
 
+## 特別なターゲット
 ### .PHONY
 Makefileでは以下のようなファイル名のターゲットが存在する場合には(.PHONYは定義されていないものとする)、ファイル名のファイルが存在していない場合に限りターゲットを実行します。
 ```
