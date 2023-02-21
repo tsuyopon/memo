@@ -32,7 +32,7 @@ Usage:
         https://docs.influxdata.com/influxdb/latest/query_language/spec/
 ```
 
-### InfluxDBに接続する・終了する
+### InfluxDBに接続する・終了する(influxコマンド 1系)
 下記コマンドで接続する
 ```
 $ influx
@@ -46,6 +46,12 @@ $ influx -precision rfc3339
 なお、終了するにはEXITを使ってください。
 ```
 > EXIT
+```
+
+### InfluxDBに接続する(influx 2系以降)
+influxコマンドが2系以上の場合には少し接続方法が異なります
+```
+$ influx v1 shell --host http://localhost:8086
 ```
 
 ### influxコマンドに指定できる引数
