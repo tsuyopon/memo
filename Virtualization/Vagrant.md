@@ -1,7 +1,7 @@
 # 概要
-vagrantはVirtualBoxを操作するためのフロントエンドツールですので、事前にVirtualBoxのインストールが必要となります。
-chefで使われるtest-kitchenでもデフォルトで利用されるようになっています。
+vagrantは仮想環境上に仮想マシンを作るツールです。
 
+VirtualBoxを操作するためのフロントエンドツールとして使われたりします。 chefで使われるtest-kitchenでもデフォルトで利用されるようになっています。
 このツールを使うとVagrantfileというファイルを用意するだけで、コマンド一発で仮想OS環境が作成できるようになります。
 
 # 詳細
@@ -10,6 +10,16 @@ chefで使われるtest-kitchenでもデフォルトで利用されるように�
 手元のMacOS(12.6)からの場合下記でインストール可能です。
 ```
 $ brew install --cask virtualbox vagrant
+```
+
+### バージョン
+下記でインストールされているバージョンと利用可能な最新バージョンを共に情報として出力します。
+```
+$ vagrant version
+Installed Version: 2.3.4
+Latest Version: 2.3.4
+ 
+You're running an up-to-date version of Vagrant!
 ```
 
 ### vagrantを使ってみる
@@ -96,6 +106,15 @@ localhost.localdomain
 $ vagrant destroy
 ```
 
+### 存在しているboxのリストを取得する
+```
+$ vagrant box list
+bento/centos-7     (virtualbox, 202008.16.0)
+bento/centos-7     (virtualbox, 202212.11.0)
+bento/ubuntu-18.04 (virtualbox, 202008.16.0)
+ubuntu/bionic64    (virtualbox, 20230222.0.0)
+```
+
 ### vagrant sshでログインする際のSSH接続情報を確認する
 以下を見るとデフォルトでは ホストOSのport 2200に、VMのport 22がフォワードされています
 ```
@@ -144,6 +163,163 @@ Host 192.168.3.10
 $ ssh 192.168.3.10
 Last login: Tue Feb 17 09:08:54 2019 from 10.0.1.2
 [vagrant@vagrant-centos-7 ~]$
+```
+
+### Boxを追加する
+```
+$ vagrant box add ubuntu/xenial64
+```
+
+### ダウンロード済みのBoxの更新版の有無を確認する
+```
+$ vagrant box outdated
+Checking if box 'ubuntu/focal64' version '20211006.0.0' is up to date...
+A newer version of the box 'ubuntu/focal64' for provider 'virtualbox' is
+available! You currently have version '20211006.0.0'. The latest is version
+'20220302.0.0'. Run `vagrant box update` to update.
+```
+
+### 追加したBoxを更新する
+```
+$ vagrant box update
+==> default: Checking for updates to 'bento/centos-7'
+    default: Latest installed version: 202008.16.0
+    default: Version constraints: 
+    default: Provider: virtualbox
+==> default: Updating 'bento/centos-7' with provider 'virtualbox' from version
+==> default: '202008.16.0' to '202212.11.0'...
+==> default: Loading metadata for box 'https://vagrantcloud.com/bento/centos-7'
+==> default: Adding box 'bento/centos-7' (v202212.11.0) for provider: virtualbox
+    default: Downloading: https://vagrantcloud.com/bento/boxes/centos-7/versions/202212.11.0/providers/virtualbox.box
+==> default: Successfully added box 'bento/centos-7' (v202212.11.0) for 'virtualbox'!
+$ 
+```
+
+特定のboxを指定してアップデートすることも可能です。
+```
+$ vagrant box update --box ubuntu/trusty64
+```
+
+### バージョン違いの Box が複数存在する場合、古いバージョンの Box を削除します。
+まずはリストを確認すると下記の例ではcentos-7が複数バージョン存在しています。
+```
+[~]$ vagrant box list
+bento/centos-7     (virtualbox, 202008.16.0)
+bento/centos-7     (virtualbox, 202212.11.0)
+bento/ubuntu-18.04 (virtualbox, 202008.16.0)
+ubuntu/bionic64    (virtualbox, 20230222.0.0)
+```
+
+dry-runオプションを指定して何が削除されるのかを事前に確認できます。まずはこれを実行します。
+```
+[~]$ vagrant box prune --dry-run
+The following boxes will be kept...
+bento/centos-7     (virtualbox, 202212.11.0)
+bento/ubuntu-18.04 (virtualbox, 202008.16.0)
+ubuntu/bionic64    (virtualbox, 20230222.0.0)
+Checking for older boxes...
+Would remove bento/centos-7 virtualbox 202008.16.0
+```
+
+古いバージョンのBoxを削除します。 途中でインタラクティブにboxを削除しても良いかどうかの確認があります。
+```
+[~]$ vagrant box prune 
+The following boxes will be kept...
+bento/centos-7     (virtualbox, 202212.11.0)
+bento/ubuntu-18.04 (virtualbox, 202008.16.0)
+ubuntu/bionic64    (virtualbox, 20230222.0.0)
+
+Checking for older boxes...
+Box 'bento/centos-7' (v202008.16.0) with provider 'virtualbox' appears
+to still be in use by at least one Vagrant environment. Removing
+the box could corrupt the environment. We recommend destroying
+these environments first:
+
+default (ID: 1b6d6f1c94bd42beb4c2235d53e2174c)
+default (ID: 22a5a531a1e040f98e7c78256c3d15f8)
+default (ID: fda1d95797234d06b24ac191ca89bca7)
+
+Are you sure you want to remove this box? [y/N] y
+Removing box 'bento/centos-7' (v202008.16.0) with provider 'virtualbox'...
+```
+
+再度リストを確認するとcentos-7の重複したバージョンで古いバージョンが削除されています。
+```
+[~]$ vagrant box list
+bento/centos-7     (virtualbox, 202212.11.0)
+bento/ubuntu-18.04 (virtualbox, 202008.16.0)
+ubuntu/bionic64    (virtualbox, 20230222.0.0)
+```
+
+### Boxを削除する
+```
+$ vagrant box remove ubuntu/trusty64
+```
+
+また以下の例のように複数のバージョンが存在していて、通常だと存在する全てが削除されるので、ターゲットバージョンを指定したい場合には、
+```
+$ vagrant box list
+centos/7        (virtualbox, 1708.01)
+centos/7        (virtualbox, 1801.02)
+```
+
+バージョンを指定して削除することができます。
+```
+$ vagrant box remove centos/7 --box-version 1708.01
+Removing box 'centos/7' (v1708.01) with provider 'virtualbox'...
+```
+
+### ヘルプオプションを確認する
+```
+$ vagrant -h
+Usage: vagrant [options] <command> [<args>]
+
+    -h, --help                       Print this help.
+
+Common commands:
+     autocomplete    manages autocomplete installation on host
+     box             manages boxes: installation, removal, etc.
+     cloud           manages everything related to Vagrant Cloud
+     destroy         stops and deletes all traces of the vagrant machine
+     global-status   outputs status Vagrant environments for this user
+     halt            stops the vagrant machine
+     help            shows the help for a subcommand
+     init            initializes a new Vagrant environment by creating a Vagrantfile
+     login           
+     package         packages a running vagrant environment into a box
+     plugin          manages plugins: install, uninstall, update, etc.
+     port            displays information about guest port mappings
+     powershell      connects to machine via powershell remoting
+     provision       provisions the vagrant machine
+     push            deploys code in this environment to a configured destination
+     rdp             connects to machine via RDP
+     reload          restarts vagrant machine, loads new Vagrantfile configuration
+     resume          resume a suspended vagrant machine
+     serve           start Vagrant server
+     snapshot        manages snapshots: saving, restoring, etc.
+     ssh             connects to machine via SSH
+     ssh-config      outputs OpenSSH valid configuration to connect to the machine
+     status          outputs status of the vagrant machine
+     suspend         suspends the machine
+     up              starts and provisions the vagrant environment
+     upload          upload to machine via communicator
+     validate        validates the Vagrantfile
+     version         prints current and latest Vagrant version
+     winrm           executes commands on a machine via WinRM
+     winrm-config    outputs WinRM configuration to connect to the machine
+
+For help on any individual command run `vagrant COMMAND -h`
+
+Additional subcommands are available, but are either more advanced
+or not commonly used. To see all subcommands, run the command
+`vagrant list-commands`.
+        --[no-]color                 Enable or disable color output
+        --machine-readable           Enable machine readable output
+    -v, --version                    Display Vagrant version
+        --debug                      Enable debug output
+        --timestamp                  Enable timestamps on log output
+        --debug-timestamp            Enable debug output with timestamps
+        --no-tty                     Enable non-interactive output
 ```
 
 ### Vagrantfileに記述できる内容
