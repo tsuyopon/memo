@@ -122,6 +122,145 @@ $ vagrant provision
 $ vagrant up --provision
 ```
 
+### Vagrantfile + プロビジョニングを使ってみる
+
+以下の内容で用意します。node1とnode2の2つのノードが起動するようになっています。
+また、プロビジョニングもconfig.vm.provisionで設定されています。
+
+```
+$ vim Vagrantfile 
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+
+  config.vm.define :node1 do |node|
+    node.vm.box = "bento/centos-7"
+    node.vm.network :forwarded_port, guest: 22, host: 2001, id: "ssh"
+    node.vm.network :private_network, ip: "192.168.33.11"
+  end
+
+  config.vm.define :node2 do |node|
+    node.vm.box = "bento/centos-7"
+    node.vm.network :forwarded_port, guest: 22, host: 2002, id: "ssh"
+    node.vm.network :forwarded_port, guest: 80, host: 8000, id: "http"
+    node.vm.network :private_network, ip: "192.168.33.12"
+  end
+  config.vm.provision "shell",
+    inline: "echo Hello, World!"
+
+end
+```
+
+では、実行してみます。仮想ホスト初回起動時は--provisionを指定しなくてもプロビジョニングが実行されます。
+```
+$ vagrant up
+Bringing machine 'node1' up with 'virtualbox' provider...
+Bringing machine 'node2' up with 'virtualbox' provider...
+==> node1: Importing base box 'bento/centos-7'...
+==> node1: Matching MAC address for NAT networking...
+==> node1: Checking if box 'bento/centos-7' version '202212.11.0' is up to date...
+==> node1: Setting the name of the VM: tsuyoshi_node1_1677208366971_36600
+==> node1: Clearing any previously set network interfaces...
+==> node1: Preparing network interfaces based on configuration...
+    node1: Adapter 1: nat
+    node1: Adapter 2: hostonly
+==> node1: Forwarding ports...
+    node1: 22 (guest) => 2001 (host) (adapter 1)
+==> node1: Booting VM...
+==> node1: Waiting for machine to boot. This may take a few minutes...
+    node1: SSH address: 127.0.0.1:2001
+    node1: SSH username: vagrant
+    node1: SSH auth method: private key
+    node1: Warning: Connection reset. Retrying...
+    node1: Warning: Remote connection disconnect. Retrying...
+    node1: Warning: Connection reset. Retrying...
+    node1: Warning: Remote connection disconnect. Retrying...
+    node1: Warning: Connection reset. Retrying...
+    node1: 
+    node1: Vagrant insecure key detected. Vagrant will automatically replace
+    node1: this with a newly generated keypair for better security.
+    node1: 
+    node1: Inserting generated public key within guest...
+    node1: Removing insecure key from the guest if it's present...
+    node1: Key inserted! Disconnecting and reconnecting using new SSH key...
+==> node1: Machine booted and ready!
+==> node1: Checking for guest additions in VM...
+    node1: The guest additions on this VM do not match the installed version of
+    node1: VirtualBox! In most cases this is fine, but in rare cases it can
+    node1: prevent things such as shared folders from working properly. If you see
+    node1: shared folder errors, please make sure the guest additions within the
+    node1: virtual machine match the version of VirtualBox you have installed on
+    node1: your host and reload your VM.
+    node1: 
+    node1: Guest Additions Version: 6.1.40
+    node1: VirtualBox Version: 7.0
+==> node1: Configuring and enabling network interfaces...
+==> node1: Mounting shared folders...
+    node1: /vagrant => /Users/tsuyoshi
+==> node1: Running provisioner: shell...
+    node1: Running: inline script
+    node1: Hello, World!
+==> node2: Importing base box 'bento/centos-7'...
+==> node2: Matching MAC address for NAT networking...
+==> node2: Checking if box 'bento/centos-7' version '202212.11.0' is up to date...
+==> node2: Setting the name of the VM: tsuyoshi_node2_1677208428013_28487
+==> node2: Clearing any previously set network interfaces...
+==> node2: Preparing network interfaces based on configuration...
+    node2: Adapter 1: nat
+    node2: Adapter 2: hostonly
+==> node2: Forwarding ports...
+    node2: 22 (guest) => 2002 (host) (adapter 1)
+    node2: 80 (guest) => 8000 (host) (adapter 1)
+==> node2: Booting VM...
+==> node2: Waiting for machine to boot. This may take a few minutes...
+    node2: SSH address: 127.0.0.1:2002
+    node2: SSH username: vagrant
+    node2: SSH auth method: private key
+    node2: Warning: Connection reset. Retrying...
+    node2: Warning: Remote connection disconnect. Retrying...
+    node2: Warning: Connection reset. Retrying...
+    node2: Warning: Remote connection disconnect. Retrying...
+    node2: Warning: Connection reset. Retrying...
+    node2: Warning: Remote connection disconnect. Retrying...
+    node2: 
+    node2: Vagrant insecure key detected. Vagrant will automatically replace
+    node2: this with a newly generated keypair for better security.
+    node2: 
+    node2: Inserting generated public key within guest...
+    node2: Removing insecure key from the guest if it's present...
+    node2: Key inserted! Disconnecting and reconnecting using new SSH key...
+==> node2: Machine booted and ready!
+==> node2: Checking for guest additions in VM...
+    node2: The guest additions on this VM do not match the installed version of
+    node2: VirtualBox! In most cases this is fine, but in rare cases it can
+    node2: prevent things such as shared folders from working properly. If you see
+    node2: shared folder errors, please make sure the guest additions within the
+    node2: virtual machine match the version of VirtualBox you have installed on
+    node2: your host and reload your VM.
+    node2: 
+    node2: Guest Additions Version: 6.1.40
+    node2: VirtualBox Version: 7.0
+==> node2: Configuring and enabling network interfaces...
+==> node2: Mounting shared folders...
+    node2: /vagrant => /Users/tsuyoshi
+==> node2: Running provisioner: shell...
+    node2: Running: inline script
+    node2: Hello, World!
+```
+
+起動後の内容を確認するとちゃんとnode1とnode2が起動していることが確認できます。
+```
+$ vagrant status
+Current machine states:
+
+node1                     running (virtualbox)
+node2                     running (virtualbox)
+
+This environment represents multiple VMs. The VMs are all listed
+above with their current state. For more information about a specific
+VM, run `vagrant status NAME`.
+```
 
 処理についてはVagrantfileに記述されたconfig.vm.provision をもとにして実行します。
 
