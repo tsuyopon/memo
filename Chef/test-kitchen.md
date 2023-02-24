@@ -23,7 +23,7 @@ Cookstyle version: 5.23.0
 
 Test KitchenのdriverはデフォルトでVagrantを利用します。
 ```
-$ brew cask install vagrant
+$ brew install --cask vagrant
 ```
 
 chef generate cookbookで初期化されたcookbookを作成します。

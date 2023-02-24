@@ -6,6 +6,12 @@ chefで使われるtest-kitchenでもデフォルトで利用されるように�
 
 # 詳細
 
+### インストール
+手元のMacOS(12.6)からの場合下記でインストール可能です。
+```
+$ brew install --cask virtualbox vagrant
+```
+
 ### vagrantを使ってみる
 
 利用可能なOSを表示します。
