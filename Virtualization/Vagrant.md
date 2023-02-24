@@ -262,6 +262,23 @@ above with their current state. For more information about a specific
 VM, run `vagrant status NAME`.
 ```
 
+IPアドレスも変更になっているかみてみます。
+```
+$ vagrant ssh node1
+
+This system is built by the Bento project by Chef Software
+More information can be found at https://github.com/chef/bento
+[vagrant@localhost ~]$ ifconfig eth1
+eth1: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.33.11  netmask 255.255.255.0  broadcast 192.168.33.255
+        inet6 fe80::a00:27ff:feb4:4bea  prefixlen 64  scopeid 0x20<link>
+        ether 08:00:27:b4:4b:ea  txqueuelen 1000  (Ethernet)
+        RX packets 6  bytes 1206 (1.1 KiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 24  bytes 3026 (2.9 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+```
+
 処理についてはVagrantfileに記述されたconfig.vm.provision をもとにして実行します。
 
 - 参考
