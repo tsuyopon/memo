@@ -106,6 +106,49 @@ localhost.localdomain
 $ vagrant destroy
 ```
 
+### プロビジョニングを利用する
+プロビジョニングが実行されるタイミングを抑えておきましょう。初回起動時には自動的に適用されます。
+- 仮想マシンが作成されていない場合に、最初にvagrant upを実行して仮想マシンが作成されたとき。
+- vagrant upやvagrant reloadに--provisionを指定したとき。
+- 仮想マシンが起動しているときにvagrant provisionを実行したとき。
+
+すでに稼働している仮想ホスト内に処理を適用する
+```
+$ vagrant provision
+```
+
+仮想ホスト起動時に適用させる(初回であれば指定不要らしい)
+```
+$ vagrant up --provision
+```
+
+
+処理についてはVagrantfileに記述されたconfig.vm.provision をもとにして実行します。
+
+- 参考
+  - https://monologu.com/vagrant-shell-provisioning/
+
+### 仮想ホストを起動する
+```
+$ vagrant up
+```
+
+プロビジョニングも合わせて実行する場合には以下のようにします(ただし、仮想ホスト初回起動時は不要らしい)
+```
+$ vagrant up --provision
+```
+
+### init
+Vagrant initコマンドを実行するとVagrantfileが作成されます。Vagrantfileには仮想環境の構成情報が書かれています。
+```
+$ vagrant init centos/7
+$ cat Vagrantfile  | grep -Ev "^(\s+)#|^#" | sed '/^$/d'     // コメント(#)と空行は除外
+Vagrant.configure("2") do |config|
+  config.vm.box = "centos/7"
+end
+```
+
+
 ### 存在しているboxのリストを取得する
 ```
 $ vagrant box list
@@ -115,7 +158,7 @@ bento/ubuntu-18.04 (virtualbox, 202008.16.0)
 ubuntu/bionic64    (virtualbox, 20230222.0.0)
 ```
 
-### vagrant sshでログインする際のSSH接続情報を確認する
+### vagrant sshでログインする際のSSH接続情報を確認し、sshで対象に接続する
 以下を見るとデフォルトでは ホストOSのport 2200に、VMのport 22がフォワードされています
 ```
 $ vagrant ssh-config
@@ -126,9 +169,47 @@ Host default
   UserKnownHostsFile /dev/null
   StrictHostKeyChecking no
   PasswordAuthentication no
-  IdentityFile /Users/tsuyoshi/vagrant/.vagrant/machines/default/virtualbox/private_key
+  IdentityFile /Users/tsuyoshi/.vagrant/machines/default/virtualbox/private_key
   IdentitiesOnly yes
   LogLevel FATAL
+```
+
+上記では「default」のHostの例しかありませんが、対象を指定して取得したい場合には--hostオプションを付与します。
+```
+$ vagrant ssh-config --host default
+```
+
+通常は下記でアクセスすることができますが、
+```
+$ vagrant ssh
+Last login: Fri Feb 24 02:38:06 2023 from 10.0.2.2
+
+This system is built by the Bento project by Chef Software
+More information can be found at https://github.com/chef/bento
+[vagrant@localhost ~]$ 
+```
+
+なおターゲットを指定する場合には「vagrant ssh」の後にHostの情報を指定すれば良い
+```
+$ vagrant ssh default
+```
+
+上記のvagrant ssh-configで出力された情報を使えば下記でアクセスすることができるようになります。
+```
+$ ssh vagrant@127.0.0.1 -p 2200 -i /Users/tsuyoshi/.vagrant/machines/default/virtualbox/private_key
+Last failed login: Fri Feb 24 02:36:32 UTC 2023 from 10.0.2.2 on ssh:notty
+There was 1 failed login attempt since the last successful login.
+Last login: Fri Feb 24 02:33:51 2023 from 10.0.2.2
+
+This system is built by the Bento project by Chef Software
+More information can be found at https://github.com/chef/bento
+[vagrant@localhost ~]$ 
+```
+
+もっと簡単なのは下記のように出力結果を.ssh/configに書き込んだ後にsshでホスト名だけ指定してアクセスするできます
+```
+$ vagrant ssh-config --host default >> ~/.ssh/config
+$ ssh default
 ```
 
 ### IPアドレスを変更する
@@ -164,6 +245,10 @@ $ ssh 192.168.3.10
 Last login: Tue Feb 17 09:08:54 2019 from 10.0.1.2
 [vagrant@vagrant-centos-7 ~]$
 ```
+
+### 何のBoxが存在しているのかを確認する
+下記のVagrant Cloudを参照してください。
+- https://app.vagrantup.com/boxes/search
 
 ### Boxを追加する
 ```
@@ -269,6 +354,39 @@ $ vagrant box remove centos/7 --box-version 1708.01
 Removing box 'centos/7' (v1708.01) with provider 'virtualbox'...
 ```
 
+### 仮想マシンを停止する
+```
+$ vagrant halt
+
+// 複数台存在する場合
+$ vagrant halt default
+```
+
+### 起動状態を確認する
+```
+$ vagrant status
+Current machine states:
+
+default                   running (virtualbox)
+
+The VM is running. To stop this VM, you can run `vagrant halt` to
+shut it down forcefully, or you can run `vagrant suspend` to simply
+suspend the virtual machine. In either case, to restart it again,
+simply run `vagrant up`.
+```
+
+停止して確認するとrunningからpoweroffになっていることが確認できます。
+```
+$ vagrant halt
+==> default: Attempting graceful shutdown of VM...
+$ vagrant status
+Current machine states:
+
+default                   poweroff (virtualbox)
+
+The VM is powered off. To restart the VM, simply run `vagrant up`
+```
+
 ### ヘルプオプションを確認する
 ```
 $ vagrant -h
@@ -322,6 +440,65 @@ or not commonly used. To see all subcommands, run the command
         --no-tty                     Enable non-interactive output
 ```
 
+### 仮想マシン再起動
+```
+$ vagrant reload
+
+// ターゲットを指定する場合
+$ vagrant reload default
+```
+
+### 仮想マシン破棄
+```
+$ vagrant destroy
+
+// ターゲットを指定する場合
+$ vagrant destroy default
+```
+
+### 仮想マシンの一時停止と再開
+一時停止は下記コマンド
+```
+$ vagrant suspend 
+
+// ターゲットを指定する場合
+$ vagrant suspend default
+```
+
+再開は下記コマンド
+```
+$ vagrant resume
+
+// ターゲットを指定する場合
+$ vagrant resumedefault
+```
+
+### vagrant全体の仮想マシンの状態確認
+```
+$ vagrant global-status 
+id       name    provider   state   directory                                                                                 
+------------------------------------------------------------------------------------------------------------------------------
+8507404  default virtualbox running /Users/tsuyoshi/git/test/hello-chef/.kitchen/kitchen-vagrant/default-ubuntu-1804          
+1b6d6f1  default virtualbox aborted /Users/tsuyoshi/git/test/hello-chef2/hello-chef/.kitchen/kitchen-vagrant/default-centos-7 
+22a5a53  default virtualbox aborted /Users/tsuyoshi/git/test/hello-chef/.kitchen/kitchen-vagrant/default-centos-7             
+59c96c9  default virtualbox running /Users/tsuyoshi/hello-chef/.kitchen/kitchen-vagrant/default-ubuntu-1804                   
+3a9a897  default virtualbox paused  /Users/tsuyoshi/hello-chef/.kitchen/kitchen-vagrant/default-centos-7                      
+fda1d95  default virtualbox running /Users/tsuyoshi                                                                           
+ 
+The above shows information about all known Vagrant environments
+on this machine. This data is cached and may not be completely
+up-to-date (use "vagrant global-status --prune" to prune invalid
+entries). To interact with any of the machines, you can go to that
+directory and run Vagrant, or you can use the ID directly with
+Vagrant commands from any directory. For example:
+"vagrant destroy 1a2b3c4d"
+```
+
+場合によってはキャッシュから状態を取得するため、古い情報が表示されてしまうことがあるようです。–pruneオプションを付けることで確実な情報を表示できます。
+```
+$ vagrant global-status --prune
+```
+
 ### Vagrantfileに記述できる内容
 実際に試したわけではないので、参考URLだけ載せておく。
 - https://qiita.com/ryurock/items/91df14537512c03488ac
@@ -331,4 +508,8 @@ or not commonly used. To see all subcommands, run the command
 # 公式資料
 - Vagrant公式ドキュメント
   - https://www.vagrantup.com/docs/index
+
+# 参考資料
+- https://zenn.dev/y_mrok/books/vagrant-no-tsukaikata/viewer/chapter8
+
 
