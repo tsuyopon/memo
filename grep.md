@@ -28,3 +28,9 @@ grep -F "['hoge']['fuga']" ./*
 grep -F "\$hoge['hoge']['fuga']" ./*
 ```
 
+### 特定の文字列を正規表現を使って抽出したい
+oオプションを利用することで抽出することができます。
+```
+$ echo "level=info log message of some system to investigate from ip=192.168.0.1" | grep -o ip=[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*
+ip=192.168.0.1
+```
