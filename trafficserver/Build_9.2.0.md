@@ -12,7 +12,7 @@ Release:	22.04
 Codename:	jammy
 ```
 
-# 手順
+# ビルド手順
 /usr/local/src上に落としておきます
 ```
 $ cd /usr/local/src
@@ -125,6 +125,48 @@ $ curl -v -H "Host: httpbin.org" http://localhost/
 }
 * Connection #0 to host localhost left intact
 ```
+
+# (おまけ) TLSの設定も行う
+下記のコマンドで公開鍵と証明書を生成します
+```
+$ openssl genrsa -aes128 -out sample.key 2048
+$ openssl rsa -in sample.key -out sample.key
+
+$ openssl req -utf8 -new -key sample.key -out sample.csr -subj "/C=JP/ST=Saitama/L=Urawa/O=/OU=Test/CN=test.co.jp"
+req: No value provided for subject name attribute "O", skipped
+
+$ vi subjectnames.txt
+subjectAltName = DNS:test.co.jp, DNS:*.example.com, DNS:bar.com, IP:192.16.3.3
+
+$ openssl x509 -req -days 365 -in sample.csr -signkey sample.key -out sample2.csr -extfile subjectnames.txt
+Certificate request self-signature ok
+subject=C = JP, ST = Saitama, L = Urawa, OU = Test, CN = test.co.jp
+```
+
+trafficserverのレポジトリ に配置します
+```
+$ sudo cp -iv sample2.csr sample.key /opt/trafficserver-9.2.0/etc/trafficserver/
+```
+
+続いて、ssl_multicert.configに下記を追加します
+```
+$ vim /opt/trafficserver-9.2.0/etc/trafficserver/ssl_multicert.config
+dest_ip=*   ssl_cert_name=sample2.csr ssl_key_name=sample.key
+```
+
+records.configにも下記設定に「443:ssl」を追加します。
+```
+$ vim /opt/trafficserver-9.2.0/etc/trafficserver/records.config 
+CONFIG proxy.config.http.server_ports STRING 8080 8080:ipv6 443:ssl
+```
+
+remap.configのmapには/を入れておくことでTLSにも対応しています。
+```
+$ vim /opt/trafficserver-9.2.0/etc/trafficserver/remap.config
+map / https://httpbin.org/get
+```
+
+以上によりTLS設定も完了となります。
 
 # 参考資料
 - https://docs.trafficserver.apache.org/en/latest/getting-started/index.en.html#installation
