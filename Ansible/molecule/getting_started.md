@@ -19,7 +19,7 @@ molecule 6.0.2 using python 3.10
 # Molecule利用までの準備作業
 
 コレクションの雛形を生成してくれるコマンドがあります。
-foo.barは「<namespace>.<collection>」の書式である必要があり、fooだけや、foo.bar.piyoだとエラーになります。
+foo.barは「[namespace].[collection]」の書式である必要があり、fooだけや、foo.bar.piyoだとエラーになります。
 ```
 $ ansible-galaxy collection init foo.bar
 - Collection foo.bar was created successfully

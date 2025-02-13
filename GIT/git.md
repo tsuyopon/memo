@@ -29,6 +29,25 @@ $ git mv oldname newname
 $ git mv -f oldname newname
 ```
 
+# forkしたレポジトリをリモートレポジトリに追従
+以下は、リモートレポジトリのmasterをローカルレポジトリのmasterにmergeし、タグも併せてアップロードします。
+```
+
+// 以下は例。SSHのタブからコピーしたものを指定する
+$ git remote add upstream git@github.com:bminor/glibc.git
+$ git remote -v
+
+// upstreamから取得する
+$ git fetch upstream
+
+// upstreamのmasterブランチを現在のブランチにマージする(以下の例はローカルのmasterブランチ)
+$ git checkout master
+$ git merge upstream/master
+
+// 取得したタグ情報をアップロードする
+$ git push origin --tags 
+```
+
 # 取得
 
 ### 再帰的に取得する
