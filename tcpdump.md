@@ -114,7 +114,7 @@ $ sudo tcpdump -i eth0 -A port 80
 $ sudo tcpdump -i eth0 -A port 80 -s0 -X
 ```
 
-### etho0の80番ポートを除く
+### eth0の80番ポートを除く
 ```
 $ tcpdump -Z root -i eth0 -X -S port 80
 ```
@@ -124,6 +124,11 @@ Zオプションでは実行ユーザを指定している。
 pcapに吐かせると、wiresharkなどで表示させることができます。
 ```
 $ tcpdump -i eth0 -w ~/log_%Y%m%d_%H%M%S.pcap
+```
+
+後でwiresharkで見るためにpcapで吐かせていることが多いので、パケットの制限無しを表す「-s 0」や特定のフィルタを追加するのが良いでしょう
+```
+$ sudo tcpdump -Z root -i eno1 -s 0 -w xxxx.pcap port 80 and \( host <IP> or host <IP> \)
 ```
 
 ### 100MBごとにローテーションしたい
@@ -298,6 +303,7 @@ $ sudo tcpdump -i any 'tcp port 80 and (((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12
 
 ### mysqlへのクエリリクエストを知りたい
 こんな感じのリクエストを発行すれば良い。前者は簡易にSELECTだけ知りたいような場合。後者は文字列で抽出している。
+「-s 0」は全部のパケットを取得するために指定するオプションです。
 ```
 # tcpdump -l -i eth0 -A -n -s 0 dst port 3306 | grep SELECT
 ```
