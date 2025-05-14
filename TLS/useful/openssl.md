@@ -3,6 +3,9 @@
 
 # 詳細
 
+## trace
+traceオプションは各種メッセージの受信情報、またメッセージ内部のパケット詳細情報、X.509証明書のパース処理を行う便利なオプションです。
+
 ### メッセージの中身まで詳細に表示したい(-trace) TLS1.3
 ```
 $ openssl s_client -connect www.yahoo.co.jp:443 -trace 
@@ -717,7 +720,6 @@ read R BLOCK
 ```
 
 ### メッセージの中身まで詳細に表示したい(-trace) TLS1.2
-traceを付与
 ```
 $ openssl s_client -connect www.yahoo.co.jp:443 -trace -tls1_2
 Connecting to 182.22.28.252
